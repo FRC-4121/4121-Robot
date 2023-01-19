@@ -201,7 +201,7 @@ public final class Constants {
         public static final double kSpeedCorrection = 0.9; //this will be used to compensate for differnces in the drive motors
 
         //Filtering (for gyro)
-        public static final int FILTER_WINDOW_SIZE = 150;
+        public static final int FILTER_WINDOW_SIZE = 20;
 
         public static int DIRECTION_MULTIPLIER = 1;//Controls whether forward on joysticks is forward or backward on robot
         

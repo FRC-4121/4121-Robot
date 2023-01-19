@@ -8,19 +8,35 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 //import static frc.robot.Constants.*;
 import static frc.robot.Constants.DrivetrainConstants.*;
-
+import edu.wpi.first.wpilibj.ADXRS450_Gyro;
+import edu.wpi.first.math.filter.MedianFilter;
 
 public class SwerveDrive extends SubsystemBase {
+  
   private SwerveWheel leftFront;
   private SwerveWheel leftBack;
   private SwerveWheel rightFront;
   private SwerveWheel rightBack;
+
+  private ADXRS450_Gyro gyro;
+  private MedianFilter gyro_filter;
+  
+
   /** Creates a new SwerveDrive. */
   public SwerveDrive() {
+
     leftFront = new SwerveWheel(LeftFrontDrive, LeftFrontAngle, LeftFrontCoder);
     leftBack = new SwerveWheel(LeftBackDrive, LeftBackAngle, LeftBackCoder);
     rightFront = new SwerveWheel(RightFrontDrive, RightFrontAngle, RightFrontCoder);
     rightBack = new SwerveWheel(RightBackDrive, RightBackAngle, RightBackCoder);
+
+    // Initialize Roborio gyro
+    gyro = new ADXRS450_Gyro();
+    SmartDashboard.putNumber("Zero Gyro", 0);
+    gyro.calibrate();
+    gyro.reset();
+
+    gyro_filter = new MedianFilter(FILTER_WINDOW_SIZE);
   }
 
   //takes in the current controller input and calculates the new velocity and angle for all of the modules. 
@@ -93,47 +109,41 @@ public class SwerveDrive extends SubsystemBase {
     rightFront.drive(frontRightSpeed, frontRightAngle);
     leftBack.drive(backLeftSpeed, backLeftAngle);
     rightBack.drive(backRightSpeed, backRightAngle);
+
+    SmartDashboard.putNumber("Gyro Angle", getGyroAngle());
   
   }
 
 
-  public void drive2(double leftX, double leftY, double rightX) {
-    SmartDashboard.putNumber("rightX", rightX);
-    if (Math.abs(rightX) < 0.05) { // 0.05 seems to be the average controller drift, so this is assumed to be pointing straight
-      
-      double baseAngle = Math.atan2(leftY, leftX) / Math.PI * 180; // convert rectangular coordinates to polar
-      double speed = Math.sqrt(leftX * leftX + leftY * leftY);
+  public double getGyroAngle(){
 
-      leftFront.drive(speed, baseAngle + 0); // leftX and leftY could be passed directly to driveRect, but then the angle and speed would need to be calculated four times
-      rightFront.drive(speed, baseAngle + 90);
-      leftBack.drive(speed, baseAngle + 270);
-      rightBack.drive(speed, baseAngle + 180);
-    }
-    else {
-      double angle = rightX * 60 * swerveDriveAngleLimiter; // angle to rotate by
-      double cos_a = Math.cos(angle); // cosine of angle
-      double sin_a = Math.sqrt(1 - cos_a * cos_a); // sine of angle, calculate using Pythagorean identity for speed
-      double cot_a2 = Math.tan(2 / angle); // cotangent of (angle / 2)
+    double correctedGyro = gyro_filter.calculate(gyro.getAngle() % 360.0);
+    return correctedGyro;
 
-      double x1 = widthFromAxle; // starting position (for front right wheel)
-      double y1 = lengthFromAxle;
-      double x2 = widthFromAxle * cos_a - lengthFromAxle * sin_a + leftX; // projected final position (for front right wheel)
-      double y2 = widthFromAxle * sin_a + lengthFromAxle * cos_a + leftY;
-
-      double rx = (x1 + x2 - (y2 - y1) * cot_a2) / 2; // center point of arc
-      double ry = (y1 + y2 + (x2 - x1) * cot_a2) / 2;
-
-      // calculate the motion vectors for each wheel
-      // constructs the vector perpendicular to the vector from the center to the starting position
-      // this *should* send the robot along the proper arc
-      leftFront.driveRect(ry - (-(widthFromAxle * sin_a) + (lengthFromAxle * cos_a) + leftY) + widthFromAxle, -(widthFromAxle * cos_a) - (lengthFromAxle * sin_a) + leftX - rx - lengthFromAxle, 0);
-      rightFront.driveRect(ry - ((widthFromAxle * sin_a) + (lengthFromAxle * cos_a) + leftY) - widthFromAxle, (widthFromAxle * cos_a) - (lengthFromAxle * sin_a) + leftX - rx - lengthFromAxle, 90);
-      leftBack.driveRect(ry - (-(widthFromAxle * sin_a) - (lengthFromAxle * cos_a) + leftY) + widthFromAxle, -(widthFromAxle * cos_a) + (lengthFromAxle * sin_a) + leftX - rx + lengthFromAxle, 270);
-      rightBack.driveRect(ry - ((widthFromAxle * sin_a) - (lengthFromAxle * cos_a) + leftY) - widthFromAxle, (widthFromAxle * cos_a) + (lengthFromAxle * sin_a) + leftX - rx + lengthFromAxle, 180);
-    }
   }
+
+ 
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
+
+    // Zero the gyro on driver command
+    double zeroGyro = SmartDashboard.getNumber("Zero Gyro", 0);
+    if (zeroGyro == 1)
+    {
+      SmartDashboard.putNumber("Zero Gyro", 0);
+      gyro.calibrate();
+      zeroGyro();
+    }
+  }
+
+  /**
+   * 
+   * Reset current gyro heading to zero
+   * 
+   */
+  public void zeroGyro(){
+    // gyro.calibrate();
+    gyro.reset();
+
   }
 }
