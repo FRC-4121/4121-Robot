@@ -61,6 +61,9 @@ public class Robot extends TimedRobot {
     // Get ball color
     m_robotContainer.getColorSelection();
 
+    //get park selection
+    m_robotContainer.getParkSelection();
+
   }
 
   /** This function is called once each time the robot enters Disabled mode. */

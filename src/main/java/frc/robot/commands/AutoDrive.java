@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.SwerveDrive;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
@@ -19,9 +20,11 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 public class AutoDrive extends CommandBase {
 
   /** Creates a new AutoDrive. */
-  private final Drivetrain drivetrain;
+  private final SwerveDrive drivetrain;
   private double targetDriveDistance; //inches
   private double targetAngle;
+  private double targetRotation;
+  private double targetSpeed;
   private double direction;
   private double stopTime;
   private double currentGyroAngle = 0;
@@ -32,8 +35,11 @@ public class AutoDrive extends CommandBase {
   private double startTime;
   private double distanceTraveled;
 
-  private double leftEncoderStart;
-  private double rightEncoderStart;
+  private double leftFrontEncoderStart;
+  private double rightFrontEncoderStart;
+  private double leftBackEncoderStart;
+  private double rightBackEncoderStart;
+
   private double totalRotationsLeft = 0;
   private double totalRotationsRight = 0;
 
@@ -44,11 +50,12 @@ public class AutoDrive extends CommandBase {
 
   //distance is in inches
 
-  public AutoDrive(Drivetrain drive, double dis, double ang, double dir, double time) {
+  public AutoDrive(SwerveDrive drive, double speed, double dis, double ang, double rot, double time) {
    
+    targetSpeed = speed;
     targetDriveDistance = dis;
     targetAngle = ang;
-    direction = dir;
+    targetRotation = rot;
     stopTime = time;
     drivetrain = drive;
 
@@ -69,8 +76,10 @@ public class AutoDrive extends CommandBase {
     //drivetrain.zeroGyro();
     drivetrain.zeroEncoders();
 
-    leftEncoderStart = drivetrain.getMasterLeftEncoderPosition();
-    rightEncoderStart = drivetrain.getMasterRightEncoderPosition();
+    leftFrontEncoderStart = drivetrain.getLeftFrontDriveEncoder();
+    rightFrontEncoderStart = drivetrain.getRightFrontDriveEncoder();
+    leftBackEncoderStart = drivetrain.getLeftBackDriveEncoder();
+    rightBackEncoderStart = drivetrain.getRightBackDriveEncoder();
 
     angleCorrection = 0;
     speedCorrection = 1;
@@ -88,31 +97,8 @@ public class AutoDrive extends CommandBase {
 
     // Calculate angle correction based on gyro reading
     currentGyroAngle = drivetrain.getGyroAngle();
-    angleCorrection = pidDriveAngle.run(currentGyroAngle, targetAngle); //the speed that the robot rotates from currentGyroAngle to targetAngle between -1 to 1
-    // SmartDashboard.putNumber("AngleCor", angleCorrection);
 
-    // Calculate speed correction based on distance to target
-    // totalRotationsRight = Math.abs((Math.abs(drivetrain.getMasterRightEncoderPosition()) - rightEncoderStart));
-    // totalRotationsLeft = Math.abs((Math.abs(drivetrain.getMasterLeftEncoderPosition()) - leftEncoderStart));
-    // distanceTraveled = (kWheelDiameter * Math.PI * (totalRotationsLeft + totalRotationsRight) / 2.0) / (DrivetrainConstants.kTalonFXPPR * kGearRatio);
-    // speedCorrection = pidDriveDistance.run(distanceTraveled, targetDriveDistance); //the closer, the slower robot move. The further, the faster the robot moves
-    // SmartDashboard.putNumber("DrSpCorrection", speedCorrection);
-
-    //Check for overspeed correction
-    // if(speedCorrection > 1){
-
-    //    speedCorrection = 1;
-
-    // } else if (speedCorrection < -1) {
-
-    //   speedCorrection = -1;
-
-    // }
-
-
-    driveSpeed = direction * speedCorrection * kAutoDriveSpeed;
-
-    SmartDashboard.putNumber("DriveSpeed", driveSpeed);
+    SmartDashboard.putNumber("DriveSpeed", targetSpeed);
     // Enforce minimum speed
     // if (Math.abs(driveSpeed) < kAutoDriveSpeedMin) {
     //   angleCorrection = 0;
@@ -122,40 +108,23 @@ public class AutoDrive extends CommandBase {
     //     driveSpeed = kAutoDriveSpeedMin;
     //   }
     // }
-    SmartDashboard.putNumber("AngleCor", angleCorrection);
 
-    double leftSpeed = 0;
-    double rightSpeed = 0;
-    if (Math.abs(driveSpeed + angleCorrection) > 1){
-      if(driveSpeed + angleCorrection < 0) {//do this because angleCorrection is sometimes over 1 so hard code it to -1 or 1
-        leftSpeed = -1;
-      } else {
-        leftSpeed = 1;
-      }
-    } else {
-      leftSpeed = driveSpeed + angleCorrection;
-    }
+    double leftStickY = -targetSpeed * Math.cos(Math.toRadians(targetAngle));
+    double leftStickX = targetSpeed * Math.sin(Math.toRadians(targetAngle));
+    SmartDashboard.putNumber("Left Stick X", leftStickX);
+    SmartDashboard.putNumber("Left Stick Y", leftStickY);
 
-    if (Math.abs(driveSpeed - angleCorrection) > 1){
-      if(driveSpeed - angleCorrection < 0) { //do this because angleCorrection is sometimes over 1 so hard code it to -1 or 1
-        rightSpeed = -1;
-      } else {
-        rightSpeed = 1;
-      }
-    } else {
-      rightSpeed = driveSpeed - angleCorrection;
-    }
-    rightSpeed *= kSpeedCorrection; //this may need to be used on the left drive motors
-    SmartDashboard.putNumber("LeftSpeed", leftSpeed);
-    SmartDashboard.putNumber("RightSpeed", rightSpeed);
 
     // Run the drive
-    drivetrain.autoDrive(leftSpeed, rightSpeed); //from which method does this come from.
+    drivetrain.autoDrive(leftStickX, leftStickY, targetRotation);
 
-    double totalRotationsRight = Math.abs((drivetrain.getMasterRightEncoderPosition() - rightEncoderStart)); //does getEncoderPosition return rotations or another unit?
-    double totalRotationsLeft = Math.abs((drivetrain.getMasterLeftEncoderPosition() - leftEncoderStart));
-
-    distanceTraveled = (kWheelDiameter * Math.PI * (totalRotationsLeft + totalRotationsRight) / 2.0) / AUTO_ENCODER_REVOLUTION_FACTOR;
+    // calculate driven distance
+    double totalRotationsLeftFront = Math.abs((drivetrain.getLeftFrontDriveEncoder() - leftFrontEncoderStart)); //does getEncoderPosition return rotations or another unit?
+    double totalRotationsRightFront = Math.abs((drivetrain.getRightFrontDriveEncoder() - rightFrontEncoderStart));
+    double totalRotationsLeftBack = Math.abs((drivetrain.getLeftBackDriveEncoder() - leftBackEncoderStart));
+    double totalRotationsRightBack = Math.abs((drivetrain.getRightBackDriveEncoder() - rightBackEncoderStart));
+    double averageRotations = ((totalRotationsLeftFront + totalRotationsRightFront + totalRotationsLeftBack + totalRotationsRightBack) / 4.0);
+    distanceTraveled = (kWheelDiameter * Math.PI * averageRotations) / (kTalonFXPPR * kDriveGearRatio);
     SmartDashboard.putNumber("Distance", distanceTraveled);
 
   }

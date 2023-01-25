@@ -2,7 +2,7 @@
 package frc.robot;
 
 import static frc.robot.Constants.*;
-////import static frc.robot.Constants.ShooterConstants.*;
+import static frc.robot.Constants.DrivetrainConstants.*;
 import frc.robot.subsystems.*;
 import frc.robot.ExtraClasses.NetworkTableQuerier;
 import frc.robot.commands.*;
@@ -35,8 +35,10 @@ public class RobotContainer {
 
   //Driving Commands
   private final DriveWithJoysticks driveCommand = new DriveWithJoysticks(swervedrive, xbox);
+  private final ParkCommand parkCommand = new ParkCommand(swervedrive);
 
- //private final AutoClimb autoClimbCommand = new AutoClimb(climber);
+ //Auto Commands
+ private final AutoDrive autoDriveCommand = new AutoDrive(swervedrive,0.4,600,315,0,5);
 
   //KillAuto Command
   private final KillAutoCommand killAutoObject = new KillAutoCommand(); 
@@ -67,6 +69,7 @@ public class RobotContainer {
   private static JoystickButton shooterControlButton;
   private static JoystickButton lowerIntakeButton;
   private static JoystickButton raiseIntakeButton;
+  private static JoystickButton parkButton;
   //private final JoystickButton autoClimbButton;
 
   
@@ -106,6 +109,7 @@ public class RobotContainer {
     shooterControlButton = new JoystickButton(launchpad, LaunchPadSwitch7);
     lowerIntakeButton = new JoystickButton(launchpad, LaunchPadSwitch6bottom);
     raiseIntakeButton = new JoystickButton(launchpad, LaunchPadSwitch6top); 
+    parkButton = new JoystickButton(launchpad,LaunchPadSwitch3);
 
     //Configure default commands
     configureDefaultCommands();
@@ -167,9 +171,23 @@ public class RobotContainer {
     }
 
   }
+
+  public void getParkSelection()
+  {
+
+    if(parkButton.getAsBoolean() == true)
+    {
+      isParked = true;
+      SmartDashboard.putBoolean("Robot Parked", true);
+      parkCommand.execute();
+    } else{
+      isParked = false;
+      SmartDashboard.putBoolean("Robot Parked", false);
+    }
+  }
   
 
   public Command getAutonomousCommand() {
-    return null;
+    return autoDriveCommand;
   }
 }

@@ -26,6 +26,12 @@ public class SwerveWheel extends SubsystemBase {
   /* Declare controller variables */
   private PIDControl drivePIDController;
   private PIDControl anglePIDController;
+  
+  private double angleSpeedLimiter;
+  private double kP_AngleController;
+  private double kI_AngleController;
+  private double kD_AngleController;
+
 
   /* Declare state variables */
   private double wheelSpeed;
@@ -34,13 +40,47 @@ public class SwerveWheel extends SubsystemBase {
 
   /* Creates a new SwerveWheel. */
   public SwerveWheel(int driveMotorID, int angleMotorID, int CANCoderID) {
+    
+    // Set wheel ID
     wheelID = CANCoderID / 3;
+
+    // Set controller constants
+    if(wheelID == 1)
+    {
+      angleSpeedLimiter = lfSwerveDriveAngleLimiter;
+      kP_AngleController = kP_lfSwerveDriveAngle;
+      kI_AngleController = kI_lfSwerveDriveAngle;
+      kD_AngleController = kD_lfSwerveDriveAngle;
+    } else if(wheelID == 2)
+    {
+      angleSpeedLimiter = rfSwerveDriveAngleLimiter;
+      kP_AngleController = kP_rfSwerveDriveAngle;
+      kI_AngleController = kI_rfSwerveDriveAngle;
+      kD_AngleController = kD_rfSwerveDriveAngle;
+    } else if(wheelID == 3)
+    {
+      angleSpeedLimiter = rbSwerveDriveAngleLimiter;
+      kP_AngleController = kP_rbSwerveDriveAngle;
+      kI_AngleController = kI_rbSwerveDriveAngle;
+      kD_AngleController = kD_rbSwerveDriveAngle;
+    } else if(wheelID == 4)
+    {
+      angleSpeedLimiter = lbSwerveDriveAngleLimiter;
+      kP_AngleController = kP_lbSwerveDriveAngle;
+      kI_AngleController = kI_lbSwerveDriveAngle;
+      kD_AngleController = kD_lbSwerveDriveAngle;
+    }
+
     // Initialize the swerve motors
     InitSwerveMotors(driveMotorID, angleMotorID, CANCoderID);
 
     // Initialize PID controllers
     drivePIDController = new PIDControl(kP_SwerveDriveSpeed, kI_SwerveDriveSpeed, kD_SwerveDriveSpeed);
-    anglePIDController = new PIDControl(kP_SwerveDriveAngle, kI_SwerveDriveAngle, kD_SwerveDriveAngle);
+    anglePIDController = new PIDControl(kP_AngleController, kI_AngleController, kD_AngleController);
+
+    SmartDashboard.putNumber("Wheel "+ wheelID + " kP", kP_AngleController);
+    SmartDashboard.putNumber("Wheel "+ wheelID + " kI", kI_AngleController);
+    SmartDashboard.putNumber("Wheel "+ wheelID + " kD", kD_AngleController);
 
   }
 
@@ -70,60 +110,89 @@ public class SwerveWheel extends SubsystemBase {
   }
 
   public void drive(double speed, double angle){
-    
-    //Running the swerve drive motors with a limit for speed
-    swerveDriveMotor.set(speed * swerveDriveSpeedLimiter);
 
-    double encoderAngle = canCoder.getAbsolutePosition();
-    
+    //Normalize target to have a max value of 1
+    double target = angle / 360.0;
+
+    //Normalize encoder to have a max value of 1 and correct for discontinuity at 360 degrees (should be 0)
+    double encoderAngle = canCoder.getAbsolutePosition() / 360;
+    if(encoderAngle == 1.0){
+      encoderAngle = 0.0;
+    }
+
     //Putting CANCoder position on smart dashboard
     SmartDashboard.putNumber("Wheel "+ wheelID, encoderAngle);
+  
+    //Determine shortest rotation distance
+    if(Math.abs(target - encoderAngle) > 0.5)
+    {
+      double diff = 1 - Math.abs(target - encoderAngle);
+      target = target + diff;
+      encoderAngle = encoderAngle + diff;
+      if (encoderAngle == 1.0)
+      {
+        encoderAngle = 0.0;
+      }
+    }
 
-    double target = angle;
-
-    // adjust to always take the shortest path
-    if (target - encoderAngle > 180) target -= 360;
-    if (encoderAngle - target > 180) target += 360;
-    
-    
     double output = anglePIDController.run(encoderAngle,target);
-    SmartDashboard.putNumber("Wheel " + wheelID + " angle output", output);
+    SmartDashboard.putNumber("Wheel " + wheelID + " PID output", output);
+    SmartDashboard.putNumber("Wheel " + wheelID + " Target", target);
+    SmartDashboard.putNumber("Wheel " + wheelID + " Corrected Encoder", encoderAngle);
     
-    double angleSpeed = output * swerveDriveAngleLimiter;
+    double angleSpeed = output * angleSpeedLimiter;
     
     //Capping angleSpeed to max that the motor can take, from -1 to 1
-    if(angleSpeed > 1)
+    // if(angleSpeed > 1)
+    // {
+    //   angleSpeed = 1;
+    // } else if(angleSpeed < -1)
+    // {
+    //   angleSpeed = -1;
+    // }
+
+    //Before angle speed
+    SmartDashboard.putNumber("Wheel " + wheelID + " before angle", angleSpeed);
+
+    //Get the sign of the angleSpeed
+    // double sign = Math.signum(angleSpeed);
+
+    //Enforce minimum angle speed, 0.0028 is one degree
+    if(Math.abs(target - encoderAngle) > 0.009)
     {
-      angleSpeed = 1;
-    } else if(angleSpeed < -1)
+      // if(angleSpeed < 0.06)
+      // {
+      //   angleSpeed = 0.06 * sign;
+      // }
+    } 
+    else 
     {
-      angleSpeed = -1;
+      angleSpeed = 0;
     }
+
+    //putting angleSpeed and error into smart dashboard
+    SmartDashboard.putNumber("Wheel " + wheelID + " after angle", angleSpeed);
+    SmartDashboard.putNumber("Wheel " + wheelID + " error", encoderAngle - target);
     
-    
+    //Set motor speeds
     swerveAngleMotor.set(angleSpeed);
+    //swerveDriveMotor.set(speed * swerveDriveSpeedLimiter);
     
   }
 
-  public void drive2(double speed, double angle){
-    
-    //Running the swerve drive motors with a limit for speed
-    swerveDriveMotor.set(speed * swerveDriveSpeedLimiter);
-    wheelAngle = angle;
 
-    double Angle = canCoder.getAbsolutePosition();
-    double target = wheelAngle;
+  //Get the encoder value of the drive motor
+  public double getDriveEncoderPosition(){
 
-    // adjust to always take the shortest path
-    if (target - Angle > 180) target -= 360;
-    if (Angle - target > 180) target += 360;
+    return swerveDriveMotor.getSelectedSensorPosition();
 
-    double output = anglePIDController.run(Angle, wheelAngle);
-    // double output = target;
-    //double output = (target - Angle) / 360 * kP_SwerveDriveAngle;
-    swerveAngleMotor.set(output / 3);
   }
-  public void driveRect(double x, double y, double a) {
-    drive(Math.sqrt(x * x + y * y), Math.atan2(y, x) / Math.PI * 180 + a);
+
+  //Zeros the encoder for the drive motor
+  public void zeroEncoder(){
+
+    swerveDriveMotor.setSelectedSensorPosition(0);
   }
+
+  
 }

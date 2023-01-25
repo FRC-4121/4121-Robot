@@ -172,9 +172,10 @@ public final class Constants {
         public static final int kPIDLoopIdxDrive = 0;
         public static final int kTimeoutMsDrive = 20;
         public static final double kTalonFXPPR = 2048;
-        public static final double kWheelDiameter = 6.0;
+        public static final double kWheelDiameter = 4.0;
         public static final double kLowGearSpeedCap = 0.8;//In case full speed draws excessive power, these are an emergency measure
         public static final double kHighGearSpeedCap = 1.0;
+        public static final double kDriveGearRatio = 8.14;
         //public static final double kJoystickSpeedCorr = 1;
         public static final double kManualDriveSpeed = 0.75;
         public static final double kAutoDriveSpeed = 0.5;
@@ -217,11 +218,25 @@ public final class Constants {
         public static final double kP_SwerveDriveSpeed = 0.0;
         public static final double kI_SwerveDriveSpeed = 0.0;
         public static final double kD_SwerveDriveSpeed = 0.0;
-        public static final double kP_SwerveDriveAngle = 0.0045;
-        public static final double kI_SwerveDriveAngle = 0.0;
-        public static final double kD_SwerveDriveAngle = 0.0001;
+        public static final double kP_lfSwerveDriveAngle = 0.007;
+        public static final double kP_rfSwerveDriveAngle = 1.0;
+        public static final double kP_lbSwerveDriveAngle = 0.007;
+        public static final double kP_rbSwerveDriveAngle = 0.02;
+        public static final double kI_lfSwerveDriveAngle = 0.0;
+        public static final double kI_rfSwerveDriveAngle = 0.0;
+        public static final double kI_lbSwerveDriveAngle = 0.0;
+        public static final double kI_rbSwerveDriveAngle = 0.0;
+        public static final double kD_lfSwerveDriveAngle = 0.0001;
+        public static final double kD_rfSwerveDriveAngle = 0.0001;
+        public static final double kD_lbSwerveDriveAngle = 0.0001;
+        public static final double kD_rbSwerveDriveAngle = 0.0001;
         public static final double swerveDriveSpeedLimiter = 0.6;
-        public static final double swerveDriveAngleLimiter = 2.0;
+        public static final double lfSwerveDriveAngleLimiter = 1.0;
+        public static final double rfSwerveDriveAngleLimiter = 1.0;
+        public static final double lbSwerveDriveAngleLimiter = 1.0;
+        public static final double rbSwerveDriveAngleLimiter = 1.0;
+        public static final double autoSwerveDriveSpeedLimiter = 0.6;
+        public static final double autoSwerveDriveAngleLimiter = 2.0;
 
         public static final int LeftFrontDrive = 1;
         public static final int LeftFrontAngle = 2;
@@ -245,6 +260,8 @@ public final class Constants {
         public static final double widthFromAxle = 1.0;
 
         public static final double MaxVoltsMK4 = 12.0; //max voltage of swerve module
+
+        public static boolean isParked = false;
     
     }
 }
