@@ -8,8 +8,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.ExtraClasses.NetworkTableQuerier;
 
-//import static frc.robot.Constants.*;
-import static frc.robot.Constants.DrivetrainConstants.*;
+import static frc.robot.Constants.*;
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.math.filter.MedianFilter;
 

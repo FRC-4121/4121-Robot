@@ -2,7 +2,6 @@
 package frc.robot;
 
 import static frc.robot.Constants.*;
-import static frc.robot.Constants.DrivetrainConstants.*;
 import frc.robot.subsystems.*;
 import frc.robot.ExtraClasses.NetworkTableQuerier;
 import frc.robot.commands.*;

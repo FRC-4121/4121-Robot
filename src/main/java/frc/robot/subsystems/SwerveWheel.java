@@ -11,7 +11,6 @@ import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import edu.wpi.first.math.kinematics.*;
 import static frc.robot.Constants.*;
-import static frc.robot.Constants.DrivetrainConstants.*;
 import frc.robot.ExtraClasses.*;
 import com.ctre.phoenix.sensors.CANCoder;
 import com.ctre.phoenix.sensors.CANCoder.*;

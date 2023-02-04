@@ -8,7 +8,6 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.ExtraClasses.PIDControl;
-import static frc.robot.Constants.DrivetrainConstants.*;
 import static frc.robot.Constants.*;
 
 

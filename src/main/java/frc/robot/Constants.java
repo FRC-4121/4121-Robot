@@ -8,7 +8,7 @@
 package frc.robot;
 
 /**
- * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
+ * The Constants class provides a dope af place for teams to hold robot-wide numerical or boolean
  * constants.  This class should not be used for any other purpose.  All constants should be
  * declared globally (i.e. public static).  Do not put anything functional in this class.
  *
@@ -18,240 +18,154 @@ package frc.robot;
 
 public final class Constants {
 
-    public static final int plan = 1; //1-4; 1 being leftmost starting position and 4 being right most on the field
-    
-    //Talon SRX and FX IDs (must be unique, may range from 0+)
-    //drivetrain motor IDs
+    public static final int plan = 1; // 1-4; 1 being leftmost starting position and 4 being right most on the field
+
+    // Talon SRX and FX IDs (must be unique, may range from 0+)
+    // Drivetrain motor IDs
     public static final int LEFT_MASTER_F = 3;
     public static final int LEFT_SLAVE_F = 2;
     public static final int RIGHT_MASTER_F = 1;
     public static final int RIGHT_SLAVE_F = 4;
 
-    //climber motor IDs
-    public static final int RIGHT_CLIMBER = 7;
-    public static final int LEFT_CLIMBER = 5;
-    public static final int RIGHT_ROTATE_CLIMBER = 9; 
-    public static final int LEFT_ROTATE_CLIMBER = 11;
+    // Arm ID's
+    public static final int Extend = 15; // Need to find
+    public static final int Rotate = 16; // Need to find
 
-    //climber angle encoders
-    public static final int LEFT_CLIMBER_ANGLE = 0;
-    public static final int RIGHT_CLIMBER_ANGLE = 1;
-    
-    //processor motor IDs
-    public static final int INTAKE=20;
-    public static final int INTAKERELEASE = 0;
-    public static final int LOADER = 27; //need to find, spark max
-    public static final int SHOOTER = 10;
-    public static final int LEFT_PROCESSOR = 8;//need to find, spark max
-    public static final int RIGHT_PROCESSOR = 6;//need to find, spark max
+    // Wrist ID's
+    public static final int WristID = 17; // Need to find
 
-    //Drive control port IDs
+    // Grabber ID's
+    public static final int Intake = 18;
+
+    // Drive control port IDs
     public static final int XBOX_PORT = 0;
 
-    //Xbox controller button IDS
+    // Xbox controller button IDS
     public static final int xboxAButton = 1;
     public static final int xboxBButton = 2;
     public static final int xboxXButton = 3;
     public static final int xboxYButton = 4;
     public static final int xboxLeftBumber = 5;
     public static final int xboxRightBumber = 6;
-    public static final int xboxBackButton = 7;//this button is in the middle of the xbox controller
-    public static final int xboxStartButton = 8;//this button is in the middle of the xbox controller
+    public static final int xboxBackButton = 7;// this button is in the middle of the xbox controller
+    public static final int xboxStartButton = 8;// this button is in the middle of the xbox controller
     public static final int xboxLeftJoystickButton = 9;
     public static final int xboxRightJoystickButton = 10;
 
-    //LaunchPad button IDs
-    public static final int LaunchPadButton1= 7 ;
-    public static final int LaunchPadButton2=  17; 
-    public static final int LaunchPadButton3= 19 ;
-    public static final int LaunchPadButton4=  18;
-    public static final int LaunchPadSwitch1bottom=1  ;
-    public static final int LaunchPadSwitch1top=2  ;
-    public static final int LaunchPadSwitch2bottom=3  ;
-    public static final int LaunchPadSwitch2top=4  ;
+    // LaunchPad button IDs
+    public static final int LaunchPadButton1 = 7;
+    public static final int LaunchPadButton2 = 17;
+    public static final int LaunchPadButton3 = 19;
+    public static final int LaunchPadButton4 = 18;
+    public static final int LaunchPadSwitch1bottom = 1;
+    public static final int LaunchPadSwitch1top = 2;
+    public static final int LaunchPadSwitch2bottom = 3;
+    public static final int LaunchPadSwitch2top = 4;
     public static final int LaunchPadSwitch3 = 5;
     public static final int LaunchPadSwitch4 = 6;
-    public static final int LaunchPadSwitch5bottom=8  ;
-    public static final int LaunchPadSwitch5top=9  ;
-    public static final int LaunchPadSwitch6bottom=10  ;
-    public static final int LaunchPadSwitch6top=11 ;
+    public static final int LaunchPadSwitch5bottom = 8;
+    public static final int LaunchPadSwitch5top = 9;
+    public static final int LaunchPadSwitch6bottom = 10;
+    public static final int LaunchPadSwitch6top = 11;
     public static final int LaunchPadSwitch7 = 12;
     public static final int LaunchPadSwitch8 = 13;
     public static final int LaunchPadDial1 = 14; // low bit
     public static final int LaunchPadDial2 = 15;
     public static final int LaunchPadDial3 = 16; // high bit
 
-    //Sensor port IDs
+    // Sensor port IDs
     public static final int LIDAR_PORT = 0;
 
-    //Climber variables
-    public static final int kPIDLoopIdxClimb = 0;
-    public static final int kTimeoutMsClimb = 20;
-    public static final int rightClimbMaxEncoder = 178100; // TBD encoder raw sensor units (2048 in one rotation) for max height that climber should go
-    public static final int leftClimbMaxEncoder = 219100;
-    public static final int climbMinEncoder = 0;//need to find
-    public static final int rightRotateMaxEncoder = 201000;
-    public static final int leftRotateMaxEncoder = 196000;
-    public static final int climbRotateMinEncoder = 0;
-    public static final int climbEncoderTolerance = 3000;
-    public static final double climberSpeed = 0.4;
-    public static final double rotateSpeed = 0.5;
-    public static double ClimberExtendLimiter = 1.0;
-    public static double ClimberRetractLimiter = 1.0;
-    public static double rotateClimberLimiter = 0.75;
-    public static boolean climberEncoderInit = false;
-    public static boolean climberRotateEncoderInit = false;
-    public static final double climberStartPos = 50;
-
-    //Shooter variables
-    public static double shooterTargetRPM = 100;// need to test to figure out
-    public static double shooterActualRPM = 0;
-    public static final double shooterRPMTol = 100;  // tolerance for shooter RPM
-    public static boolean shootLow = true;
-    public static double lidarMin = 2;
-    public static double lidarMax = 140;//need to test to find
-    public static double visionDistanceTolerance = 10;
-    public static double defaultShooterSpeed = 0.26;
-    public static final double kP_Shoot = 0.00027; //was 0.1
-    public static final double kI_Shoot = 0.000025;
-    public static final double kD_Shoot = 0.000055;
-    public static final double kF_Shoot = -1;
-    public static final double distanceCorrection = 0;//need to find
-    public static final int kPIDLoopIdxShoot = 0;
-    public static final int kTimeoutMsShoot = 20;
-    public static final int kShooterMaxRPM = 6100;
-    public static boolean toggleShooterOnOrOff = true; //true runs the shooter motors, false keeps them off.
-    public static boolean OKToShoot = false;
-    public static boolean runAutoSpeedControl = true;
-    public static int isBallShot = 0;
-    
-    //Intake variables
-    public static final double kIntakeSpeed = 0.1;
-    public static int intakeRaiseEncoderLimit = 100000; //need to find out
-    public static int intakeLowerEncoderLimit = -100000; //also need to find
-    public static int intakeEncoderTolerance = 10;
-    public static boolean intakeEncodersInit = false;
-    public static String intakePosition = "UP";
-
-    //SwerveDrive constants
-    public static final double lengthFromAxle = 1.0;
-    public static final double widthFromAxle = 1.0;
-
-    //General variables
+    // General variables
     public static boolean killAuto = false;
     public static int ballsOnBoard = 1;
     public static final double kCameraCorrection = 3.5;
-    /*
-    Constants for swerve drive
-    */
-    public static class SwerveDriveConstants {
-        public static final int LeftFrontDrive = 1;
-        public static final int LeftFrontAngle = 2;
-        public static final int LeftFrontCoder = 3;
-        
-        public static final int RightFrontDrive = 4;
-        public static final int RightFrontAngle = 5;
-        public static final int RightFrontCoder = 6;
 
-        public static final int RightBackDrive = 7;
-        public static final int RightBackAngle = 8;
-        public static final int RightBackCoder = 9;
+    public static final boolean kMotorInvert = true;// True -> right side motors are inverted
+    public static final int kPIDLoopIdxDrive = 0;
+    public static final int kTimeoutMsDrive = 20;
+    public static final double kTalonFXPPR = 2048;
+    public static final double kWheelDiameter = 3.3;
+    public static final double kLowGearSpeedCap = 0.8;// In case full speed draws excessive power, these are an
+                                                      // emergency measure
+    public static final double kHighGearSpeedCap = 1.0;
+    public static final double kDriveGearRatio = 8.14;
+    public static final double kManualDriveSpeed = 0.75;
+    public static final double kAutoDriveSpeed = 0.5;
+    public static final double kAutoDriveSpeedMin = 0.25;
+    public static final double kAutoShootDriveSpeed = 0.75;
+    public static final double kAutoTurnSpeed = 0.5;
+    // public static final double kLowGearRatio = 30.0;
+    // public static final double kHighGearRatio = 70.0;
+    public static final double kGearRatio = 7;
+    public static final double kTurnAngleTolerance = 0.001;
+    public static final double kDriveDistanceTolerance = 10.0;
+    public static final double AUTO_ENCODER_REVOLUTION_FACTOR = 14750.0;
 
-        public static final int LeftBackDrive = 10;
-        public static final int LeftBackAngle = 11;
-        public static final int LeftBackCoder = 12;
+    public static final double kP_Straight = 0.012; // was 0.024
+    public static final double kI_Straight = 0.0;
+    public static final double kD_Straight = 0.0;
+    public static final double kP_Turn = .008;// was .002
+    public static final double kI_Turn = 0.0;
+    public static final double kD_Turn = 0.0015;// was 0.0004
+    public static final double kP_DriveAngle = .003;// was .005
+    public static final double kI_DriveAngle = 0.0;
+    public static final double kD_DriveAngle = 0.0004;
 
-        public static final double kJoystickSpeedCorr = 1;
-    }
-    /*
-    Constants needed by drivetrains
-    */
-    public static class DrivetrainConstants {
+    public static final double kSpeedCorrection = 0.9; // this will be used to compensate for differnces in the drive
+                                                       // motors
 
-        public static final boolean kMotorInvert = true;//True -> right side motors are inverted
-        public static final int kPIDLoopIdxDrive = 0;
-        public static final int kTimeoutMsDrive = 20;
-        public static final double kTalonFXPPR = 2048;
-        public static final double kWheelDiameter = 3.3;
-        public static final double kLowGearSpeedCap = 0.8;//In case full speed draws excessive power, these are an emergency measure
-        public static final double kHighGearSpeedCap = 1.0;
-        public static final double kDriveGearRatio = 8.14;
-        //public static final double kJoystickSpeedCorr = 1;
-        public static final double kManualDriveSpeed = 0.75;
-        public static final double kAutoDriveSpeed = 0.5;
-        public static final double kAutoDriveSpeedMin = 0.25;
-        public static final double kAutoShootDriveSpeed = 0.75;
-        public static final double kAutoTurnSpeed = 0.5;
-        // public static final double kLowGearRatio = 30.0;
-        // public static final double kHighGearRatio = 70.0;
-        public static final double kGearRatio = 7; 
-        public static final double kTurnAngleTolerance = 0.001;
-        public static final double kDriveDistanceTolerance = 10.0;
-        public static final double AUTO_ENCODER_REVOLUTION_FACTOR = 14750.0;
+    // Filtering (for gyro)
+    public static final int FILTER_WINDOW_SIZE = 10;
 
-        public static final double kP_Straight = 0.012;  //was 0.024
-        public static final double kI_Straight = 0.0;
-        public static final double kD_Straight = 0.0;
-        public static final double kP_Turn = .008;//was .002
-        public static final double kI_Turn = 0.0;
-        public static final double kD_Turn = 0.0015;//was 0.0004
-        public static final double kP_DriveAngle = .003;//was .005
-        public static final double kI_DriveAngle = 0.0;
-        public static final double kD_DriveAngle = 0.0004;
+    public static int DIRECTION_MULTIPLIER = 1;// Controls whether forward on joysticks is forward or backward on robot
 
-        public static final double kSpeedCorrection = 0.9; //this will be used to compensate for differnces in the drive motors
+    public static double kLowGearMultiplier = 0.40;
+    public static double kHighGearMultiplier = 0.70;
+    public static double currentGear = kHighGearMultiplier;
 
-        //Filtering (for gyro)
-        public static final int FILTER_WINDOW_SIZE = 10;
+    // Swerve drive constants
+    public static final double DRIVETRAIN_TRACKWIDTH_METERS = 0.546;
+    public static final double DRIVETRAIN_WHEELBASE_METERS = 0.546;
+    public static final double DRIVETRAIN_TRACKWIDTH_INCH = 21.50;
+    public static final double DRIVETRAIN_WHEELBASE_INCH = 21.5;
+    public static final double swerveDriveSpeedLimiter = 0.6;
+    public static final double autoSwerveDriveSpeedLimiter = 0.6;
+    public static final double autoSwerveDriveAngleLimiter = 2.0;
 
-        public static int DIRECTION_MULTIPLIER = 1;//Controls whether forward on joysticks is forward or backward on robot
-        
-        public static double kLowGearMultiplier = 0.40;
-        public static double kHighGearMultiplier = 0.70;
-        public static double currentGear = kHighGearMultiplier;
-        
-        //Swerve drive constants
-        public static final double DRIVETRAIN_TRACKWIDTH_METERS = 0.546;
-        public static final double DRIVETRAIN_WHEELBASE_METERS = 0.546;
-        public static final double DRIVETRAIN_TRACKWIDTH_INCH = 21.50;
-        public static final double DRIVETRAIN_WHEELBASE_INCH = 21.5;
-        public static final double swerveDriveSpeedLimiter = 0.6;
-        public static final double autoSwerveDriveSpeedLimiter = 0.6;
-        public static final double autoSwerveDriveAngleLimiter = 2.0;
+    public static final int LeftFrontDrive = 1;
+    public static final int LeftFrontAngle = 2;
+    public static final int LeftFrontCoder = 3;
 
-        public static final int LeftFrontDrive = 1;
-        public static final int LeftFrontAngle = 2;
-        public static final int LeftFrontCoder = 3;
-        
-        public static final int RightFrontDrive = 4;
-        public static final int RightFrontAngle = 5;
-        public static final int RightFrontCoder = 6;
+    public static final int RightFrontDrive = 4;
+    public static final int RightFrontAngle = 5;
+    public static final int RightFrontCoder = 6;
 
-        public static final int RightBackDrive = 7;
-        public static final int RightBackAngle = 8;
-        public static final int RightBackCoder = 9;
+    public static final int RightBackDrive = 7;
+    public static final int RightBackAngle = 8;
+    public static final int RightBackCoder = 9;
 
-        public static final int LeftBackDrive = 10;
-        public static final int LeftBackAngle = 11;
-        public static final int LeftBackCoder = 12;
+    public static final int LeftBackDrive = 10;
+    public static final int LeftBackAngle = 11;
+    public static final int LeftBackCoder = 12;
 
-        public static final double kJoystickSpeedCorr = 1;
-        
-        public static final double lengthFromAxle = 1.0;
-        public static final double widthFromAxle = 1.0;
+    public static final double kJoystickSpeedCorr = 1;
 
-        public static final double MaxVoltsMK4 = 12.0; //max voltage of swerve module
+    public static final double lengthFromAxle = 1.0;
+    public static final double widthFromAxle = 1.0;
 
-        public static boolean isParked = false;
-    
-        public static final double drivePIDkPs[] = {0.0, 0.0, 0.0, 0.0};
-        public static final double drivePIDkIs[] = {0.0, 0.0, 0.0, 0.0};
-        public static final double drivePIDkDs[] = {0.0, 0.0, 0.0, 0.0};
-        public static final double drivePIDkFs[] = {0.0454, 0.0459, 0.0458, 0.046};
+    public static final double MaxVoltsMK4 = 12.0; // max voltage of swerve module
 
-        public static final double anglePIDkPs[] = {3.25, 3.25, 3.25, 3.25};
-        public static final double anglePIDkIs[] = {2.25, 2.25, 2.25, 2.25};
-        public static final double anglePIDkDs[] = {0.04, 0.04, 0.04, 0.04};
-        public static final double angleLimiters[] = {1.0, 1.0, 1.0, 1.0};
-    }
+    public static boolean isParked = false;
+
+    public static final double drivePIDkPs[] = { 0.0, 0.0, 0.0, 0.0 };
+    public static final double drivePIDkIs[] = { 0.0, 0.0, 0.0, 0.0 };
+    public static final double drivePIDkDs[] = { 0.0, 0.0, 0.0, 0.0 };
+    public static final double drivePIDkFs[] = { 0.0454, 0.0459, 0.0458, 0.046 };
+
+    public static final double anglePIDkPs[] = { 3.25, 3.25, 3.25, 3.25 };
+    public static final double anglePIDkIs[] = { 2.25, 2.25, 2.25, 2.25 };
+    public static final double anglePIDkDs[] = { 0.04, 0.04, 0.04, 0.04 };
+    public static final double angleLimiters[] = { 1.0, 1.0, 1.0, 1.0 };
+
 }
