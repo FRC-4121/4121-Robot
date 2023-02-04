@@ -101,6 +101,7 @@ public final class Constants {
     public static final double kTurnAngleTolerance = 0.001;
     public static final double kDriveDistanceTolerance = 10.0;
     public static final double AUTO_ENCODER_REVOLUTION_FACTOR = 14750.0;
+    public static Boolean runAutoSpeedControl = true;
 
     public static final double kP_Straight = 0.012; // was 0.024
     public static final double kI_Straight = 0.0;
