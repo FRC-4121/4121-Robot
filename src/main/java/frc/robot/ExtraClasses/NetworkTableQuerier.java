@@ -36,6 +36,19 @@ public class NetworkTableQuerier implements Runnable {
     private static NetworkTableEntry markersFound;
     private static NetworkTableEntry colorSelection;
 
+    private static NetworkTableEntry navxYaw;
+    private static NetworkTableEntry navxPitch;
+    private static NetworkTableEntry navxRoll;
+    private static NetworkTableEntry navxVelX;
+    private static NetworkTableEntry navxVelY;
+    private static NetworkTableEntry navxVelZ;
+    private static NetworkTableEntry navxAccelX;
+    private static NetworkTableEntry navxAccelY;
+    private static NetworkTableEntry navxAccelZ;
+    private static NetworkTableEntry navxDistX;
+    private static NetworkTableEntry navxDistY;
+    private static NetworkTableEntry navxDistZ;
+
     // Declare class variables
     private boolean runNetworkTables;
 
@@ -122,6 +135,18 @@ public class NetworkTableQuerier implements Runnable {
         zeroGyro = navxTable.getEntry("ZeroGyro");
 
         piGyroAngle = navxTable.getEntry("GyroAngle");
+        navxYaw = navxTable.getEntry("Orientation.0");
+        navxPitch = navxTable.getEntry("Orientation.1");
+        navxRoll = navxTable.getEntry("Orientation.2");
+        navxVelX = navxTable.getEntry("Velocity.0");
+        navxVelY = navxTable.getEntry("Velocity.1");
+        navxVelZ = navxTable.getEntry("Velocity.2");
+        navxAccelX = navxTable.getEntry("Acceleration.0");
+        navxAccelY = navxTable.getEntry("Acceleration.1");
+        navxAccelZ = navxTable.getEntry("Acceleration.2");
+        navxDistX = navxTable.getEntry("Position.0");
+        navxDistY = navxTable.getEntry("Position.1");
+        navxDistZ = navxTable.getEntry("Position.2");
 
         ballDistance0 = visionTable.getEntry("BallDistance0");
         ballAngle0 = visionTable.getEntry("BallAngle0");
@@ -134,6 +159,8 @@ public class NetworkTableQuerier implements Runnable {
         tapeOffset = visionTable.getEntry("TapeOffset");
         saveVideo = visionTable.getEntry("SaveVideo");
         colorSelection = visionTable.getEntry("BallColor");
+
+
 
         SmartDashboard.putBoolean("TargetLock", targetLock.getBoolean(false));
         SmartDashboard.putNumber("TapeOffset", tapeOffset.getDouble(0));
@@ -249,4 +276,8 @@ public class NetworkTableQuerier implements Runnable {
         colorSelection.setNumber(color);
     }
 
+    public synchronized double getNavXDouble(String entry)
+    {
+        return navxTable.getEntry(entry).getDouble(0);
+    }
 }

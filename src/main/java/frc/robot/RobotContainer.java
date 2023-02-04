@@ -34,11 +34,13 @@ public class RobotContainer {
   //===COMMANDS===//
 
   //Driving Commands
-  private final DriveWithJoysticks driveCommand = new DriveWithJoysticks(swervedrive, xbox);
+  private final DriveWithJoysticks driveCommand = new DriveWithJoysticks(swervedrive, xbox, table);
   private final ParkCommand parkCommand = new ParkCommand(swervedrive);
 
  //Auto Commands
- private final AutoDrive autoDriveCommand = new AutoDrive(swervedrive,0.4,600,315,0,5);
+ private final AutoDrive autoDriveCommand = new AutoDrive(swervedrive,0.4,144,0,0,20);
+ private final AutoBalance autoBalanceCommand = new AutoBalance(swervedrive,0.25,0,20,table);
+ private final AutoGroup1 autoGroup = new AutoGroup1(swervedrive);
 
   //KillAuto Command
   private final KillAutoCommand killAutoObject = new KillAutoCommand(); 
@@ -189,5 +191,7 @@ public class RobotContainer {
 
   public Command getAutonomousCommand() {
     return autoDriveCommand;
+    //return autoBalanceCommand;
+    //return autoGroup;
   }
 }

@@ -116,16 +116,37 @@ public class AutoDrive extends CommandBase {
 
 
     // Run the drive
-    drivetrain.autoDrive(leftStickX, leftStickY, targetRotation);
+    drivetrain.drive(leftStickX, leftStickY, targetRotation);
+
+    SmartDashboard.putNumber("Left Front Start", leftFrontEncoderStart);
+    SmartDashboard.putNumber("Right Front Start", rightFrontEncoderStart);
+    SmartDashboard.putNumber("Left Back Start", leftBackEncoderStart);
+    SmartDashboard.putNumber("Right Back Start", rightBackEncoderStart);
+
+    SmartDashboard.putNumber("Left Front Now", drivetrain.getLeftFrontDriveEncoder());
+    SmartDashboard.putNumber("Right Front Now", drivetrain.getRightFrontDriveEncoder());
+    SmartDashboard.putNumber("Left Back Now", drivetrain.getLeftBackDriveEncoder());
+    SmartDashboard.putNumber("Right Back Now", drivetrain.getRightBackDriveEncoder());    
 
     // calculate driven distance
     double totalRotationsLeftFront = Math.abs((drivetrain.getLeftFrontDriveEncoder() - leftFrontEncoderStart)); //does getEncoderPosition return rotations or another unit?
+    distanceTraveled = (kWheelDiameter * Math.PI * totalRotationsLeftFront) / (kTalonFXPPR * kDriveGearRatio);
+    SmartDashboard.putNumber("Left Front Rotations", distanceTraveled);
+
     double totalRotationsRightFront = Math.abs((drivetrain.getRightFrontDriveEncoder() - rightFrontEncoderStart));
+    distanceTraveled = (kWheelDiameter * Math.PI * totalRotationsRightFront) / (kTalonFXPPR * kDriveGearRatio);
+    SmartDashboard.putNumber("Right Front Rotations", distanceTraveled);
+
     double totalRotationsLeftBack = Math.abs((drivetrain.getLeftBackDriveEncoder() - leftBackEncoderStart));
+    distanceTraveled = (kWheelDiameter * Math.PI * totalRotationsLeftBack) / (kTalonFXPPR * kDriveGearRatio);
+    SmartDashboard.putNumber("Left Back Rotations", distanceTraveled);
+
     double totalRotationsRightBack = Math.abs((drivetrain.getRightBackDriveEncoder() - rightBackEncoderStart));
+    distanceTraveled = (kWheelDiameter * Math.PI * totalRotationsRightBack) / (kTalonFXPPR * kDriveGearRatio);
+    SmartDashboard.putNumber("Right Back Rotations", distanceTraveled);
+
     double averageRotations = ((totalRotationsLeftFront + totalRotationsRightFront + totalRotationsLeftBack + totalRotationsRightBack) / 4.0);
     distanceTraveled = (kWheelDiameter * Math.PI * averageRotations) / (kTalonFXPPR * kDriveGearRatio);
-    SmartDashboard.putNumber("Distance", distanceTraveled);
 
   }
 
@@ -135,6 +156,8 @@ public class AutoDrive extends CommandBase {
   public void end(boolean interrupted) {
 
     drivetrain.stopDrive();
+    distanceTraveled = 0.0;
+
   }
 
 
@@ -147,8 +170,10 @@ public class AutoDrive extends CommandBase {
 
     // Check distance against target
     SmartDashboard.putNumber("Distance error", Math.abs(distanceTraveled - targetDriveDistance));
+    SmartDashboard.putNumber("Distance Traveled", distanceTraveled);
+    SmartDashboard.putNumber("Target Distance", targetDriveDistance);
     if (distanceTraveled >= targetDriveDistance) {
-      thereYet = true;
+       thereYet = true;
     } else if (time - startTime >= stopTime) {
       thereYet = true;
     } else if (killAuto == true) {

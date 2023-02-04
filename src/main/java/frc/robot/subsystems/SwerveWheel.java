@@ -6,6 +6,7 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import edu.wpi.first.math.kinematics.*;
@@ -15,6 +16,8 @@ import frc.robot.ExtraClasses.*;
 import com.ctre.phoenix.sensors.CANCoder;
 import com.ctre.phoenix.sensors.CANCoder.*;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.math.filter.MedianFilter;
+import edu.wpi.first.math.controller.*;
 
 public class SwerveWheel extends SubsystemBase { 
 
@@ -24,8 +27,8 @@ public class SwerveWheel extends SubsystemBase {
   private CANCoder canCoder;
 
   /* Declare controller variables */
-  private PIDControl drivePIDController;
   private PIDControl anglePIDController;
+  private PIDController wpiPIDController;
   
   private double angleSpeedLimiter;
   private double kP_AngleController;
@@ -36,7 +39,10 @@ public class SwerveWheel extends SubsystemBase {
   /* Declare state variables */
   private double wheelSpeed;
   private double wheelAngle;
-  private double wheelID;
+  private int wheelID;
+
+  private MedianFilter angle_filter;
+ 
 
   /* Creates a new SwerveWheel. */
   public SwerveWheel(int driveMotorID, int angleMotorID, int CANCoderID) {
@@ -45,42 +51,23 @@ public class SwerveWheel extends SubsystemBase {
     wheelID = CANCoderID / 3;
 
     // Set controller constants
-    if(wheelID == 1)
-    {
-      angleSpeedLimiter = lfSwerveDriveAngleLimiter;
-      kP_AngleController = kP_lfSwerveDriveAngle;
-      kI_AngleController = kI_lfSwerveDriveAngle;
-      kD_AngleController = kD_lfSwerveDriveAngle;
-    } else if(wheelID == 2)
-    {
-      angleSpeedLimiter = rfSwerveDriveAngleLimiter;
-      kP_AngleController = kP_rfSwerveDriveAngle;
-      kI_AngleController = kI_rfSwerveDriveAngle;
-      kD_AngleController = kD_rfSwerveDriveAngle;
-    } else if(wheelID == 3)
-    {
-      angleSpeedLimiter = rbSwerveDriveAngleLimiter;
-      kP_AngleController = kP_rbSwerveDriveAngle;
-      kI_AngleController = kI_rbSwerveDriveAngle;
-      kD_AngleController = kD_rbSwerveDriveAngle;
-    } else if(wheelID == 4)
-    {
-      angleSpeedLimiter = lbSwerveDriveAngleLimiter;
-      kP_AngleController = kP_lbSwerveDriveAngle;
-      kI_AngleController = kI_lbSwerveDriveAngle;
-      kD_AngleController = kD_lbSwerveDriveAngle;
-    }
-
+    angleSpeedLimiter = angleLimiters[wheelID - 1];
+    kP_AngleController = anglePIDkPs[wheelID - 1];
+    kI_AngleController = anglePIDkIs[wheelID - 1];
+    kD_AngleController = anglePIDkDs[wheelID - 1];
     // Initialize the swerve motors
     InitSwerveMotors(driveMotorID, angleMotorID, CANCoderID);
 
-    // Initialize PID controllers
-    drivePIDController = new PIDControl(kP_SwerveDriveSpeed, kI_SwerveDriveSpeed, kD_SwerveDriveSpeed);
+    // Initialize PID controller
     anglePIDController = new PIDControl(kP_AngleController, kI_AngleController, kD_AngleController);
+    wpiPIDController = new PIDController(kP_AngleController, kI_AngleController, kD_AngleController);
+    wpiPIDController.setTolerance(1.5,5);
 
     SmartDashboard.putNumber("Wheel "+ wheelID + " kP", kP_AngleController);
     SmartDashboard.putNumber("Wheel "+ wheelID + " kI", kI_AngleController);
     SmartDashboard.putNumber("Wheel "+ wheelID + " kD", kD_AngleController);
+
+    angle_filter = new MedianFilter(FILTER_WINDOW_SIZE);
 
   }
 
@@ -96,10 +83,17 @@ public class SwerveWheel extends SubsystemBase {
     swerveDriveMotor.setNeutralMode(NeutralMode.Brake);
     swerveAngleMotor.setNeutralMode(NeutralMode.Brake);
 
+    //Invert angle motor so that positive input moves the wheel clockwise
+    swerveAngleMotor.setInverted(kMotorInvert);
+
     // Set motor encoders
     swerveDriveMotor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor, kPIDLoopIdxDrive, kTimeoutMsDrive);
     swerveAngleMotor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor, kPIDLoopIdxDrive, kTimeoutMsDrive);
-  
+    // swerveDriveMotor.config_kP(0, drivePIDkPs[wheelID - 1], kTimeoutMsDrive);
+    // swerveDriveMotor.config_kI(0, drivePIDkIs[wheelID - 1], kTimeoutMsDrive);
+    // swerveDriveMotor.config_kD(0, drivePIDkDs[wheelID - 1], kTimeoutMsDrive);
+    swerveDriveMotor.config_kF(0, drivePIDkFs[wheelID - 1], kTimeoutMsDrive);
+
   }
  
   /* Periodically set wheel speed and angle */
@@ -113,6 +107,9 @@ public class SwerveWheel extends SubsystemBase {
 
     //Normalize target to have a max value of 1
     double target = angle / 360.0;
+    if(target == 1.0){
+      target = 0.0;
+    }
 
     //Normalize encoder to have a max value of 1 and correct for discontinuity at 360 degrees (should be 0)
     double encoderAngle = canCoder.getAbsolutePosition() / 360;
@@ -128,14 +125,18 @@ public class SwerveWheel extends SubsystemBase {
     {
       double diff = 1 - Math.abs(target - encoderAngle);
       target = target + diff;
+      if(target >= 1.0){
+        target = target - 1.0;
+      }
       encoderAngle = encoderAngle + diff;
-      if (encoderAngle == 1.0)
+      if (encoderAngle >= 1.0)
       {
-        encoderAngle = 0.0;
+        encoderAngle = encoderAngle - 1.0;
       }
     }
 
-    double output = anglePIDController.run(encoderAngle,target);
+    //double output = anglePIDController.run(encoderAngle,target);
+    double output = wpiPIDController.calculate(encoderAngle,target);
     SmartDashboard.putNumber("Wheel " + wheelID + " PID output", output);
     SmartDashboard.putNumber("Wheel " + wheelID + " Target", target);
     SmartDashboard.putNumber("Wheel " + wheelID + " Corrected Encoder", encoderAngle);
@@ -143,40 +144,51 @@ public class SwerveWheel extends SubsystemBase {
     double angleSpeed = output * angleSpeedLimiter;
     
     //Capping angleSpeed to max that the motor can take, from -1 to 1
-    // if(angleSpeed > 1)
-    // {
-    //   angleSpeed = 1;
-    // } else if(angleSpeed < -1)
-    // {
-    //   angleSpeed = -1;
-    // }
+    if(angleSpeed > 1)
+    {
+      angleSpeed = 1;
+    } else if(angleSpeed < -1)
+    {
+      angleSpeed = -1;
+    }
 
     //Before angle speed
     SmartDashboard.putNumber("Wheel " + wheelID + " before angle", angleSpeed);
 
     //Get the sign of the angleSpeed
-    // double sign = Math.signum(angleSpeed);
+    double sign = Math.signum(angleSpeed);
 
     //Enforce minimum angle speed, 0.0028 is one degree
-    if(Math.abs(target - encoderAngle) > 0.009)
-    {
-      // if(angleSpeed < 0.06)
-      // {
-      //   angleSpeed = 0.06 * sign;
-      // }
-    } 
-    else 
-    {
-      angleSpeed = 0;
-    }
+    // double angleDiff = target - encoderAngle;
+    // double angleError = Math.abs(angleDiff);
+    // if(angleError < 0.01)
+    // {
+    //   if (angleError > 0.001)
+    //   {
+    //     angleSpeed = 0.06 * sign;
+    //   }
+    //   else
+    //   {
+    //     angleSpeed = 0.0;
+    //   }
+    // } 
+    // else 
+    // {
+    //   angleSpeed = 0;
+    // }
 
     //putting angleSpeed and error into smart dashboard
     SmartDashboard.putNumber("Wheel " + wheelID + " after angle", angleSpeed);
     SmartDashboard.putNumber("Wheel " + wheelID + " error", encoderAngle - target);
     
+    //Calculate wheel velocity
+    double wheelVelocity = 23712 * (speed * swerveDriveSpeedLimiter) - 894.29;
+    SmartDashboard.putNumber("Wheel " + wheelID + " V target", wheelVelocity);
+
     //Set motor speeds
     swerveAngleMotor.set(angleSpeed);
-    //swerveDriveMotor.set(speed * swerveDriveSpeedLimiter);
+    swerveDriveMotor.set(ControlMode.Velocity, wheelVelocity);
+    SmartDashboard.putNumber("Wheel " + wheelID + " V actual", swerveDriveMotor.getSelectedSensorVelocity());
     
   }
 
@@ -192,6 +204,12 @@ public class SwerveWheel extends SubsystemBase {
   public void zeroEncoder(){
 
     swerveDriveMotor.setSelectedSensorPosition(0);
+  }
+
+  public void stop(){
+
+    swerveDriveMotor.set(0);
+    swerveAngleMotor.set(0);
   }
 
   

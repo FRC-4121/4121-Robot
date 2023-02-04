@@ -10,6 +10,7 @@ import static frc.robot.Constants.SwerveDriveConstants.*;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import static frc.robot.Constants.*;
+import frc.robot.ExtraClasses.NetworkTableQuerier;
 
 
 
@@ -18,11 +19,13 @@ public class DriveWithJoysticks extends CommandBase {
   private SwerveDrive swervedrive;
   private XboxController Xbox;
 
+  private NetworkTableQuerier ntables;
 
-  public DriveWithJoysticks(SwerveDrive drive, XboxController xbox) {
+  public DriveWithJoysticks(SwerveDrive drive, XboxController xbox, NetworkTableQuerier table) {
 
     swervedrive = drive;
     Xbox = xbox;
+    ntables = table;
 
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(swervedrive);
@@ -39,6 +42,10 @@ public class DriveWithJoysticks extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+
+    // Navx Values
+    SmartDashboard.putNumber("Yaw", ntables.getNavXDouble("Orientation.0"));
+    SmartDashboard.putNumber("Pitch", ntables.getNavXDouble("Orientation.1"));
 
     // Drive using xbox joystick values
     // kSpeedCorrection is to slow down the right motors because left motors were

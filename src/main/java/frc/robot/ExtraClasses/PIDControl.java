@@ -38,7 +38,7 @@ public class PIDControl {
 
         correctionFactor = 0;
 
-        targetError = sensorReading - targetValue;
+        targetError = targetValue - sensorReading;
 
         //Calculate new correction
         errorSum += targetError * timeStep;
