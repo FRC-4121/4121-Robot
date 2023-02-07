@@ -32,8 +32,14 @@ public class Wrist extends SubsystemBase {
     wrist.set(speed);
   }
 
+  //Get the current encoder position of the encoder
   public double getPosition(){
 
     return wrist.getSelectedSensorPosition();
+  }
+
+  //zero out the encoder position
+  public void zeroPosition(){
+    wrist.setSelectedSensorPosition(0.0);
   }
 }

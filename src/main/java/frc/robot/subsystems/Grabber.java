@@ -7,13 +7,14 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import static frc.robot.Constants.*;
+import frc.robot.subsystems.Pneumatics;
 
 public class Grabber extends SubsystemBase {
   
   //I'm not sure which motor controller will end up being used for the wrist, it is a different type of motor
   private WPI_TalonFX wrist = new WPI_TalonFX(WristID);
 
-  //The grabber might need pneumatics or motors, not sure which
+  private Pneumatics pneumatic = new Pneumatics();
   
   /** Creates a new Grabber. */
   public Grabber() {}
