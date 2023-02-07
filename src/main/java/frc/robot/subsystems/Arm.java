@@ -11,7 +11,8 @@ import static frc.robot.Constants.*;
 public class Arm extends SubsystemBase {
   
   private WPI_TalonFX extend = new WPI_TalonFX(Extend);
-  private WPI_TalonFX rotate = new WPI_TalonFX(Rotate);
+  private WPI_TalonFX rotate1 = new WPI_TalonFX(Rotate);
+  private WPI_TalonFX rotate2 = new WPI_TalonFX(Rotate);
 
   /** Creates a new Arm. */
   public Arm() {
@@ -32,8 +33,10 @@ public class Arm extends SubsystemBase {
     extend.set(-speed); //Need to test to see if we have to invert this
   }
 
+  //rotate the arm back and forth, the two motors need to run in inverse directions
   public void rotateArm(double speed){
 
-    rotate.set(speed);
+    rotate1.set(speed);
+    rotate2.set(-speed);
   }
 }

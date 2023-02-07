@@ -8,11 +8,14 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import static frc.robot.Constants.*;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.revrobotics.CANSparkMax;
+import frc.robot.subsystems.Pneumatics;
 
 public class OtherGrabber extends SubsystemBase {
   
   private CANSparkMax intake = new CANSparkMax(Intake,CANSparkMax.MotorType.kBrushless);
-  
+
+  private Pneumatics pneumatic = new Pneumatics();
+
   /** Creates a new OtherGrabber. */
   public OtherGrabber() {}
 
