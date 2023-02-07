@@ -30,4 +30,19 @@ public class Grabber extends SubsystemBase {
     wrist.set(speed);
   
   }
+
+  //Clamp down on the game piece
+  public void grap(){
+
+    pneumatic.extend();//Will require testing to see if this needs to extend or retract
+
+  }
+
+    //Let go of the game piece
+    public void letGo(){
+
+      pneumatic.retract();//Will require testing to see if this needs to extend or retract
+  
+    }
+  
 }

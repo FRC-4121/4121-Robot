@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import static frc.robot.Constants.*;
 
 
 public class Pneumatics extends SubsystemBase {
@@ -16,8 +17,8 @@ public class Pneumatics extends SubsystemBase {
   //Channel needs to be found, should be a constant
   private Compressor compressor = new Compressor(0,PneumaticsModuleType.CTREPCM);
 
-  //Module and channels need to be found, should be constants
-  private DoubleSolenoid shifter = new DoubleSolenoid(0, PneumaticsModuleType.CTREPCM, 0, 7);
+  //Module and channels need to be found and set in constants
+  private DoubleSolenoid shifter = new DoubleSolenoid(0, PneumaticsModuleType.CTREPCM, ForwardChannelID, ReverseChannelID);
   
   /** Creates a new Pneumatics. */
   public Pneumatics() {}

@@ -18,8 +18,6 @@ package frc.robot;
 
 public final class Constants {
 
-    public static final int plan = 1; // 1-4; 1 being leftmost starting position and 4 being right most on the field
-
     // Talon SRX and FX IDs (must be unique, may range from 0+)
     // Drivetrain motor IDs
     public static final int LEFT_MASTER_F = 3;
@@ -36,6 +34,10 @@ public final class Constants {
 
     // Grabber ID's
     public static final int Intake = 18;
+
+    //Pneumatics
+    public static final int ForwardChannelID = 0;
+    public static final int ReverseChannelID = 7;
 
     // Drive control port IDs
     public static final int XBOX_PORT = 0;
