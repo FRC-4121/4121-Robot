@@ -12,6 +12,7 @@ import frc.robot.subsystems.Pneumatics;
 
 public class OtherGrabber extends SubsystemBase {
   
+  //Motor is a 550, will probably use this
   private CANSparkMax intake = new CANSparkMax(Intake,CANSparkMax.MotorType.kBrushless);
 
   private Pneumatics pneumatic = new Pneumatics();
