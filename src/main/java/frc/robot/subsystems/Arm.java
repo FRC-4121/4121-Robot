@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import static frc.robot.Constants.*;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 
 public class Arm extends SubsystemBase {
   
@@ -16,6 +17,8 @@ public class Arm extends SubsystemBase {
 
   /** Creates a new Arm. */
   public Arm() {
+
+    extend.setNeutralMode(NeutralMode.Brake);
   }
 
   @Override
@@ -31,6 +34,11 @@ public class Arm extends SubsystemBase {
   public void retractArm(double speed){
 
     extend.set(-speed); //Need to test to see if we have to invert this
+  }
+
+  public void stopArm(){
+
+    extend.set(0);
   }
 
   //rotate the arm back and forth, the two motors need to run in inverse directions

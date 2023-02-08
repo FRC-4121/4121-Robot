@@ -22,6 +22,7 @@ public class RobotContainer {
   private final XboxController xbox = new XboxController(0);
   private final XboxController xboxClimber = new XboxController(1);
   private final Joystick launchpad = new Joystick(2);
+  private final Joystick testbed = new Joystick(3);
   
 
   //Subsystems
@@ -29,6 +30,8 @@ public class RobotContainer {
 
   private final NetworkTableQuerier table = new NetworkTableQuerier();
 
+  private final Arm arm = new Arm();
+  private final Wrist wrist = new Wrist();
 
   //===COMMANDS===//
 
@@ -43,6 +46,14 @@ public class RobotContainer {
 
   //KillAuto Command
   private final KillAutoCommand killAutoObject = new KillAutoCommand(); 
+
+  //Arm Commands
+  private final ExtendArm extendArmCommand = new ExtendArm(arm);
+  private final RetractArm retractArmCommand = new RetractArm(arm);
+
+  //Wrist Commands
+  private final RunWristForward forwardWristCommand = new RunWristForward(wrist);
+  private final RunWristBack backwardWristCommand = new RunWristBack(wrist);
 
   //===BUTTONS===// //They're being initialized in RobotContainer
 
@@ -73,8 +84,11 @@ public class RobotContainer {
   private static JoystickButton parkButton;
   //private final JoystickButton autoClimbButton;
 
-  
-
+  //testbet buttons
+  private final JoystickButton extendArmButton;
+  private final JoystickButton retractArmButton;
+  private final JoystickButton wristForwardButton;
+  private final JoystickButton wristBackwardButton;
 
   //===CONSTRUCTOR===//
   public RobotContainer() { 
@@ -112,6 +126,12 @@ public class RobotContainer {
     raiseIntakeButton = new JoystickButton(launchpad, LaunchPadSwitch6top); 
     parkButton = new JoystickButton(launchpad,LaunchPadSwitch3);
 
+    //testbed buttons
+    extendArmButton = new JoystickButton(testbed,3); 
+    retractArmButton = new JoystickButton(testbed,4); 
+    wristForwardButton = new JoystickButton(testbed,5);
+    wristBackwardButton = new JoystickButton(testbed,6);
+
     //Configure default commands
     configureDefaultCommands();
 
@@ -142,6 +162,11 @@ public class RobotContainer {
     killAutoButton.whenPressed( killAutoObject);
     killAutoButton.whenReleased( killAutoObject);
 
+    //testbed
+    extendArmButton.whileHeld(extendArmCommand);
+    retractArmButton.whileHeld(retractArmCommand);
+    wristForwardButton.whileHeld(forwardWristCommand);
+    wristBackwardButton.whileHeld(backwardWristCommand);
   }
 
    
