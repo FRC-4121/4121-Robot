@@ -78,7 +78,7 @@ public class RobotContainer {
   private final JoystickButton AutoPos3;
   private static JoystickButton redButton;
   private static JoystickButton blueButton;
-  private static JoystickButton shooterControlButton;
+  private static JoystickButton armControlButton;
   private static JoystickButton lowerIntakeButton;
   private static JoystickButton raiseIntakeButton;
   private static JoystickButton parkButton;
@@ -121,7 +121,7 @@ public class RobotContainer {
     AutoPos3 = new JoystickButton(launchpad,LaunchPadDial3);
     redButton = new JoystickButton(launchpad, LaunchPadSwitch5top);
     blueButton = new JoystickButton(launchpad, LaunchPadSwitch5bottom);
-    shooterControlButton = new JoystickButton(launchpad, LaunchPadSwitch7);
+    armControlButton = new JoystickButton(launchpad, LaunchPadSwitch7);
     lowerIntakeButton = new JoystickButton(launchpad, LaunchPadSwitch6bottom);
     raiseIntakeButton = new JoystickButton(launchpad, LaunchPadSwitch6top); 
     parkButton = new JoystickButton(launchpad,LaunchPadSwitch3);
@@ -154,6 +154,9 @@ public class RobotContainer {
 
     //Drivetrain -> drive with xbox joysticks
     swervedrive.setDefaultCommand(driveCommand);
+
+    //Arm's default command is the extend control
+    //arm.setDefaultCommand();
   }
   
   private void configureButtonBindings() {
@@ -186,14 +189,14 @@ public class RobotContainer {
     }
   }
 
-  public void getShooterSelection()
+  public void getArmSelection()
   {
 
-    if(shooterControlButton.getAsBoolean() == true)
+    if(armControlButton.getAsBoolean() == true)
     {
-      runAutoSpeedControl = false;
+      runAutoArmExtend = false;
     } else {
-      runAutoSpeedControl = true;
+      runAutoArmExtend = true;
     }
 
   }

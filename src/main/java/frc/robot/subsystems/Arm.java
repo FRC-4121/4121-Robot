@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import static frc.robot.Constants.*;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 
 public class Arm extends SubsystemBase {
   
@@ -19,6 +20,9 @@ public class Arm extends SubsystemBase {
   public Arm() {
 
     extend.setNeutralMode(NeutralMode.Brake);
+
+    //configure encoders
+    extend.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
   }
 
   @Override
@@ -31,11 +35,6 @@ public class Arm extends SubsystemBase {
     extend.set(speed); //Need to test to see if we have to invert this
   }
 
-  public void retractArm(double speed){
-
-    extend.set(-speed); //Need to test to see if we have to invert this
-  }
-
   public void stopArm(){
 
     extend.set(0);
@@ -46,5 +45,15 @@ public class Arm extends SubsystemBase {
 
     rotate1.set(speed);
     rotate2.set(-speed);
+  }
+
+  public double getExtendEncoder(){
+
+    return extend.getSelectedSensorPosition();
+  }
+
+  public void zeroExtendEncoder(){
+
+    extend.setSelectedSensorPosition(0);
   }
 }

@@ -127,6 +127,13 @@ public final class Constants {
     public static double kHighGearMultiplier = 0.70;
     public static double currentGear = kHighGearMultiplier;
 
+    //Arm
+    public static Boolean runAutoArmExtend = false;
+    public static final double autoArmkP = 0.01;
+    public static final double autoArmkI = 0.01;
+    public static final double autoArmkD = 0.01;
+
+
     // Swerve drive constants
     public static final double DRIVETRAIN_TRACKWIDTH_METERS = 0.546;
     public static final double DRIVETRAIN_WHEELBASE_METERS = 0.546;

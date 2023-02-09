@@ -77,8 +77,8 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
 
-    // Turn off auto shooter speed control
-    runAutoSpeedControl = false;
+    // Turn off auto arm extend control
+    runAutoArmExtend = false;
 
     // Get the autonomous command
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
@@ -113,8 +113,8 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
 
-    //get Shooter Selection
-    m_robotContainer.getShooterSelection();
+    //get Arm Selection
+    m_robotContainer.getArmSelection();
 
   }
 
