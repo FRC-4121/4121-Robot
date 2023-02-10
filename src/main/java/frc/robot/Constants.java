@@ -129,6 +129,7 @@ public final class Constants {
 
     //Arm
     public static Boolean runAutoArmExtend = false;
+    public static double armTargetEncoder = 0.0; //This is 0 to start with because we don't want the arm to move.
     public static final double autoArmkP = 0.01;
     public static final double autoArmkI = 0.01;
     public static final double autoArmkD = 0.01;

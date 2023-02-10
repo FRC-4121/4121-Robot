@@ -6,6 +6,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Arm;
+import static frc.robot.Constants.*;
 
 public class RetractArm extends CommandBase {
   
@@ -34,6 +35,9 @@ public class RetractArm extends CommandBase {
   public void end(boolean interrupted) {
 
     m_arm.stopArm();
+
+    //When we stop, we want it to hold its position, so the target is the latest value
+    armTargetEncoder = m_arm.getExtendEncoder();
   }
 
   // Returns true when the command should end.

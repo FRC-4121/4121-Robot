@@ -15,7 +15,9 @@ public class ArmExtendControl extends CommandBase {
   Arm arm;
   PIDController pid;
   double currentPosition;
-  double targetPosition;
+  double error;
+  double correctedPosition;
+  double speedCorrection;
   
   /** Creates a new ArmExtendControl. */
   public ArmExtendControl(Arm army) {
@@ -32,6 +34,8 @@ public class ArmExtendControl extends CommandBase {
     pid = new PIDController(autoArmkP,autoArmkI,autoArmkD);
 
     arm.zeroExtendEncoder();
+
+    speedCorrection = 1;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -40,9 +44,24 @@ public class ArmExtendControl extends CommandBase {
  
     if(runAutoArmExtend){
 
+      //Get current position
       currentPosition = arm.getExtendEncoder();
-
       
+      //Get error from where we are and where we want to be
+      error = armTargetEncoder - currentPosition;
+
+      //Run PID to get corrected position
+      correctedPosition = pid.calculate(currentPosition,armTargetEncoder);
+       
+      //speedCorrection needs to be determined based off of encoder values 
+
+      //Encoder threshold can be found with testing
+      //if(error < some threshold){
+      // speedCorrection = 0;
+      //}
+
+
+      //arm.extendArm(0.5 * speedCorrection);
     }
   }
 
