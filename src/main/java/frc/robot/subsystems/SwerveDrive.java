@@ -126,10 +126,10 @@ public class SwerveDrive extends SubsystemBase {
     } else {
 
       if (!isParked) {
-        //leftFront.drive(frontLeftSpeed, frontLeftAngle);
+        leftFront.drive(frontLeftSpeed, frontLeftAngle);
         rightFront.drive(frontRightSpeed, frontRightAngle);
-        //leftBack.drive(backLeftSpeed, backLeftAngle);
-        //rightBack.drive(backRightSpeed, backRightAngle);
+        leftBack.drive(backLeftSpeed, backLeftAngle);
+        rightBack.drive(backRightSpeed, backRightAngle);
       }
 
     }

@@ -31,18 +31,18 @@ public class Grabber extends SubsystemBase {
   
   }
 
-  //Clamp down on the game piece
-  public void grap(){
+  // Clamp down on the game piece
+  public void grab() {
 
-    pneumatic.extend();//Will require testing to see if this needs to extend or retract
+    pneumatic.extend();// Will require testing to see if this needs to extend or retract
 
   }
 
-    //Let go of the game piece
-    public void letGo(){
+  // Let go of the game piece
+  public void letGo() {
 
-      pneumatic.retract();//Will require testing to see if this needs to extend or retract
-  
-    }
+    pneumatic.retract();// Will require testing to see if this needs to extend or retract
+
+  }
   
 }

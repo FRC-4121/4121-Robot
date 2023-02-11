@@ -29,4 +29,23 @@ public class OtherGrabber extends SubsystemBase {
 
     intake.set(speed);
   }
+
+  public void stopIntake(){
+
+    intake.set(0);
+  }
+
+   // Clamp down on the game piece
+   public void grab() {
+
+    pneumatic.extend();// Will require testing to see if this needs to extend or retract
+
+  }
+
+  // Let go of the game piece
+  public void letGo() {
+
+    pneumatic.retract();// Will require testing to see if this needs to extend or retract
+
+  }
 }

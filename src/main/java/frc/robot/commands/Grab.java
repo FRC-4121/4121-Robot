@@ -5,37 +5,43 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.Wrist;
+import frc.robot.subsystems.OtherGrabber;
+import static frc.robot.Constants.*;
 
-public class RunWristForward extends CommandBase {
+public class Grab extends CommandBase {
  
-  private Wrist m_wrist;
+ OtherGrabber grab;
  
-  /** Creates a new RunWristForward. */
-  public RunWristForward(Wrist wrist) {
+  /** Creates a new Grab. */
+  public Grab(OtherGrabber grabby) {
     
-    m_wrist = wrist;
+    grab = grabby;
     
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
 
-    m_wrist.move(0.5); // will need testing to confirm if value needs to be positive or negative
+    if(Grabbed){
+      grab.letGo();
+      Grabbed = false;
+    } else{
+      grab.grab();
+      Grabbed = true;
+    }
+    
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
-
-    m_wrist.move(0);
-  }
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override

@@ -32,6 +32,7 @@ public class RobotContainer {
 
   private final Arm arm = new Arm();
   private final Wrist wrist = new Wrist();
+  private final OtherGrabber grabber = new OtherGrabber();
 
   //===COMMANDS===//
 
@@ -54,6 +55,11 @@ public class RobotContainer {
   //Wrist Commands
   private final RunWristForward forwardWristCommand = new RunWristForward(wrist);
   private final RunWristBack backwardWristCommand = new RunWristBack(wrist);
+  
+  //Grabber Commands
+  private final RunGrabberWheelForward grabWheelForwardCommand = new RunGrabberWheelForward(grabber);
+  private final RunGrabberWheelBackward grabWheelBackwardCommand = new RunGrabberWheelBackward(grabber);
+  private final Grab grab = new Grab(grabber);
 
   //===BUTTONS===// //They're being initialized in RobotContainer
 
@@ -89,6 +95,9 @@ public class RobotContainer {
   private final JoystickButton retractArmButton;
   private final JoystickButton wristForwardButton;
   private final JoystickButton wristBackwardButton;
+  private final JoystickButton grabberBackwardButton;
+  private final JoystickButton grabberForwardButton;
+  private final JoystickButton grabButton;
 
   //===CONSTRUCTOR===//
   public RobotContainer() { 
@@ -127,10 +136,13 @@ public class RobotContainer {
     parkButton = new JoystickButton(launchpad,LaunchPadSwitch3);
 
     //testbed buttons
-    extendArmButton = new JoystickButton(testbed,3); 
-    retractArmButton = new JoystickButton(testbed,4); 
+    extendArmButton = new JoystickButton(testbed,7); 
+    retractArmButton = new JoystickButton(testbed,8); 
     wristForwardButton = new JoystickButton(testbed,5);
     wristBackwardButton = new JoystickButton(testbed,6);
+    grabberForwardButton = new JoystickButton(testbed,3);
+    grabberBackwardButton = new JoystickButton(testbed,4);
+    grabButton = new JoystickButton(testbed,1);
 
     //Configure default commands
     configureDefaultCommands();
@@ -170,6 +182,9 @@ public class RobotContainer {
     retractArmButton.whileHeld(retractArmCommand);
     wristForwardButton.whileHeld(forwardWristCommand);
     wristBackwardButton.whileHeld(backwardWristCommand);
+    grabberForwardButton.whileHeld(grabWheelForwardCommand);
+    grabberBackwardButton.whileHeld(grabWheelBackwardCommand);
+    grabButton.whileHeld(grab);
   }
 
    

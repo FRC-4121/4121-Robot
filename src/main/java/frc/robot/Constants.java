@@ -30,14 +30,17 @@ public final class Constants {
     public static final int Rotate = 16; // Need to find
 
     // Wrist ID's
-    public static final int WristID = 17; // Need to find
+    public static final int WristID = 9; // Need to find
 
     // Grabber ID's
-    public static final int Intake = 18;
+    public static final int Intake = 21;
 
     //Pneumatics
     public static final int ForwardChannelID = 0;
     public static final int ReverseChannelID = 7;
+
+    //Grabber
+    public static Boolean Grabbed = false;
 
     // Drive control port IDs
     public static final int XBOX_PORT = 0;
@@ -162,8 +165,8 @@ public final class Constants {
 
     public static final double kJoystickSpeedCorr = 1;
 
-    public static final double lengthFromAxle = 1.0;
-    public static final double widthFromAxle = 1.0;
+    public static final double lengthFromAxle = 23.5;
+    public static final double widthFromAxle = 19.5;
 
     public static final double MaxVoltsMK4 = 12.0; // max voltage of swerve module
 

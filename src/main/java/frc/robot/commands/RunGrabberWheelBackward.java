@@ -4,18 +4,20 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.Wrist;
+import javax.print.attribute.standard.MediaSize.Other;
 
-public class RunWristForward extends CommandBase {
+import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.subsystems.OtherGrabber;
+
+public class RunGrabberWheelBackward extends CommandBase {
  
-  private Wrist m_wrist;
- 
-  /** Creates a new RunWristForward. */
-  public RunWristForward(Wrist wrist) {
-    
-    m_wrist = wrist;
-    
+  OtherGrabber grab;
+
+  /** Creates a new RunGrabberWheelForward. */
+  public RunGrabberWheelBackward(OtherGrabber grabby) {
+  
+   grab = grabby;
+  
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
@@ -27,14 +29,14 @@ public class RunWristForward extends CommandBase {
   @Override
   public void execute() {
 
-    m_wrist.move(0.5); // will need testing to confirm if value needs to be positive or negative
+    grab.runIntake(-0.6);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
 
-    m_wrist.move(0);
+    grab.stopIntake();
   }
 
   // Returns true when the command should end.
