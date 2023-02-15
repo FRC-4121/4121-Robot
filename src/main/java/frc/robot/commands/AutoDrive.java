@@ -11,6 +11,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.SwerveDrive;
+import edu.wpi.first.math.controller.*;
+import frc.robot.ExtraClasses.NetworkTableQuerier;
+
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
@@ -38,23 +41,25 @@ public class AutoDrive extends CommandBase {
   private double leftBackEncoderStart;
   private double rightBackEncoderStart;
 
+  private NetworkTableQuerier ntables;
+
   private double totalRotationsLeft = 0;
   private double totalRotationsRight = 0;
 
-
   private Timer timer = new Timer();
-  private PIDControl pidDriveAngle;
-  private PIDControl pidDriveDistance; 
+  private PIDController pidDriveAngle;
+  private PIDController pidDriveDistance; 
 
   //distance is in inches
 
-  public AutoDrive(SwerveDrive drive, double speed, double dis, double ang, double rot, double time) {
+  public AutoDrive(SwerveDrive drive, double speed, double dis, double ang, double rot, double time, NetworkTableQuerier table) {
    
     targetSpeed = speed;
     targetDriveDistance = dis;
     targetAngle = ang;
     targetRotation = rot;
     stopTime = time;
+    ntables = table;
     drivetrain = drive;
 
     addRequirements(drivetrain);
@@ -74,6 +79,8 @@ public class AutoDrive extends CommandBase {
     //drivetrain.zeroGyro();
     drivetrain.zeroEncoders();
 
+    ntables.zeroPiGyro();
+
     leftFrontEncoderStart = drivetrain.getLeftFrontDriveEncoder();
     rightFrontEncoderStart = drivetrain.getRightFrontDriveEncoder();
     leftBackEncoderStart = drivetrain.getLeftBackDriveEncoder();
@@ -83,8 +90,8 @@ public class AutoDrive extends CommandBase {
     speedCorrection = 1;
 
     //The constants for these need to be figured out
-    pidDriveAngle = new PIDControl(kP_DriveAngle, kI_DriveAngle, kD_DriveAngle);
-    pidDriveDistance = new PIDControl(kP_Straight, kI_Straight, kD_Straight);
+    pidDriveAngle = new PIDController(kP_DriveAngle, kI_DriveAngle, kD_DriveAngle);
+    pidDriveDistance = new PIDController(kP_Straight, kI_Straight, kD_Straight);
 
   }
 
@@ -94,7 +101,7 @@ public class AutoDrive extends CommandBase {
   public void execute() {
 
     // Calculate angle correction based on gyro reading
-    currentGyroAngle = drivetrain.getGyroAngle();
+    currentGyroAngle = ntables.getPiGyro();
 
     SmartDashboard.putNumber("DriveSpeed", targetSpeed);
     // Enforce minimum speed

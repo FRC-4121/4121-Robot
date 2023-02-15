@@ -27,7 +27,7 @@ public class RunWristForward extends CommandBase {
   @Override
   public void execute() {
 
-    m_wrist.move(0.5); // will need testing to confirm if value needs to be positive or negative
+    m_wrist.move(0.75); // will need testing to confirm if value needs to be positive or negative
   }
 
   // Called once the command ends or is interrupted.

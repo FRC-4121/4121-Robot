@@ -41,7 +41,7 @@ public class RobotContainer {
   private final ParkCommand parkCommand = new ParkCommand(swervedrive);
 
  //Auto Commands
- private final AutoDrive autoDriveCommand = new AutoDrive(swervedrive,0.4,144,0,0,20);
+ private final AutoDrive autoDriveCommand = new AutoDrive(swervedrive,0.4,60,0,0,20,table);
  private final AutoBalance autoBalanceCommand = new AutoBalance(swervedrive,0.25,0,20,table);
  private final AutoGroup1 autoGroup = new AutoGroup1(swervedrive);
 
@@ -60,6 +60,7 @@ public class RobotContainer {
   private final RunGrabberWheelForward grabWheelForwardCommand = new RunGrabberWheelForward(grabber);
   private final RunGrabberWheelBackward grabWheelBackwardCommand = new RunGrabberWheelBackward(grabber);
   private final Grab grab = new Grab(grabber);
+  private final LetGo letGo = new LetGo(grabber);
 
   //===BUTTONS===// //They're being initialized in RobotContainer
 
@@ -98,6 +99,7 @@ public class RobotContainer {
   private final JoystickButton grabberBackwardButton;
   private final JoystickButton grabberForwardButton;
   private final JoystickButton grabButton;
+  private final JoystickButton letGoButton;
 
   //===CONSTRUCTOR===//
   public RobotContainer() { 
@@ -143,6 +145,7 @@ public class RobotContainer {
     grabberForwardButton = new JoystickButton(testbed,3);
     grabberBackwardButton = new JoystickButton(testbed,4);
     grabButton = new JoystickButton(testbed,1);
+    letGoButton = new JoystickButton(testbed,2);
 
     //Configure default commands
     configureDefaultCommands();
@@ -185,6 +188,7 @@ public class RobotContainer {
     grabberForwardButton.whileHeld(grabWheelForwardCommand);
     grabberBackwardButton.whileHeld(grabWheelBackwardCommand);
     grabButton.whileHeld(grab);
+    letGoButton.whileHeld(letGo);
   }
 
    

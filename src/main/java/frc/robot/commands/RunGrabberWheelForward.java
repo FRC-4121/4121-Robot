@@ -29,7 +29,7 @@ public class RunGrabberWheelForward extends CommandBase {
   @Override
   public void execute() {
 
-    grab.runIntake(0.6);
+    grab.runIntake(0.4);
   }
 
   // Called once the command ends or is interrupted.

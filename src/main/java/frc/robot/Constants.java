@@ -90,7 +90,7 @@ public final class Constants {
     public static final int kPIDLoopIdxDrive = 0;
     public static final int kTimeoutMsDrive = 20;
     public static final double kTalonFXPPR = 2048;
-    public static final double kWheelDiameter = 3.3;
+    public static final double kWheelDiameter = 3.75;
     public static final double kLowGearSpeedCap = 0.8;// In case full speed draws excessive power, these are an
                                                       // emergency measure
     public static final double kHighGearSpeedCap = 1.0;
@@ -181,5 +181,9 @@ public final class Constants {
     public static final double anglePIDkIs[] = { 2.25, 2.25, 2.25, 2.25 };
     public static final double anglePIDkDs[] = { 0.04, 0.04, 0.04, 0.04 };
     public static final double angleLimiters[] = { 1.0, 1.0, 1.0, 1.0 };
+
+    public static final double gyroCorrectionkP = 0.0;
+    public static final double gyroCorrectionkI = 0.0;
+    public static final double gyroCorrectionkD = 0.0;
 
 }

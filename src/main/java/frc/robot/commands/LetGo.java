@@ -8,12 +8,12 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.OtherGrabber;
 import static frc.robot.Constants.*;
 
-public class Grab extends CommandBase {
+public class LetGo extends CommandBase {
  
  OtherGrabber grab;
  
   /** Creates a new Grab. */
-  public Grab(OtherGrabber grabby) {
+  public LetGo(OtherGrabber grabby) {
     
     grab = grabby;
     
@@ -29,7 +29,7 @@ public class Grab extends CommandBase {
   @Override
   public void execute() {
 
-      grab.grab();
+      grab.letGo();
     
   }
 
