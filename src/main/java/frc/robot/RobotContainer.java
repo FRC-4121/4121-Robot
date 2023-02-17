@@ -41,9 +41,9 @@ public class RobotContainer {
   private final ParkCommand parkCommand = new ParkCommand(swervedrive);
 
  //Auto Commands
- private final AutoDrive autoDriveCommand = new AutoDrive(swervedrive,0.4,60,0,0,20,table);
+ private final AutoDrive autoDriveCommand = new AutoDrive(swervedrive,0.6,168,180,0,0,20,table);
  private final AutoBalance autoBalanceCommand = new AutoBalance(swervedrive,0.25,0,20,table);
- private final AutoGroup1 autoGroup = new AutoGroup1(swervedrive);
+ private final AutoGroup1 autoGroup = new AutoGroup1(swervedrive, table);
 
   //KillAuto Command
   private final KillAutoCommand killAutoObject = new KillAutoCommand(); 
@@ -236,8 +236,8 @@ public class RobotContainer {
   
 
   public Command getAutonomousCommand() {
-    return autoDriveCommand;
+    //return autoDriveCommand;
     //return autoBalanceCommand;
-    //return autoGroup;
+    return autoGroup;
   }
 }

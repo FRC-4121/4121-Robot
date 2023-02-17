@@ -114,7 +114,7 @@ public class Robot extends TimedRobot {
   public void teleopPeriodic() {
 
     //get Arm Selection
-    m_robotContainer.getArmSelection();
+    //m_robotContainer.getArmSelection();
 
   }
 

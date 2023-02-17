@@ -114,9 +114,10 @@ public final class Constants {
     public static final double kP_Turn = .008;// was .002
     public static final double kI_Turn = 0.0;
     public static final double kD_Turn = 0.0015;// was 0.0004
-    public static final double kP_DriveAngle = .003;// was .005
-    public static final double kI_DriveAngle = 0.0;
-    public static final double kD_DriveAngle = 0.0004;
+    
+    public static final double kP_DriveAngle = 11.0;
+    public static final double kI_DriveAngle = 8.0;
+    public static final double kD_DriveAngle = 0.04;
 
     public static final double kSpeedCorrection = 0.9; // this will be used to compensate for differnces in the drive
                                                        // motors
@@ -182,8 +183,5 @@ public final class Constants {
     public static final double anglePIDkDs[] = { 0.04, 0.04, 0.04, 0.04 };
     public static final double angleLimiters[] = { 1.0, 1.0, 1.0, 1.0 };
 
-    public static final double gyroCorrectionkP = 0.0;
-    public static final double gyroCorrectionkI = 0.0;
-    public static final double gyroCorrectionkD = 0.0;
 
 }
