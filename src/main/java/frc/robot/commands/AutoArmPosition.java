@@ -10,7 +10,7 @@ import edu.wpi.first.math.controller.*;
 import static frc.robot.Constants.*;
 
 
-public class ArmExtendControl extends CommandBase {
+public class AutoArmPosition extends CommandBase {
   
   Arm arm;
   PIDController pid;
@@ -20,7 +20,7 @@ public class ArmExtendControl extends CommandBase {
   double speedCorrection;
   
   /** Creates a new ArmExtendControl. */
-  public ArmExtendControl(Arm army) {
+  public AutoArmPosition(Arm army) {
     
     arm = army;
 

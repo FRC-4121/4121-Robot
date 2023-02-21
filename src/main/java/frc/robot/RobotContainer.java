@@ -42,8 +42,9 @@ public class RobotContainer {
 
  //Auto Commands
  private final AutoDrive autoDriveCommand = new AutoDrive(swervedrive,0.6,168,180,0,0,20,table);
- private final AutoBalance autoBalanceCommand = new AutoBalance(swervedrive,0.25,0,20,table);
+ //private final AutoBalance autoBalanceCommand = new AutoBalance(swervedrive,0.25,0,20,table);
  private final AutoGroup1 autoGroup = new AutoGroup1(swervedrive, table);
+ private final AutoPlaceAndBalance autoPlaceAndBalanceCommand = new AutoPlaceAndBalance(swervedrive,table);
 
   //KillAuto Command
   private final KillAutoCommand killAutoObject = new KillAutoCommand(); 
@@ -138,14 +139,14 @@ public class RobotContainer {
     parkButton = new JoystickButton(launchpad,LaunchPadSwitch3);
 
     //testbed buttons
-    extendArmButton = new JoystickButton(testbed,7); 
-    retractArmButton = new JoystickButton(testbed,8); 
+    extendArmButton = new JoystickButton(testbed,1); 
+    retractArmButton = new JoystickButton(testbed,2); 
     wristForwardButton = new JoystickButton(testbed,5);
     wristBackwardButton = new JoystickButton(testbed,6);
     grabberForwardButton = new JoystickButton(testbed,3);
     grabberBackwardButton = new JoystickButton(testbed,4);
-    grabButton = new JoystickButton(testbed,1);
-    letGoButton = new JoystickButton(testbed,2);
+    grabButton = new JoystickButton(testbed,7);
+    letGoButton = new JoystickButton(testbed,8);
 
     //Configure default commands
     configureDefaultCommands();
@@ -238,6 +239,7 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     //return autoDriveCommand;
     //return autoBalanceCommand;
-    return autoGroup;
+    //return autoGroup;
+    return autoPlaceAndBalanceCommand;
   }
 }
