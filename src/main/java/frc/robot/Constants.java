@@ -27,7 +27,8 @@ public final class Constants {
 
     // Arm ID's
     public static final int Extend = 15; // Need to find
-    public static final int Rotate = 16; // Need to find
+    public static final int Rotate1 = 16; 
+    public static final int Rotate2 = 17;
 
     // Wrist ID's
     public static final int WristID = 9; // Need to find

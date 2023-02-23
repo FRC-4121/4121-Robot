@@ -78,7 +78,7 @@ public class AutoBalance extends CommandBase {
 
     climbThreshold = 7;
     topThreshold = 1.0;
-    pitchTolerance = 0.5;
+    pitchTolerance = 7.5;
     speedMultiplier = 1;
     balanceCounter = 0;
     balanceTargetCount = 20;
@@ -86,8 +86,8 @@ public class AutoBalance extends CommandBase {
     topTargetCount = 17;
     startingPitch = ntables.getNavXDouble("Orientation.1"); 
     gyroOffset = 0.0;
-    climbTimeLimit = 1.0;
-    balanceTimeLimit = 2.0;
+    climbTimeLimit = 1.5;
+    balanceTimeLimit = 1.0;
 
     timer.start();
     startTime = timer.get();
@@ -141,15 +141,14 @@ public class AutoBalance extends CommandBase {
           reachedTop = true;
           balanceStartTime = timer.get();
           speedMultiplier = 0.0;
-        }
-        else if ((timer.get() - climbStartTime) > climbTimeLimit) {
-          isClimbing = false;
-          reachedTop = true;
-          balanceStartTime = timer.get();
-          speedMultiplier = 0.0;
         } else {
           topCounter++;
         }
+      } else if ((timer.get() - climbStartTime) > climbTimeLimit) {
+        isClimbing = false;
+        reachedTop = true;
+        balanceStartTime = timer.get();
+        speedMultiplier = 0.0;
       }
     }
 
@@ -166,10 +165,10 @@ public class AutoBalance extends CommandBase {
             balanceCounter++;
           }
         } else if (currentPitch > 0) {
-          speedMultiplier = -0.4;
+          speedMultiplier = -0.3;
           balanceCounter = 0;
         } else {
-          speedMultiplier = 0.4;
+          speedMultiplier = 0.3;
           balanceCounter = 0;
         }
       }

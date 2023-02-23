@@ -13,8 +13,8 @@ import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 public class Arm extends SubsystemBase {
   
   private WPI_TalonFX extend = new WPI_TalonFX(Extend);
-  private WPI_TalonFX rotate1 = new WPI_TalonFX(Rotate);
-  private WPI_TalonFX rotate2 = new WPI_TalonFX(Rotate);
+  private WPI_TalonFX rotate1 = new WPI_TalonFX(Rotate1);
+  private WPI_TalonFX rotate2 = new WPI_TalonFX(Rotate2);
 
   /** Creates a new Arm. */
   public Arm() {
