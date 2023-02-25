@@ -6,10 +6,12 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.*;
+import static frc.robot.Constants.*;
 
 public class RotateArmForward extends CommandBase {
   
   ArmRotate arm;
+  double currentSpeed;
   
   /** Creates a new RotateArm. */
   public RotateArmForward(ArmRotate army) {
@@ -21,13 +23,21 @@ public class RotateArmForward extends CommandBase {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+
+    currentSpeed = 0;
+
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
 
-    arm.rotate(0.7);
+    // Increase the speed gradually to avoid bouncing
+    if (currentSpeed < rotateSpeed) {
+      currentSpeed = currentSpeed + rotateRampRate;
+    }
+    arm.rotate(currentSpeed);
 
   }
 
@@ -35,7 +45,11 @@ public class RotateArmForward extends CommandBase {
   @Override
   public void end(boolean interrupted) {
 
-    arm.rotate(0);
+    // Decrease the speed gradually to avoid bouncing
+    if (currentSpeed > 0) {
+      currentSpeed = currentSpeed - rotateRampRate;
+    }
+    arm.rotate(currentSpeed);
 
   }
 

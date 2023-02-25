@@ -5,53 +5,37 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.*;
+import frc.robot.subsystems.LED;
 import static frc.robot.Constants.*;
 
-public class RotateArmBackward extends CommandBase {
+public class LEDCommand extends CommandBase {
   
-  ArmRotate arm;
-  double currentSpeed;
+  private LED led;
   
-  /** Creates a new RotateArmBackward. */
-  public RotateArmBackward(ArmRotate army) {
+  /** Creates a new LEDCommand. */
+  public LEDCommand(LED light) {
     
-    arm = army;
-    
+    led = light;
+
+    addRequirements(led);
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-
-    currentSpeed = 0;
-
-  }
+  public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
 
-    //Increase the speed gradually to avoid bouncing
-    if(currentSpeed < rotateSpeed){
-      currentSpeed = currentSpeed + rotateRampRate;
-    }
-    arm.rotate(-currentSpeed);
+    led.setColor(ledColor);
 
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
-
-    //Decrease the speed gradually to avoid bouncing
-    if(currentSpeed > 0){
-      currentSpeed = currentSpeed - rotateRampRate;
-    }
-    arm.rotate(currentSpeed);
-
-  }
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override

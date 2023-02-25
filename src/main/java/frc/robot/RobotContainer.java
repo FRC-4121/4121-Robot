@@ -11,7 +11,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.*;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 
@@ -20,7 +20,7 @@ public class RobotContainer {
   
   //Driver controllers
   private final XboxController xbox = new XboxController(0);
-  private final XboxController xboxClimber = new XboxController(1);
+  private final XboxController secondaryXbox = new XboxController(1);
   private final Joystick launchpad = new Joystick(2);
   private final Joystick testbed = new Joystick(3);
   
@@ -34,6 +34,8 @@ public class RobotContainer {
   private final ArmRotate armRotate = new ArmRotate();
   private final Wrist wrist = new Wrist();
   private final OtherGrabber grabber = new OtherGrabber();
+
+  private final LED led = new LED();
 
   //===COMMANDS===//
 
@@ -66,94 +68,90 @@ public class RobotContainer {
   private final Grab grab = new Grab(grabber);
   private final LetGo letGo = new LetGo(grabber);
 
+  //LED Command
+  private final LEDCommand ledCommand = new LEDCommand(led);
+
   //===BUTTONS===// //They're being initialized in RobotContainer
 
 
   //xboxButtons
-  private final JoystickButton intakeButton;
-  private final JoystickButton climberExtendButton;
-  private final JoystickButton climberRetractButton;
-  private final JoystickButton climberRotateFrontButton;
-  private final JoystickButton climberRotateBackButton;
-  private final JoystickButton climberStartButton;
-  private final JoystickButton shooterButton;
-  private final JoystickButton loaderButton;
-  private final JoystickButton raiseButton;
-  private final JoystickButton runShooterButton;
-  private final JoystickButton toggleShooter;
+  // private final JoystickButton extendArmButton;
+  // private final JoystickButton retractArmButton;
+  // private final JoystickButton rotateArmForwardButton;
+  // private final JoystickButton rotateArmBackwardButton;
+  // private final JoystickButton wristForwardButton;
+  // private final JoystickButton wristBackwardButton;
+  // private final JoystickButton grabberBackwardButton;
+  // private final JoystickButton grabberForwardButton;
+  // private final JoystickButton grabButton;
+  // private final JoystickButton letGoButton;
+
+  private final Trigger extendArmButton;
+  private final Trigger retractArmButton;
+  private final Trigger rotateArmForwardButton;
+  private final Trigger rotateArmBackwardButton;
+  private final Trigger wristForwardButton;
+  private final Trigger wristBackwardButton;
+  private final Trigger grabberBackwardButton;
+  private final Trigger grabberForwardButton;
+  private final Trigger grabButton;
+  private final Trigger letGoButton;
   
   //launchpad buttons/switches
-  private final JoystickButton killAutoButton;
+  //private final JoystickButton killAutoButton;
+  private final Trigger killAutoButton;
   private final JoystickButton AutoPos1;
   private final JoystickButton AutoPos2;
   private final JoystickButton AutoPos3;
-  private static JoystickButton redButton;
-  private static JoystickButton blueButton;
+  private static JoystickButton yellowButton;
+  private static JoystickButton purpleButton;
   private static JoystickButton armControlButton;
-  private static JoystickButton lowerIntakeButton;
-  private static JoystickButton raiseIntakeButton;
   private static JoystickButton parkButton;
   //private final JoystickButton autoClimbButton;
-
-  //testbed buttons
-  private final JoystickButton extendArmButton;
-  private final JoystickButton retractArmButton;
-  private final JoystickButton rotateArmForwardButton;
-  private final JoystickButton rotateArmBackwardButton;
-  private final JoystickButton wristForwardButton;
-  private final JoystickButton wristBackwardButton;
-  private final JoystickButton grabberBackwardButton;
-  private final JoystickButton grabberForwardButton;
-  private final JoystickButton grabButton;
-  private final JoystickButton letGoButton;
 
   //===CONSTRUCTOR===//
   public RobotContainer() { 
     
   //colorButtons
-  redButton = new JoystickButton(launchpad,LaunchPadSwitch5top);
-  blueButton = new JoystickButton(launchpad,LaunchPadSwitch5bottom);
+  yellowButton = new JoystickButton(launchpad,LaunchPadSwitch5top);
+  purpleButton = new JoystickButton(launchpad,LaunchPadSwitch5bottom);
 
   
     //xboxButtons
-    intakeButton = new JoystickButton(xbox, xboxLeftBumber); //feeds to processor
-    climberExtendButton = new JoystickButton(xboxClimber, xboxRightBumber);
-    climberRetractButton = new JoystickButton(xboxClimber, xboxLeftBumber);
-    climberRotateFrontButton = new JoystickButton(xboxClimber, xboxYButton);
-    climberRotateBackButton = new JoystickButton(xboxClimber, xboxXButton);
-    climberStartButton = new JoystickButton(xboxClimber, xboxBButton);
-    shooterButton = new JoystickButton(xbox, xboxRightBumber);
-    runShooterButton = new JoystickButton(xbox,xboxBButton);
-    loaderButton = new JoystickButton(xbox, xboxAButton);
-    raiseButton = new JoystickButton(xbox, xboxYButton);
-    toggleShooter = new JoystickButton (xboxClimber, xboxAButton);
-    //autoClimbButton = new JoystickButton(launchpad, LaunchPadSwitch?);
-
-  
+    extendArmButton = new JoystickButton(xbox,xboxRightBumber); 
+    retractArmButton = new JoystickButton(xbox,xboxLeftBumber); 
+    wristForwardButton = new JoystickButton(secondaryXbox,xboxAButton);
+    wristBackwardButton = new JoystickButton(secondaryXbox,xboxBButton);
+    grabberForwardButton = new JoystickButton(secondaryXbox,xboxXButton);
+    grabberBackwardButton = new JoystickButton(secondaryXbox,xboxYButton);
+    grabButton = new JoystickButton(secondaryXbox,xboxRightBumber);
+    letGoButton = new JoystickButton(secondaryXbox,xboxLeftBumber);
+    
+    //Going to use triggers for these
+    rotateArmBackwardButton = new JoystickButton(xbox,1);
+    rotateArmForwardButton = new JoystickButton(xbox,2);  
 
     //launchpad buttons/switches
     killAutoButton = new JoystickButton(launchpad,LaunchPadButton1);
     AutoPos1 = new JoystickButton(launchpad,LaunchPadDial1);
     AutoPos2 = new JoystickButton(launchpad,LaunchPadDial2);
     AutoPos3 = new JoystickButton(launchpad,LaunchPadDial3);
-    redButton = new JoystickButton(launchpad, LaunchPadSwitch5top);
-    blueButton = new JoystickButton(launchpad, LaunchPadSwitch5bottom);
+    yellowButton = new JoystickButton(launchpad, LaunchPadSwitch5top);
+    purpleButton = new JoystickButton(launchpad, LaunchPadSwitch5bottom);
     armControlButton = new JoystickButton(launchpad, LaunchPadSwitch7);
-    lowerIntakeButton = new JoystickButton(launchpad, LaunchPadSwitch6bottom);
-    raiseIntakeButton = new JoystickButton(launchpad, LaunchPadSwitch6top); 
     parkButton = new JoystickButton(launchpad,LaunchPadSwitch3);
 
     //testbed buttons
-    extendArmButton = new JoystickButton(testbed,9); 
-    retractArmButton = new JoystickButton(testbed,10); 
-    wristForwardButton = new JoystickButton(testbed,5);
-    wristBackwardButton = new JoystickButton(testbed,6);
-    grabberForwardButton = new JoystickButton(testbed,3);
-    grabberBackwardButton = new JoystickButton(testbed,4);
-    grabButton = new JoystickButton(testbed,7);
-    letGoButton = new JoystickButton(testbed,8);
-    rotateArmBackwardButton = new JoystickButton(testbed,1);
-    rotateArmForwardButton = new JoystickButton(testbed,2);
+    // extendArmButton = new JoystickButton(testbed,9); 
+    // retractArmButton = new JoystickButton(testbed,10); 
+    // wristForwardButton = new JoystickButton(testbed,5);
+    // wristBackwardButton = new JoystickButton(testbed,6);
+    // grabberForwardButton = new JoystickButton(testbed,3);
+    // grabberBackwardButton = new JoystickButton(testbed,4);
+    // grabButton = new JoystickButton(testbed,7);
+    // letGoButton = new JoystickButton(testbed,8);
+    // rotateArmBackwardButton = new JoystickButton(testbed,1);
+    // rotateArmForwardButton = new JoystickButton(testbed,2);
 
     //Configure default commands
     configureDefaultCommands();
@@ -178,6 +176,9 @@ public class RobotContainer {
     //Drivetrain -> drive with xbox joysticks
     swervedrive.setDefaultCommand(driveCommand);
 
+    //LED default command
+    led.setDefaultCommand(ledCommand);
+
     //Arm's default command is the extend control
     //arm.setDefaultCommand();
   }
@@ -185,20 +186,20 @@ public class RobotContainer {
   private void configureButtonBindings() {
 
     //kill auto
-    killAutoButton.whenPressed( killAutoObject);
-    killAutoButton.whenReleased( killAutoObject);
+    killAutoButton.onTrue( killAutoObject);
+    killAutoButton.onFalse( killAutoObject);
 
-    //testbed
-    extendArmButton.whileHeld(extendArmCommand);
-    retractArmButton.whileHeld(retractArmCommand);
-    rotateArmBackwardButton.whileHeld(rotateArmBackwardCommand);
-    rotateArmForwardButton.whileHeld(rotateArmForwardCommand);
-    wristForwardButton.whileHeld(forwardWristCommand);
-    wristBackwardButton.whileHeld(backwardWristCommand);
-    grabberForwardButton.whileHeld(grabWheelForwardCommand);
-    grabberBackwardButton.whileHeld(grabWheelBackwardCommand);
-    grabButton.whileHeld(grab);
-    letGoButton.whileHeld(letGo);
+    //teleop Commands
+    extendArmButton.whileTrue(extendArmCommand);
+    retractArmButton.whileTrue(retractArmCommand);
+    rotateArmBackwardButton.whileTrue(rotateArmBackwardCommand);
+    rotateArmForwardButton.whileTrue(rotateArmForwardCommand);
+    wristForwardButton.whileTrue(forwardWristCommand);
+    wristBackwardButton.whileTrue(backwardWristCommand);
+    grabberForwardButton.whileTrue(grabWheelForwardCommand);
+    grabberBackwardButton.whileTrue(grabWheelBackwardCommand);
+    grabButton.whileTrue(grab);
+    letGoButton.whileTrue(letGo);
   }
 
    
@@ -206,15 +207,18 @@ public class RobotContainer {
   public void getColorSelection()
   {
     
-    if (blueButton.getAsBoolean() == true) {
-      table.setColor(2);
-      SmartDashboard.putString("Ball Color", "Blue");
-    } else if (redButton.getAsBoolean() == true) {
-      table.setColor(1);
-      SmartDashboard.putString("Ball Color", "Red");
+    if (purpleButton.getAsBoolean() == true) {
+      
+      ledColor = 0.91; //Purple
+ 
+    } else if (yellowButton.getAsBoolean() == true) {
+      
+      ledColor = 0.69; //Yellow
+
     } else {
-      table.setColor(1);
-      SmartDashboard.putString("Ball Color", "Red");
+      
+      ledColor = 0.55; //Orange
+
     }
   }
 

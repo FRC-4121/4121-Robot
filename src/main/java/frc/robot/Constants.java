@@ -25,23 +25,31 @@ public final class Constants {
     public static final int RIGHT_MASTER_F = 1;
     public static final int RIGHT_SLAVE_F = 4;
 
-    // Arm ID's
+    // Arm
     public static final int Extend = 15; // Need to find
     public static final int Rotate1 = 16; 
     public static final int Rotate2 = 17;
+    public static Boolean runAutoArmExtend = false;
+    public static double armTargetEncoder = 0.0; //This is 0 to start with because we don't want the arm to move.
+    public static final double autoArmkP = 0.01;
+    public static final double autoArmkI = 0.01;
+    public static final double autoArmkD = 0.01;
+    public static final double rotateSpeed = 0.7;
+    public static final double rotateRampRate = 0.035;
 
     // Wrist ID's
     public static final int WristID = 9; // Need to find
 
     // Grabber ID's
     public static final int Intake = 21;
+    public static Boolean Grabbed = false;
 
     //Pneumatics
     public static final int ForwardChannelID = 0;
     public static final int ReverseChannelID = 7;
 
-    //Grabber
-    public static Boolean Grabbed = false;
+    // LED's
+    public static double ledColor = 0.63; //0.65 is orange, the default color
 
     // Drive control port IDs
     public static final int XBOX_PORT = 0;
@@ -131,13 +139,6 @@ public final class Constants {
     public static double kLowGearMultiplier = 0.40;
     public static double kHighGearMultiplier = 0.70;
     public static double currentGear = kHighGearMultiplier;
-
-    //Arm
-    public static Boolean runAutoArmExtend = false;
-    public static double armTargetEncoder = 0.0; //This is 0 to start with because we don't want the arm to move.
-    public static final double autoArmkP = 0.01;
-    public static final double autoArmkI = 0.01;
-    public static final double autoArmkD = 0.01;
 
 
     // Swerve drive constants
