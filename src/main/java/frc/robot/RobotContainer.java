@@ -31,6 +31,7 @@ public class RobotContainer {
   private final NetworkTableQuerier table = new NetworkTableQuerier();
 
   private final Arm arm = new Arm();
+  private final ArmRotate armRotate = new ArmRotate();
   private final Wrist wrist = new Wrist();
   private final OtherGrabber grabber = new OtherGrabber();
 
@@ -52,8 +53,8 @@ public class RobotContainer {
   //Arm Commands
   private final ExtendArm extendArmCommand = new ExtendArm(arm);
   private final RetractArm retractArmCommand = new RetractArm(arm);
-  private final RotateArmForward rotateArmForwardCommand = new RotateArmForward(arm);
-  private final RotateArmBackward rotateArmBackwardCommand = new RotateArmBackward(arm);
+  private final RotateArmForward rotateArmForwardCommand = new RotateArmForward(armRotate);
+  private final RotateArmBackward rotateArmBackwardCommand = new RotateArmBackward(armRotate);
 
   //Wrist Commands
   private final RunWristForward forwardWristCommand = new RunWristForward(wrist);

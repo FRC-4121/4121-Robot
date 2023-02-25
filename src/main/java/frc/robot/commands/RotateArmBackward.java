@@ -9,10 +9,10 @@ import frc.robot.subsystems.*;
 
 public class RotateArmBackward extends CommandBase {
   
-  Arm arm;
+  ArmRotate arm;
   
   /** Creates a new RotateArmBackward. */
-  public RotateArmBackward(Arm army) {
+  public RotateArmBackward(ArmRotate army) {
     
     arm = army;
     
@@ -27,7 +27,7 @@ public class RotateArmBackward extends CommandBase {
   @Override
   public void execute() {
 
-    arm.rotateArm(-0.7);
+    arm.rotate(-0.7);
 
   }
 
@@ -35,7 +35,7 @@ public class RotateArmBackward extends CommandBase {
   @Override
   public void end(boolean interrupted) {
 
-    arm.rotateArm(0);
+    arm.rotate(0);
 
   }
 

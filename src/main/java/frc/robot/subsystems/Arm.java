@@ -13,8 +13,6 @@ import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 public class Arm extends SubsystemBase {
   
   private WPI_TalonFX extend = new WPI_TalonFX(Extend);
-  private WPI_TalonFX rotate1 = new WPI_TalonFX(Rotate1);
-  private WPI_TalonFX rotate2 = new WPI_TalonFX(Rotate2);
 
   /** Creates a new Arm. */
   public Arm() {
@@ -40,12 +38,6 @@ public class Arm extends SubsystemBase {
     extend.set(0);
   }
 
-  //rotate the arm back and forth, the two motors need to run in inverse directions
-  public void rotateArm(double speed){
-
-    rotate1.set(speed);
-    rotate2.set(-speed);
-  }
 
   public double getExtendEncoder(){
 
