@@ -29,6 +29,8 @@ public final class Constants {
     public static final int Extend = 15; // Need to find
     public static final int Rotate1 = 16; 
     public static final int Rotate2 = 17;
+    public static final int HomeSwitchID = 0;
+    public static final int ExtendSwitchID = 1;
     public static Boolean runAutoArmExtend = false;
     public static double armTargetEncoder = 0.0; //This is 0 to start with because we don't want the arm to move.
     public static final double autoArmkP = 0.01;
