@@ -75,6 +75,7 @@ public class AutoExtendArm extends CommandBase {
       doneYet = true;
     }
     
+    
     return doneYet;
   }
 }

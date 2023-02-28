@@ -73,7 +73,7 @@ public class ArmRotate extends SubsystemBase {
     
     double position = (rotateSlope * angle) + rotateIntercept;
 
-    rotateMaster.set(TalonFXControlMode.MotionMagic,position);
+    rotateMaster.set(TalonFXControlMode.MotionMagic, position);
   }
 
   public double getMasterEncoder(){
