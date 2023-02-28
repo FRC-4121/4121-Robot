@@ -30,10 +30,10 @@ public class RobotContainer {
 
   private final NetworkTableQuerier table = new NetworkTableQuerier();
 
-  private final Arm arm = new Arm();
+  private final ArmExtend arm = new ArmExtend();
   private final ArmRotate armRotate = new ArmRotate();
   private final Wrist wrist = new Wrist();
-  private final OtherGrabber grabber = new OtherGrabber();
+  private final Grabber grabber = new Grabber();
 
   private final LED led = new LED();
 

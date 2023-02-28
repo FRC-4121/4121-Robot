@@ -10,17 +10,30 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import static frc.robot.Constants.*;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 
 public class ArmRotate extends SubsystemBase {
   
-  private WPI_TalonFX rotateMaster = new WPI_TalonFX(Rotate1);
-  private WPI_TalonFX rotateSlave = new WPI_TalonFX(Rotate2);
+  private WPI_TalonFX rotateMaster;
+  private WPI_TalonFX rotateSlave;
 
 
   
   /** Creates a new ArmRotate. */
   public ArmRotate() {
+
+    //Defining Motors
+    rotateMaster = new WPI_TalonFX(Rotate1);
+    rotateSlave = new WPI_TalonFX(Rotate2);
+
+    //Make sure that the configs are default before we set things
+    rotateMaster.configFactoryDefault();
+    rotateSlave.configFactoryDefault();
+
+    //Make sure motors are in brake mode
+    rotateMaster.setNeutralMode(NeutralMode.Brake);
+    rotateSlave.setNeutralMode(NeutralMode.Brake);
 
     //Set the slave to follow the master
     rotateSlave.follow(rotateMaster);
@@ -33,12 +46,34 @@ public class ArmRotate extends SubsystemBase {
     rotateMaster.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor, kPIDLoopIdxDrive, kTimeoutMsDrive);
     rotateSlave.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor, kPIDLoopIdxDrive, kTimeoutMsDrive);
 
+    //Configure deadband for PID control 
+    rotateMaster.configNeutralDeadband(0.001);
+    rotateSlave.configNeutralDeadband(0.001);
+
+    //Config PID control variables
+    rotateMaster.selectProfileSlot(0,0);
+    rotateMaster.config_kF(0,rotateGains.kF, kTimeoutMsDrive);
+    rotateMaster.config_kP(0,rotateGains.kP, kTimeoutMsDrive);
+    rotateMaster.config_kI(0,rotateGains.kI, kTimeoutMsDrive);
+    rotateMaster.config_kD(0,rotateGains.kD, kTimeoutMsDrive);
+
+    rotateMaster.configMotionCruiseVelocity(rotateVelocity,kTimeoutMsDrive);
+    rotateMaster.configMotionAcceleration(rotateAcceleration,kTimeoutMsDrive);
+
   }
 
 
   public void rotate(double speed){
     
     rotateMaster.set(speed); //Need to test to see if we have to invert this
+  }
+
+  //Angle is in degrees
+  public void rotateToAngle(double angle){
+    
+    double position = (rotateSlope * angle) + rotateIntercept;
+
+    rotateMaster.set(TalonFXControlMode.MotionMagic,position);
   }
 
   public double getMasterEncoder(){

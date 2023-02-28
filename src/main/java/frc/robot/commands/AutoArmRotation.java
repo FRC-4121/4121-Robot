@@ -4,20 +4,16 @@
 
 package frc.robot.commands;
 
-import javax.print.attribute.standard.MediaSize.Other;
-
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.Grabber;
+import static frc.robot.Constants.*;
+import frc.robot.subsystems.ArmRotate;
 
-public class RunGrabberWheelForward extends CommandBase {
- 
-  Grabber grab;
-
-  /** Creates a new RunGrabberWheelForward. */
-  public RunGrabberWheelForward(Grabber grabby) {
+public class AutoArmRotation extends CommandBase {
   
-   grab = grabby;
+  private ArmRotate arm;
   
+  /** Creates a new AutoArmRotation. */
+  public AutoArmRotation() {
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
@@ -27,17 +23,11 @@ public class RunGrabberWheelForward extends CommandBase {
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {
-
-    grab.runIntake(0.4);
-  }
+  public void execute() {}
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
-
-    grab.stopIntake();
-  }
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override

@@ -6,6 +6,7 @@
 /*----------------------------------------------------------------------------*/
 
 package frc.robot;
+import frc.robot.ExtraClasses.Gains;
 
 /**
  * The Constants class provides a dope af place for teams to hold robot-wide numerical or boolean
@@ -38,6 +39,14 @@ public final class Constants {
     public static final double autoArmkD = 0.01;
     public static final double rotateSpeed = 0.7;
     public static final double rotateRampRate = 0.035;
+    public static final double rotateSlope = 1;
+    public static final double rotateIntercept = 0;
+    public static final double extendSlope = 1;
+    public static final double extendIntercept = 0;
+    public static final Gains rotateGains = new Gains(0.2,0.0,0.0,0.2,0,1.0);
+    public static final Gains extendGains = new Gains(0.2,0.0,0.0,0.2,0,1.0);
+    public static final double rotateVelocity = 15000;
+    public static final double rotateAcceleration = 6000;
 
     // Wrist ID's
     public static final int WristID = 9; // Need to find

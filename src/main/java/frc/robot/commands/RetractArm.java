@@ -5,15 +5,15 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.ArmExtend;
 import static frc.robot.Constants.*;
 
 public class RetractArm extends CommandBase {
   
-  private Arm m_arm;
+  private ArmExtend m_arm;
   
   /** Creates a new RunArmForward. */
-  public RetractArm(Arm arm) {
+  public RetractArm(ArmExtend arm) {
     
     m_arm = arm;
     // Use addRequirements() here to declare subsystem dependencies.

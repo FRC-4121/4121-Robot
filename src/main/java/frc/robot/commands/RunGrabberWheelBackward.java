@@ -7,14 +7,14 @@ package frc.robot.commands;
 import javax.print.attribute.standard.MediaSize.Other;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.OtherGrabber;
+import frc.robot.subsystems.Grabber;
 
 public class RunGrabberWheelBackward extends CommandBase {
  
-  OtherGrabber grab;
+  Grabber grab;
 
   /** Creates a new RunGrabberWheelForward. */
-  public RunGrabberWheelBackward(OtherGrabber grabby) {
+  public RunGrabberWheelBackward(Grabber grabby) {
   
    grab = grabby;
   

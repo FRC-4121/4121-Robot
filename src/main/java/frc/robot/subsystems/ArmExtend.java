@@ -10,8 +10,9 @@ import static frc.robot.Constants.*;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import edu.wpi.first.wpilibj.DigitalInput;
+import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 
-public class Arm extends SubsystemBase {
+public class ArmExtend extends SubsystemBase {
   
   // Declare class level variables
   private WPI_TalonFX extend;
@@ -19,16 +20,32 @@ public class Arm extends SubsystemBase {
   private DigitalInput extendSwitch;
 
   /** Creates a new Arm. */
-  public Arm() {
+  public ArmExtend() {
 
     // Create a new Talon FX motor controller
     extend = new WPI_TalonFX(Extend);
 
-    // Configure motor controller brake mode
+    //Make sure that the configs are default before we set things
+    extend.configFactoryDefault();
+
+    //Make sure motors are in brake mode
     extend.setNeutralMode(NeutralMode.Brake);
 
-    // Configure motor controller encoders
-    extend.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
+    //Config encoders
+    extend.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor, kPIDLoopIdxDrive, kTimeoutMsDrive);
+
+    //Configure deadband for PID control 
+    extend.configNeutralDeadband(0.001);
+
+    //Config PID control variables
+    extend.selectProfileSlot(0,0);
+    extend.config_kF(0,rotateGains.kF, kTimeoutMsDrive);
+    extend.config_kP(0,rotateGains.kP, kTimeoutMsDrive);
+    extend.config_kI(0,rotateGains.kI, kTimeoutMsDrive);
+    extend.config_kD(0,rotateGains.kD, kTimeoutMsDrive);
+
+    extend.configMotionCruiseVelocity(rotateVelocity,kTimeoutMsDrive);
+    extend.configMotionAcceleration(rotateAcceleration,kTimeoutMsDrive);
 
     // Create new limit switches
     homeSwitch = new DigitalInput(HomeSwitchID);
@@ -44,6 +61,15 @@ public class Arm extends SubsystemBase {
   public void extendArm(double speed){
     
     extend.set(speed); //Need to test to see if we have to invert this
+  }
+
+  //Position is in inches
+  public void extendArmToPosition(double position){
+    
+    double length = (extendSlope * position) + extendIntercept;
+
+    extend.set(TalonFXControlMode.MotionMagic,length);
+    
   }
 
   // Stop the arm

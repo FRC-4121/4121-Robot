@@ -6,12 +6,12 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import static frc.robot.Constants.*;
-import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.ArmExtend;
 import edu.wpi.first.wpilibj.Timer;
 
 public class AutoExtendArm extends CommandBase {
   
-  private Arm arm;
+  private ArmExtend arm;
   private Timer timer;
   private double startTime;
   private double stopTime;
@@ -20,12 +20,13 @@ public class AutoExtendArm extends CommandBase {
   
   
   /** Creates a new AutoExtendArm. */
-  public AutoExtendArm(Arm army, double time, double length) {
+  public AutoExtendArm(ArmExtend army, double time, double length) {
     
     arm = army;
     stopTime = time;
     targetPosition = length;
     
+    addRequirements(arm);
     // Use addRequirements() here to declare subsystem dependencies.
   }
 

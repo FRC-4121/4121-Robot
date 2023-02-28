@@ -5,15 +5,15 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.OtherGrabber;
+import frc.robot.subsystems.Grabber;
 import static frc.robot.Constants.*;
 
 public class Grab extends CommandBase {
  
- OtherGrabber grab;
+ Grabber grab;
  
   /** Creates a new Grab. */
-  public Grab(OtherGrabber grabby) {
+  public Grab(Grabber grabby) {
     
     grab = grabby;
     
