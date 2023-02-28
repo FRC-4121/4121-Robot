@@ -66,7 +66,7 @@ public class AutoExtendArm extends CommandBase {
   public boolean isFinished() {
     boolean doneYet = false;
    
-    if(killAuto = true)
+    if(killAuto == true)
     {
       doneYet = true;
     } 
