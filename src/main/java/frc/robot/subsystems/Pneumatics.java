@@ -18,7 +18,10 @@ public class Pneumatics extends SubsystemBase {
   private Compressor compressor = new Compressor(61,PneumaticsModuleType.CTREPCM);
 
   //Module and channels need to be found and set in constants
-  private DoubleSolenoid shifter = new DoubleSolenoid(61, PneumaticsModuleType.CTREPCM, ForwardChannelID, ReverseChannelID);
+  private DoubleSolenoid grabber = new DoubleSolenoid(61, PneumaticsModuleType.CTREPCM, GrabOpenChannelID, GrabCloseChannelID);
+
+  //Solenoid for brake
+  private DoubleSolenoid brake = new DoubleSolenoid(61, PneumaticsModuleType.CTREPCM, BrakeOpenChannelID, BrakeCloseChannelID);
   
   /** Creates a new Pneumatics. */
   public Pneumatics() {}
@@ -29,12 +32,22 @@ public class Pneumatics extends SubsystemBase {
   }
 
   //Extend with the solenoid
-  public void extend(){
-    shifter.set(Value.kReverse);
+  public void grab(){
+    grabber.set(Value.kReverse);
   }
 
   //Retract with the solenoid
-  public void retract(){
-    shifter.set(Value.kForward);
+  public void letGo(){
+    grabber.set(Value.kForward);
+  }
+
+  //Apply the brake
+  public void applyBrake(){
+    brake.set(Value.kReverse); //Need to test if this applies or releases
+  }
+
+  //Release the brake
+  public void releaseBrake(){
+    brake.set(Value.kForward); //Need to test if this applies or releases
   }
 }

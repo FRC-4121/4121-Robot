@@ -65,10 +65,8 @@ public class ArmExtend extends SubsystemBase {
 
   //Position is in inches
   public void extendArmToPosition(double position){
-    
-    double length = (extendSlope * position) + extendIntercept;
 
-    extend.set(TalonFXControlMode.MotionMagic,length);
+    extend.set(TalonFXControlMode.MotionMagic, position);
     
   }
 

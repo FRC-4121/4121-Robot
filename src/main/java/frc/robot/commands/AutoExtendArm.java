@@ -16,7 +16,9 @@ public class AutoExtendArm extends CommandBase {
   private double startTime;
   private double stopTime;
   private double targetPosition;
+  private double targetLength;
   private double currentPosition;
+  private double tolerance;
   
   
   /** Creates a new AutoExtendArm. */
@@ -25,9 +27,10 @@ public class AutoExtendArm extends CommandBase {
     arm = army;
     stopTime = time;
     targetPosition = length;
+    targetLength = length;
     
     addRequirements(arm);
-    // Use addRequirements() here to declare subsystem dependencies.
+    
   }
 
   // Called when the command is initially scheduled.
@@ -38,6 +41,7 @@ public class AutoExtendArm extends CommandBase {
     timer.start();
     startTime = timer.get();
   
+    tolerance = 1000;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -46,20 +50,20 @@ public class AutoExtendArm extends CommandBase {
 
     currentPosition = arm.getExtendEncoder();
 
-    if((targetPosition > 0) && (currentPosition < targetPosition)){
-      
-      arm.extendArm(0.5);
+    //Converting target length to encoder units
+    targetPosition = extendSlope * targetLength + extendIntercept;
+    
+    arm.extendArmToPosition(targetPosition);
 
-    } else if((targetPosition < 0) && (currentPosition > targetPosition)){
-
-      arm.extendArm(-0.5);
-      
-    }
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+
+    //Stop Arm
+    arm.extendArm(0);
+  }
 
   // Returns true when the command should end.
   @Override
@@ -72,6 +76,12 @@ public class AutoExtendArm extends CommandBase {
     } 
     if(timer.get() >= stopTime)
     {
+      doneYet = true;
+    }
+    if(currentPosition >= targetPosition-tolerance || currentPosition <= targetPosition + tolerance){
+      doneYet = true;
+    }
+    if(arm.getExtendSwitchValue()){
       doneYet = true;
     }
     

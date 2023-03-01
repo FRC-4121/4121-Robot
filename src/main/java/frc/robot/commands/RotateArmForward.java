@@ -11,13 +11,17 @@ import static frc.robot.Constants.*;
 public class RotateArmForward extends CommandBase {
   
   ArmRotate arm;
+  Pneumatics pneumatic;
   double currentSpeed;
+  boolean isReleased;
   
   /** Creates a new RotateArm. */
-  public RotateArmForward(ArmRotate army) {
+  public RotateArmForward(ArmRotate army, Pneumatics pneumatics) {
     
     arm = army;
+    pneumatic = pneumatics;
     
+    addRequirements(arm,pneumatic);
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
@@ -26,12 +30,18 @@ public class RotateArmForward extends CommandBase {
   public void initialize() {
 
     currentSpeed = 0;
+    isReleased = false;
 
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+
+    //On the first run, release the brake so we can move
+    if(!isReleased){
+      pneumatic.releaseBrake();
+    }
 
     // Increase the speed gradually to avoid bouncing
     if (currentSpeed < rotateSpeed) {
@@ -50,6 +60,10 @@ public class RotateArmForward extends CommandBase {
       currentSpeed = currentSpeed - rotateRampRate;
     }
     arm.rotate(currentSpeed);
+
+    //Apply the brake so we stop moving
+    pneumatic.applyBrake();
+    isReleased = false;
 
   }
 

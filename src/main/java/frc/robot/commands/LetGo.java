@@ -6,14 +6,15 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Grabber;
+import frc.robot.subsystems.Pneumatics;
 import static frc.robot.Constants.*;
 
 public class LetGo extends CommandBase {
  
- Grabber grab;
+ Pneumatics grab;
  
   /** Creates a new Grab. */
-  public LetGo(Grabber grabby) {
+  public LetGo(Pneumatics grabby) {
     
     grab = grabby;
     

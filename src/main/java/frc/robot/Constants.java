@@ -56,8 +56,10 @@ public final class Constants {
     public static Boolean Grabbed = false;
 
     //Pneumatics
-    public static final int ForwardChannelID = 0;
-    public static final int ReverseChannelID = 7;
+    public static final int GrabOpenChannelID = 0;
+    public static final int GrabCloseChannelID = 7;
+    public static final int BrakeOpenChannelID = 1;
+    public static final int BrakeCloseChannelID = 6;
 
     // LED's
     public static double ledColor = 0.63; //0.65 is orange, the default color

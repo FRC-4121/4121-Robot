@@ -43,6 +43,10 @@ public class RetractArm extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    if (m_arm.getHomeSwitchValue()) {
+      return true;
+    } else {
+      return false;
+    }
   }
 }

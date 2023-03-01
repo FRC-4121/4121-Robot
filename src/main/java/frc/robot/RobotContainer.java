@@ -34,6 +34,7 @@ public class RobotContainer {
   private final ArmRotate armRotate = new ArmRotate();
   private final Wrist wrist = new Wrist();
   private final Grabber grabber = new Grabber();
+  private final Pneumatics pneumatic = new Pneumatics();
 
   private final LED led = new LED();
 
@@ -55,8 +56,8 @@ public class RobotContainer {
   //Arm Commands
   private final ExtendArm extendArmCommand = new ExtendArm(arm);
   private final RetractArm retractArmCommand = new RetractArm(arm);
-  private final RotateArmForward rotateArmForwardCommand = new RotateArmForward(armRotate);
-  private final RotateArmBackward rotateArmBackwardCommand = new RotateArmBackward(armRotate);
+  private final RotateArmForward rotateArmForwardCommand = new RotateArmForward(armRotate, pneumatic);
+  private final RotateArmBackward rotateArmBackwardCommand = new RotateArmBackward(armRotate, pneumatic);
 
   //Wrist Commands
   private final RunWristForward forwardWristCommand = new RunWristForward(wrist);
@@ -65,8 +66,8 @@ public class RobotContainer {
   //Grabber Commands
   private final RunGrabberWheelForward grabWheelForwardCommand = new RunGrabberWheelForward(grabber);
   private final RunGrabberWheelBackward grabWheelBackwardCommand = new RunGrabberWheelBackward(grabber);
-  private final Grab grab = new Grab(grabber);
-  private final LetGo letGo = new LetGo(grabber);
+  private final Grab grab = new Grab(pneumatic);
+  private final LetGo letGo = new LetGo(pneumatic);
 
   //LED Command
   private final LEDCommand ledCommand = new LEDCommand(led);

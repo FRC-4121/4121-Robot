@@ -5,17 +5,17 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.Grabber;
+import frc.robot.subsystems.Pneumatics;
 import static frc.robot.Constants.*;
 
 public class Grab extends CommandBase {
  
- Grabber grab;
+ Pneumatics grab;
  
   /** Creates a new Grab. */
-  public Grab(Grabber grabby) {
+  public Grab(Pneumatics grabber) {
     
-    grab = grabby;
+    grab = grabber;
     
     // Use addRequirements() here to declare subsystem dependencies.
   }

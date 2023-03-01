@@ -7,25 +7,30 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import static frc.robot.Constants.*;
 import frc.robot.subsystems.ArmRotate;
+import frc.robot.subsystems.Pneumatics;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import edu.wpi.first.wpilibj.Timer;
 
 public class AutoArmRotation extends CommandBase {
   
   private ArmRotate arm;
+  private Pneumatics pneumatic;
+  private boolean isReleased;
   private double targetAngle;
   private double targetPosition;
   private double currentPosition;
   private Timer timer;
   private double startTime;
   private double stopTime;
+  private double tolerance;
   
   /** Creates a new AutoArmRotation. */
-  public AutoArmRotation(ArmRotate armRotate, double angle, double time) {
+  public AutoArmRotation(ArmRotate armRotate, double angle, double time, Pneumatics pneumatics) {
     
     arm = armRotate;
     targetAngle = angle;
     stopTime = time;
+    pneumatic = pneumatics;
     
     // Use addRequirements() here to declare subsystem dependencies.
   }
@@ -37,21 +42,44 @@ public class AutoArmRotation extends CommandBase {
     // Start the timer and get initial time
      timer.start();
      startTime = timer.get();
+
+     isReleased = false;
+
+     tolerance = 1000;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
 
+    //On the first run, release the brake so we can move
+    if(!isReleased){
+      pneumatic.releaseBrake();
+    }
+
+    //Calculating the target position based off of an equation found by testing
     targetPosition = rotateSlope * targetAngle + rotateIntercept;
+    
+    //Get the currentPosition
     currentPosition = arm.getMasterEncoder();
     
-    arm.rotateToAngle(targetAngle);
+    //Call method to rotate to an encoder postion with smoothing
+    arm.rotateToPosition(targetPosition);
+
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+
+    //Apply the brake so we stop moving
+    pneumatic.applyBrake();
+    isReleased = false;
+
+    //Stop rotating
+    arm.rotate(0);
+
+  }
 
   // Returns true when the command should end.
   @Override
@@ -67,7 +95,7 @@ public class AutoArmRotation extends CommandBase {
     {
       doneYet = true;
     }
-    if(currentPosition == targetPosition)
+    if(currentPosition >= targetPosition-tolerance || currentPosition <= targetPosition + tolerance)
     {
       doneYet = true;
     }

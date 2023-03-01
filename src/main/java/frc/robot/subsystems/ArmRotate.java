@@ -68,10 +68,8 @@ public class ArmRotate extends SubsystemBase {
     rotateMaster.set(speed); //Need to test to see if we have to invert this
   }
 
-  //Angle is in degrees
-  public void rotateToAngle(double angle){
-    
-    double position = (rotateSlope * angle) + rotateIntercept;
+  //Position is in encoder units
+  public void rotateToPosition(double position){
 
     rotateMaster.set(TalonFXControlMode.MotionMagic, position);
   }
