@@ -172,7 +172,7 @@ public class RobotContainer {
 
 
   //For subsystem default commands (driving, etc.)
-  private void configureDefaultCommands(){
+  private void configureDefaultCommands() {
 
     //Drivetrain -> drive with xbox joysticks
     swervedrive.setDefaultCommand(driveCommand);
@@ -226,7 +226,7 @@ public class RobotContainer {
   public void getArmSelection()
   {
 
-    if(armControlButton.getAsBoolean() == true)
+    if (armControlButton.getAsBoolean() == true)
     {
       runAutoArmExtend = false;
     } else {
@@ -238,7 +238,7 @@ public class RobotContainer {
   public void getParkSelection()
   {
 
-    if(parkButton.getAsBoolean() == true)
+    if (parkButton.getAsBoolean() == true)
     {
       isParked = true;
       SmartDashboard.putBoolean("Robot Parked", true);

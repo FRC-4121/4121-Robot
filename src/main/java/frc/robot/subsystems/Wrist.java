@@ -27,19 +27,19 @@ public class Wrist extends SubsystemBase {
     // This method will be called once per scheduler run
   }
 
-  public void move(double speed){
+  public void move(double speed) {
 
     wrist.set(speed);
   }
 
   //Get the current encoder position of the encoder
-  public double getPosition(){
+  public double getPosition() {
 
     return wrist.getSelectedSensorPosition();
   }
 
   //zero out the encoder position
-  public void zeroPosition(){
+  public void zeroPosition() {
     wrist.setSelectedSensorPosition(0.0);
   }
 }

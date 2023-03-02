@@ -39,12 +39,12 @@ public class RotateArmBackward extends CommandBase {
   public void execute() {
 
     //On the first run, release the brake so we can move
-    if(!isReleased){
+    if (!isReleased) {
       pneumatic.releaseBrake();
     }
 
     //Increase the speed gradually to avoid bouncing
-    if(currentSpeed < rotateSpeed){
+    if (currentSpeed < rotateSpeed) {
       currentSpeed = currentSpeed + rotateRampRate;
     }
     arm.rotate(-currentSpeed);
@@ -56,7 +56,7 @@ public class RotateArmBackward extends CommandBase {
   public void end(boolean interrupted) {
 
     //Decrease the speed gradually to avoid bouncing
-    if(currentSpeed > 0){
+    if (currentSpeed > 0) {
       currentSpeed = currentSpeed - rotateRampRate;
     }
     arm.rotate(currentSpeed);

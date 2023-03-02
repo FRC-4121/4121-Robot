@@ -63,28 +63,28 @@ public class ArmRotate extends SubsystemBase {
   }
 
 
-  public void rotate(double speed){
+  public void rotate(double speed) {
     
     rotateMaster.set(speed); //Need to test to see if we have to invert this
   }
 
   //Position is in encoder units
-  public void rotateToPosition(double position){
+  public void rotateToPosition(double position) {
 
     rotateMaster.set(TalonFXControlMode.MotionMagic, position);
   }
 
-  public double getMasterEncoder(){
+  public double getMasterEncoder() {
 
     return rotateMaster.getSelectedSensorPosition();
   }
 
-  public double getSlaveEncoder(){
+  public double getSlaveEncoder() {
 
     return rotateSlave.getSelectedSensorPosition();
   }
 
-  public void zeroEncoder(){
+  public void zeroEncoder() {
 
     rotateMaster.setSelectedSensorPosition(0);
     rotateSlave.setSelectedSensorPosition(0);

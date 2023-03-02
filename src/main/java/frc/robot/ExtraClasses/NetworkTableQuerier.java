@@ -56,7 +56,7 @@ public class NetworkTableQuerier implements Runnable {
     /**
      * Class constructor
      */
-    public NetworkTableQuerier(){
+    public NetworkTableQuerier() {
 
         // Initialize the network tables
         initNetworkTables();
@@ -70,9 +70,9 @@ public class NetworkTableQuerier implements Runnable {
     /**
      * Main execution thread
      */
-    public void run(){
+    public void run() {
         
-        while(runNetworkTables){
+        while (runNetworkTables) {
 
             queryNetworkTables();
              
@@ -83,7 +83,7 @@ public class NetworkTableQuerier implements Runnable {
     /**
      * Start the main execution thread
      */
-    public void start(){
+    public void start() {
 
         runNetworkTables = true;
         Thread ntThread = new Thread(this);
@@ -95,20 +95,20 @@ public class NetworkTableQuerier implements Runnable {
     /**
      * Stop the main execution thread
      */
-    public void stop(){
+    public void stop() {
 
         runNetworkTables = false;
         
     }
 
-    public NetworkTable getVisionTable(){
+    public NetworkTable getVisionTable() {
         return visionTable;
     }
 
     /**
      * Initialize network tables
      */
-    private void initNetworkTables(){
+    private void initNetworkTables() {
 
         networkTableInstance = NetworkTableInstance.getDefault();
         visionTable = networkTableInstance.getTable("vision");
@@ -129,7 +129,7 @@ public class NetworkTableQuerier implements Runnable {
     /**
      * Get values from network tables
      */
-    private void queryNetworkTables(){
+    private void queryNetworkTables() {
 
         robotStop = visionTable.getEntry("RobotStop");
         zeroGyro = navxTable.getEntry("ZeroGyro");
@@ -177,11 +177,11 @@ public class NetworkTableQuerier implements Runnable {
      * "TapeOffset"
      * "TapeDistance" 
      */
-    public synchronized double getVisionDouble(String entry){
+    public synchronized double getVisionDouble(String entry) {
 
         return visionTable.getEntry(entry).getDouble(0);
     }
-    public synchronized void putVisionDouble(String entry, double value){
+    public synchronized void putVisionDouble(String entry, double value) {
         visionTable.getEntry(entry).setDouble(value);
     }
 
@@ -194,7 +194,7 @@ public class NetworkTableQuerier implements Runnable {
      * "FoundTape"
      * "TargetLock" 
      */
-    public synchronized boolean getVisionBoolean(String entry){
+    public synchronized boolean getVisionBoolean(String entry) {
 
         return visionTable.getEntry(entry).getBoolean(false);
     }
@@ -204,7 +204,7 @@ public class NetworkTableQuerier implements Runnable {
      * Get the Found Tape flag
      * @return
      */
-    public synchronized boolean getFoundTapeFlag(){
+    public synchronized boolean getFoundTapeFlag() {
 
         return foundTape.getBoolean(false);
 
@@ -215,7 +215,7 @@ public class NetworkTableQuerier implements Runnable {
      * Get the Target Lock flag
      * @return
      */
-    public synchronized boolean getTargetLockFlag(){
+    public synchronized boolean getTargetLockFlag() {
 
         return targetLock.getBoolean(false);
 
@@ -226,7 +226,7 @@ public class NetworkTableQuerier implements Runnable {
      * Get the tape offset
      * @return
      */
-    public synchronized double getTapeOffset(){
+    public synchronized double getTapeOffset() {
 
         return tapeOffset.getDouble(0.0);
 
@@ -237,7 +237,7 @@ public class NetworkTableQuerier implements Runnable {
      * Get the tape distance
      * @return
      */
-    public synchronized double getTapeDistance(){
+    public synchronized double getTapeDistance() {
 
         return tapeDistance.getDouble(0.0);
 
@@ -248,7 +248,7 @@ public class NetworkTableQuerier implements Runnable {
      * Get the VMX gyro angle
      * @return
      */
-    public synchronized double getPiGyro(){
+    public synchronized double getPiGyro() {
 
         return navxTable.getEntry("GyroAngle").getDouble(0);
     }
@@ -257,7 +257,7 @@ public class NetworkTableQuerier implements Runnable {
     /**
      * Set the robot stop flag
      */
-    public synchronized void robotStop(){
+    public synchronized void robotStop() {
 
         robotStop.setNumber(1);
     }
@@ -266,7 +266,7 @@ public class NetworkTableQuerier implements Runnable {
     /**
      * Zero the VMX gyro
      */
-    public synchronized void zeroPiGyro(){
+    public synchronized void zeroPiGyro() {
 
         zeroGyro.setNumber(1);
     }

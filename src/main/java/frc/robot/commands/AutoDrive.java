@@ -101,7 +101,7 @@ public class AutoDrive extends CommandBase {
   @Override
   public void execute() {
 
-    if(firstRun) {
+    if (firstRun) {
       
       drivetrain.zeroEncoders();
 
@@ -134,7 +134,7 @@ public class AutoDrive extends CommandBase {
     // Enforce minimum speed
     // if (Math.abs(driveSpeed) < kAutoDriveSpeedMin) {
     //   angleCorrection = 0;
-    //   if (driveSpeed < 0){
+    //   if (driveSpeed < 0) {
     //     driveSpeed = -kAutoDriveSpeedMin;
     //   } else {
     //     driveSpeed = kAutoDriveSpeedMin;

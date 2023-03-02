@@ -65,16 +65,16 @@ public class SwerveDrive extends SubsystemBase {
     double frontLeftSpeed = Math.sqrt ((b * b) + (c * c));    
 
     //Cap wheel speeds at 1
-    if(backRightSpeed > 1.0){
+    if (backRightSpeed > 1.0) {
       backRightSpeed = 1.0;
     } 
-    if(backLeftSpeed > 1.0){
+    if (backLeftSpeed > 1.0) {
       backLeftSpeed = 1.0;
     } 
-    if(frontRightSpeed > 1.0){
+    if (frontRightSpeed > 1.0) {
       frontRightSpeed = 1.0;
     } 
-    if(frontLeftSpeed > 1.0){
+    if (frontLeftSpeed > 1.0) {
       frontLeftSpeed = 1.0;
     } 
 
@@ -86,19 +86,19 @@ public class SwerveDrive extends SubsystemBase {
     double frontRightAngle = Math.atan2 (b, c) / Math.PI * 180;
 
     //Correcting negative angles to be within 0 to 360
-    if(backRightAngle < 0)
+    if (backRightAngle < 0)
     {
       backRightAngle = 360 + backRightAngle;
     }
-    if(backLeftAngle < 0)
+    if (backLeftAngle < 0)
     {
       backLeftAngle = 360 + backLeftAngle;
     }
-    if(frontRightAngle < 0)
+    if (frontRightAngle < 0)
     {
       frontRightAngle = 360 + frontRightAngle;
     }
-    if(frontLeftAngle < 0)
+    if (frontLeftAngle < 0)
     {
       frontLeftAngle = 360 + frontLeftAngle;
     }
@@ -114,7 +114,7 @@ public class SwerveDrive extends SubsystemBase {
     SmartDashboard.putNumber("front left angle", frontLeftAngle);
 
     //Checking if robot is in park mode 
-    if(Math.abs(leftX) < joystickDeadband && Math.abs(leftY) < joystickDeadband && Math.abs(rightX) < joystickDeadband){
+    if (Math.abs(leftX) < joystickDeadband && Math.abs(leftY) < joystickDeadband && Math.abs(rightX) < joystickDeadband) {
 
       // Stop motors without turning wheels
       leftFront.stop();
@@ -154,7 +154,7 @@ public class SwerveDrive extends SubsystemBase {
 
   }
 
-  public double getGyroAngle(){
+  public double getGyroAngle() {
 
     double correctedGyro = gyro_filter.calculate(gyro.getAngle() % 360.0);
     return correctedGyro;
@@ -181,14 +181,14 @@ public class SwerveDrive extends SubsystemBase {
    * Reset current gyro heading to zero
    * 
    */
-  public void zeroGyro(){
+  public void zeroGyro() {
     // gyro.calibrate();
     gyro.reset();
 
   }
 
   /** Zero the encoders */
-  public void zeroEncoders(){
+  public void zeroEncoders() {
 
     leftFront.zeroEncoder();
     rightFront.zeroEncoder();
@@ -198,25 +198,25 @@ public class SwerveDrive extends SubsystemBase {
   }
 
   //Gets encoder value for left front drive motor
-  public double getLeftFrontDriveEncoder(){
+  public double getLeftFrontDriveEncoder() {
 
     return leftFront.getDriveEncoderPosition();
   }
 
   //Gets encoder value for right front drive motor
-  public double getRightFrontDriveEncoder(){
+  public double getRightFrontDriveEncoder() {
 
     return rightFront.getDriveEncoderPosition();
   }
 
   //Gets encoder value for left back drive motor
-  public double getLeftBackDriveEncoder(){
+  public double getLeftBackDriveEncoder() {
 
     return leftBack.getDriveEncoderPosition();
   }
 
   //Gets encoder value for right back drive motor
-  public double getRightBackDriveEncoder(){
+  public double getRightBackDriveEncoder() {
 
     return rightBack.getDriveEncoderPosition();
   }

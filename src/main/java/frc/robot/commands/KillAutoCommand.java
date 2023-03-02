@@ -24,7 +24,7 @@ public class KillAutoCommand extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(killAuto == false){
+    if (killAuto == false) {
       killAuto = true;
     } else {
       killAuto = false;

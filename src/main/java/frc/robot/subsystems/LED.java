@@ -24,7 +24,7 @@ public class LED extends SubsystemBase {
     // This method will be called once per scheduler run
   }
 
-  public void setColor(double color){
+  public void setColor(double color) {
     
     ledController.set(color);
   }

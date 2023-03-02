@@ -32,22 +32,22 @@ public class Pneumatics extends SubsystemBase {
   }
 
   //Extend with the solenoid
-  public void grab(){
+  public void grab() {
     grabber.set(Value.kReverse);
   }
 
   //Retract with the solenoid
-  public void letGo(){
+  public void letGo() {
     grabber.set(Value.kForward);
   }
 
   //Apply the brake
-  public void applyBrake(){
+  public void applyBrake() {
     brake.set(Value.kReverse); //Need to test if this applies or releases
   }
 
   //Release the brake
-  public void releaseBrake(){
+  public void releaseBrake() {
     brake.set(Value.kForward); //Need to test if this applies or releases
   }
 }

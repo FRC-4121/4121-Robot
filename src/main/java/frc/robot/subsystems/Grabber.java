@@ -21,12 +21,12 @@ public class Grabber extends SubsystemBase {
     // This method will be called once per scheduler run
   }
 
-  public void runIntake(double speed){
+  public void runIntake(double speed) {
 
     intake.set(speed);
   }
 
-  public void stopIntake(){
+  public void stopIntake() {
 
     intake.set(0);
   }

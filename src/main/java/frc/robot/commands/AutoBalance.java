@@ -101,7 +101,7 @@ public class AutoBalance extends CommandBase {
   @Override
   public void execute() {
 
-    if(firstRun) {
+    if (firstRun) {
 
       gyroOffset = ntables.getPiGyro();
       SmartDashboard.putNumber("Gyro Offset", gyroOffset);
@@ -134,7 +134,7 @@ public class AutoBalance extends CommandBase {
     }
 
     //Checking if we have reached the top yet
-    if(isClimbing && !reachedTop) {
+    if (isClimbing && !reachedTop) {
       if (Math.abs(currentPitch) < topThreshold) {
         if (topCounter >= topTargetCount) {
           isClimbing = false;

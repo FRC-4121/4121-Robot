@@ -75,7 +75,7 @@ public class Ballistics {
      * @param wheelD: The diameter, in inches, of the flywheel
      * @param slip: The percent of wheel speed that is converted to linear speed of the missile (due to the single-wheel design, much is lost as rotational speed)
      */
-    public Ballistics(double targetH, double launchH, double tolerance, double maxRPM, double wheelD, double slip){
+    public Ballistics(double targetH, double launchH, double tolerance, double maxRPM, double wheelD, double slip) {
 
         //Initiailize class values
         destinationHeight = targetH;
@@ -99,7 +99,7 @@ public class Ballistics {
 
     }
 
-    public double[][] generateBallisticsTable(){
+    public double[][] generateBallisticsTable() {
 
         //Table to be filled and returned
         double[][] table = new double[(maxDistance - minDistance)/distanceIncrement + 1][argumentCount]; //this makes a matrix of [distance, angle, speed, height, possibility(is the shot possible)] for each of the potential distance
@@ -108,7 +108,7 @@ public class Ballistics {
         double startDistance = minDistance;
       
         //Loop through the distances foot by foot
-        for(int i = 0; i < table.length; i++){ //length is number of rows. which is different distances
+        for (int i = 0; i < table.length; i++) { //length is number of rows. which is different distances
  
             //At each foot, calculate the optimal angle and speed
             double optimalAngle = 0;
@@ -119,10 +119,10 @@ public class Ballistics {
             double bestHeight = 0;
             
             //For each angle...
-            for(int a = minAngle; a <= maxAngle; a += angleIncrement){
+            for (int a = minAngle; a <= maxAngle; a += angleIncrement) {
 
                 //and each speed at each angle...
-                for(int s = minSpeed; s <= maxSpeed; s++){
+                for (int s = minSpeed; s <= maxSpeed; s++) {
 
                     //calculate the height that the ball will be at when it hits the wall and error from target
                     double speed = s / 100.0;
@@ -130,7 +130,7 @@ public class Ballistics {
                     double error = abs(targetHeight - height);
 
                     //If the error is the smallest yet, assign values of this configuration to place in the table
-                    if(error < minError){
+                    if (error < minError) {
 
                         optimalSpeed = speed;
                         optimalAngle = a;
@@ -158,7 +158,7 @@ public class Ballistics {
     }
 
     //Input distance in feet, angle in degrees, speed in percent; output height(the ball will land at distance away) in inches
-    public double calculateHeight(double distance, double angle, double speed){
+    public double calculateHeight(double distance, double angle, double speed) {
         //this equation looks like the one from @Link:https://byjus.com/trajectory-formula/#:~:text=Trajectory%20formula%20is%20given%20by%20y%20%3D%20xtan%CE%B8%E2%88%92,2%20%CE%B8%20Where%2C%20y%20is%20the%20horizontal%20component%2C
         
         //Derived from parametric equations of t based on basic trajectories.  Does not account for air resistance; this should be accounted for in the 'slip factor'
@@ -187,7 +187,7 @@ public class Ballistics {
 
  
     //Actually grab shot configurations from the table
-    public double[] queryBallisticsTable(double distance){
+    public double[] queryBallisticsTable(double distance) {
 
         double[] tableValues = new double[4];
 
@@ -199,7 +199,7 @@ public class Ballistics {
         double distError = 100;//obscenely large to avoid problems
 
         //If outside the limits of the mechanism, the shot is not possible and we return immediately
-        if(distance < (double) minDistance || distance > (double) maxDistance){
+        if (distance < (double) minDistance || distance > (double) maxDistance) {
 
             tableValues[0] = 0;
             tableValues[1] = 0;
@@ -211,13 +211,13 @@ public class Ballistics {
         //Otherwise, compare the entered distance to the incremented distances in the table and grab data
         } else {
 
-            for(int i = 0; i < ballisticsTable.length; i++){
+            for (int i = 0; i < ballisticsTable.length; i++) {
 
                 double error = abs(ballisticsTable[i][0] - distance);
                 //System.out.println(error);
                 //System.out.println(distError);
 
-                if(error < distError){ //checks to get best values.
+                if (error < distError) { //checks to get best values.
 
                     distError = error;
                     shotPossible = ballisticsTable[i][4];
@@ -238,7 +238,7 @@ public class Ballistics {
     }
 
 
-    public static void main(String[] args){
+    public static void main(String[] args) {
 
         
 
@@ -264,7 +264,7 @@ public class Ballistics {
             bw.write("[distance\t angle\t speed\t height\t possibility] \n");
             for (int i = 0; i< table.length; i++ )
             {
-                for(int j = 0; j<5;j++)
+                for (int j = 0; j<5;j++)
                 bw.write(" \t " + Math.round(table[i][j]) + " ");
                 bw.write("\n");
             }
@@ -288,7 +288,7 @@ public class Ballistics {
 
         System.out.print("Start Calculations? (Y/N) ");
 
-        while(scIn.next().toUpperCase().equals("Y")){
+        while (scIn.next().toUpperCase().equals("Y")) {
 
             System.out.print("Please enter a distance in inches: ");
             double distance = scIn.nextDouble();
@@ -298,7 +298,7 @@ public class Ballistics {
             double[] tableQuery = ballistics.queryBallisticsTable(distance);
             System.out.println("Calculating...");
             
-            if(tableQuery[0] == 1){
+            if (tableQuery[0] == 1) {
 
                 System.out.println("Shot possible at distance of " + distance + " inches.");
                 System.out.println("Parameters: ");

@@ -91,7 +91,7 @@ public class AutoDriveToBall extends CommandBase {
     //actualGyro = drivetrain.getGyroAngle();
 
     // Update target gyro angle unless we are holding
-    if (holdGyro == false){
+    if (holdGyro == false) {
       targetGyro = actualGyro;
     }
     
@@ -100,14 +100,14 @@ public class AutoDriveToBall extends CommandBase {
 
     // Calculate correction based on ball offset if far away
     // or based on gyro angle if close enough
-    if (holdGyro == false){
+    if (holdGyro == false) {
       //angleCorrection = pidAngle.run(ballOffset, 0);
     } else {
       //angleCorrection = pidAngle.run(actualGyro, targetGyro);
     }
     
     // Calculate speed correction based on distance
-   // if ((ballDistance > 30) && foundBall == true){
+   // if ((ballDistance > 30) && foundBall == true) {
      // speedCorrection = 1;
     //}else{
       //speedCorrection = 1;
@@ -149,10 +149,10 @@ public class AutoDriveToBall extends CommandBase {
     SmartDashboard.putNumber("Auto Start Time", startTime);
     SmartDashboard.putBoolean("BallOnBoard", ballOnBoard);
 
-    if(ballOnBoard == false) {
+    if (ballOnBoard == false) {
       thereYet = true;
     }
-    else if (stopTime <= time - startTime){
+    else if (stopTime <= time - startTime) {
       thereYet = true;
     }
     else if (killAuto == true)

@@ -47,11 +47,22 @@ public final class Constants {
     public static final Gains extendGains = new Gains(0.2,0.0,0.0,0.2,0,1.0);
     public static final double rotateVelocity = 15000;
     public static final double rotateAcceleration = 6000;
+    public static final double RotateStartPosition = 90;
+    public static final double RotateFloorPosition = 180;
+    public static final double RotateMidPosition = 135;
+    public static final double RotateHighPosition = 110;
+    public static final double ExtendStartPosition = 0;
+    public static final double ExtendFloorPosition = 10;
+    public static final double ExtendMidPosition = 20;
+    public static final double ExtendHighPosition = 30;
 
-    // Wrist ID's
+    public static final int RotatePositions[] = {90, 0, 0, 0}; // Start, Floor, Mid, High
+    public static final double ExtendPositions[] = { 0, 0, 0, 0};
+
+    // Wrist
     public static final int WristID = 9; // Need to find
 
-    // Grabber ID's
+    // Grabber
     public static final int Intake = 21;
     public static Boolean Grabbed = false;
 

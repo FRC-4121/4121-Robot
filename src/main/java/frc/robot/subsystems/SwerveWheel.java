@@ -102,17 +102,17 @@ public class SwerveWheel extends SubsystemBase {
     
   }
 
-  public void drive(double speed, double angle){
+  public void drive(double speed, double angle) {
 
     //Normalize target to have a max value of 1
     double target = angle / 360.0;
-    if(target == 1.0){
+    if (target == 1.0) {
       target = 0.0;
     }
 
     //Normalize encoder to have a max value of 1 and correct for discontinuity at 360 degrees (should be 0)
     double encoderAngle = canCoder.getAbsolutePosition() / 360;
-    if(encoderAngle == 1.0){
+    if (encoderAngle == 1.0) {
       encoderAngle = 0.0;
     }
 
@@ -120,11 +120,11 @@ public class SwerveWheel extends SubsystemBase {
     SmartDashboard.putNumber("Wheel "+ wheelID, encoderAngle);
   
     //Determine shortest rotation distance
-    if(Math.abs(target - encoderAngle) > 0.5)
+    if (Math.abs(target - encoderAngle) > 0.5)
     {
       double diff = 1 - Math.abs(target - encoderAngle);
       target = target + diff;
-      if(target >= 1.0){
+      if (target >= 1.0) {
         target = target - 1.0;
       }
       encoderAngle = encoderAngle + diff;
@@ -143,10 +143,10 @@ public class SwerveWheel extends SubsystemBase {
     double angleSpeed = output * angleSpeedLimiter;
     
     //Capping angleSpeed to max that the motor can take, from -1 to 1
-    if(angleSpeed > 1)
+    if (angleSpeed > 1)
     {
       angleSpeed = 1;
-    } else if(angleSpeed < -1)
+    } else if (angleSpeed < -1)
     {
       angleSpeed = -1;
     }
@@ -160,7 +160,7 @@ public class SwerveWheel extends SubsystemBase {
     //Enforce minimum angle speed, 0.0028 is one degree
     // double angleDiff = target - encoderAngle;
     // double angleError = Math.abs(angleDiff);
-    // if(angleError < 0.01)
+    // if (angleError < 0.01)
     // {
     //   if (angleError > 0.001)
     //   {
@@ -193,19 +193,19 @@ public class SwerveWheel extends SubsystemBase {
 
 
   //Get the encoder value of the drive motor
-  public double getDriveEncoderPosition(){
+  public double getDriveEncoderPosition() {
 
     return swerveDriveMotor.getSelectedSensorPosition();
 
   }
 
   //Zeros the encoder for the drive motor
-  public void zeroEncoder(){
+  public void zeroEncoder() {
 
     swerveDriveMotor.setSelectedSensorPosition(0);
   }
 
-  public void stop(){
+  public void stop() {
 
     swerveDriveMotor.set(0);
     swerveAngleMotor.set(0);

@@ -19,15 +19,16 @@ public class AutoExtendArm extends CommandBase {
   private double targetLength;
   private double currentPosition;
   private double tolerance;
+  private boolean forward; //this shows if the arm is extending forward or backward
+  private int autoPosition; 
   
   
   /** Creates a new AutoExtendArm. */
-  public AutoExtendArm(ArmExtend army, double time, double length) {
+  public AutoExtendArm(ArmExtend army, int position, double time) {
     
     arm = army;
     stopTime = time;
-    targetPosition = length;
-    targetLength = length;
+    autoPosition = position;
     
     addRequirements(arm);
     
@@ -41,7 +42,26 @@ public class AutoExtendArm extends CommandBase {
     timer.start();
     startTime = timer.get();
   
-    tolerance = 1000;
+    tolerance = 1000; //This needs to be found
+    targetPosition = 0;
+
+    //Set the target length based off of the expected position
+    if (autoPosition == 1) {
+      targetLength = ExtendStartPosition;
+    }
+    else if (autoPosition == 2) {
+      targetLength = ExtendFloorPosition;
+    }
+    else if (autoPosition == 3) {
+      targetLength = ExtendMidPosition;
+    }
+    else if (autoPosition == 4) {
+      targetLength = ExtendHighPosition;
+    }
+    
+    //Default is going up
+    forward = true;
+
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -52,6 +72,12 @@ public class AutoExtendArm extends CommandBase {
 
     //Converting target length to encoder units
     targetPosition = extendSlope * targetLength + extendIntercept;
+
+    if (targetPosition > currentPosition) {
+      forward = true;
+    } else{
+      forward = false;
+    }
     
     arm.extendArmToPosition(targetPosition);
 
@@ -70,21 +96,25 @@ public class AutoExtendArm extends CommandBase {
   public boolean isFinished() {
     boolean doneYet = false;
    
-    if(killAuto == true)
+    if (killAuto == true)
     {
       doneYet = true;
     } 
-    if(timer.get() >= stopTime)
+    if (timer.get() - startTime >= stopTime)
     {
       doneYet = true;
     }
-    if(currentPosition >= targetPosition-tolerance || currentPosition <= targetPosition + tolerance){
+    if (currentPosition >= targetPosition-tolerance || currentPosition <= targetPosition + tolerance) {
       doneYet = true;
     }
-    if(arm.getExtendSwitchValue()){
+    if (forward) {
+      if (arm.getExtendSwitchValue()) {
+        doneYet = true;
+      }
+    } else if (arm.getHomeSwitchValue()) {
+
       doneYet = true;
-    }
-    
+    }    
     
     return doneYet;
   }

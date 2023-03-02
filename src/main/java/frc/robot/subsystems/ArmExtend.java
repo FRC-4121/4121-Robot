@@ -58,34 +58,34 @@ public class ArmExtend extends SubsystemBase {
     // This method will be called once per scheduler run
   }
 
-  public void extendArm(double speed){
+  public void extendArm(double speed) {
     
     extend.set(speed); //Need to test to see if we have to invert this
   }
 
   //Position is in inches
-  public void extendArmToPosition(double position){
+  public void extendArmToPosition(double position) {
 
     extend.set(TalonFXControlMode.MotionMagic, position);
     
   }
 
   // Stop the arm
-  public void stopArm(){
+  public void stopArm() {
 
     extend.set(0);
 
   }
 
   // Get current encoder position
-  public double getExtendEncoder(){
+  public double getExtendEncoder() {
 
     return extend.getSelectedSensorPosition();
 
   }
 
   // Set the current encoder position as the zero position
-  public void zeroExtendEncoder(){
+  public void zeroExtendEncoder() {
 
     extend.setSelectedSensorPosition(0);
 

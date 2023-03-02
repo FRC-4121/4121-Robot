@@ -107,7 +107,7 @@ public class Drivetrain extends SubsystemBase {
    * and configure encoders for left and right sides
    * 
    */
-  private void initFalconDrivetrain(){
+  private void initFalconDrivetrain() {
 
     //Init motors, speed controller groups, and drivetrain
     leftMasterFalcon = new WPI_TalonFX(LEFT_MASTER_F);
@@ -167,7 +167,7 @@ public class Drivetrain extends SubsystemBase {
     // Drive the motors
     // Direction multiplier indicates drive direction
     SmartDashboard.putNumber("Invert DRive", DIRECTION_MULTIPLIER);
-    if(DIRECTION_MULTIPLIER == 1){
+    if (DIRECTION_MULTIPLIER == 1) {
       SmartDashboard.putNumber("Left Drive Speed", currentGear * DIRECTION_MULTIPLIER * leftJoyY);
       SmartDashboard.putNumber("Right Drive Speed", currentGear * DIRECTION_MULTIPLIER * rightJoyY);
       drivetrain.tankDrive(currentGear * DIRECTION_MULTIPLIER * leftJoyY * kSpeedCorrection, currentGear * DIRECTION_MULTIPLIER * rightJoyY);    
@@ -192,7 +192,7 @@ public class Drivetrain extends SubsystemBase {
    * @param rightSpeed: speed for right side motors
    * 
    */
-  public void autoDrive(double leftSpeed, double rightSpeed){
+  public void autoDrive(double leftSpeed, double rightSpeed) {
     SmartDashboard.putNumber("Left Drive Speed", leftSpeed);
     SmartDashboard.putNumber("Right Drive Speed", rightSpeed);
     drivetrain.tankDrive(leftSpeed, rightSpeed);
@@ -200,14 +200,14 @@ public class Drivetrain extends SubsystemBase {
 
 
   /** Stop the drive train */
-  public void stopDrive(){
+  public void stopDrive() {
 
     drivetrain.tankDrive(0, 0);
   }
 
 
   /** Zero the encoders */
-  public void zeroEncoders(){
+  public void zeroEncoders() {
 
     leftMasterFalcon.setSelectedSensorPosition(0);
     leftSlaveFalcon.setSelectedSensorPosition(0);
@@ -224,7 +224,7 @@ public class Drivetrain extends SubsystemBase {
    * @return array of encoder positions
    * 
    */
-  public double[] getLeftEncoders(){
+  public double[] getLeftEncoders() {
 
     double[] encoders = new double[2];
 
@@ -243,7 +243,7 @@ public class Drivetrain extends SubsystemBase {
    * @return array of encoder positions 
    * 
    */
-  public double[] getRightEncoders(){
+  public double[] getRightEncoders() {
 
     double[] encoders = new double[2];
 
@@ -262,7 +262,7 @@ public class Drivetrain extends SubsystemBase {
    * @return encoder position
    * 
    */
-  public double getMasterLeftEncoderPosition(){
+  public double getMasterLeftEncoderPosition() {
 
     return leftMasterFalcon.getSelectedSensorPosition();
 
@@ -276,7 +276,7 @@ public class Drivetrain extends SubsystemBase {
    * @return encoder position
    * 
    */
-  public double getMasterRightEncoderPosition(){
+  public double getMasterRightEncoderPosition() {
 
     return rightMasterFalcon.getSelectedSensorPosition();
 
@@ -288,7 +288,7 @@ public class Drivetrain extends SubsystemBase {
    * Reset current gyro heading to zero
    * 
    */
-  public void zeroGyro(){
+  public void zeroGyro() {
     // gyro.calibrate();
     gyro.reset();
 
@@ -296,15 +296,15 @@ public class Drivetrain extends SubsystemBase {
   
 
   /** Invert the direction of driving */
-  public void invertDirection(){
+  public void invertDirection() {
 
     DIRECTION_MULTIPLIER *= -1;
 
   }
 
-  public void changeGears(){
+  public void changeGears() {
 
-    if(currentGear == kLowGearMultiplier)
+    if (currentGear == kLowGearMultiplier)
     {
       currentGear = kHighGearMultiplier;
     } else{
@@ -313,7 +313,7 @@ public class Drivetrain extends SubsystemBase {
     }
   }
   
-  public double getGyroAngle(){
+  public double getGyroAngle() {
 
     double correctedGyro = gyro_filter.calculate(gyro.getAngle() % 360.0);
     return correctedGyro;

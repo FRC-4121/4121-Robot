@@ -25,7 +25,7 @@ public class PIDControl {
     private double timeStep = 0.02;
     private double correctionFactor;
 
-    public PIDControl(double gainP, double integralI, double derivativeD){
+    public PIDControl(double gainP, double integralI, double derivativeD) {
 
         kP = gainP;
         kI = integralI;

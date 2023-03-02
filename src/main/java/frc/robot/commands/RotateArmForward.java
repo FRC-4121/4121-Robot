@@ -39,7 +39,7 @@ public class RotateArmForward extends CommandBase {
   public void execute() {
 
     //On the first run, release the brake so we can move
-    if(!isReleased){
+    if (!isReleased) {
       pneumatic.releaseBrake();
     }
 

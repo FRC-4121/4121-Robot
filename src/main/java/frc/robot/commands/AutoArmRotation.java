@@ -23,12 +23,13 @@ public class AutoArmRotation extends CommandBase {
   private double startTime;
   private double stopTime;
   private double tolerance;
+  private int autoPosition;
   
   /** Creates a new AutoArmRotation. */
-  public AutoArmRotation(ArmRotate armRotate, double angle, double time, Pneumatics pneumatics) {
+  public AutoArmRotation(ArmRotate armRotate, int position, double time, Pneumatics pneumatics) {
     
     arm = armRotate;
-    targetAngle = angle;
+    autoPosition = position;
     stopTime = time;
     pneumatic = pneumatics;
     
@@ -46,6 +47,20 @@ public class AutoArmRotation extends CommandBase {
      isReleased = false;
 
      tolerance = 1000;
+
+     //Set the target Angle based off of the expected position
+    if (autoPosition == 1) {
+      targetAngle = RotateStartPosition;
+    }
+    else if (autoPosition == 2) {
+      targetAngle = RotateFloorPosition;
+    }
+    else if (autoPosition == 3) {
+      targetAngle = RotateMidPosition;
+    }
+    else if (autoPosition == 4) {
+      targetAngle = RotateHighPosition;
+    }
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -53,7 +68,7 @@ public class AutoArmRotation extends CommandBase {
   public void execute() {
 
     //On the first run, release the brake so we can move
-    if(!isReleased){
+    if (!isReleased) {
       pneumatic.releaseBrake();
     }
 
@@ -87,15 +102,15 @@ public class AutoArmRotation extends CommandBase {
     
     boolean doneYet = false;
    
-    if(killAuto == true)
+    if (killAuto == true)
     {
       doneYet = true;
     } 
-    if(timer.get() >= stopTime)
+    if (timer.get() - startTime >= stopTime)
     {
       doneYet = true;
     }
-    if(currentPosition >= targetPosition-tolerance || currentPosition <= targetPosition + tolerance)
+    if (currentPosition >= targetPosition-tolerance || currentPosition <= targetPosition + tolerance)
     {
       doneYet = true;
     }
