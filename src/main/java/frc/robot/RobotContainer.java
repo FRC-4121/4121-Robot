@@ -129,8 +129,8 @@ public class RobotContainer {
     letGoButton = new JoystickButton(secondaryXbox,xboxLeftBumber);
     
     //Going to use triggers for these
-    rotateArmBackwardButton = new JoystickButton(xbox,1);
-    rotateArmForwardButton = new JoystickButton(xbox,2);  
+    rotateArmBackwardButton = new JoystickButton(xbox,xboxAButton);
+    rotateArmForwardButton = new JoystickButton(xbox,xboxBButton);  
 
     //launchpad buttons/switches
     killAutoButton = new JoystickButton(launchpad,LaunchPadButton1);

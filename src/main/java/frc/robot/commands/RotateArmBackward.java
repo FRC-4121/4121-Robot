@@ -59,7 +59,7 @@ public class RotateArmBackward extends CommandBase {
     if (currentSpeed > 0) {
       currentSpeed = currentSpeed - rotateRampRate;
     }
-    arm.rotate(currentSpeed);
+    arm.rotate(-currentSpeed);
 
     //Apply the brake so we stop moving
     pneumatic.applyBrake();

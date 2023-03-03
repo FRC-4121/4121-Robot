@@ -27,7 +27,7 @@ public final class Constants {
     public static final int RIGHT_SLAVE_F = 4;
 
     // Arm
-    public static final int Extend = 15; // Need to find
+    public static final int Extend = 15; 
     public static final int Rotate1 = 16; 
     public static final int Rotate2 = 17;
     public static final int HomeSwitchID = 0;
@@ -37,7 +37,7 @@ public final class Constants {
     public static final double autoArmkP = 0.01;
     public static final double autoArmkI = 0.01;
     public static final double autoArmkD = 0.01;
-    public static final double rotateSpeed = 0.7;
+    public static final double rotateSpeed = 0.1;
     public static final double rotateRampRate = 0.035;
     public static final double rotateSlope = 1;
     public static final double rotateIntercept = 0;

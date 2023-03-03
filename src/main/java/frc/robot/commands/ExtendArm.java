@@ -27,7 +27,7 @@ public class ExtendArm extends CommandBase {
   @Override
   public void execute() {
 
-    m_arm.extendArm(0.5);
+    m_arm.extendArm(0.1);
   }
 
   // Called once the command ends or is interrupted.
