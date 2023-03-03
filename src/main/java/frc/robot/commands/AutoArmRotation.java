@@ -23,13 +23,12 @@ public class AutoArmRotation extends CommandBase {
   private double startTime;
   private double stopTime;
   private double tolerance;
-  private int autoPosition;
   
   /** Creates a new AutoArmRotation. */
-  public AutoArmRotation(ArmRotate armRotate, int position, double time, Pneumatics pneumatics) {
+  public AutoArmRotation(ArmRotate armRotate, double angle, double time, Pneumatics pneumatics) {
     
     arm = armRotate;
-    autoPosition = position;
+    targetAngle = angle;
     stopTime = time;
     pneumatic = pneumatics;
     
@@ -48,19 +47,6 @@ public class AutoArmRotation extends CommandBase {
 
      tolerance = 1000;
 
-     //Set the target Angle based off of the expected position
-    if (autoPosition == 1) {
-      targetAngle = RotateStartPosition;
-    }
-    else if (autoPosition == 2) {
-      targetAngle = RotateFloorPosition;
-    }
-    else if (autoPosition == 3) {
-      targetAngle = RotateMidPosition;
-    }
-    else if (autoPosition == 4) {
-      targetAngle = RotateHighPosition;
-    }
   }
 
   // Called every time the scheduler runs while the command is scheduled.

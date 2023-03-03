@@ -19,16 +19,15 @@ public class AutoExtendArm extends CommandBase {
   private double targetLength;
   private double currentPosition;
   private double tolerance;
-  private boolean forward; //this shows if the arm is extending forward or backward
-  private int autoPosition; 
+  private boolean forward; //this shows if the arm is extending forward or backward 
   
   
   /** Creates a new AutoExtendArm. */
-  public AutoExtendArm(ArmExtend army, int position, double time) {
+  public AutoExtendArm(ArmExtend army, double length, double time) {
     
     arm = army;
     stopTime = time;
-    autoPosition = position;
+    targetLength = length;
     
     addRequirements(arm);
     
@@ -44,20 +43,6 @@ public class AutoExtendArm extends CommandBase {
   
     tolerance = 1000; //This needs to be found
     targetPosition = 0;
-
-    //Set the target length based off of the expected position
-    if (autoPosition == 1) {
-      targetLength = ExtendStartPosition;
-    }
-    else if (autoPosition == 2) {
-      targetLength = ExtendFloorPosition;
-    }
-    else if (autoPosition == 3) {
-      targetLength = ExtendMidPosition;
-    }
-    else if (autoPosition == 4) {
-      targetLength = ExtendHighPosition;
-    }
     
     //Default is going up
     forward = true;

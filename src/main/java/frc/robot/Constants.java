@@ -47,17 +47,14 @@ public final class Constants {
     public static final Gains extendGains = new Gains(0.2,0.0,0.0,0.2,0,1.0);
     public static final double rotateVelocity = 15000;
     public static final double rotateAcceleration = 6000;
-    public static final double RotateStartPosition = 90;
-    public static final double RotateFloorPosition = 180;
-    public static final double RotateMidPosition = 135;
-    public static final double RotateHighPosition = 110;
-    public static final double ExtendStartPosition = 0;
-    public static final double ExtendFloorPosition = 10;
-    public static final double ExtendMidPosition = 20;
-    public static final double ExtendHighPosition = 30;
-
-    public static final int RotatePositions[] = {90, 0, 0, 0}; // Start, Floor, Mid, High
-    public static final double ExtendPositions[] = { 0, 0, 0, 0};
+    public static final double RotateStartAngle = 90;
+    public static final double RotateFloorAngle = 180;
+    public static final double RotateMidAngle = 135;
+    public static final double RotateHighAngle = 110;
+    public static final double ExtendStartLength = 0;
+    public static final double ExtendFloorLength = 10;
+    public static final double ExtendMidLength = 20;
+    public static final double ExtendHighLength = 30;
 
     // Wrist
     public static final int WristID = 9; // Need to find

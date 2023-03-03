@@ -7,6 +7,7 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
+import static frc.robot.Constants.*;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
@@ -16,6 +17,6 @@ public class AutoArmStartPos extends ParallelCommandGroup {
   public AutoArmStartPos(ArmRotate armRotate, Pneumatics pneumatic, ArmExtend armExtend) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    addCommands(new AutoArmRotation(armRotate,1,5,pneumatic), new AutoExtendArm(armExtend,1,0));
+    addCommands(new AutoArmRotation(armRotate,RotateStartAngle,5,pneumatic), new AutoExtendArm(armExtend,ExtendStartLength,5));
   }
 }
