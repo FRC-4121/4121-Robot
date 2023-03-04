@@ -17,6 +17,7 @@ public class AutoArmStartPos extends ParallelCommandGroup {
   public AutoArmStartPos(ArmRotate armRotate, Pneumatics pneumatic, ArmExtend armExtend) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    addCommands(new AutoArmRotation(armRotate,RotateStartAngle,5,pneumatic), new AutoExtendArm(armExtend,ExtendStartLength,5));
+    //addCommands(new AutoArmRotation(armRotate,RotateStartAngle,5,pneumatic), new AutoExtendArm(armExtend,ExtendStartLength,5));
+    addCommands(new AutoArmRotation(armRotate,RotateStartAngle,20,pneumatic));
   }
 }

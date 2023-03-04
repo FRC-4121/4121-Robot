@@ -10,6 +10,7 @@ import frc.robot.subsystems.ArmRotate;
 import frc.robot.subsystems.Pneumatics;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class AutoArmRotation extends CommandBase {
   
@@ -17,7 +18,6 @@ public class AutoArmRotation extends CommandBase {
   private Pneumatics pneumatic;
   private boolean isReleased;
   private double targetAngle;
-  private double targetPosition;
   private double currentPosition;
   private Timer timer;
   private double startTime;
@@ -40,12 +40,13 @@ public class AutoArmRotation extends CommandBase {
   public void initialize() {
      
     // Start the timer and get initial time
-     timer.start();
-     startTime = timer.get();
+    timer = new Timer(); 
+    timer.start();
+    startTime = timer.get();
 
-     isReleased = false;
+    isReleased = false;
 
-     tolerance = 1000;
+    tolerance = 100;
 
   }
 
@@ -56,16 +57,26 @@ public class AutoArmRotation extends CommandBase {
     //On the first run, release the brake so we can move
     if (!isReleased) {
       pneumatic.releaseBrake();
+      isReleased = true;
     }
 
     //Calculating the target position based off of an equation found by testing
-    targetPosition = rotateSlope * targetAngle + rotateIntercept;
+    //targetPosition = rotateSlope * targetAngle + rotateIntercept;
     
     //Get the currentPosition
     currentPosition = arm.getMasterEncoder();
+
+    if(currentPosition < targetAngle){
+      arm.rotate(autoRotateSpeed);
+    } else{
+      arm.rotate(-autoRotateSpeed);
+    }
     
     //Call method to rotate to an encoder postion with smoothing
-    arm.rotateToPosition(targetPosition);
+    //arm.rotateToPosition(targetAngle);
+
+    //Put values on Smart Dashboard
+    SmartDashboard.putNumber("Rotate Position", arm.getMasterEncoder());  
 
   }
 
@@ -96,10 +107,12 @@ public class AutoArmRotation extends CommandBase {
     {
       doneYet = true;
     }
-    if (currentPosition >= targetPosition-tolerance || currentPosition <= targetPosition + tolerance)
+    if (currentPosition >= targetAngle-tolerance && currentPosition <= targetAngle + tolerance)
     {
       doneYet = true;
     }
+
+    SmartDashboard.putBoolean("Arm Rotate Done",doneYet);
     
     return doneYet;
   }

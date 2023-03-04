@@ -6,6 +6,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import static frc.robot.Constants.*;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 
 public class KillAutoCommand extends CommandBase {
@@ -29,6 +30,8 @@ public class KillAutoCommand extends CommandBase {
     } else {
       killAuto = false;
     }
+
+    SmartDashboard.putBoolean("Kill Auto",killAuto);
      //if kill button clicked execute
   }
 

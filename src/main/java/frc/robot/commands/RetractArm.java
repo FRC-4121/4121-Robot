@@ -27,7 +27,7 @@ public class RetractArm extends CommandBase {
   @Override
   public void execute() {
 
-    m_arm.extendArm(-0.1);
+    m_arm.extendArm(-0.4);
   }
 
   // Called once the command ends or is interrupted.
@@ -43,10 +43,10 @@ public class RetractArm extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (m_arm.getHomeSwitchValue()) {
-      return true;
-    } else {
+    // if (m_arm.getHomeSwitchValue()) {
+    //   return true;
+    // } else {
       return false;
-    }
+   // }
   }
 }

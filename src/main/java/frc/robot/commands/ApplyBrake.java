@@ -5,17 +5,17 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.ArmExtend;
-import static frc.robot.Constants.*;
+import frc.robot.subsystems.Pneumatics;
 
-public class ExtendArm extends CommandBase {
+public class ApplyBrake extends CommandBase {
   
-  private ArmExtend m_arm;
+  Pneumatics pneumatic;
   
-  /** Creates a new RunArmForward. */
-  public ExtendArm(ArmExtend arm) {
+  /** Creates a new ApplyBrake. */
+  public ApplyBrake(Pneumatics pneumatics) {
     
-    m_arm = arm;
+    pneumatic = pneumatics;
+    
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
@@ -27,28 +27,17 @@ public class ExtendArm extends CommandBase {
   @Override
   public void execute() {
 
-    m_arm.extendArm(0.4);
+    pneumatic.applyBrake();
+    
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
-
-    m_arm.stopArm();
-
-    //When we stop, we want it to hold its position, so the target is the latest value
-    armTargetEncoder = m_arm.getExtendEncoder();
-  }
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    
-    // if (m_arm.getExtendSwitchValue()) {
-    //   return true;
-    // } else {
-      return false;
-   // }
-    
+    return false;
   }
 }

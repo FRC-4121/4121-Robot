@@ -49,6 +49,10 @@ public class RobotContainer {
  //private final AutoBalance autoBalanceCommand = new AutoBalance(swervedrive,0.25,0,20,table);
  private final AutoGroup1 autoGroup = new AutoGroup1(swervedrive, table);
  private final AutoPlaceAndBalance autoPlaceAndBalanceCommand = new AutoPlaceAndBalance(swervedrive,table);
+ private final AutoArmStartPos autoArmStart = new AutoArmStartPos(armRotate, pneumatic,arm);
+ private final AutoArmFloorPos autoArmFloor = new AutoArmFloorPos(armRotate,pneumatic,arm);
+ private final AutoArmMidPos autoArmMid = new AutoArmMidPos(armRotate,pneumatic,arm);
+ private final AutoArmHighPos autoArmHigh = new AutoArmHighPos(armRotate,pneumatic,arm);
 
   //KillAuto Command
   private final KillAutoCommand killAutoObject = new KillAutoCommand(); 
@@ -56,8 +60,8 @@ public class RobotContainer {
   //Arm Commands
   private final ExtendArm extendArmCommand = new ExtendArm(arm);
   private final RetractArm retractArmCommand = new RetractArm(arm);
-  private final RotateArmForward rotateArmForwardCommand = new RotateArmForward(armRotate, pneumatic);
-  private final RotateArmBackward rotateArmBackwardCommand = new RotateArmBackward(armRotate, pneumatic);
+  private final RotateArmUp rotateArmUpCommand = new RotateArmUp(armRotate, pneumatic);
+  private final RotateArmDown rotateArmDownCommand = new RotateArmDown(armRotate, pneumatic);
 
   //Wrist Commands
   private final RunWristForward forwardWristCommand = new RunWristForward(wrist);
@@ -71,6 +75,10 @@ public class RobotContainer {
 
   //LED Command
   private final LEDCommand ledCommand = new LEDCommand(led);
+
+  //Brake Commands
+  private final ApplyBrake applyBrakeCommand = new ApplyBrake(pneumatic);
+  private final ReleaseBrake releaseBrakeCommand = new ReleaseBrake(pneumatic);
 
   //===BUTTONS===// //They're being initialized in RobotContainer
 
@@ -89,18 +97,24 @@ public class RobotContainer {
 
   private final Trigger extendArmButton;
   private final Trigger retractArmButton;
-  private final Trigger rotateArmForwardButton;
-  private final Trigger rotateArmBackwardButton;
+  private final Trigger rotateArmUpButton;
+  private final Trigger rotateArmDownButton;
   private final Trigger wristForwardButton;
   private final Trigger wristBackwardButton;
   private final Trigger grabberBackwardButton;
   private final Trigger grabberForwardButton;
   private final Trigger grabButton;
   private final Trigger letGoButton;
+  private final Trigger applyBrakeButton;
+  private final Trigger releaseBrakeButton;
   
   //launchpad buttons/switches
   //private final JoystickButton killAutoButton;
   private final Trigger killAutoButton;
+  private final Trigger autoArmStartButton;
+  private final Trigger autoArmFloorButton;
+  private final Trigger autoArmMidButton;
+  private final Trigger autoArmHighButton;
   private final JoystickButton AutoPos1;
   private final JoystickButton AutoPos2;
   private final JoystickButton AutoPos3;
@@ -108,7 +122,6 @@ public class RobotContainer {
   private static JoystickButton purpleButton;
   private static JoystickButton armControlButton;
   private static JoystickButton parkButton;
-  //private final JoystickButton autoClimbButton;
 
   //===CONSTRUCTOR===//
   public RobotContainer() { 
@@ -127,13 +140,19 @@ public class RobotContainer {
     grabberBackwardButton = new JoystickButton(secondaryXbox,xboxYButton);
     grabButton = new JoystickButton(secondaryXbox,xboxRightBumber);
     letGoButton = new JoystickButton(secondaryXbox,xboxLeftBumber);
+    applyBrakeButton = new JoystickButton(xbox, xboxXButton);
+    releaseBrakeButton = new JoystickButton(xbox, xboxYButton);
     
     //Going to use triggers for these
-    rotateArmBackwardButton = new JoystickButton(xbox,xboxAButton);
-    rotateArmForwardButton = new JoystickButton(xbox,xboxBButton);  
+    rotateArmDownButton = new JoystickButton(xbox,xboxAButton);
+    rotateArmUpButton = new JoystickButton(xbox,xboxBButton);  
 
     //launchpad buttons/switches
     killAutoButton = new JoystickButton(launchpad,LaunchPadButton1);
+    autoArmStartButton = new JoystickButton(launchpad,LaunchPadSwitch1top);
+    autoArmFloorButton = new JoystickButton(launchpad,LaunchPadSwitch1bottom);
+    autoArmMidButton = new JoystickButton(launchpad,LaunchPadSwitch2bottom);
+    autoArmHighButton = new JoystickButton(launchpad,LaunchPadSwitch2top);
     AutoPos1 = new JoystickButton(launchpad,LaunchPadDial1);
     AutoPos2 = new JoystickButton(launchpad,LaunchPadDial2);
     AutoPos3 = new JoystickButton(launchpad,LaunchPadDial3);
@@ -160,6 +179,11 @@ public class RobotContainer {
     // Configure the button bindings
     configureButtonBindings();
 
+    //Zero the encoders when robot starts up
+    armRotate.zeroEncoder();
+
+    //Put the encoder value on the smart dashboard
+    SmartDashboard.putNumber("Rotate Position", armRotate.getMasterEncoder());
 
   }
 
@@ -186,21 +210,27 @@ public class RobotContainer {
   
   private void configureButtonBindings() {
 
-    //kill auto
-    killAutoButton.onTrue( killAutoObject);
-    killAutoButton.onFalse( killAutoObject);
+    //Auto
+    killAutoButton.onTrue(killAutoObject);
+    killAutoButton.onFalse(killAutoObject);
+    autoArmStartButton.onTrue(autoArmStart);
+    autoArmFloorButton.onTrue(autoArmFloor);
+    autoArmMidButton.onTrue(autoArmMid);
+    autoArmHighButton.onTrue(autoArmHigh);
 
     //teleop Commands
     extendArmButton.whileTrue(extendArmCommand);
     retractArmButton.whileTrue(retractArmCommand);
-    rotateArmBackwardButton.whileTrue(rotateArmBackwardCommand);
-    rotateArmForwardButton.whileTrue(rotateArmForwardCommand);
+    rotateArmDownButton.whileTrue(rotateArmDownCommand);
+    rotateArmUpButton.whileTrue(rotateArmUpCommand);
     wristForwardButton.whileTrue(forwardWristCommand);
     wristBackwardButton.whileTrue(backwardWristCommand);
     grabberForwardButton.whileTrue(grabWheelForwardCommand);
     grabberBackwardButton.whileTrue(grabWheelBackwardCommand);
     grabButton.whileTrue(grab);
     letGoButton.whileTrue(letGo);
+    applyBrakeButton.whileTrue(applyBrakeCommand);
+    releaseBrakeButton.whileTrue(releaseBrakeCommand);
   }
 
    

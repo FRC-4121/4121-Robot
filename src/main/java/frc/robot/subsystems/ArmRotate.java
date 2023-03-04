@@ -71,7 +71,9 @@ public class ArmRotate extends SubsystemBase {
   //Position is in encoder units
   public void rotateToPosition(double position) {
 
-    rotateMaster.set(TalonFXControlMode.MotionMagic, position);
+    //rotateMaster.set(TalonFXControlMode.MotionMagic, position);    
+    rotateMaster.set(TalonFXControlMode.Position, position);
+
   }
 
   public double getMasterEncoder() {

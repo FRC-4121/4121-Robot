@@ -19,6 +19,7 @@ public class AutoArmHighPos extends ParallelCommandGroup {
   public AutoArmHighPos(ArmRotate armRotate, Pneumatics pneumatic, ArmExtend armExtend) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    addCommands(new AutoArmRotation(armRotate,RotateHighAngle,5,pneumatic), new AutoExtendArm(armExtend,ExtendHighLength,5));
+    //addCommands(new AutoArmRotation(armRotate,RotateHighAngle,20,pneumatic), new AutoExtendArm(armExtend,ExtendHighLength,5));
+    addCommands(new AutoArmRotation(armRotate,RotateHighAngle,20,pneumatic));
   }
 }

@@ -7,16 +7,17 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.*;
 import static frc.robot.Constants.*;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-public class RotateArmForward extends CommandBase {
+public class RotateArmDown extends CommandBase {
   
   ArmRotate arm;
   Pneumatics pneumatic;
   double currentSpeed;
   boolean isReleased;
   
-  /** Creates a new RotateArm. */
-  public RotateArmForward(ArmRotate army, Pneumatics pneumatics) {
+  /** Creates a new RotateArmBackward. */
+  public RotateArmDown(ArmRotate army, Pneumatics pneumatics) {
     
     arm = army;
     pneumatic = pneumatics;
@@ -43,11 +44,14 @@ public class RotateArmForward extends CommandBase {
       pneumatic.releaseBrake();
     }
 
-    // Increase the speed gradually to avoid bouncing
-    if (currentSpeed < rotateSpeed) {
+    //Increase the speed gradually to avoid bouncing
+    if (currentSpeed < teleopRotateSpeed) {
       currentSpeed = currentSpeed + rotateRampRate;
     }
-    arm.rotate(currentSpeed);
+    arm.rotate(-currentSpeed);
+
+    //Put values on Smart Dashboard
+    SmartDashboard.putNumber("Rotate Position", arm.getMasterEncoder());
 
   }
 
@@ -56,15 +60,18 @@ public class RotateArmForward extends CommandBase {
   public void end(boolean interrupted) {
 
     // Decrease the speed gradually to avoid bouncing
-    if (currentSpeed > 0) {
+    while (currentSpeed > 0) {
       currentSpeed = currentSpeed - rotateRampRate;
+      arm.rotate(-currentSpeed);
     }
-    arm.rotate(currentSpeed);
 
     //Apply the brake so we stop moving
     pneumatic.applyBrake();
     isReleased = false;
 
+    //Put values on Smart Dashboard
+    SmartDashboard.putNumber("Rotate Position", arm.getMasterEncoder());
+    
   }
 
   // Returns true when the command should end.

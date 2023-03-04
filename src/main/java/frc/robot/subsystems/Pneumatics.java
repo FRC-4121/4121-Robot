@@ -15,13 +15,13 @@ import static frc.robot.Constants.*;
 public class Pneumatics extends SubsystemBase {
   
   //Channel needs to be found, should be a constant
-  private Compressor compressor = new Compressor(61,PneumaticsModuleType.CTREPCM);
+  private Compressor compressor = new Compressor(ControlModuleID,PneumaticsModuleType.REVPH);
 
   //Module and channels need to be found and set in constants
-  private DoubleSolenoid grabber = new DoubleSolenoid(61, PneumaticsModuleType.CTREPCM, GrabOpenChannelID, GrabCloseChannelID);
+  private DoubleSolenoid grabber = new DoubleSolenoid(ControlModuleID, PneumaticsModuleType.REVPH, GrabOpenChannelID, GrabCloseChannelID);
 
   //Solenoid for brake
-  private DoubleSolenoid brake = new DoubleSolenoid(61, PneumaticsModuleType.CTREPCM, BrakeOpenChannelID, BrakeCloseChannelID);
+  private DoubleSolenoid brake = new DoubleSolenoid(ControlModuleID, PneumaticsModuleType.REVPH, BrakeOpenChannelID, BrakeCloseChannelID);
   
   /** Creates a new Pneumatics. */
   public Pneumatics() {}
@@ -42,12 +42,12 @@ public class Pneumatics extends SubsystemBase {
   }
 
   //Apply the brake
-  public void applyBrake() {
-    brake.set(Value.kReverse); //Need to test if this applies or releases
+  public void releaseBrake() {
+    brake.set(Value.kReverse); 
   }
 
   //Release the brake
-  public void releaseBrake() {
-    brake.set(Value.kForward); //Need to test if this applies or releases
+  public void applyBrake() {
+    brake.set(Value.kForward); 
   }
 }

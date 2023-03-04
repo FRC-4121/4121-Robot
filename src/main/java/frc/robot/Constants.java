@@ -37,8 +37,9 @@ public final class Constants {
     public static final double autoArmkP = 0.01;
     public static final double autoArmkI = 0.01;
     public static final double autoArmkD = 0.01;
-    public static final double rotateSpeed = 0.1;
-    public static final double rotateRampRate = 0.035;
+    public static final double teleopRotateSpeed = 0.1;
+    public static final double autoRotateSpeed = 0.2;
+    public static final double rotateRampRate = 0.07;
     public static final double rotateSlope = 1;
     public static final double rotateIntercept = 0;
     public static final double extendSlope = 1;
@@ -47,27 +48,28 @@ public final class Constants {
     public static final Gains extendGains = new Gains(0.2,0.0,0.0,0.2,0,1.0);
     public static final double rotateVelocity = 15000;
     public static final double rotateAcceleration = 6000;
-    public static final double RotateStartAngle = 90;
-    public static final double RotateFloorAngle = 180;
-    public static final double RotateMidAngle = 135;
-    public static final double RotateHighAngle = 110;
-    public static final double ExtendStartLength = 0;
-    public static final double ExtendFloorLength = 10;
-    public static final double ExtendMidLength = 20;
-    public static final double ExtendHighLength = 30;
+    public static final double RotateStartAngle = 0;
+    public static final double RotateFloorAngle = -130000;
+    public static final double RotateMidAngle = -50000; //Need to find
+    public static final double RotateHighAngle = -30000;
+    public static final double ExtendStartLength = 0; //Need to find
+    public static final double ExtendFloorLength = 10; //Need to find
+    public static final double ExtendMidLength = 20; //Need to find
+    public static final double ExtendHighLength = 30; //Need to find
 
     // Wrist
-    public static final int WristID = 9; // Need to find
+    public static final int WristID = 18; 
 
     // Grabber
     public static final int Intake = 21;
     public static Boolean Grabbed = false;
 
     //Pneumatics
-    public static final int GrabOpenChannelID = 0;
-    public static final int GrabCloseChannelID = 7;
-    public static final int BrakeOpenChannelID = 1;
-    public static final int BrakeCloseChannelID = 6;
+    public static final int GrabOpenChannelID = 8;
+    public static final int GrabCloseChannelID = 14;
+    public static final int BrakeOpenChannelID = 13;
+    public static final int BrakeCloseChannelID = 15;
+    public static final int ControlModuleID = 61;
 
     // LED's
     public static double ledColor = 0.63; //0.65 is orange, the default color

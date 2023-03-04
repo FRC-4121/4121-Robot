@@ -19,6 +19,7 @@ public class AutoArmFloorPos extends ParallelCommandGroup {
   public AutoArmFloorPos(ArmRotate armRotate, Pneumatics pneumatic, ArmExtend armExtend) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    addCommands(new AutoArmRotation(armRotate,RotateFloorAngle,5,pneumatic), new AutoExtendArm(armExtend,ExtendFloorLength,5));
+    //addCommands(new AutoArmRotation(armRotate,RotateFloorAngle,20,pneumatic), new AutoExtendArm(armExtend,ExtendFloorLength,5));
+    addCommands(new AutoArmRotation(armRotate,RotateFloorAngle,20,pneumatic));
   }
 }
