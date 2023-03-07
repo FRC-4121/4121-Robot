@@ -64,8 +64,8 @@ public class RobotContainer {
   private final RotateArmDown rotateArmDownCommand = new RotateArmDown(armRotate, pneumatic);
 
   //Wrist Commands
-  private final RunWristForward forwardWristCommand = new RunWristForward(wrist);
-  private final RunWristBack backwardWristCommand = new RunWristBack(wrist);
+  private final RunWristUp wristUpCommand = new RunWristUp(wrist);
+  private final RunWristDown wristDownCommand = new RunWristDown(wrist);
   
   //Grabber Commands
   private final RunGrabberWheelForward grabWheelForwardCommand = new RunGrabberWheelForward(grabber);
@@ -99,8 +99,8 @@ public class RobotContainer {
   private final Trigger retractArmButton;
   private final Trigger rotateArmUpButton;
   private final Trigger rotateArmDownButton;
-  private final Trigger wristForwardButton;
-  private final Trigger wristBackwardButton;
+  private final Trigger wristUpButton;
+  private final Trigger wristDownButton;
   private final Trigger grabberBackwardButton;
   private final Trigger grabberForwardButton;
   private final Trigger grabButton;
@@ -134,8 +134,8 @@ public class RobotContainer {
     //xboxButtons
     extendArmButton = new JoystickButton(xbox,xboxRightBumber); 
     retractArmButton = new JoystickButton(xbox,xboxLeftBumber); 
-    wristForwardButton = new JoystickButton(secondaryXbox,xboxAButton);
-    wristBackwardButton = new JoystickButton(secondaryXbox,xboxBButton);
+    wristUpButton = new JoystickButton(secondaryXbox,xboxAButton);
+    wristDownButton = new JoystickButton(secondaryXbox,xboxBButton);
     grabberForwardButton = new JoystickButton(secondaryXbox,xboxXButton);
     grabberBackwardButton = new JoystickButton(secondaryXbox,xboxYButton);
     grabButton = new JoystickButton(secondaryXbox,xboxRightBumber);
@@ -225,8 +225,8 @@ public class RobotContainer {
     retractArmButton.whileTrue(retractArmCommand);
     rotateArmDownButton.whileTrue(rotateArmDownCommand);
     rotateArmUpButton.whileTrue(rotateArmUpCommand);
-    wristForwardButton.whileTrue(forwardWristCommand);
-    wristBackwardButton.whileTrue(backwardWristCommand);
+    wristUpButton.whileTrue(wristUpCommand);
+    wristDownButton.whileTrue(wristDownCommand);
     grabberForwardButton.whileTrue(grabWheelForwardCommand);
     grabberBackwardButton.whileTrue(grabWheelBackwardCommand);
     grabButton.whileTrue(grab);

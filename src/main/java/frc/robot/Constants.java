@@ -7,6 +7,7 @@
 
 package frc.robot;
 import frc.robot.ExtraClasses.Gains;
+import edu.wpi.first.wpilibj.Timer;
 
 /**
  * The Constants class provides a dope af place for teams to hold robot-wide numerical or boolean
@@ -60,6 +61,10 @@ public final class Constants {
 
     // Wrist
     public static final int WristID = 18; 
+    public static final double wristSpeed = 0.75;
+    public static double currentWristPosition = 0.0; //Value from 0.0 to 1.0, relative position of wrist
+    public static final double wristSlope = 1;//Needs to be found, //Derived from linear equation testing how long it takes to get to positions
+    public static final double wristIntercept = 0;//Needs to be found, //Derived from linear equation testing how long it takes to get to positions
 
     // Grabber
     public static final int Intake = 21;
