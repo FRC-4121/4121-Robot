@@ -19,7 +19,7 @@ public class AutoArmMidPos extends ParallelCommandGroup {
   public AutoArmMidPos(ArmRotate armRotate, Pneumatics pneumatic, ArmExtend armExtend) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    //addCommands(new AutoArmRotation(armRotate,RotateMidAngle,20,pneumatic), new AutoExtendArm(armExtend,ExtendMidLength,5));
-    addCommands(new AutoArmRotation(armRotate,RotateMidAngle,20,pneumatic));
+    addCommands(new AutoArmRotation(armRotate,RotateMidAngle,20,pneumatic), new AutoExtendArm(armExtend,ExtendMidLength,20));
+    //addCommands(new AutoArmRotation(armRotate,RotateMidAngle,20,pneumatic));
   }
 }

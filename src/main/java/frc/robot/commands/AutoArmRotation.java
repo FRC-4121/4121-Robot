@@ -46,7 +46,7 @@ public class AutoArmRotation extends CommandBase {
 
     isReleased = false;
 
-    tolerance = 100;
+    tolerance = 125;
 
   }
 

@@ -181,9 +181,11 @@ public class RobotContainer {
 
     //Zero the encoders when robot starts up
     armRotate.zeroEncoder();
+    arm.zeroExtendEncoder();
 
     //Put the encoder value on the smart dashboard
     SmartDashboard.putNumber("Rotate Position", armRotate.getMasterEncoder());
+    SmartDashboard.putNumber("Extend Position", arm.getExtendEncoder());
 
   }
 

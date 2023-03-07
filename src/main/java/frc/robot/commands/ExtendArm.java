@@ -7,6 +7,7 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.ArmExtend;
 import static frc.robot.Constants.*;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class ExtendArm extends CommandBase {
   
@@ -28,6 +29,8 @@ public class ExtendArm extends CommandBase {
   public void execute() {
 
     m_arm.extendArm(0.4);
+
+    SmartDashboard.putNumber("Extend Position", m_arm.getExtendEncoder());
   }
 
   // Called once the command ends or is interrupted.
@@ -38,6 +41,8 @@ public class ExtendArm extends CommandBase {
 
     //When we stop, we want it to hold its position, so the target is the latest value
     armTargetEncoder = m_arm.getExtendEncoder();
+    
+    SmartDashboard.putNumber("Extend Position", m_arm.getExtendEncoder());
   }
 
   // Returns true when the command should end.

@@ -38,7 +38,8 @@ public final class Constants {
     public static final double autoArmkI = 0.01;
     public static final double autoArmkD = 0.01;
     public static final double teleopRotateSpeed = 0.1;
-    public static final double autoRotateSpeed = 0.2;
+    public static final double autoRotateSpeed = 0.3;
+    public static final double autoExtendSpeed = 0.45;
     public static final double rotateRampRate = 0.07;
     public static final double rotateSlope = 1;
     public static final double rotateIntercept = 0;
@@ -46,16 +47,16 @@ public final class Constants {
     public static final double extendIntercept = 0;
     public static final Gains rotateGains = new Gains(0.2,0.0,0.0,0.2,0,1.0);
     public static final Gains extendGains = new Gains(0.2,0.0,0.0,0.2,0,1.0);
-    public static final double rotateVelocity = 15000;
-    public static final double rotateAcceleration = 6000;
+    public static final double rotateVelocity = 0.0150;
+    public static final double rotateAcceleration = 0.0060;
     public static final double RotateStartAngle = 0;
     public static final double RotateFloorAngle = -130000;
-    public static final double RotateMidAngle = -50000; //Need to find
+    public static final double RotateMidAngle = -38000; 
     public static final double RotateHighAngle = -30000;
-    public static final double ExtendStartLength = 0; //Need to find
-    public static final double ExtendFloorLength = 10; //Need to find
-    public static final double ExtendMidLength = 20; //Need to find
-    public static final double ExtendHighLength = 30; //Need to find
+    public static final double ExtendStartLength = 0; 
+    public static final double ExtendFloorLength = 71000; 
+    public static final double ExtendMidLength = 111000; 
+    public static final double ExtendHighLength = 241000; 
 
     // Wrist
     public static final int WristID = 18; 

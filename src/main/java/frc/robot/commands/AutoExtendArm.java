@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import static frc.robot.Constants.*;
 import frc.robot.subsystems.ArmExtend;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class AutoExtendArm extends CommandBase {
   
@@ -16,18 +17,17 @@ public class AutoExtendArm extends CommandBase {
   private double startTime;
   private double stopTime;
   private double targetPosition;
-  private double targetLength;
   private double currentPosition;
   private double tolerance;
   private boolean forward; //this shows if the arm is extending forward or backward 
   
   
   /** Creates a new AutoExtendArm. */
-  public AutoExtendArm(ArmExtend army, double length, double time) {
+  public AutoExtendArm(ArmExtend army, double position, double time) {
     
     arm = army;
     stopTime = time;
-    targetLength = length;
+    targetPosition = position;
     
     addRequirements(arm);
     
@@ -38,11 +38,11 @@ public class AutoExtendArm extends CommandBase {
   public void initialize() {
     
     // Start the timer and get initial time
+    timer = new Timer();
     timer.start();
     startTime = timer.get();
   
-    tolerance = 1000; //This needs to be found
-    targetPosition = 0;
+    tolerance = 350; //This needs to be found
     
     //Default is going up
     forward = true;
@@ -55,17 +55,16 @@ public class AutoExtendArm extends CommandBase {
 
     currentPosition = arm.getExtendEncoder();
 
-    //Converting target length to encoder units
-    targetPosition = extendSlope * targetLength + extendIntercept;
-
-    if (targetPosition > currentPosition) {
+    if(currentPosition < targetPosition){
+      arm.extendArm(autoExtendSpeed);
       forward = true;
     } else{
+      arm.extendArm(-autoExtendSpeed);
       forward = false;
     }
-    
-    arm.extendArmToPosition(targetPosition);
 
+    SmartDashboard.putNumber("Extend Position", currentPosition);
+    
   }
 
   // Called once the command ends or is interrupted.
@@ -89,17 +88,17 @@ public class AutoExtendArm extends CommandBase {
     {
       doneYet = true;
     }
-    if (currentPosition >= targetPosition-tolerance || currentPosition <= targetPosition + tolerance) {
+    if (currentPosition >= targetPosition-tolerance && currentPosition <= targetPosition + tolerance) {
       doneYet = true;
     }
-    if (forward) {
-      if (arm.getExtendSwitchValue()) {
-        doneYet = true;
-      }
-    } else if (arm.getHomeSwitchValue()) {
+    // if (forward) {
+    //  if (arm.getExtendSwitchValue()) {
+    //     doneYet = true;
+    //    }
+    //  } else if (arm.getHomeSwitchValue()) {
 
-      doneYet = true;
-    }    
+    //    doneYet = true;
+    // }    
     
     return doneYet;
   }
