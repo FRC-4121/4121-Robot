@@ -11,13 +11,13 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import edu.wpi.first.wpilibj.DigitalInput;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class ArmExtend extends SubsystemBase {
   
   // Declare class level variables
   private WPI_TalonFX extend;
   private DigitalInput homeSwitch;
-  private DigitalInput extendSwitch;
 
   /** Creates a new Arm. */
   public ArmExtend() {
@@ -49,7 +49,6 @@ public class ArmExtend extends SubsystemBase {
 
     // Create new limit switches
     homeSwitch = new DigitalInput(HomeSwitchID);
-    extendSwitch = new DigitalInput(ExtendSwitchID);
 
   }
 
@@ -98,10 +97,4 @@ public class ArmExtend extends SubsystemBase {
 
   }
 
-  // Get the current extend limit switch value
-  public boolean getExtendSwitchValue() {
-
-    return extendSwitch.get();
-
-  }
 }

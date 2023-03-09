@@ -15,6 +15,7 @@ public class RunWristUp extends CommandBase {
   private Wrist m_wrist;
   private Timer timer;
   private double startMoveTime;
+  private double startingWristPosition;
  
   /** Creates a new RunWristForward. */
   public RunWristUp(Wrist wrist) {
@@ -30,7 +31,9 @@ public class RunWristUp extends CommandBase {
 
     timer = new Timer();
     timer.start();
-    startMoveTime = 0;
+    startMoveTime = timer.get();
+    
+    startingWristPosition = currentWristPosition;
 
   }
 
@@ -39,14 +42,13 @@ public class RunWristUp extends CommandBase {
   public void execute() {
 
     m_wrist.move(wristSpeed);
-    
-    //Get the time that the wrist started moving
-    startMoveTime = timer.get();
 
     //Subtract because we are moving the wrist back up
-    currentWristPosition = currentWristPosition - (wristSlope * (timer.get()-startMoveTime) + wristIntercept);
+    currentWristPosition = startingWristPosition - (wristSlope * (timer.get()-startMoveTime) + wristIntercept);
 
     SmartDashboard.putNumber("WristPosition",currentWristPosition);
+
+    SmartDashboard.putNumber("Wrist Time", timer.get()-startMoveTime);
 
   }
 
@@ -56,12 +58,12 @@ public class RunWristUp extends CommandBase {
 
     m_wrist.move(0);
 
-    startMoveTime = timer.get();
-
     //Subtract because we are moving the wrist back up
-    currentWristPosition = currentWristPosition - (wristSlope * (timer.get()-startMoveTime) + wristIntercept);
+    currentWristPosition = startingWristPosition - (wristSlope * (timer.get()-startMoveTime) + wristIntercept);
 
     SmartDashboard.putNumber("WristPosition",currentWristPosition);
+
+    SmartDashboard.putNumber("Wrist Time", timer.get()-startMoveTime);
   }
 
   // Returns true when the command should end.

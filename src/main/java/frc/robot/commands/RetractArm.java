@@ -43,15 +43,16 @@ public class RetractArm extends CommandBase {
     armTargetEncoder = m_arm.getExtendEncoder();
 
     SmartDashboard.putNumber("Extend Position", m_arm.getExtendEncoder());
+    SmartDashboard.putBoolean("Arm Limit Switch", m_arm.getHomeSwitchValue());
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    // if (m_arm.getHomeSwitchValue()) {
-    //   return true;
-    // } else {
+     if (!m_arm.getHomeSwitchValue()) {
+       return true;
+     } else {
       return false;
-   // }
+    }
   }
 }

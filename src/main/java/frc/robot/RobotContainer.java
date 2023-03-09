@@ -22,7 +22,7 @@ public class RobotContainer {
   private final XboxController xbox = new XboxController(0);
   private final XboxController secondaryXbox = new XboxController(1);
   private final Joystick launchpad = new Joystick(2);
-  private final Joystick testbed = new Joystick(3);
+  //private final Joystick testbed = new Joystick(3);
   
 
   //Subsystems
@@ -50,9 +50,11 @@ public class RobotContainer {
  private final AutoGroup1 autoGroup = new AutoGroup1(swervedrive, table);
  private final AutoPlaceAndBalance autoPlaceAndBalanceCommand = new AutoPlaceAndBalance(swervedrive,table);
  private final AutoArmStartPos autoArmStart = new AutoArmStartPos(armRotate, pneumatic,arm);
- private final AutoArmFloorPos autoArmFloor = new AutoArmFloorPos(armRotate,pneumatic,arm);
- private final AutoArmMidPos autoArmMid = new AutoArmMidPos(armRotate,pneumatic,arm);
- private final AutoArmHighPos autoArmHigh = new AutoArmHighPos(armRotate,pneumatic,arm);
+ private final AutoArmTravelPos autoArmTravel = new AutoArmTravelPos(armRotate, pneumatic, arm, wrist);
+ private final AutoArmFloorPos autoArmFloor = new AutoArmFloorPos(armRotate,pneumatic,arm, wrist);
+ private final AutoArmMidPos autoArmMid = new AutoArmMidPos(armRotate,pneumatic,arm, wrist);
+ private final AutoArmHighPos autoArmHigh = new AutoArmHighPos(armRotate,pneumatic,arm, wrist);
+ private final AutoMoveWrist autoMoveWrist = new AutoMoveWrist(wrist,0.5,10);
 
   //KillAuto Command
   private final KillAutoCommand killAutoObject = new KillAutoCommand(); 
@@ -111,7 +113,7 @@ public class RobotContainer {
   //launchpad buttons/switches
   //private final JoystickButton killAutoButton;
   private final Trigger killAutoButton;
-  private final Trigger autoArmStartButton;
+  private final Trigger autoArmTravelButton;
   private final Trigger autoArmFloorButton;
   private final Trigger autoArmMidButton;
   private final Trigger autoArmHighButton;
@@ -149,7 +151,7 @@ public class RobotContainer {
 
     //launchpad buttons/switches
     killAutoButton = new JoystickButton(launchpad,LaunchPadButton1);
-    autoArmStartButton = new JoystickButton(launchpad,LaunchPadSwitch1top);
+    autoArmTravelButton = new JoystickButton(launchpad,LaunchPadSwitch1top);
     autoArmFloorButton = new JoystickButton(launchpad,LaunchPadSwitch1bottom);
     autoArmMidButton = new JoystickButton(launchpad,LaunchPadSwitch2bottom);
     autoArmHighButton = new JoystickButton(launchpad,LaunchPadSwitch2top);
@@ -183,9 +185,18 @@ public class RobotContainer {
     armRotate.zeroEncoder();
     arm.zeroExtendEncoder();
 
+    //Make sure that the wrist is starting at 0
+    currentWristPosition = 0.0;
+
+    //Make sure the grabber is closed
+    pneumatic.grab();
+
     //Put the encoder value on the smart dashboard
     SmartDashboard.putNumber("Rotate Position", armRotate.getMasterEncoder());
     SmartDashboard.putNumber("Extend Position", arm.getExtendEncoder());
+    
+    //Put the wrist position on the dashboard on startup
+    SmartDashboard.putNumber("WristPosition",currentWristPosition);
 
   }
 
@@ -215,7 +226,7 @@ public class RobotContainer {
     //Auto
     killAutoButton.onTrue(killAutoObject);
     killAutoButton.onFalse(killAutoObject);
-    autoArmStartButton.onTrue(autoArmStart);
+    autoArmTravelButton.onTrue(autoArmTravel);
     autoArmFloorButton.onTrue(autoArmFloor);
     autoArmMidButton.onTrue(autoArmMid);
     autoArmHighButton.onTrue(autoArmHigh);

@@ -64,6 +64,7 @@ public class AutoExtendArm extends CommandBase {
     }
 
     SmartDashboard.putNumber("Extend Position", currentPosition);
+    SmartDashboard.putBoolean("Arm Limit Switch", arm.getHomeSwitchValue());
     
   }
 
@@ -91,14 +92,14 @@ public class AutoExtendArm extends CommandBase {
     if (currentPosition >= targetPosition-tolerance && currentPosition <= targetPosition + tolerance) {
       doneYet = true;
     }
-    // if (forward) {
-    //  if (arm.getExtendSwitchValue()) {
-    //     doneYet = true;
-    //    }
-    //  } else if (arm.getHomeSwitchValue()) {
+    if (!forward) {
+      if (!arm.getHomeSwitchValue()) {
 
-    //    doneYet = true;
-    // }    
+       doneYet = true;
+
+       arm.zeroExtendEncoder();
+      } 
+    }
     
     return doneYet;
   }

@@ -19,6 +19,7 @@ public class AutoMoveWrist extends CommandBase {
   private double stopTime;
   private double targetPosition;
   private double tolerance;
+  private double startingWristPosition;
 
   
   /** Creates a new AutoMoveWrist. */
@@ -39,36 +40,39 @@ public class AutoMoveWrist extends CommandBase {
     timer = new Timer(); 
     timer.start();
     startTime = timer.get();
+    startMoveTime = timer.get();
 
     tolerance = 0.01;
+
+    startingWristPosition = currentWristPosition;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    
+
     //We have to decide if we want to rotate up or down
     if(currentWristPosition < targetPosition){
       
       wrist.move(-wristSpeed);
 
-      startMoveTime = timer.get();
-
       //Add because we are moving it down
-      currentWristPosition = currentWristPosition + (wristSlope * (timer.get()-startMoveTime) + wristIntercept);
+      currentWristPosition = startingWristPosition + (wristSlope * (timer.get()-startMoveTime) + wristIntercept);
 
       SmartDashboard.putNumber("WristPosition",currentWristPosition);
+
+      SmartDashboard.putNumber("Wrist Time", timer.get()-startMoveTime);
 
     } else if (currentWristPosition > targetPosition){
       
       wrist.move(wristSpeed);
 
-      startMoveTime = timer.get();
-
       //Subtract because we are moving the wrist back up
-      currentWristPosition = currentWristPosition - (wristSlope * (timer.get()-startMoveTime) + wristIntercept);
+      currentWristPosition = startingWristPosition - (wristSlope * (timer.get()-startMoveTime) + wristIntercept);
 
       SmartDashboard.putNumber("WristPosition",currentWristPosition);
+
+      SmartDashboard.putNumber("Wrist Time", timer.get()-startMoveTime);
 
     }
     
@@ -80,6 +84,10 @@ public class AutoMoveWrist extends CommandBase {
   public void end(boolean interrupted) {
 
     wrist.move(0);
+
+    SmartDashboard.putNumber("WristPosition",currentWristPosition);
+
+    SmartDashboard.putNumber("Wrist Time", timer.get()-startMoveTime);
 
   }
 

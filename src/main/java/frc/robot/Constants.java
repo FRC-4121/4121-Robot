@@ -31,8 +31,7 @@ public final class Constants {
     public static final int Extend = 15; 
     public static final int Rotate1 = 16; 
     public static final int Rotate2 = 17;
-    public static final int HomeSwitchID = 0;
-    public static final int ExtendSwitchID = 1;
+    public static final int HomeSwitchID = 3;
     public static Boolean runAutoArmExtend = false;
     public static double armTargetEncoder = 0.0; //This is 0 to start with because we don't want the arm to move.
     public static final double autoArmkP = 0.01;
@@ -51,20 +50,26 @@ public final class Constants {
     public static final double rotateVelocity = 0.0150;
     public static final double rotateAcceleration = 0.0060;
     public static final double RotateStartAngle = 0;
+    public static final double RotateTravelAngle = -134000; //Need to find
     public static final double RotateFloorAngle = -130000;
     public static final double RotateMidAngle = -38000; 
     public static final double RotateHighAngle = -30000;
     public static final double ExtendStartLength = 0; 
+    public static final double ExtendTravelLength = 4000; //Need to find
     public static final double ExtendFloorLength = 71000; 
     public static final double ExtendMidLength = 111000; 
-    public static final double ExtendHighLength = 241000; 
+    public static final double ExtendHighLength = 245000; 
 
     // Wrist
     public static final int WristID = 18; 
-    public static final double wristSpeed = 0.75;
+    public static final double wristSpeed = 1.0;
     public static double currentWristPosition = 0.0; //Value from 0.0 to 1.0, relative position of wrist
-    public static final double wristSlope = 1;//Needs to be found, //Derived from linear equation testing how long it takes to get to positions
-    public static final double wristIntercept = 0;//Needs to be found, //Derived from linear equation testing how long it takes to get to positions
+    public static final double wristSlope = (1/4.8); //The wrist takes 4.8 seconds for a full rotation
+    public static final double wristIntercept = 0; //Derived from linear equation testing how long it takes to get to positions
+    public static final double WristTravelPosition = 0.1; //Need to confirm
+    public static final double WristFloorPosition = 0.25; //Need to confirm
+    public static final double WristMidPosition = 0.5; //Need to confirm
+    public static final double WristHighPosition = 0.6; //Need to confirm
 
     // Grabber
     public static final int Intake = 21;

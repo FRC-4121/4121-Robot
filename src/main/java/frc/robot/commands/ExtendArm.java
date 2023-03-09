@@ -31,6 +31,7 @@ public class ExtendArm extends CommandBase {
     m_arm.extendArm(0.4);
 
     SmartDashboard.putNumber("Extend Position", m_arm.getExtendEncoder());
+    SmartDashboard.putBoolean("Arm Limit Switch", m_arm.getHomeSwitchValue());
   }
 
   // Called once the command ends or is interrupted.
