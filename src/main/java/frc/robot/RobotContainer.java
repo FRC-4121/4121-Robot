@@ -48,12 +48,12 @@ public class RobotContainer {
  private final AutoDrive autoDriveCommand = new AutoDrive(swervedrive,0.6,168,180,0,0,20,table);
  //private final AutoBalance autoBalanceCommand = new AutoBalance(swervedrive,0.25,0,20,table);
  private final AutoGroup1 autoGroup = new AutoGroup1(swervedrive, table);
- private final AutoPlaceAndBalance autoPlaceAndBalanceCommand = new AutoPlaceAndBalance(swervedrive,table);
+ private final AutoPlaceAndBalance autoPlaceAndBalanceCommand = new AutoPlaceAndBalance(swervedrive,table,armRotate,pneumatic,arm,wrist,grabber);
  private final AutoArmStartPos autoArmStart = new AutoArmStartPos(armRotate, pneumatic,arm);
  private final AutoArmTravelPos autoArmTravel = new AutoArmTravelPos(armRotate, pneumatic, arm, wrist);
  private final AutoArmFloorPos autoArmFloor = new AutoArmFloorPos(armRotate,pneumatic,arm, wrist);
- private final AutoArmMidPos autoArmMid = new AutoArmMidPos(armRotate,pneumatic,arm, wrist);
- private final AutoArmHighPos autoArmHigh = new AutoArmHighPos(armRotate,pneumatic,arm, wrist);
+ private final AutoArmMidPos autoArmMid = new AutoArmMidPos(armRotate,pneumatic,arm, wrist, grabber);
+ private final AutoArmHighPos autoArmHigh = new AutoArmHighPos(armRotate,pneumatic,arm, wrist, grabber);
  private final AutoMoveWrist autoMoveWrist = new AutoMoveWrist(wrist,0.5,10);
 
   //KillAuto Command

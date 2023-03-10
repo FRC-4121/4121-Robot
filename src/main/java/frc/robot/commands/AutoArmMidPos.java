@@ -15,9 +15,9 @@ import static frc.robot.Constants.*;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class AutoArmMidPos extends SequentialCommandGroup {
   /** Creates a new AutoArmMidPos. */
-  public AutoArmMidPos(ArmRotate armRotate, Pneumatics pneumatic, ArmExtend armExtend, Wrist wrist) {
+  public AutoArmMidPos(ArmRotate armRotate, Pneumatics pneumatic, ArmExtend armExtend, Wrist wrist, Grabber grab) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    addCommands(new AutoExtendArm(armExtend,ExtendStartLength,20),new AutoArmRotation(armRotate,RotateMidAngle,20,pneumatic), new AutoArmHighPosParallel(wrist, armExtend), new LetGo(pneumatic));
+    addCommands(new AutoArmExtendParallel(wrist, armExtend),new AutoRotateWristMidParallel(wrist, armRotate,pneumatic), new AutoArmMidPosParallel(wrist, armExtend), new LetGo(pneumatic),new AutoArmExtendParallel(wrist, armExtend));
   }
 }

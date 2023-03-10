@@ -20,6 +20,7 @@ public class AutoExtendArm extends CommandBase {
   private double currentPosition;
   private double tolerance;
   private boolean forward; //this shows if the arm is extending forward or backward 
+  private double speedMultiplier;
   
   
   /** Creates a new AutoExtendArm. */
@@ -43,6 +44,7 @@ public class AutoExtendArm extends CommandBase {
     startTime = timer.get();
   
     tolerance = 350; //This needs to be found
+    speedMultiplier = 1;
     
     //Default is going up
     forward = true;
@@ -55,12 +57,22 @@ public class AutoExtendArm extends CommandBase {
 
     currentPosition = arm.getExtendEncoder();
 
-    if(currentPosition < targetPosition){
-      arm.extendArm(autoExtendSpeed);
+    if (Math.abs(targetPosition - currentPosition) < (targetPosition * 0.1)) {
+ 
+      speedMultiplier = 0.6;
+
+    }
+
+    if (currentPosition < targetPosition) {
+      
+      arm.extendArm(autoExtendSpeed * speedMultiplier);
       forward = true;
-    } else{
-      arm.extendArm(-autoExtendSpeed);
+
+    } else {
+
+      arm.extendArm(-autoExtendSpeed * speedMultiplier);
       forward = false;
+
     }
 
     SmartDashboard.putNumber("Extend Position", currentPosition);

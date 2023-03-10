@@ -39,7 +39,7 @@ public final class Constants {
     public static final double autoArmkD = 0.01;
     public static final double teleopRotateSpeed = 0.1;
     public static final double autoRotateSpeed = 0.3;
-    public static final double autoExtendSpeed = 0.45;
+    public static final double autoExtendSpeed = 0.6;
     public static final double rotateRampRate = 0.07;
     public static final double rotateSlope = 1;
     public static final double rotateIntercept = 0;
@@ -50,12 +50,12 @@ public final class Constants {
     public static final double rotateVelocity = 0.0150;
     public static final double rotateAcceleration = 0.0060;
     public static final double RotateStartAngle = 0;
-    public static final double RotateTravelAngle = -134000; //Need to find
+    public static final double RotateTravelAngle = -134000; 
     public static final double RotateFloorAngle = -130000;
     public static final double RotateMidAngle = -38000; 
     public static final double RotateHighAngle = -30000;
     public static final double ExtendStartLength = 0; 
-    public static final double ExtendTravelLength = 4000; //Need to find
+    public static final double ExtendTravelLength = 4000; 
     public static final double ExtendFloorLength = 71000; 
     public static final double ExtendMidLength = 111000; 
     public static final double ExtendHighLength = 245000; 
@@ -70,6 +70,7 @@ public final class Constants {
     public static final double WristFloorPosition = 0.25; //Need to confirm
     public static final double WristMidPosition = 0.5; //Need to confirm
     public static final double WristHighPosition = 0.6; //Need to confirm
+    public static final double WristHomePosition = 0.0;
 
     // Grabber
     public static final int Intake = 21;
