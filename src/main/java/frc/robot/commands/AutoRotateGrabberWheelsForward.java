@@ -28,6 +28,7 @@ public class AutoRotateGrabberWheelsForward extends CommandBase {
   @Override
   public void initialize() {
 
+    timer = new Timer();
     timer.start();
     startTime = timer.get();
 

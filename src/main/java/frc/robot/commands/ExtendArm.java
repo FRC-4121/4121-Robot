@@ -28,7 +28,7 @@ public class ExtendArm extends CommandBase {
   @Override
   public void execute() {
 
-    m_arm.extendArm(0.4);
+    m_arm.extendArm(0.5);
 
     SmartDashboard.putNumber("Extend Position", m_arm.getExtendEncoder());
     SmartDashboard.putBoolean("Arm Limit Switch", m_arm.getHomeSwitchValue());

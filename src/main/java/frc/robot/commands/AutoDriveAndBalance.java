@@ -5,22 +5,19 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.commands.*;
-import frc.robot.subsystems.*;
-import static frc.robot.Constants.*;
-
+import frc.robot.subsystems.SwerveDrive;
+import frc.robot.ExtraClasses.NetworkTableQuerier;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class AutoArmMidPos extends SequentialCommandGroup {
-  /** Creates a new AutoArmMidPos. */
-  public AutoArmMidPos(ArmRotate armRotate, Pneumatics pneumatic, ArmExtend armExtend, Wrist wrist, Grabber grab) {
+public class AutoDriveAndBalance extends SequentialCommandGroup {
+  /** Creates a new AutoDriveAndBalance. */
+  public AutoDriveAndBalance(SwerveDrive drive, NetworkTableQuerier table) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    addCommands(new AutoExtendArm(armExtend,ExtendStartLength,20),
-      new AutoRotateWristMidParallel(wrist, armRotate,pneumatic), 
-      new AutoArmMidPosParallel(wrist, armExtend)
-      );
+    addCommands(new AutoDrive(drive,0.6,94,180,0,0,3,table)
+      /*new AutoBalance(drive,0.45,180,0,0,20,table)
+    new ParkCommand(drive)*/);
   }
 }

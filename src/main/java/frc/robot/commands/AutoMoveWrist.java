@@ -42,7 +42,7 @@ public class AutoMoveWrist extends CommandBase {
     startTime = timer.get();
     startMoveTime = timer.get();
 
-    tolerance = 0.01;
+    tolerance = 0.005;
 
     startingWristPosition = currentWristPosition;
   }
@@ -55,9 +55,18 @@ public class AutoMoveWrist extends CommandBase {
     if(currentWristPosition < targetPosition){
       
       wrist.move(-wristSpeed);
+      
+      if (GrabbedCone) {
 
-      //Add because we are moving it down
-      currentWristPosition = startingWristPosition + (wristSlope * (timer.get()-startMoveTime) + wristIntercept);
+        // Add because we are moving it down
+        currentWristPosition = startingWristPosition + (wristSlopeDownCone * (timer.get() - startMoveTime) + wristIntercept);
+
+      } else {
+
+        // Add because we are moving it down
+        currentWristPosition = startingWristPosition + (wristSlopeDownEmpty * (timer.get() - startMoveTime) + wristIntercept);
+
+      }
 
       SmartDashboard.putNumber("WristPosition",currentWristPosition);
 
@@ -67,8 +76,17 @@ public class AutoMoveWrist extends CommandBase {
       
       wrist.move(wristSpeed);
 
-      //Subtract because we are moving the wrist back up
-      currentWristPosition = startingWristPosition - (wristSlope * (timer.get()-startMoveTime) + wristIntercept);
+      if (GrabbedCone) {
+
+        // Subtract because we are moving the wrist back up
+        currentWristPosition = startingWristPosition - (wristSlopeUpCone * (timer.get() - startMoveTime) + wristIntercept);
+
+      } else {
+
+        // Subtract because we are moving the wrist back up
+        currentWristPosition = startingWristPosition - (wristSlopeUpEmpty * (timer.get() - startMoveTime) + wristIntercept);
+
+      }
 
       SmartDashboard.putNumber("WristPosition",currentWristPosition);
 

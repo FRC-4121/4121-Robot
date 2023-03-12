@@ -60,14 +60,24 @@ public class CameraBuilder {
     return cam;
   }
 
-  // Finalize construction and attach to the camera server. When this is done, CameraServer.addCamera is called, which should(?) make it stream video.
-  public UsbCamera attach() {
+  // Finalize construction and attach to the camera server with CameraServer.AddCamera. When this is done, CameraServer.addCamera is called, which should(?) make it stream video.
+  public UsbCamera attachToServer() {
     UsbCamera cam = new UsbCamera(name, dev);
     cam.setBrightness(brightness_);
     cam.setFPS(fps_);
     cam.setResolution(width_, height_);
     cam.setConnectionStrategy(ConnectionStrategy.kKeepOpen);
     CameraServer.addCamera(cam);
+    return cam;
+  }
+
+  // Finalize construction and attach to the camera server with CameraServer.startAutomaticCapture. When this is done, CameraServer.addCamera is called, which should(?) make it stream video.
+  public UsbCamera attachAutoCapture() {
+    UsbCamera cam = new UsbCamera(name, dev);
+    cam.setBrightness(brightness_);
+    cam.setFPS(fps_);
+    cam.setResolution(width_, height_);
+    CameraServer.startAutomaticCapture(cam);
     return cam;
   }
 };

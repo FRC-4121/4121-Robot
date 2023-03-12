@@ -43,8 +43,17 @@ public class RunWristUp extends CommandBase {
 
     m_wrist.move(wristSpeed);
 
-    //Subtract because we are moving the wrist back up
-    currentWristPosition = startingWristPosition - (wristSlope * (timer.get()-startMoveTime) + wristIntercept);
+    if (GrabbedCone) {
+
+      // Subtract because we are moving the wrist back up
+      currentWristPosition = startingWristPosition - (wristSlopeUpCone * (timer.get() - startMoveTime) + wristIntercept);
+
+    } else {
+
+      // Subtract because we are moving the wrist back up
+      currentWristPosition = startingWristPosition - (wristSlopeUpEmpty * (timer.get() - startMoveTime) + wristIntercept);
+      
+    }
 
     SmartDashboard.putNumber("WristPosition",currentWristPosition);
 
@@ -58,8 +67,17 @@ public class RunWristUp extends CommandBase {
 
     m_wrist.move(0);
 
-    //Subtract because we are moving the wrist back up
-    currentWristPosition = startingWristPosition - (wristSlope * (timer.get()-startMoveTime) + wristIntercept);
+    if (GrabbedCone) {
+
+      // Subtract because we are moving the wrist back up
+      currentWristPosition = startingWristPosition - (wristSlopeUpCone * (timer.get() - startMoveTime) + wristIntercept);
+
+    } else {
+
+      // Subtract because we are moving the wrist back up
+      currentWristPosition = startingWristPosition - (wristSlopeUpEmpty * (timer.get() - startMoveTime) + wristIntercept);
+      
+    }
 
     SmartDashboard.putNumber("WristPosition",currentWristPosition);
 

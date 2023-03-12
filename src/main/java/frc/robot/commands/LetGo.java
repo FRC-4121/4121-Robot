@@ -31,6 +31,9 @@ public class LetGo extends CommandBase {
   public void execute() {
 
       grab.letGo();
+
+      //We no longer have a cone
+      GrabbedCone = false;
     
   }
 

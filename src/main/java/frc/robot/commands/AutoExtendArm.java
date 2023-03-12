@@ -57,10 +57,14 @@ public class AutoExtendArm extends CommandBase {
 
     currentPosition = arm.getExtendEncoder();
 
-    if (Math.abs(targetPosition - currentPosition) < (targetPosition * 0.1)) {
+    if (Math.abs(targetPosition - currentPosition) < ExtendTolerance) {
  
-      speedMultiplier = 0.6;
+      speedMultiplier = 0.25;
 
+    }
+
+    if(Math.abs(targetPosition-currentPosition) < tolerance){
+      speedMultiplier = 0.0;
     }
 
     if (currentPosition < targetPosition) {
@@ -76,7 +80,9 @@ public class AutoExtendArm extends CommandBase {
     }
 
     SmartDashboard.putNumber("Extend Position", currentPosition);
+    SmartDashboard.putNumber("Target Extend Position", targetPosition);
     SmartDashboard.putBoolean("Arm Limit Switch", arm.getHomeSwitchValue());
+    SmartDashboard.putNumber("Extend Speed Multiplier", speedMultiplier);
     
   }
 
@@ -101,16 +107,20 @@ public class AutoExtendArm extends CommandBase {
     {
       doneYet = true;
     }
-    if (currentPosition >= targetPosition-tolerance && currentPosition <= targetPosition + tolerance) {
-      doneYet = true;
-    }
     if (!forward) {
+      if (currentPosition <= targetPosition + tolerance) {
+        doneYet = true;
+      }
       if (!arm.getHomeSwitchValue()) {
 
-       doneYet = true;
+        doneYet = true;
 
-       arm.zeroExtendEncoder();
-      } 
+        arm.zeroExtendEncoder();
+      }
+    } else {
+      if (currentPosition >= targetPosition - tolerance) {
+        doneYet = true;
+      }
     }
     
     return doneYet;

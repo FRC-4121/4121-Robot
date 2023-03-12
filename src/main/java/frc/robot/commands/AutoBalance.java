@@ -73,15 +73,15 @@ public class AutoBalance extends CommandBase {
   public void initialize() {
   
     isClimbing = false;
-    reachedTop = false;
+    reachedTop = true;
     isBalanced = false;
 
     climbThreshold = 7;
     topThreshold = 1.0;
-    pitchTolerance = 7.5;
+    pitchTolerance = 5.0;
     speedMultiplier = 1;
     balanceCounter = 0;
-    balanceTargetCount = 20;
+    balanceTargetCount = 40;
     topCounter = 0.0;
     topTargetCount = 17;
     startingPitch = ntables.getNavXDouble("Orientation.1"); 
@@ -165,10 +165,10 @@ public class AutoBalance extends CommandBase {
             balanceCounter++;
           }
         } else if (currentPitch > 0) {
-          speedMultiplier = -0.3;
+          speedMultiplier = -0.5;
           balanceCounter = 0;
         } else {
-          speedMultiplier = 0.3;
+          speedMultiplier = 0.5;
           balanceCounter = 0;
         }
       }

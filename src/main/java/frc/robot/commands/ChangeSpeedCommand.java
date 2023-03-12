@@ -4,20 +4,12 @@
 
 package frc.robot.commands;
 
-import javax.print.attribute.standard.MediaSize.Other;
-
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.Grabber;
+import static frc.robot.Constants.*;
 
-public class RunGrabberWheelForward extends CommandBase {
- 
-  Grabber grab;
-
-  /** Creates a new RunGrabberWheelForward. */
-  public RunGrabberWheelForward(Grabber grabby) {
-  
-   grab = grabby;
-  
+public class ChangeSpeedCommand extends CommandBase {
+  /** Creates a new ChangeSpeedCommand. */
+  public ChangeSpeedCommand() {
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
@@ -29,19 +21,21 @@ public class RunGrabberWheelForward extends CommandBase {
   @Override
   public void execute() {
 
-    grab.runIntake(0.5);
+    if(swerveDriveSpeedLimiter == driveSpeed){
+      swerveDriveSpeedLimiter = slowSpeed;
+    } else{
+      swerveDriveSpeedLimiter = driveSpeed;
+    }
+
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
-
-    grab.stopIntake();
-  }
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return true;
   }
 }

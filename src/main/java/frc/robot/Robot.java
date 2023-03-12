@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import static frc.robot.Constants.*;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -33,6 +34,8 @@ public class Robot extends TimedRobot {
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
 
+    SmartDashboard.putNumber("Zero Positions", 0);
+
    }
 
   /**
@@ -56,17 +59,31 @@ public class Robot extends TimedRobot {
     //get park selection
     m_robotContainer.getParkSelection();
 
+    // Stream cameras
+    m_robotContainer.streamCams();
+
+    // Check for robot zero command and zero the robot
+    if (SmartDashboard.getNumber("Zero Positions", 0) == 1) {
+      m_robotContainer.zeroRobot();
+      SmartDashboard.putNumber("Zero Positions", 0);
+    }
+
+    m_robotContainer.checkTargetAlignment();
+
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
   @Override
   public void disabledInit() {
 
+    //m_robotContainer.stopPi();
     
   }
 
   @Override
   public void disabledPeriodic() {
+
+    //m_robotContainer.stopPi();
 
   }
 

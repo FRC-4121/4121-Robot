@@ -20,6 +20,9 @@ public class AutoPlaceAndBalance extends SequentialCommandGroup {
   public AutoPlaceAndBalance(SwerveDrive drive, NetworkTableQuerier table, ArmRotate armRotate, Pneumatics pneumatic, ArmExtend armExtend, Wrist wrist, Grabber grab) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    addCommands(new AutoArmHighPos(armRotate,pneumatic,armExtend,wrist, grab), new AutoArmTravelPos(armRotate,pneumatic,armExtend,wrist), new AutoDrive(drive,0.6,30,180,0,0,3,table),new AutoBalance(drive,0.5,180,0,0,7,table),new ParkCommand(drive));
+    addCommands(new AutoArmHighPos(armRotate,pneumatic,armExtend,wrist, grab), 
+      new AutoDriveAndLower(drive,table,armRotate,pneumatic,armExtend,wrist),
+      new AutoBalance(drive,0.6,180,0,0,20,table),
+      new ParkCommand(drive));
   }
 }

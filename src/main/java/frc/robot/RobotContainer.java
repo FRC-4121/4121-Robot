@@ -2,7 +2,11 @@
 package frc.robot;
 
 import static frc.robot.Constants.*;
+
+import org.opencv.core.Mat;
+
 import frc.robot.subsystems.*;
+import frc.robot.subsystems.cameras.CameraBuilder;
 import frc.robot.ExtraClasses.NetworkTableQuerier;
 import frc.robot.commands.*;
 //import frc.robot.extraClasses.*;
@@ -13,11 +17,19 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.*;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.cscore.CvSource;
+import edu.wpi.first.cscore.CvSink;
+import edu.wpi.first.cscore.UsbCamera;
 
 
 
 public class RobotContainer {
   
+  // Camera
+  CvSink camSink;
+  CvSource camSource;
+
   //Driver controllers
   private final XboxController xbox = new XboxController(0);
   private final XboxController secondaryXbox = new XboxController(1);
@@ -43,17 +55,21 @@ public class RobotContainer {
   //Driving Commands
   private final DriveWithJoysticks driveCommand = new DriveWithJoysticks(swervedrive, xbox, table);
   private final ParkCommand parkCommand = new ParkCommand(swervedrive);
+  private final ChangeSpeedCommand changeSpeedCommand = new ChangeSpeedCommand();
 
  //Auto Commands
- private final AutoDrive autoDriveCommand = new AutoDrive(swervedrive,0.6,168,180,0,0,20,table);
+ private final AutoDrive autoDriveCommand = new AutoDrive(swervedrive,0.6,120,180,0,0,20,table);
  //private final AutoBalance autoBalanceCommand = new AutoBalance(swervedrive,0.25,0,20,table);
  private final AutoGroup1 autoGroup = new AutoGroup1(swervedrive, table);
+ private final AutoDriveAndBalance autoDriveAndBalance = new AutoDriveAndBalance(swervedrive,table);
  private final AutoPlaceAndBalance autoPlaceAndBalanceCommand = new AutoPlaceAndBalance(swervedrive,table,armRotate,pneumatic,arm,wrist,grabber);
  private final AutoArmStartPos autoArmStart = new AutoArmStartPos(armRotate, pneumatic,arm);
+ private final AutoLoadPos autoArmLoad = new AutoLoadPos(armRotate,pneumatic,arm,wrist);
  private final AutoArmTravelPos autoArmTravel = new AutoArmTravelPos(armRotate, pneumatic, arm, wrist);
  private final AutoArmFloorPos autoArmFloor = new AutoArmFloorPos(armRotate,pneumatic,arm, wrist);
  private final AutoArmMidPos autoArmMid = new AutoArmMidPos(armRotate,pneumatic,arm, wrist, grabber);
  private final AutoArmHighPos autoArmHigh = new AutoArmHighPos(armRotate,pneumatic,arm, wrist, grabber);
+ private final AutoArmHighCone autoArmHighGoal = new AutoArmHighCone(armRotate,pneumatic,arm, wrist, grabber);
  private final AutoMoveWrist autoMoveWrist = new AutoMoveWrist(wrist,0.5,10);
 
   //KillAuto Command
@@ -107,8 +123,10 @@ public class RobotContainer {
   private final Trigger grabberForwardButton;
   private final Trigger grabButton;
   private final Trigger letGoButton;
-  private final Trigger applyBrakeButton;
-  private final Trigger releaseBrakeButton;
+  //private final Trigger applyBrakeButton;
+  //private final Trigger releaseBrakeButton;
+  private final Trigger autoArmLoadButton;
+  private final Trigger changeSpeedButton;
   
   //launchpad buttons/switches
   //private final JoystickButton killAutoButton;
@@ -142,8 +160,10 @@ public class RobotContainer {
     grabberBackwardButton = new JoystickButton(secondaryXbox,xboxYButton);
     grabButton = new JoystickButton(secondaryXbox,xboxRightBumber);
     letGoButton = new JoystickButton(secondaryXbox,xboxLeftBumber);
-    applyBrakeButton = new JoystickButton(xbox, xboxXButton);
-    releaseBrakeButton = new JoystickButton(xbox, xboxYButton);
+    //applyBrakeButton = new JoystickButton(xbox, xboxXButton);
+    //releaseBrakeButton = new JoystickButton(xbox, xboxYButton);
+    autoArmLoadButton = new JoystickButton(xbox, xboxYButton);
+    changeSpeedButton = new JoystickButton(xbox, xboxXButton);
     
     //Going to use triggers for these
     rotateArmDownButton = new JoystickButton(xbox,xboxAButton);
@@ -181,22 +201,21 @@ public class RobotContainer {
     // Configure the button bindings
     configureButtonBindings();
 
-    //Zero the encoders when robot starts up
-    armRotate.zeroEncoder();
-    arm.zeroExtendEncoder();
-
-    //Make sure that the wrist is starting at 0
-    currentWristPosition = 0.0;
+    //Make sure the positions are zero
+    zeroRobot();
 
     //Make sure the grabber is closed
     pneumatic.grab();
 
-    //Put the encoder value on the smart dashboard
-    SmartDashboard.putNumber("Rotate Position", armRotate.getMasterEncoder());
-    SmartDashboard.putNumber("Extend Position", arm.getExtendEncoder());
+    // Start driver cameras
+    startDriverCams();
+
+    //No feedback yet
+    SmartDashboard.putBoolean("Move Right", false);
+    SmartDashboard.putBoolean("Move Left", false);
+    SmartDashboard.putBoolean("On Target", false);
+
     
-    //Put the wrist position on the dashboard on startup
-    SmartDashboard.putNumber("WristPosition",currentWristPosition);
 
   }
 
@@ -230,6 +249,8 @@ public class RobotContainer {
     autoArmFloorButton.onTrue(autoArmFloor);
     autoArmMidButton.onTrue(autoArmMid);
     autoArmHighButton.onTrue(autoArmHigh);
+    autoArmLoadButton.onTrue(autoArmLoad);
+    changeSpeedButton.onTrue(changeSpeedCommand);
 
     //teleop Commands
     extendArmButton.whileTrue(extendArmCommand);
@@ -242,8 +263,8 @@ public class RobotContainer {
     grabberBackwardButton.whileTrue(grabWheelBackwardCommand);
     grabButton.whileTrue(grab);
     letGoButton.whileTrue(letGo);
-    applyBrakeButton.whileTrue(applyBrakeCommand);
-    releaseBrakeButton.whileTrue(releaseBrakeCommand);
+    //applyBrakeButton.whileTrue(applyBrakeCommand);
+    //releaseBrakeButton.whileTrue(releaseBrakeCommand);
   }
 
    
@@ -293,10 +314,127 @@ public class RobotContainer {
   }
   
 
+  // Get the correct auto command
   public Command getAutonomousCommand() {
     //return autoDriveCommand;
     //return autoBalanceCommand;
     //return autoGroup;
-    return autoPlaceAndBalanceCommand;
+    //return autoPlaceAndBalanceCommand;
+    //return autoDriveAndBalance;
+    return autoArmHighGoal;
+  }
+
+
+  // Start driver cameras
+  public void startDriverCams() {
+
+    // UsbCamera grabCamera = new UsbCamera("Grab Cam", 0);
+    // grabCamera.setResolution(160, 120);
+    // grabCamera.setBrightness(100);
+    // grabCamera.setFPS(24);
+    //CameraServer.startAutomaticCapture();
+    // camSink = CameraServer.getVideo();
+    // camSource = CameraServer.putVideo("Grab Cam", 160, 120);
+
+
+    //SmartDashboard.putBoolean("Cam Started",true);
+
+  }
+
+
+  public void streamCams() {
+
+    // camSource = CameraServer.putVideo("Grab Cam", 160, 120);
+    // Mat frame = new Mat();
+    // camSink.grabFrame(frame);
+    // camSource.putFrame(frame);
+  }
+
+  public void zeroRobot() {
+    
+    //Zero the encoders when robot starts up
+    armRotate.zeroEncoder();
+    arm.zeroExtendEncoder();
+
+    //Make sure that the wrist is starting at 0
+    currentWristPosition = 0.0;
+
+    //Put the encoder value on the smart dashboard
+    SmartDashboard.putNumber("Rotate Position", armRotate.getMasterEncoder());
+    SmartDashboard.putNumber("Extend Position", arm.getExtendEncoder());
+    
+    //Put the wrist position on the dashboard on startup
+    SmartDashboard.putNumber("WristPosition",currentWristPosition);
+
+  }
+
+  public void stopPi() {
+
+    table.putVisionDouble("RobotStop", 1.0);
+
+  }
+
+  public void checkTargetAlignment(){
+
+    if (purpleButton.getAsBoolean() == true) {
+      
+      if(table.getVisionDouble("CubesFound") > 0 ) {
+        
+        double cubeOffset = table.getVisionDouble("Cubes.0.offset");
+        if(cubeOffset < targetCubeOffset - visionTolerance ) {
+          
+          SmartDashboard.putBoolean("Move Right", true);
+          SmartDashboard.putBoolean("Move Left", false);
+          SmartDashboard.putBoolean("On Target", false);
+
+        } else if(cubeOffset > targetCubeOffset + visionTolerance) {
+
+          SmartDashboard.putBoolean("Move Right", false);
+          SmartDashboard.putBoolean("Move Left", true);
+          SmartDashboard.putBoolean("On Target", false);
+
+        } else {
+
+          SmartDashboard.putBoolean("Move Right", false);
+          SmartDashboard.putBoolean("Move Left", false);
+          SmartDashboard.putBoolean("On Target", true);
+
+        }
+      }
+ 
+    } else if (yellowButton.getAsBoolean() == true) {
+      
+      if(table.getVisionDouble("ConesFound") > 0 ) {
+        
+        double coneOffset = table.getVisionDouble("Cones.0.offset");
+        if(coneOffset < targetConeOffset - visionTolerance ) {
+          
+          SmartDashboard.putBoolean("Move Right", true);
+          SmartDashboard.putBoolean("Move Left", false);
+          SmartDashboard.putBoolean("On Target", false);
+
+        } else if(coneOffset > targetConeOffset + visionTolerance) {
+
+          SmartDashboard.putBoolean("Move Right", false);
+          SmartDashboard.putBoolean("Move Left", true);
+          SmartDashboard.putBoolean("On Target", false);
+
+        } else {
+
+          SmartDashboard.putBoolean("Move Right", false);
+          SmartDashboard.putBoolean("Move Left", false);
+          SmartDashboard.putBoolean("On Target", true);
+
+        }
+      }
+
+    } else {
+        
+      SmartDashboard.putBoolean("Move Right", false);
+      SmartDashboard.putBoolean("Move Left", false);
+      SmartDashboard.putBoolean("On Target", false);
+
+    }
+ 
   }
 }

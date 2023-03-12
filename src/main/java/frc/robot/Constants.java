@@ -38,7 +38,7 @@ public final class Constants {
     public static final double autoArmkI = 0.01;
     public static final double autoArmkD = 0.01;
     public static final double teleopRotateSpeed = 0.1;
-    public static final double autoRotateSpeed = 0.3;
+    public static final double autoRotateSpeed = 0.4;
     public static final double autoExtendSpeed = 0.6;
     public static final double rotateRampRate = 0.07;
     public static final double rotateSlope = 1;
@@ -49,28 +49,36 @@ public final class Constants {
     public static final Gains extendGains = new Gains(0.2,0.0,0.0,0.2,0,1.0);
     public static final double rotateVelocity = 0.0150;
     public static final double rotateAcceleration = 0.0060;
+    public static final double ExtendTolerance = 3000;
     public static final double RotateStartAngle = 0;
     public static final double RotateTravelAngle = -134000; 
     public static final double RotateFloorAngle = -130000;
     public static final double RotateMidAngle = -38000; 
-    public static final double RotateHighAngle = -30000;
-    public static final double ExtendStartLength = 0; 
+    public static final double RotateHighAngle = -23700;
+    public static final double RotateLoadAngle = -15000;
+    public static final double ExtendStartLength = 500; 
     public static final double ExtendTravelLength = 4000; 
     public static final double ExtendFloorLength = 71000; 
     public static final double ExtendMidLength = 111000; 
     public static final double ExtendHighLength = 245000; 
+    public static final double ExtendLoadLength = 92500;
 
     // Wrist
     public static final int WristID = 18; 
     public static final double wristSpeed = 1.0;
     public static double currentWristPosition = 0.0; //Value from 0.0 to 1.0, relative position of wrist
-    public static final double wristSlope = (1/4.8); //The wrist takes 4.8 seconds for a full rotation
+    public static final double wristSlopeDownEmpty = (1/4.8); //The wrist takes 4.8 seconds for a full rotation down
+    public static final double wristSlopeUpEmpty = (1/5.0); //It takes 5 seconds to go from the bottom to the top
+    public static final double wristSlopeDownCone = (1/5.0);
+    public static final double wristSlopeUpCone = (1/5.3);
     public static final double wristIntercept = 0; //Derived from linear equation testing how long it takes to get to positions
     public static final double WristTravelPosition = 0.1; //Need to confirm
     public static final double WristFloorPosition = 0.25; //Need to confirm
     public static final double WristMidPosition = 0.5; //Need to confirm
-    public static final double WristHighPosition = 0.6; //Need to confirm
+    public static final double WristHighPosition = 0.55; //Need to confirm
+    public static final double WristLoadPosition = 0.65; //Need to confirm
     public static final double WristHomePosition = 0.0;
+    public static boolean GrabbedCone = true; //This is true if we are closed, becuase we can assume that we have a cone
 
     // Grabber
     public static final int Intake = 21;
@@ -85,6 +93,11 @@ public final class Constants {
 
     // LED's
     public static double ledColor = 0.63; //0.65 is orange, the default color
+
+    //Vision
+    public static final double targetCubeOffset = 0.7;
+    public static final double targetConeOffset = 0.7;
+    public static final double visionTolerance = 0.05;
 
     // Drive control port IDs
     public static final int XBOX_PORT = 0;
@@ -181,7 +194,9 @@ public final class Constants {
     public static final double DRIVETRAIN_WHEELBASE_METERS = 0.546;
     public static final double DRIVETRAIN_TRACKWIDTH_INCH = 21.50;
     public static final double DRIVETRAIN_WHEELBASE_INCH = 21.5;
-    public static final double swerveDriveSpeedLimiter = 0.6;
+    public static final double slowSpeed = 0.3;
+    public static final double driveSpeed = 0.7;
+    public static  double swerveDriveSpeedLimiter = 0.7;
     public static final double autoSwerveDriveSpeedLimiter = 0.6;
     public static final double autoSwerveDriveAngleLimiter = 2.0;
 

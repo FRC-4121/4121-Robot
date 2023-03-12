@@ -5,17 +5,18 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.Pneumatics;
-import static frc.robot.Constants.*;
+import edu.wpi.first.wpilibj.Timer;
 
-public class Grab extends CommandBase {
- 
- Pneumatics grab;
- 
-  /** Creates a new Grab. */
-  public Grab(Pneumatics grabber) {
+public class DelayCommand extends CommandBase {
+  
+  private Timer timer;
+  private double startTime;
+  private double stopTime;
+  
+  /** Creates a new DelayCommand. */
+  public DelayCommand(double time) {
     
-    grab = grabber;
+    stopTime = time;
     
     // Use addRequirements() here to declare subsystem dependencies.
   }
@@ -23,18 +24,17 @@ public class Grab extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+
+    // Start the timer and get initial time
+    timer = new Timer(); 
+    timer.start();
+    startTime = timer.get();
+
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {
-
-      grab.grab();
-      
-      //Assumed we have grabbed the cone
-      GrabbedCone = true;
-    
-  }
+  public void execute() {}
 
   // Called once the command ends or is interrupted.
   @Override
@@ -43,6 +43,11 @@ public class Grab extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return true;
+    if (timer.get() - startTime >= stopTime)
+    {
+      return true;
+    } else {
+      return false;
+    }
   }
 }

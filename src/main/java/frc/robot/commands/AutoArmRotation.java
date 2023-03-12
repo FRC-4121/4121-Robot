@@ -64,7 +64,7 @@ public class AutoArmRotation extends CommandBase {
     //targetPosition = rotateSlope * targetAngle + rotateIntercept;
     
     //Get the currentPosition
-    currentPosition = arm.getMasterEncoder();
+    currentPosition = (arm.getMasterEncoder() + arm.getSlaveEncoder()) / 2;
 
     if(currentPosition < targetAngle){
       arm.rotate(autoRotateSpeed);
@@ -77,6 +77,7 @@ public class AutoArmRotation extends CommandBase {
 
     //Put values on Smart Dashboard
     SmartDashboard.putNumber("Rotate Position", arm.getMasterEncoder());  
+    SmartDashboard.putNumber("Slave Encoder", arm.getSlaveEncoder());
 
   }
 

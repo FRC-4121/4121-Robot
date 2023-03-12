@@ -17,6 +17,9 @@ public class AutoArmHighPos extends SequentialCommandGroup {
   public AutoArmHighPos(ArmRotate armRotate, Pneumatics pneumatic, ArmExtend armExtend, Wrist wrist, Grabber grab) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    addCommands(new AutoArmExtendParallel(wrist, armExtend),new AutoRotateWristHighParallel(wrist,armRotate,pneumatic), new AutoArmHighPosParallel(wrist,armExtend), new LetGo(pneumatic), new AutoArmExtendParallel(wrist, armExtend));
+    addCommands(new AutoExtendArm(armExtend,ExtendStartLength,20),
+      new AutoRotateWristHighParallel(wrist,armRotate,pneumatic), 
+      new AutoArmHighPosParallel(wrist,armExtend)
+      );
   }
 }
