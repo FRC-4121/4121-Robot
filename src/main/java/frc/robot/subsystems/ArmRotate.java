@@ -90,6 +90,8 @@ public class ArmRotate extends SubsystemBase {
 
     rotateMaster.setSelectedSensorPosition(0);
     rotateSlave.setSelectedSensorPosition(0);
+    rotateMaster.setSelectedSensorPosition(0);
+    rotateSlave.setSelectedSensorPosition(0);
   }
 
   @Override

@@ -19,16 +19,19 @@ import edu.wpi.first.wpilibj2.command.button.*;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.cscore.CvSource;
+import edu.wpi.first.cscore.MjpegServer;
 import edu.wpi.first.cscore.CvSink;
 import edu.wpi.first.cscore.UsbCamera;
+import edu.wpi.first.cscore.VideoSink;
+import edu.wpi.first.cscore.VideoSource;
 
 
 
 public class RobotContainer {
   
   // Camera
-  CvSink camSink;
-  CvSource camSource;
+  VideoSink camSink;
+  VideoSource camSource;
 
   //Driver controllers
   private final XboxController xbox = new XboxController(0);
@@ -63,6 +66,7 @@ public class RobotContainer {
  private final AutoGroup1 autoGroup = new AutoGroup1(swervedrive, table);
  private final AutoDriveAndBalance autoDriveAndBalance = new AutoDriveAndBalance(swervedrive,table);
  private final AutoPlaceAndBalance autoPlaceAndBalanceCommand = new AutoPlaceAndBalance(swervedrive,table,armRotate,pneumatic,arm,wrist,grabber);
+ private final AutoPlaceAndGetOut autoPlaceAndGetOut = new AutoPlaceAndGetOut(swervedrive,table,armRotate,pneumatic,arm,wrist,grabber);
  private final AutoArmStartPos autoArmStart = new AutoArmStartPos(armRotate, pneumatic,arm);
  private final AutoLoadPos autoArmLoad = new AutoLoadPos(armRotate,pneumatic,arm,wrist);
  private final AutoArmTravelPos autoArmTravel = new AutoArmTravelPos(armRotate, pneumatic, arm, wrist);
@@ -316,12 +320,12 @@ public class RobotContainer {
 
   // Get the correct auto command
   public Command getAutonomousCommand() {
-    //return autoDriveCommand;
     //return autoBalanceCommand;
     //return autoGroup;
-    //return autoPlaceAndBalanceCommand;
+    return autoPlaceAndBalanceCommand;
     //return autoDriveAndBalance;
-    return autoArmHighGoal;
+    //return autoArmHighGoal;
+    //return autoPlaceAndGetOut;
   }
 
 
@@ -335,9 +339,10 @@ public class RobotContainer {
     //CameraServer.startAutomaticCapture();
     // camSink = CameraServer.getVideo();
     // camSource = CameraServer.putVideo("Grab Cam", 160, 120);
-
-
-    //SmartDashboard.putBoolean("Cam Started",true);
+    camSource = new CameraBuilder(0, "Grab Cam (Camera)").res(160, 120).brightness(100).fps(24).finish();
+    camSink = new MjpegServer("Grab Cam (Server)", 1181);
+    camSink.setSource(camSource);
+    SmartDashboard.putBoolean("Cam Started",true);
 
   }
 
@@ -345,9 +350,7 @@ public class RobotContainer {
   public void streamCams() {
 
     // camSource = CameraServer.putVideo("Grab Cam", 160, 120);
-    // Mat frame = new Mat();
-    // camSink.grabFrame(frame);
-    // camSource.putFrame(frame);
+    
   }
 
   public void zeroRobot() {

@@ -9,6 +9,7 @@ import frc.robot.commands.*;
 import frc.robot.subsystems.*;
 import static frc.robot.Constants.*;
 
+
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
@@ -18,7 +19,7 @@ public class AutoArmHighCone extends SequentialCommandGroup {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(new AutoExtendArm(armExtend,ExtendStartLength,20),
-      new AutoRotateWristHighParallel(wrist,armRotate,pneumatic), 
+      new AutoRotateWristHighParallelStart(wrist,armRotate,pneumatic), 
       new AutoArmHighPosParallel(wrist,armExtend), 
       new DelayCommand(0.1) ,
       new LetGo(pneumatic), 

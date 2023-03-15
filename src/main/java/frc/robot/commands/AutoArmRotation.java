@@ -46,7 +46,7 @@ public class AutoArmRotation extends CommandBase {
 
     isReleased = false;
 
-    tolerance = 125;
+    tolerance = 500;
 
   }
 
@@ -64,7 +64,7 @@ public class AutoArmRotation extends CommandBase {
     //targetPosition = rotateSlope * targetAngle + rotateIntercept;
     
     //Get the currentPosition
-    currentPosition = (arm.getMasterEncoder() + arm.getSlaveEncoder()) / 2;
+    currentPosition = arm.getMasterEncoder();
 
     if(currentPosition < targetAngle){
       arm.rotate(autoRotateSpeed);

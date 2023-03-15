@@ -6,6 +6,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import static frc.robot.Constants.*;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class ChangeSpeedCommand extends CommandBase {
   /** Creates a new ChangeSpeedCommand. */
@@ -23,8 +24,20 @@ public class ChangeSpeedCommand extends CommandBase {
 
     if(swerveDriveSpeedLimiter == driveSpeed){
       swerveDriveSpeedLimiter = slowSpeed;
+      for(int i = 0; i < 4; i++){
+        angleLimiters[i] = slowAngleSpeed;
+      }
+
+      SmartDashboard.putBoolean("Slow Mode", true);
+      
     } else{
       swerveDriveSpeedLimiter = driveSpeed;
+      for(int i = 0; i < 4; i++){
+        angleLimiters[i] = angleSpeed;
+      }
+
+      SmartDashboard.putBoolean("Slow Mode", false);
+
     }
 
   }

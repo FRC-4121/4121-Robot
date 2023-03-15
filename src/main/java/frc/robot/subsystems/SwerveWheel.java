@@ -202,6 +202,8 @@ public class SwerveWheel extends SubsystemBase {
   //Zeros the encoder for the drive motor
   public void zeroEncoder() {
 
+    //Zero twice because for some reason it doesn't want to zero sometimes
+    swerveDriveMotor.setSelectedSensorPosition(0);
     swerveDriveMotor.setSelectedSensorPosition(0);
   }
 

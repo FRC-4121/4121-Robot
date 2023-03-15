@@ -87,6 +87,7 @@ public class ArmExtend extends SubsystemBase {
   public void zeroExtendEncoder() {
 
     extend.setSelectedSensorPosition(0);
+    extend.setSelectedSensorPosition(0);
 
   }
 

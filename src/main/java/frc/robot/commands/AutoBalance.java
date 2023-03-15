@@ -81,7 +81,7 @@ public class AutoBalance extends CommandBase {
     pitchTolerance = 5.0;
     speedMultiplier = 1;
     balanceCounter = 0;
-    balanceTargetCount = 40;
+    balanceTargetCount = 100;
     topCounter = 0.0;
     topTargetCount = 17;
     startingPitch = ntables.getNavXDouble("Orientation.1"); 
@@ -109,7 +109,7 @@ public class AutoBalance extends CommandBase {
       balanceCounter = 0.0;
       topCounter = 0.0;
       isClimbing = false;
-      reachedTop = false;
+      reachedTop = true;
       isBalanced = false;
 
       firstRun = false;
@@ -122,8 +122,9 @@ public class AutoBalance extends CommandBase {
     targetRotation = pidFrontAngle.calculate(currentGyroAngle / 360.0, frontAngle) + chassisRotation;
 
     //Getting pitch reading from pi
-    currentPitch = ntables.getNavXDouble("Orientation.1") - startingPitch;
-
+    //currentPitch = ntables.getNavXDouble("Orientation.1") - startingPitch;
+    currentPitch = ntables.getNavXDouble("Orientation.1");
+    
     //Checking if we are currently climbing based on pitch reading from pi
     if (!isClimbing) {
       if (Math.abs(currentPitch) >= climbThreshold) {
