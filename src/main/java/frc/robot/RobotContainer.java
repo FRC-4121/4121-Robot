@@ -60,21 +60,25 @@ public class RobotContainer {
   private final ParkCommand parkCommand = new ParkCommand(swervedrive);
   private final ChangeSpeedCommand changeSpeedCommand = new ChangeSpeedCommand();
 
- //Auto Commands
- private final AutoDrive autoDriveCommand = new AutoDrive(swervedrive,0.6,120,180,0,0,20,table);
- //private final AutoBalance autoBalanceCommand = new AutoBalance(swervedrive,0.25,0,20,table);
- private final AutoGroup1 autoGroup = new AutoGroup1(swervedrive, table);
- private final AutoDriveAndBalance autoDriveAndBalance = new AutoDriveAndBalance(swervedrive,table);
- private final AutoPlaceAndBalance autoPlaceAndBalanceCommand = new AutoPlaceAndBalance(swervedrive,table,armRotate,pneumatic,arm,wrist,grabber);
- private final AutoPlaceAndGetOut autoPlaceAndGetOut = new AutoPlaceAndGetOut(swervedrive,table,armRotate,pneumatic,arm,wrist,grabber);
- private final AutoArmStartPos autoArmStart = new AutoArmStartPos(armRotate, pneumatic,arm);
- private final AutoLoadPos autoArmLoad = new AutoLoadPos(armRotate,pneumatic,arm,wrist);
- private final AutoArmTravelPos autoArmTravel = new AutoArmTravelPos(armRotate, pneumatic, arm, wrist);
- private final AutoArmFloorPos autoArmFloor = new AutoArmFloorPos(armRotate,pneumatic,arm, wrist);
- private final AutoArmMidPos autoArmMid = new AutoArmMidPos(armRotate,pneumatic,arm, wrist, grabber);
- private final AutoArmHighPos autoArmHigh = new AutoArmHighPos(armRotate,pneumatic,arm, wrist, grabber);
- private final AutoArmHighCone autoArmHighGoal = new AutoArmHighCone(armRotate,pneumatic,arm, wrist, grabber);
- private final AutoMoveWrist autoMoveWrist = new AutoMoveWrist(wrist,0.5,10);
+  // Auto Commands
+  private final AutoDrive autoDriveCommand = new AutoDrive(swervedrive, 0.6, 120, 180, 0, 0, 20, table);
+  // private final AutoBalance autoBalanceCommand = new
+  // AutoBalance(swervedrive,0.25,0,20,table);
+  private final AutoGroup1 autoGroup = new AutoGroup1(swervedrive, table);
+  private final AutoDriveAndBalance autoDriveAndBalance = new AutoDriveAndBalance(swervedrive, table);
+  private final AutoPlaceAndBalance autoPlaceAndBalance = new AutoPlaceAndBalance(swervedrive, table, armRotate,
+      pneumatic, arm, wrist, grabber);
+  private final AutoPlaceAndGetOut autoPlaceAndGetOut = new AutoPlaceAndGetOut(swervedrive, table, armRotate, pneumatic,
+      arm, wrist, grabber);
+  private final AutoDriveAndLower autoDriveAndLower = new AutoDriveAndLower(swervedrive,table,armRotate,pneumatic,arm,wrist,0.7,160,185);
+  private final AutoArmStartPos autoArmStart = new AutoArmStartPos(armRotate, pneumatic, arm);
+  private final AutoLoadPos autoArmLoad = new AutoLoadPos(armRotate, pneumatic, arm, wrist);
+  private final AutoArmTravelPos autoArmTravel = new AutoArmTravelPos(armRotate, pneumatic, arm, wrist);
+  private final AutoArmFloorPos autoArmFloor = new AutoArmFloorPos(armRotate, pneumatic, arm, wrist);
+  private final AutoArmMidPos autoArmMid = new AutoArmMidPos(armRotate, pneumatic, arm, wrist, grabber);
+  private final AutoArmHighPos autoArmHigh = new AutoArmHighPos(armRotate, pneumatic, arm, wrist, grabber);
+  private final AutoArmHighCone autoArmHighGoal = new AutoArmHighCone(armRotate, pneumatic, arm, wrist, grabber);
+  private final AutoMoveWrist autoMoveWrist = new AutoMoveWrist(wrist, 0.5, 10);
 
   //KillAuto Command
   private final KillAutoCommand killAutoObject = new KillAutoCommand(); 
@@ -150,10 +154,9 @@ public class RobotContainer {
   //===CONSTRUCTOR===//
   public RobotContainer() { 
     
-  //colorButtons
-  yellowButton = new JoystickButton(launchpad,LaunchPadSwitch5top);
-  purpleButton = new JoystickButton(launchpad,LaunchPadSwitch5bottom);
-
+    // colorButtons
+    yellowButton = new JoystickButton(launchpad, LaunchPadSwitch5top);
+    purpleButton = new JoystickButton(launchpad, LaunchPadSwitch5bottom);
   
     //xboxButtons
     extendArmButton = new JoystickButton(xbox,xboxRightBumber); 
@@ -214,22 +217,18 @@ public class RobotContainer {
     // Start driver cameras
     startDriverCams();
 
-    //No feedback yet
+    // Initialize vision alignment help
     SmartDashboard.putBoolean("Move Right", false);
     SmartDashboard.putBoolean("Move Left", false);
     SmartDashboard.putBoolean("On Target", false);
-
-    
+    SmartDashboard.putBoolean("Tape Move Right", false);
+    SmartDashboard.putBoolean("Tape Move Left", false);
+    SmartDashboard.putBoolean("Tape On Target", false);
 
   }
 
 
-
-
-
-
   //===METHODS,WHERE STUFF IS CONFIGURED===///
-
 
   //For subsystem default commands (driving, etc.)
   private void configureDefaultCommands() {
@@ -271,8 +270,9 @@ public class RobotContainer {
     //releaseBrakeButton.whileTrue(releaseBrakeCommand);
   }
 
-   
-  //gets the color selected for the match
+   /*
+    * Sets the LED color for the selected target object
+    */
   public void getColorSelection()
   {
     
@@ -291,6 +291,9 @@ public class RobotContainer {
     }
   }
 
+  /*
+   * Get driver selection for arm operation
+   */
   public void getArmSelection()
   {
 
@@ -303,6 +306,9 @@ public class RobotContainer {
 
   }
 
+  /*
+   * Park and unpark the robot
+   */
   public void getParkSelection()
   {
 
@@ -317,42 +323,63 @@ public class RobotContainer {
     }
   }
   
-
-  // Get the correct auto command
+  /*
+   * Return the correct auto command to the scheduler
+   */
   public Command getAutonomousCommand() {
-    //return autoBalanceCommand;
-    //return autoGroup;
-    return autoPlaceAndBalanceCommand;
-    //return autoDriveAndBalance;
-    //return autoArmHighGoal;
-    //return autoPlaceAndGetOut;
+    
+    // Get the auto program seletion from dashboard
+    int autoProg = (int)SmartDashboard.getNumber("Auto Program", 1);
+
+    // Return selected command
+    switch(autoProg) {
+
+      case 1:
+        return autoDriveAndLower;
+      
+      case 2:
+        return autoPlaceAndGetOut;
+
+      case 3:
+        return autoPlaceAndBalance;
+
+      default:
+        return autoDriveAndLower;
+    }
+
   }
 
-
-  // Start driver cameras
+  /*
+   * Start driver cameras
+  */ 
   public void startDriverCams() {
 
     // UsbCamera grabCamera = new UsbCamera("Grab Cam", 0);
     // grabCamera.setResolution(160, 120);
     // grabCamera.setBrightness(100);
     // grabCamera.setFPS(24);
-    //CameraServer.startAutomaticCapture();
+    CameraServer.startAutomaticCapture("Arm Cam", 0);
     // camSink = CameraServer.getVideo();
     // camSource = CameraServer.putVideo("Grab Cam", 160, 120);
-    camSource = new CameraBuilder(0, "Grab Cam (Camera)").res(160, 120).brightness(100).fps(24).finish();
-    camSink = new MjpegServer("Grab Cam (Server)", 1181);
-    camSink.setSource(camSource);
+    // camSource = new CameraBuilder(0, "Grab Cam (Camera)").res(160, 120).brightness(100).fps(24).finish();
+    // camSink = new MjpegServer("Grab Cam (Server)", 1181);
+    // camSink.setSource(camSource);
     SmartDashboard.putBoolean("Cam Started",true);
 
   }
 
-
+  /*
+   * Stream cameras every cycle
+   */
   public void streamCams() {
 
     // camSource = CameraServer.putVideo("Grab Cam", 160, 120);
     
   }
 
+  /*
+   * Zero positions of all mechanisms
+   */
   public void zeroRobot() {
     
     //Zero the encoders when robot starts up
@@ -371,12 +398,18 @@ public class RobotContainer {
 
   }
 
+  /*
+   * Send a signal to stop the Pi codes
+   */
   public void stopPi() {
 
     table.putVisionDouble("RobotStop", 1.0);
 
   }
 
+  /*
+   * Use vision system to check alignment of cones or cubes
+   */
   public void checkTargetAlignment(){
 
     if (purpleButton.getAsBoolean() == true) {
@@ -439,5 +472,43 @@ public class RobotContainer {
 
     }
  
+  }
+
+  /*
+   * Use vision system to check alignment of robot with goal tape
+   */
+  public void checkTapeAlignment() {
+
+    if(table.getVisionDouble("TapeFound") > 0 ) {
+
+      double tapeOffset = table.getVisionDouble("Tape.0.offset");
+      if(tapeOffset < targetTapeOffset - visionTolerance ) {
+        
+        SmartDashboard.putBoolean("Tape Move Right", true);
+        SmartDashboard.putBoolean("Tape Move Left", false);
+        SmartDashboard.putBoolean("Tape On Target", false);
+
+      } else if(tapeOffset > targetTapeOffset + visionTolerance) {
+
+        SmartDashboard.putBoolean("Tape Move Right", false);
+        SmartDashboard.putBoolean("Tape Move Left", true);
+        SmartDashboard.putBoolean("Tape On Target", false);
+
+      } else {
+
+        SmartDashboard.putBoolean("Tape Move Right", false);
+        SmartDashboard.putBoolean("Tape Move Left", false);
+        SmartDashboard.putBoolean("Tape On Target", true);
+
+      }
+
+    } else {
+
+      SmartDashboard.putBoolean("Tape Move Right", false);
+      SmartDashboard.putBoolean("Tape Move Left", false);
+      SmartDashboard.putBoolean("Tape On Target", false);
+
+    }
+
   }
 }

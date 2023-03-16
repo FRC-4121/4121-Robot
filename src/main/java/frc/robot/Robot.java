@@ -34,7 +34,11 @@ public class Robot extends TimedRobot {
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
 
+    // Put zero positions option on the dashboard
     SmartDashboard.putNumber("Zero Positions", 0);
+
+    // Put auto program option on the dashboard
+    SmartDashboard.putNumber("Auto Program", 0);
 
    }
 

@@ -98,6 +98,7 @@ public final class Constants {
     //Vision
     public static final double targetCubeOffset = 0.7;
     public static final double targetConeOffset = 0.7;
+    public static final double targetTapeOffset = 0.7;
     public static final double visionTolerance = 0.05;
 
     // Drive control port IDs
