@@ -19,7 +19,8 @@ public class AutoPlaceAndGetOut extends SequentialCommandGroup {
   public AutoPlaceAndGetOut(SwerveDrive drive, NetworkTableQuerier table, ArmRotate armRotate, Pneumatics pneumatic, ArmExtend armExtend, Wrist wrist, Grabber grab) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    addCommands(new AutoArmHighCone(armRotate,pneumatic,armExtend,wrist, grab), 
-    new AutoDriveAndLower(drive,table,armRotate,pneumatic,armExtend,wrist,0.7,160,185));
+     addCommands(new AutoArmHighCone(armRotate,pneumatic,armExtend,wrist, grab), 
+     new AutoDriveAndLower(drive,table,armRotate,pneumatic,armExtend,wrist,0.7,160,180));
+    //addCommands(new AutoArmHighCone(armRotate,pneumatic,armExtend,wrist, grab));
   }
 }

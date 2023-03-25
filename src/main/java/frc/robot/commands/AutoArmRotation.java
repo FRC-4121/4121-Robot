@@ -11,6 +11,7 @@ import frc.robot.subsystems.Pneumatics;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.math.controller.*;
 
 public class AutoArmRotation extends CommandBase {
   
@@ -23,7 +24,8 @@ public class AutoArmRotation extends CommandBase {
   private double startTime;
   private double stopTime;
   private double tolerance;
-  
+  private PIDController wpiPIDController;
+
   /** Creates a new AutoArmRotation. */
   public AutoArmRotation(ArmRotate armRotate, double angle, double time, Pneumatics pneumatics) {
     
@@ -46,7 +48,11 @@ public class AutoArmRotation extends CommandBase {
 
     isReleased = false;
 
-    tolerance = 500;
+    tolerance = 200;
+
+    // Initialize PID controller
+    wpiPIDController = new PIDController(autoArmkP, autoArmkI, autoArmkD);
+    wpiPIDController.setTolerance(tolerance,500);
 
   }
 
@@ -66,11 +72,22 @@ public class AutoArmRotation extends CommandBase {
     //Get the currentPosition
     currentPosition = arm.getMasterEncoder();
 
-    if(currentPosition < targetAngle){
-      arm.rotate(autoRotateSpeed);
-    } else{
-      arm.rotate(-autoRotateSpeed);
+    double output = wpiPIDController.calculate(currentPosition,targetAngle);
+
+    if (output > autoRotateSpeed) {
+      output = autoRotateSpeed;
     }
+    else if (output < -autoRotateSpeed) {
+      output = -autoRotateSpeed;
+    }
+
+    arm.rotate(output);
+
+    // if(currentPosition < targetAngle){
+    //   arm.rotate(autoRotateSpeed);
+    // } else{
+    //   arm.rotate(-autoRotateSpeed);
+    // }
     
     //Call method to rotate to an encoder postion with smoothing
     //arm.rotateToPosition(targetAngle);

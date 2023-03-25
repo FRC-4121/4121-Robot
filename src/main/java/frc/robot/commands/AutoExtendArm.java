@@ -9,6 +9,8 @@ import static frc.robot.Constants.*;
 import frc.robot.subsystems.ArmExtend;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.math.controller.*;
+
 
 public class AutoExtendArm extends CommandBase {
   
@@ -21,7 +23,8 @@ public class AutoExtendArm extends CommandBase {
   private double tolerance;
   private boolean forward; //this shows if the arm is extending forward or backward 
   private double speedMultiplier;
-  
+  private PIDController wpiPIDController;
+
   
   /** Creates a new AutoExtendArm. */
   public AutoExtendArm(ArmExtend army, double position, double time) {
@@ -43,11 +46,15 @@ public class AutoExtendArm extends CommandBase {
     timer.start();
     startTime = timer.get();
   
-    tolerance = 350; //This needs to be found
+    tolerance = 300; //This needs to be found
     speedMultiplier = 1;
     
     //Default is going up
     forward = true;
+
+    // Initialize PID controller
+    wpiPIDController = new PIDController(autoArmExtendkP, autoArmExtendkI, autoArmExtendkD);
+    wpiPIDController.setTolerance(tolerance,500);    
 
   }
 
@@ -57,25 +64,40 @@ public class AutoExtendArm extends CommandBase {
 
     currentPosition = arm.getExtendEncoder();
 
-    if (Math.abs(targetPosition - currentPosition) < ExtendTolerance) {
- 
+    if (Math.abs(currentPosition - targetPosition) > tolerance) {
+
+      if (Math.abs(targetPosition - currentPosition) < ExtendTolerance) {
+
       speedMultiplier = 0.25;
 
-    }
+      }
 
-    if(Math.abs(targetPosition-currentPosition) < tolerance){
-      speedMultiplier = 0.0;
-    }
+      if(Math.abs(targetPosition - currentPosition) < tolerance){
 
-    if (currentPosition < targetPosition) {
-      
-      arm.extendArm(autoExtendSpeed * speedMultiplier);
-      forward = true;
+        speedMultiplier = 0.0;
 
-    } else {
+      }
 
-      arm.extendArm(-autoExtendSpeed * speedMultiplier);
-      forward = false;
+      // double output = wpiPIDController.calculate(currentPosition, targetPosition);
+
+      // if (output > autoExtendSpeed) {
+      //   output = autoExtendSpeed;
+      // } else if (output < -autoExtendSpeed) {
+      //   output = -autoExtendSpeed;
+      // }
+
+      // Determine which direction the arm is going
+      if (currentPosition < targetPosition) {
+
+        arm.extendArm(autoExtendSpeed * speedMultiplier);
+        forward = true;
+
+      } else {
+
+        arm.extendArm(-autoExtendSpeed * speedMultiplier);
+        forward = false;
+
+      }
 
     }
 

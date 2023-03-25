@@ -70,7 +70,7 @@ public class RobotContainer {
       pneumatic, arm, wrist, grabber);
   private final AutoPlaceAndGetOut autoPlaceAndGetOut = new AutoPlaceAndGetOut(swervedrive, table, armRotate, pneumatic,
       arm, wrist, grabber);
-  private final AutoDriveAndLower autoDriveAndLower = new AutoDriveAndLower(swervedrive,table,armRotate,pneumatic,arm,wrist,0.7,160,185);
+  private final AutoDriveAndLower autoDriveAndLower = new AutoDriveAndLower(swervedrive,table,armRotate,pneumatic,arm,wrist,0.7,160,180);
   private final AutoArmStartPos autoArmStart = new AutoArmStartPos(armRotate, pneumatic, arm);
   private final AutoLoadPos autoArmLoad = new AutoLoadPos(armRotate, pneumatic, arm, wrist);
   private final AutoArmTravelPos autoArmTravel = new AutoArmTravelPos(armRotate, pneumatic, arm, wrist);
@@ -79,6 +79,7 @@ public class RobotContainer {
   private final AutoArmHighPos autoArmHigh = new AutoArmHighPos(armRotate, pneumatic, arm, wrist, grabber);
   private final AutoArmHighCone autoArmHighGoal = new AutoArmHighCone(armRotate, pneumatic, arm, wrist, grabber);
   private final AutoMoveWrist autoMoveWrist = new AutoMoveWrist(wrist, 0.5, 10);
+  private final AutoAlignToTape autoAlignToTape = new AutoAlignToTape(swervedrive, 0.2, 5, table);
 
   //KillAuto Command
   private final KillAutoCommand killAutoObject = new KillAutoCommand(); 
@@ -92,6 +93,7 @@ public class RobotContainer {
   //Wrist Commands
   private final RunWristUp wristUpCommand = new RunWristUp(wrist);
   private final RunWristDown wristDownCommand = new RunWristDown(wrist);
+  private final ZeroWrist zeroWristCommand = new ZeroWrist();
   
   //Grabber Commands
   private final RunGrabberWheelForward grabWheelForwardCommand = new RunGrabberWheelForward(grabber);
@@ -135,6 +137,7 @@ public class RobotContainer {
   //private final Trigger releaseBrakeButton;
   private final Trigger autoArmLoadButton;
   private final Trigger changeSpeedButton;
+  private final Trigger zeroWristButton;
   
   //launchpad buttons/switches
   //private final JoystickButton killAutoButton;
@@ -150,6 +153,9 @@ public class RobotContainer {
   private static JoystickButton purpleButton;
   private static JoystickButton armControlButton;
   private static JoystickButton parkButton;
+  private static JoystickButton autoProg1;
+  private static JoystickButton autoProg2;
+  private static JoystickButton autoSel;
 
   //===CONSTRUCTOR===//
   public RobotContainer() { 
@@ -171,6 +177,7 @@ public class RobotContainer {
     //releaseBrakeButton = new JoystickButton(xbox, xboxYButton);
     autoArmLoadButton = new JoystickButton(xbox, xboxYButton);
     changeSpeedButton = new JoystickButton(xbox, xboxXButton);
+    zeroWristButton = new JoystickButton(xbox, xboxRightJoystickButton);
     
     //Going to use triggers for these
     rotateArmDownButton = new JoystickButton(xbox,xboxAButton);
@@ -189,6 +196,9 @@ public class RobotContainer {
     purpleButton = new JoystickButton(launchpad, LaunchPadSwitch5bottom);
     armControlButton = new JoystickButton(launchpad, LaunchPadSwitch7);
     parkButton = new JoystickButton(launchpad,LaunchPadSwitch3);
+    autoProg1 = new JoystickButton(launchpad, LaunchPadSwitch6top);
+    autoProg2 = new JoystickButton(launchpad, LaunchPadSwitch6bottom);
+    autoSel = new JoystickButton(launchpad, LaunchPadSwitch7);
 
     //testbed buttons
     // extendArmButton = new JoystickButton(testbed,9); 
@@ -266,6 +276,7 @@ public class RobotContainer {
     grabberBackwardButton.whileTrue(grabWheelBackwardCommand);
     grabButton.whileTrue(grab);
     letGoButton.whileTrue(letGo);
+    zeroWristButton.onTrue(zeroWristCommand);
     //applyBrakeButton.whileTrue(applyBrakeCommand);
     //releaseBrakeButton.whileTrue(releaseBrakeCommand);
   }
@@ -327,25 +338,61 @@ public class RobotContainer {
    * Return the correct auto command to the scheduler
    */
   public Command getAutonomousCommand() {
-    
-    // Get the auto program seletion from dashboard
-    int autoProg = (int)SmartDashboard.getNumber("Auto Program", 1);
 
-    // Return selected command
-    switch(autoProg) {
+    // Get user input
+    Boolean checkAutoProg1 = autoProg1.getAsBoolean();
+    Boolean checkAutoProg2 = autoProg2.getAsBoolean();
+    Boolean checkAutoSelect = autoSel.getAsBoolean();
 
-      case 1:
-        return autoDriveAndLower;
-      
-      case 2:
-        return autoPlaceAndGetOut;
+    if (!checkAutoSelect) {
 
-      case 3:
+      if (checkAutoProg1) {
+
         return autoPlaceAndBalance;
 
-      default:
-        return autoDriveAndLower;
+      } else if (checkAutoProg2) {
+
+        return autoArmHighGoal;
+
+      } else {
+
+        return autoPlaceAndGetOut;
+
+      }
+    } else {
+
+      if (checkAutoProg1) {
+
+        return autoPlaceAndGetOut;
+
+      } else if (checkAutoProg2) {
+
+        return autoAlignToTape;
+
+      } else {
+
+        return autoPlaceAndGetOut;
+
+      }
+
     }
+
+
+    // Return selected command
+    // switch(autoProg) {
+
+    //   case 1:
+    //     return autoDriveAndLower;
+      
+    //   case 2:
+    //     return autoPlaceAndGetOut;
+
+    //   case 3:
+    //     return autoPlaceAndBalance;
+
+    //   default:
+    //     return autoDriveAndLower;
+    // }
 
   }
 
@@ -385,6 +432,7 @@ public class RobotContainer {
     //Zero the encoders when robot starts up
     armRotate.zeroEncoder();
     arm.zeroExtendEncoder();
+    wrist.zeroEncoder();
 
     //Make sure that the wrist is starting at 0
     currentWristPosition = 0.0;
@@ -392,10 +440,19 @@ public class RobotContainer {
     //Put the encoder value on the smart dashboard
     SmartDashboard.putNumber("Rotate Position", armRotate.getMasterEncoder());
     SmartDashboard.putNumber("Extend Position", arm.getExtendEncoder());
+    // SmartDashboard.putNumber("Wrist Position", wrist.getEncoderPos());
     
     //Put the wrist position on the dashboard on startup
     SmartDashboard.putNumber("WristPosition",currentWristPosition);
 
+  }
+
+  public void zeroWrist(){
+    //Make sure that the wrist is starting at 0
+    currentWristPosition = 0.0;
+
+    //Put the wrist position on the dashboard on startup
+    SmartDashboard.putNumber("WristPosition",currentWristPosition);
   }
 
   /*
@@ -416,14 +473,18 @@ public class RobotContainer {
       
       if(table.getVisionDouble("CubesFound") > 0 ) {
         
-        double cubeOffset = table.getVisionDouble("Cubes.0.offset");
-        if(cubeOffset < targetCubeOffset - visionTolerance ) {
+        SmartDashboard.putBoolean("Cubes Found", true);
+
+        double cubeOffset = table.getVisionDouble("Cubes.0.offset") - targetCubeOffset;
+        SmartDashboard.putNumber("Cube Offset", cubeOffset);
+
+        if(cubeOffset < -visionTolerance) {
           
           SmartDashboard.putBoolean("Move Right", true);
           SmartDashboard.putBoolean("Move Left", false);
           SmartDashboard.putBoolean("On Target", false);
 
-        } else if(cubeOffset > targetCubeOffset + visionTolerance) {
+        } else if(cubeOffset > visionTolerance) {
 
           SmartDashboard.putBoolean("Move Right", false);
           SmartDashboard.putBoolean("Move Left", true);
@@ -436,20 +497,28 @@ public class RobotContainer {
           SmartDashboard.putBoolean("On Target", true);
 
         }
+      } else {
+
+        SmartDashboard.putBoolean("Cubes Found", false);
+
       }
  
     } else if (yellowButton.getAsBoolean() == true) {
       
       if(table.getVisionDouble("ConesFound") > 0 ) {
         
-        double coneOffset = table.getVisionDouble("Cones.0.offset");
-        if(coneOffset < targetConeOffset - visionTolerance ) {
+        SmartDashboard.putBoolean("Cones Found", true);
+
+        double coneOffset = table.getVisionDouble("Cones.0.offset") - targetConeOffset;
+        SmartDashboard.putNumber("Cone Offset", coneOffset);
+
+        if(coneOffset < -visionTolerance ) {
           
           SmartDashboard.putBoolean("Move Right", true);
           SmartDashboard.putBoolean("Move Left", false);
           SmartDashboard.putBoolean("On Target", false);
 
-        } else if(coneOffset > targetConeOffset + visionTolerance) {
+        } else if(coneOffset > visionTolerance) {
 
           SmartDashboard.putBoolean("Move Right", false);
           SmartDashboard.putBoolean("Move Left", true);
@@ -462,6 +531,10 @@ public class RobotContainer {
           SmartDashboard.putBoolean("On Target", true);
 
         }
+      } else {
+
+        SmartDashboard.putBoolean("Cones Found", false);
+
       }
 
     } else {

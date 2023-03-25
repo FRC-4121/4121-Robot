@@ -55,6 +55,7 @@ public class RunWristDown extends CommandBase {
 
     }
     
+    // SmartDashboard.putNumber("Wrist Position", m_wrist.getEncoderPos());
     SmartDashboard.putNumber("WristPosition",currentWristPosition);
     
     SmartDashboard.putNumber("Wrist Time", timer.get()-startMoveTime);
@@ -78,6 +79,7 @@ public class RunWristDown extends CommandBase {
 
     }
 
+    // SmartDashboard.putNumber("Wrist Position", m_wrist.getEncoderPos());
     SmartDashboard.putNumber("WristPosition",currentWristPosition);
     SmartDashboard.putNumber("Wrist Time", timer.get()-startMoveTime);
 

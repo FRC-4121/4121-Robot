@@ -18,5 +18,5 @@ public class AutoArmTravelPos extends SequentialCommandGroup {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(new AutoArmExtendParallel(wrist, armExtend),new AutoArmRotation(armRotate,RotateTravelAngle,20,pneumatic), new AutoArmTravelPosParallel(wrist, armExtend));
-  }
-}
+    //addCommands(new AutoArmExtendParallel(wrist, armExtend));
+}}

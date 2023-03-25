@@ -16,6 +16,7 @@ import com.ctre.phoenix.sensors.CANCoder;
 import com.ctre.phoenix.sensors.CANCoder.*;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.math.filter.MedianFilter;
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.controller.*;
 
 public class SwerveWheel extends SubsystemBase { 
@@ -40,7 +41,9 @@ public class SwerveWheel extends SubsystemBase {
   private double wheelAngle;
   private int wheelID;
 
+  // Declare filters
   private MedianFilter angle_filter;
+  private SlewRateLimiter rateLimiter;
  
 
   /* Creates a new SwerveWheel. */
@@ -66,8 +69,9 @@ public class SwerveWheel extends SubsystemBase {
     SmartDashboard.putNumber("Wheel "+ wheelID + " kI", kI_AngleController);
     SmartDashboard.putNumber("Wheel "+ wheelID + " kD", kD_AngleController);
 
+    // Create filters
     angle_filter = new MedianFilter(FILTER_WINDOW_SIZE);
-
+    rateLimiter = new SlewRateLimiter(100000.0, -50.0, 0.0);
   }
 
   /* Initialize motors */

@@ -28,7 +28,7 @@ public class AutoBalance extends CommandBase {
   private Boolean reachedTop;
   private Boolean isBalanced;
   private double currentPitch;
-  private double startingPitch;
+  //private double startingPitch;
   private double climbThreshold; //Threshhold for seeing if we have started climbing
   private double pitchTolerance; //Tolerance for seeing if we have traveled too far
   private double topThreshold; //Threshold for determining if we have reached the top
@@ -78,13 +78,13 @@ public class AutoBalance extends CommandBase {
 
     climbThreshold = 7;
     topThreshold = 1.0;
-    pitchTolerance = 5.0;
+    pitchTolerance = 2.0;
     speedMultiplier = 1;
     balanceCounter = 0;
-    balanceTargetCount = 100;
+    balanceTargetCount = 40;
     topCounter = 0.0;
     topTargetCount = 17;
-    startingPitch = ntables.getNavXDouble("Orientation.1"); 
+    //startingPitch = ntables.getNavXDouble("Orientation.1"); 
     gyroOffset = 0.0;
     climbTimeLimit = 1.5;
     balanceTimeLimit = 1.0;
@@ -122,8 +122,8 @@ public class AutoBalance extends CommandBase {
     targetRotation = pidFrontAngle.calculate(currentGyroAngle / 360.0, frontAngle) + chassisRotation;
 
     //Getting pitch reading from pi
-    //currentPitch = ntables.getNavXDouble("Orientation.1") - startingPitch;
-    currentPitch = ntables.getNavXDouble("Orientation.1");
+    currentPitch = ntables.getNavXDouble("Orientation.1") - startingPitch;
+    //currentPitch = ntables.getNavXDouble("Orientation.1");
     
     //Checking if we are currently climbing based on pitch reading from pi
     if (!isClimbing) {
@@ -168,9 +168,11 @@ public class AutoBalance extends CommandBase {
         } else if (currentPitch > 0) {
           speedMultiplier = -0.5;
           balanceCounter = 0;
+          isBalanced = false;
         } else {
           speedMultiplier = 0.5;
           balanceCounter = 0;
+          isBalanced = false;
         }
       }
     }

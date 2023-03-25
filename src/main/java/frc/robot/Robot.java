@@ -36,6 +36,7 @@ public class Robot extends TimedRobot {
 
     // Put zero positions option on the dashboard
     SmartDashboard.putNumber("Zero Positions", 0);
+    SmartDashboard.putNumber("Zero Wrist", 0);
 
     // Put auto program option on the dashboard
     SmartDashboard.putNumber("Auto Program", 0);
@@ -72,6 +73,12 @@ public class Robot extends TimedRobot {
       SmartDashboard.putNumber("Zero Positions", 0);
     }
 
+    // Check for robot zero command and zero the robot
+    if (SmartDashboard.getNumber("Zero Wrist", 0) == 1) {
+      m_robotContainer.zeroWrist();
+      SmartDashboard.putNumber("Zero Wrist", 0);
+    }
+
     m_robotContainer.checkTargetAlignment();
 
   }
@@ -89,6 +96,13 @@ public class Robot extends TimedRobot {
 
     //m_robotContainer.stopPi();
 
+  }
+
+  @Override
+  public void teleopExit() {
+
+    m_robotContainer.stopPi();
+    
   }
 
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */

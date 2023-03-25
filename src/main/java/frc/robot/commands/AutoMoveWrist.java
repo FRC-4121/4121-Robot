@@ -29,7 +29,8 @@ public class AutoMoveWrist extends CommandBase {
     targetPosition = position;
     stopTime = time;
     
-    // Use addRequirements() here to declare subsystem dependencies.
+    addRequirements(wrist);
+    
   }
 
   // Called when the command is initially scheduled.
@@ -42,57 +43,65 @@ public class AutoMoveWrist extends CommandBase {
     startTime = timer.get();
     startMoveTime = timer.get();
 
-    tolerance = 0.005;
+    tolerance = 100.0;
 
-    startingWristPosition = currentWristPosition;
+    // startingWristPosition = currentWristPosition;
+    startingWristPosition = wrist.getEncoderPos();
+
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
 
+    // Call the PID controller on the wrist
+    wrist.moveToPosition(targetPosition);
+
+    // Put wrist position on dashboard
+    SmartDashboard.putNumber("Wrist Position", wrist.getEncoderPos());
+
     //We have to decide if we want to rotate up or down
-    if(currentWristPosition < targetPosition){
+    // if(currentWristPosition < targetPosition){
       
-      wrist.move(-wristSpeed);
+    //   wrist.move(-wristSpeed);
       
-      if (GrabbedCone) {
+    //   if (GrabbedCone) {
 
-        // Add because we are moving it down
-        currentWristPosition = startingWristPosition + (wristSlopeDownCone * (timer.get() - startMoveTime) + wristIntercept);
+    //     // Add because we are moving it down
+    //     currentWristPosition = startingWristPosition + (wristSlopeDownCone * (timer.get() - startMoveTime) + wristIntercept);
 
-      } else {
+    //   } else {
 
-        // Add because we are moving it down
-        currentWristPosition = startingWristPosition + (wristSlopeDownEmpty * (timer.get() - startMoveTime) + wristIntercept);
+    //     // Add because we are moving it down
+    //     currentWristPosition = startingWristPosition + (wristSlopeDownEmpty * (timer.get() - startMoveTime) + wristIntercept);
 
-      }
+    //   }
 
-      SmartDashboard.putNumber("WristPosition",currentWristPosition);
+      // SmartDashboard.putNumber("WristPosition",currentWristPosition);
 
-      SmartDashboard.putNumber("Wrist Time", timer.get()-startMoveTime);
+      // SmartDashboard.putNumber("Wrist Time", timer.get()-startMoveTime);
 
-    } else if (currentWristPosition > targetPosition){
+    // } else if (currentWristPosition > targetPosition){
       
-      wrist.move(wristSpeed);
+    //   wrist.move(wristSpeed);
 
-      if (GrabbedCone) {
+    //   if (GrabbedCone) {
 
-        // Subtract because we are moving the wrist back up
-        currentWristPosition = startingWristPosition - (wristSlopeUpCone * (timer.get() - startMoveTime) + wristIntercept);
+    //     // Subtract because we are moving the wrist back up
+    //     currentWristPosition = startingWristPosition - (wristSlopeUpCone * (timer.get() - startMoveTime) + wristIntercept);
 
-      } else {
+    //   } else {
 
-        // Subtract because we are moving the wrist back up
-        currentWristPosition = startingWristPosition - (wristSlopeUpEmpty * (timer.get() - startMoveTime) + wristIntercept);
+    //     // Subtract because we are moving the wrist back up
+    //     currentWristPosition = startingWristPosition - (wristSlopeUpEmpty * (timer.get() - startMoveTime) + wristIntercept);
 
-      }
+    //   }
 
-      SmartDashboard.putNumber("WristPosition",currentWristPosition);
+    //   SmartDashboard.putNumber("WristPosition",currentWristPosition);
 
-      SmartDashboard.putNumber("Wrist Time", timer.get()-startMoveTime);
+    //   SmartDashboard.putNumber("Wrist Time", timer.get()-startMoveTime);
 
-    }
+    // }
     
 
   }
@@ -103,7 +112,8 @@ public class AutoMoveWrist extends CommandBase {
 
     wrist.move(0);
 
-    SmartDashboard.putNumber("WristPosition",currentWristPosition);
+    SmartDashboard.putNumber("Wrist Position", wrist.getEncoderPos());
+    // SmartDashboard.putNumber("WristPosition",currentWristPosition);
 
     SmartDashboard.putNumber("Wrist Time", timer.get()-startMoveTime);
 
@@ -112,6 +122,7 @@ public class AutoMoveWrist extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
+
     boolean doneYet = false;
    
     if (killAuto == true)
@@ -122,7 +133,7 @@ public class AutoMoveWrist extends CommandBase {
     {
       doneYet = true;
     }
-    if (currentWristPosition >= targetPosition - tolerance && currentWristPosition <= targetPosition + tolerance)
+    if (wrist.getEncoderPos() >= targetPosition - tolerance && wrist.getEncoderPos() <= targetPosition + tolerance)
     {
       doneYet = true;
     }
@@ -130,5 +141,6 @@ public class AutoMoveWrist extends CommandBase {
     SmartDashboard.putBoolean("Arm Rotate Done",doneYet);
     
     return doneYet;
+
   }
 }

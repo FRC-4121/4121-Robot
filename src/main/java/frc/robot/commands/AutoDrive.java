@@ -94,6 +94,8 @@ public class AutoDrive extends CommandBase {
     pidFrontAngle = new PIDController(kP_DriveAngle, kI_DriveAngle, kD_DriveAngle);
     pidDriveDistance = new PIDController(kP_Straight, kI_Straight, kD_Straight);
 
+    startingPitch = ntables.getNavXDouble("Orientation.1");
+
   }
 
 

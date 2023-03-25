@@ -21,10 +21,12 @@ public class AutoPlaceAndBalance extends SequentialCommandGroup {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(new AutoArmHighCone(armRotate,pneumatic,armExtend,wrist, grab), 
-      new AutoDriveAndLower2(drive,table,armRotate,pneumatic,armExtend,wrist,0.5, 113, 180),
-      new ParkCommand(drive),
-      new DelayCommand(2),
+      new AutoDriveAndLower2(drive,table,armRotate,pneumatic,armExtend,wrist,0.5, 97, 180),
+      new DelayCommand(1),
       new AutoBalance(drive,0.35,180,0,0,20,table),
       new ParkCommand(drive));
-  }
+  }   
+  // addCommands(new AutoArmHighCone(armRotate,pneumatic,armExtend,wrist, grab), 
+  // new AutoDriveAndLower2(drive,table,armRotate,pneumatic,armExtend,wrist,0.5, 97, 180),
+  // new ParkCommand(drive));
 }

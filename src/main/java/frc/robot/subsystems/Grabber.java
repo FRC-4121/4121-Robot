@@ -8,9 +8,10 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import static frc.robot.Constants.*;
 import com.revrobotics.CANSparkMax;
 
+
 public class Grabber extends SubsystemBase {
   
-  //Motor is a 550, will probably use this
+  //Motor is a 550, need to use SparkMax controller
   private CANSparkMax intake = new CANSparkMax(Intake,CANSparkMax.MotorType.kBrushless);
 
   /** Creates a new OtherGrabber. */
