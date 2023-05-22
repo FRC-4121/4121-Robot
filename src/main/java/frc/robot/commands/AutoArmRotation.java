@@ -70,6 +70,7 @@ public class AutoArmRotation extends CommandBase {
     //targetPosition = rotateSlope * targetAngle + rotateIntercept;
     
     //Get the currentPosition
+    // currentPosition = arm.getMasterEncoder();
     currentPosition = arm.getMasterEncoder();
 
     double output = wpiPIDController.calculate(currentPosition,targetAngle);
@@ -93,8 +94,8 @@ public class AutoArmRotation extends CommandBase {
     //arm.rotateToPosition(targetAngle);
 
     //Put values on Smart Dashboard
-    SmartDashboard.putNumber("Rotate Position", arm.getMasterEncoder());  
-    SmartDashboard.putNumber("Slave Encoder", arm.getSlaveEncoder());
+    SmartDashboard.putNumber("Rotate Master", arm.getMasterEncoder());
+    SmartDashboard.putNumber("Rotate Slave", arm.getSlaveEncoder());
 
   }
 

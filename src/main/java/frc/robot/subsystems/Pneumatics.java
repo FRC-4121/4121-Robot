@@ -15,13 +15,13 @@ import static frc.robot.Constants.*;
 public class Pneumatics extends SubsystemBase {
   
   //Channel needs to be found, should be a constant
-  private Compressor compressor = new Compressor(ControlModuleID,PneumaticsModuleType.REVPH);
+  private Compressor compressor = new Compressor(ControlModuleID,PneumaticsModuleType.CTREPCM);
 
   //Module and channels need to be found and set in constants
-  private DoubleSolenoid grabber = new DoubleSolenoid(ControlModuleID, PneumaticsModuleType.REVPH, GrabOpenChannelID, GrabCloseChannelID);
+  private DoubleSolenoid grabber = new DoubleSolenoid(ControlModuleID, PneumaticsModuleType.CTREPCM, GrabOpenChannelID, GrabCloseChannelID);
 
   //Solenoid for brake
-  private DoubleSolenoid brake = new DoubleSolenoid(ControlModuleID, PneumaticsModuleType.REVPH, BrakeOpenChannelID, BrakeCloseChannelID);
+  private DoubleSolenoid brake = new DoubleSolenoid(ControlModuleID, PneumaticsModuleType.CTREPCM, BrakeOpenChannelID, BrakeCloseChannelID);
   
   /** Creates a new Pneumatics. */
   public Pneumatics() {}

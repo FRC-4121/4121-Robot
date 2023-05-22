@@ -16,7 +16,7 @@ public class AutoDriveAndBalance extends SequentialCommandGroup {
   public AutoDriveAndBalance(SwerveDrive drive, NetworkTableQuerier table) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    addCommands(new AutoDrive(drive,0.6,94,180,0,0,3,table)
+    addCommands(new AutoDrive(drive,0.6,93,180,0,0,3,table)
       /*new AutoBalance(drive,0.45,180,0,0,20,table)
     new ParkCommand(drive)*/);
   }

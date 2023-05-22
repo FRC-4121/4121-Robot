@@ -20,13 +20,20 @@ public class AutoPlaceAndBalance extends SequentialCommandGroup {
   public AutoPlaceAndBalance(SwerveDrive drive, NetworkTableQuerier table, ArmRotate armRotate, Pneumatics pneumatic, ArmExtend armExtend, Wrist wrist, Grabber grab) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    addCommands(new AutoArmHighCone(armRotate,pneumatic,armExtend,wrist, grab), 
-      new AutoDriveAndLower2(drive,table,armRotate,pneumatic,armExtend,wrist,0.5, 97, 180),
-      new DelayCommand(1),
-      new AutoBalance(drive,0.35,180,0,0,20,table),
-      new ParkCommand(drive));
-  }   
-  // addCommands(new AutoArmHighCone(armRotate,pneumatic,armExtend,wrist, grab), 
-  // new AutoDriveAndLower2(drive,table,armRotate,pneumatic,armExtend,wrist,0.5, 97, 180),
-  // new ParkCommand(drive));
+  //   addCommands(new AutoArmHighCone(armRotate,pneumatic,armExtend,wrist, grab), 
+  //     new AutoDriveAndLower2(drive,table,armRotate,pneumatic,armExtend,wrist,0.5, 96, 180),
+  //     new DelayCommand(1),
+  //     new AutoBalance(drive,0.35,180,0,0,20,table),
+  //     new ParkCommand(drive));
+  // }   
+  addCommands(new AutoArmHighCube(armRotate,pneumatic,armExtend,wrist, grab), 
+  new DelayCommand(1),
+  new AutoDriveAndLower2(drive,table,armRotate,pneumatic,armExtend,wrist,0.5, 94, 180),
+  new ParkCommand(drive));
+}
+// addCommands(
+// new AutoDriveAndLower2(drive,table,armRotate,pneumatic,armExtend,wrist,0.5, 96.5, 180),
+// new ParkCommand(drive));
+// }
+
 }

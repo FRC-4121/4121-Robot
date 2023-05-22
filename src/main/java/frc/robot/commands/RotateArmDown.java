@@ -51,7 +51,8 @@ public class RotateArmDown extends CommandBase {
     arm.rotate(-currentSpeed);
 
     //Put values on Smart Dashboard
-    SmartDashboard.putNumber("Rotate Position", arm.getMasterEncoder());
+    SmartDashboard.putNumber("Rotate Master", arm.getMasterEncoder());
+    SmartDashboard.putNumber("Rotate Slave", arm.getSlaveEncoder());
 
   }
 
@@ -70,7 +71,8 @@ public class RotateArmDown extends CommandBase {
     isReleased = false;
 
     //Put values on Smart Dashboard
-    SmartDashboard.putNumber("Rotate Position", arm.getMasterEncoder());
+    SmartDashboard.putNumber("Rotate Master", arm.getMasterEncoder());
+    SmartDashboard.putNumber("Rotate Slave", arm.getSlaveEncoder());
     
   }
 

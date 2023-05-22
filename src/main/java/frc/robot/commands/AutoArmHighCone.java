@@ -20,7 +20,7 @@ public class AutoArmHighCone extends SequentialCommandGroup {
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(new AutoExtendArm(armExtend,ExtendStartLength,20),
       new AutoRotateWristHighParallelStart(wrist,armRotate,pneumatic), 
-      new AutoArmHighPosParallel(wrist,armExtend), 
+      new AutoArmHighPosParallelStart(wrist,armExtend), 
       new DelayCommand(0.1) ,
       new LetGo(pneumatic), 
       new DelayCommand(0.1), 

@@ -75,11 +75,11 @@ public class RobotContainer {
   private final AutoLoadPos autoArmLoad = new AutoLoadPos(armRotate, pneumatic, arm, wrist);
   private final AutoArmTravelPos autoArmTravel = new AutoArmTravelPos(armRotate, pneumatic, arm, wrist);
   private final AutoArmFloorPos autoArmFloor = new AutoArmFloorPos(armRotate, pneumatic, arm, wrist);
-  private final AutoArmMidPos autoArmMid = new AutoArmMidPos(armRotate, pneumatic, arm, wrist, grabber);
-  private final AutoArmHighPos autoArmHigh = new AutoArmHighPos(armRotate, pneumatic, arm, wrist, grabber);
-  private final AutoArmHighCone autoArmHighGoal = new AutoArmHighCone(armRotate, pneumatic, arm, wrist, grabber);
-  private final AutoMoveWrist autoMoveWrist = new AutoMoveWrist(wrist, 0.5, 10);
-  private final AutoAlignToTape autoAlignToTape = new AutoAlignToTape(swervedrive, 0.2, 5, table);
+  private final AutoArmMidPos autoArmMid = new AutoArmMidPos(swervedrive, armRotate, pneumatic, arm, wrist, grabber, table);
+  private final AutoArmHighPos autoArmHigh = new AutoArmHighPos(swervedrive, armRotate, pneumatic, arm, wrist, grabber, table);
+  private final AutoArmHighCube autoArmHighGoal = new AutoArmHighCube(armRotate, pneumatic, arm, wrist, grabber);
+  private final AutoMoveWrist autoMoveWrist = new AutoMoveWrist(wrist, -53.0, 10);
+  private final AutoAlignToTape autoAlignToTape = new AutoAlignToTape(swervedrive, 0.1, 20, table);
 
   //KillAuto Command
   private final KillAutoCommand killAutoObject = new KillAutoCommand(); 
@@ -290,14 +290,17 @@ public class RobotContainer {
     if (purpleButton.getAsBoolean() == true) {
       
       ledColor = 0.91; //Purple
+      getCone = false;
  
     } else if (yellowButton.getAsBoolean() == true) {
       
       ledColor = 0.69; //Yellow
+      getCone = true;
 
     } else {
       
       ledColor = 0.55; //Orange
+      getCone = false;
 
     }
   }
@@ -363,7 +366,7 @@ public class RobotContainer {
 
       if (checkAutoProg1) {
 
-        return autoPlaceAndGetOut;
+        return autoMoveWrist;
 
       } else if (checkAutoProg2) {
 
@@ -440,8 +443,10 @@ public class RobotContainer {
     //Put the encoder value on the smart dashboard
     SmartDashboard.putNumber("Rotate Position", armRotate.getMasterEncoder());
     SmartDashboard.putNumber("Extend Position", arm.getExtendEncoder());
-    // SmartDashboard.putNumber("Wrist Position", wrist.getEncoderPos());
-    
+    SmartDashboard.putNumber("Wrist Position", wrist.getEncoderPos());
+    SmartDashboard.putNumber("Rotate Master", armRotate.getMasterEncoder());
+    SmartDashboard.putNumber("Rotate Slave", armRotate.getSlaveEncoder());
+  
     //Put the wrist position on the dashboard on startup
     SmartDashboard.putNumber("WristPosition",currentWristPosition);
 
@@ -552,9 +557,18 @@ public class RobotContainer {
    */
   public void checkTapeAlignment() {
 
-    if(table.getVisionDouble("TapeFound") > 0 ) {
+    if(table.getVisionDouble("TapesFound") > 0 ) {
 
-      double tapeOffset = table.getVisionDouble("Tape.0.offset");
+      // Get correct offset based on which tape was found
+      double targetTapeOffset = -7.5;
+      double tapeY = table.getVisionDouble("Tapes.0.y");
+      if (tapeY > 280) {
+        targetTapeOffset = targetTapeOffsetLow;
+      } else {
+        targetTapeOffset = targetTapeOffsetHigh;
+      }
+
+      double tapeOffset = table.getVisionDouble("Tapes.0.offset");
       if(tapeOffset < targetTapeOffset - visionTolerance ) {
         
         SmartDashboard.putBoolean("Tape Move Right", true);

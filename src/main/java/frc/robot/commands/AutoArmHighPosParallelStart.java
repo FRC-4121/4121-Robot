@@ -14,12 +14,12 @@ import static frc.robot.Constants.*;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class AutoArmHighPosParallel extends ParallelCommandGroup {
+public class AutoArmHighPosParallelStart extends ParallelCommandGroup {
   /** Creates a new AutoArmHighPos. */
-  public AutoArmHighPosParallel(Wrist wrist, ArmExtend armExtend) {
+  public AutoArmHighPosParallelStart(Wrist wrist, ArmExtend armExtend) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    addCommands(new AutoMoveWrist(wrist,WristHighPosition,5), new AutoExtendArm(armExtend,ExtendHighLength,5));
+    addCommands(new AutoMoveWrist(wrist,WristHighPositionAuto,5), new AutoExtendArm(armExtend,ExtendHighLength,5));
     //addCommands(new AutoArmRotation(armRotate,RotateHighAngle,20,pneumatic));
     //addCommands(new AutoExtendArm(armExtend,ExtendHighLength,20));
   }

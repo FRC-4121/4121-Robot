@@ -4,7 +4,7 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
 import static frc.robot.Constants.*;
@@ -12,7 +12,7 @@ import static frc.robot.Constants.*;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class AutoRotateWristMidParallel extends ParallelRaceGroup {
+public class AutoRotateWristMidParallel extends ParallelCommandGroup {
   /** Creates a new AutoRotateWristMidParallel. */
   public AutoRotateWristMidParallel(Wrist wrist, ArmRotate arm, Pneumatics pneumatic) {
     // Add your commands in the addCommands() call, e.g.

@@ -40,8 +40,8 @@ public final class Constants {
     public static final double autoArmExtendkP = 2.0;
     public static final double autoArmExtendkI = 0.0;
     public static final double autoArmExtendkD = 0.0;
-    public static final double teleopRotateSpeed = 0.1;
-    public static final double autoRotateSpeed = 0.5;
+    public static final double teleopRotateSpeed = 0.28;
+    public static final double autoRotateSpeed = 0.28;
     public static final double autoExtendSpeed = 0.85;
     public static final double rotateRampRate = 0.07;
     public static final double rotateSlope = 1;
@@ -55,33 +55,35 @@ public final class Constants {
     public static final double ExtendTolerance = 3000;
     public static final double RotateStartAngle = 0;
     public static final double RotateTravelAngle = -120000; 
-    public static final double RotateFloorAngle = -123000;
+    public static final double RotateFloorAngle = -121000;
     public static final double RotateMidAngle = -33000; 
     public static final double RotateHighAngle = -24000; // was -18000
-    public static final double RotateHighAngleAuto = -30500;
-    public static final double RotateLoadAngle = -28000;
+    public static final double RotateHighAngleAuto = -27000;
+    public static final double RotateLoadAngle = -20000;
     public static final double ExtendStartLength = 500; 
     public static final double ExtendTravelLength = 1000; 
-    public static final double ExtendFloorLength = 65000; 
+    public static final double ExtendFloorLength = 63500; 
     public static final double ExtendMidLength = 111000; 
-    public static final double ExtendHighLength = 240000; 
-    public static final double ExtendLoadLength = 67500;
+    public static final double ExtendHighLength = 240500; 
+    public static final double ExtendLoadLength = 71000;
 
     // Wrist
     public static final int WristID = 21; // was 18
-    public static final double wristSpeed = 1.0;
+    public static final double wristSpeed = 0.6;
+    public static final double wristRotateLimit = -86.0;
     public static double currentWristPosition = 0.0; //Value from 0.0 to 1.0, relative position of wrist
     public static final double wristSlopeDownEmpty = (1/4.8); //The wrist takes 4.8 seconds for a full rotation down
     public static final double wristSlopeUpEmpty = (1/4.875); //It takes 5 seconds to go from the bottom to the top
     public static final double wristSlopeDownCone = (1/5.0);
     public static final double wristSlopeUpCone = (1/4.95);
     public static final double wristIntercept = 0; //Derived from linear equation testing how long it takes to get to positions
-    public static final double WristTravelPosition = 0.0; //Need to confirm
-    public static final double WristFloorPosition = 0.22; //Need to confirm
-    public static final double WristMidPosition = 0.5; //Need to confirm
-    public static final double WristHighPosition = 0.55; //Need to confirm
-    public static final double WristLoadPosition = 0.65; //Need to confirm
-    public static final double WristHomePosition = 0.0;
+    public static final double WristTravelPosition = -5.0; //Need to confirm
+    public static final double WristFloorPosition = -18.0; //Need to confirm
+    public static final double WristMidPosition = -44.0; //Need to confirm
+    public static final double WristHighPosition = -54.0; //Need to confirm
+    public static final double WristHighPositionAuto = -49.0;
+    public static final double WristLoadPosition = -60.0; //Need to confirm
+    public static final double WristHomePosition = -5.0;
     public static boolean GrabbedCone = true; //This is true if we are closed, becuase we can assume that we have a cone
     public static final double wrist_kP = 1.0;
     public static final double wrist_kI = 0.0;
@@ -96,20 +98,25 @@ public final class Constants {
     public static Boolean Grabbed = false;
 
     //Pneumatics
-    public static final int GrabOpenChannelID = 8;
-    public static final int GrabCloseChannelID = 14;
-    public static final int BrakeOpenChannelID = 13;
-    public static final int BrakeCloseChannelID = 15;
+    public static final int GrabOpenChannelID = 5;
+    public static final int GrabCloseChannelID = 6;
+    public static final int BrakeOpenChannelID = 4;
+    public static final int BrakeCloseChannelID = 7;
     public static final int ControlModuleID = 61;
 
     // LED's
     public static double ledColor = 0.63; //0.65 is orange, the default color
+    public static Boolean getCone = false; //Are the led's yellow
 
     //Vision
     public static final double targetCubeOffset = 5.8;
     public static final double targetConeOffset = 8.2;
-    public static final double targetTapeOffset = 0.7;
+    public static final double targetTapeOffsetLow = -8.0;
+    public static final double targetTapeOffsetHigh = -7.7;
+    public static final double targetTapeDistLow = 33.3;
+    public static final double targetTapeDistHigh = 47.9;
     public static final double visionTolerance = 0.5;
+    public static final double visionTapeTolerance = 0.2;
 
     // Drive control port IDs
     public static final int XBOX_PORT = 0;

@@ -37,7 +37,7 @@ public class AutoRotateGrabberWheelsBackward extends CommandBase {
   @Override
   public void execute() {
 
-    grabber.runIntake(-0.8);
+    grabber.runIntake(-0.2);
 
   }
 

@@ -43,7 +43,7 @@ public class AutoMoveWrist extends CommandBase {
     startTime = timer.get();
     startMoveTime = timer.get();
 
-    tolerance = 100.0;
+    tolerance = 2.0;
 
     // startingWristPosition = currentWristPosition;
     startingWristPosition = wrist.getEncoderPos();
@@ -55,7 +55,22 @@ public class AutoMoveWrist extends CommandBase {
   public void execute() {
 
     // Call the PID controller on the wrist
-    wrist.moveToPosition(targetPosition);
+    //wrist.moveToPosition(targetPosition);
+
+    // Move the wrist in the correct direction
+    if (wrist.getEncoderPos() < targetPosition) {
+
+      wrist.move(wristSpeed);
+
+    } else if (wrist.getEncoderPos() > targetPosition) {
+
+      wrist.move(-wristSpeed);
+
+    } else {
+
+      wrist.move(0.0);
+      
+    }
 
     // Put wrist position on dashboard
     SmartDashboard.putNumber("Wrist Position", wrist.getEncoderPos());
@@ -112,8 +127,8 @@ public class AutoMoveWrist extends CommandBase {
 
     wrist.move(0);
 
-    SmartDashboard.putNumber("Wrist Position", wrist.getEncoderPos());
-    // SmartDashboard.putNumber("WristPosition",currentWristPosition);
+    //SmartDashboard.putNumber("Wrist Position", wrist.getEncoderPos());
+    SmartDashboard.putNumber("WristPosition",currentWristPosition);
 
     SmartDashboard.putNumber("Wrist Time", timer.get()-startMoveTime);
 

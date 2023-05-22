@@ -79,7 +79,11 @@ public class Robot extends TimedRobot {
       SmartDashboard.putNumber("Zero Wrist", 0);
     }
 
+    // Check alignment with game pieces
     m_robotContainer.checkTargetAlignment();
+
+    // Check alignment with vision tape
+    m_robotContainer.checkTapeAlignment();
 
   }
 
@@ -101,7 +105,7 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopExit() {
 
-    m_robotContainer.stopPi();
+    //m_robotContainer.stopPi();
     
   }
 

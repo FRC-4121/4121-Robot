@@ -25,7 +25,7 @@ public class Wrist extends SubsystemBase {
 
     // Set up motor controller
     wrist = new CANSparkMax(WristID,CANSparkMax.MotorType.kBrushless);
-    wrist_encoder = wrist.getEncoder(SparkMaxRelativeEncoder.Type.kQuadrature, 4096);
+    wrist_encoder = wrist.getEncoder(SparkMaxRelativeEncoder.Type.kHallSensor, 42);
 
     wrist.restoreFactoryDefaults();
 
