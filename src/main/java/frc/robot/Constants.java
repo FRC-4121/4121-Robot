@@ -209,13 +209,17 @@ public final class Constants {
 
 
     // Swerve drive constants
+
+    public static final double MaxLinearSpeed = 5; //Max Speed in Meters per second
+    public static final double MaxRotationalSpeed = 1.5; //Max Speed in Radians per second, about pi/2 or 90 degrees
+
     public static final double DRIVETRAIN_TRACKWIDTH_METERS = 0.546;
     public static final double DRIVETRAIN_WHEELBASE_METERS = 0.546;
     public static final double DRIVETRAIN_TRACKWIDTH_INCH = 21.50;
     public static final double DRIVETRAIN_WHEELBASE_INCH = 21.5;
     public static final double slowSpeed = 0.3;
-    public static final double driveSpeed = 0.85;
-    public static  double swerveDriveSpeedLimiter = 0.85;
+    public static final double driveSpeed = 0.7;
+    public static  double swerveDriveSpeedLimiter = 0.7;
     public static final double autoSwerveDriveSpeedLimiter = 0.6;
     public static final double autoSwerveDriveAngleLimiter = 2.0;
     public static final double slowAngleSpeed = 0.5;
@@ -256,6 +260,17 @@ public final class Constants {
     public static final double anglePIDkIs[] = { 2.25, 2.25, 2.25, 2.25 };
     public static final double anglePIDkDs[] = { 0.04, 0.04, 0.04, 0.04 };
     public static double angleLimiters[] = { 1.0, 1.0, 1.0, 1.0 };
+
+
+
+    //Mecanum Drive Constants
+
+    public static final int LeftFrontMotorID = 1; 
+    public static final int LeftBackMotorID = 4; 
+    public static final int RightFrontMotorID = 2; 
+    public static final int RightBackMotorID = 3; 
+
+    public static final double MecanumSpeedLimiter = 0.8; //Can Test This
 
 
 }

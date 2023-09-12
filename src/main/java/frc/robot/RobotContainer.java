@@ -43,6 +43,8 @@ public class RobotContainer {
   //Subsystems
   private final SwerveDrive swervedrive = new SwerveDrive();
 
+  //private final MecanumDrivetrain mecanumDrive = new MecanumDrivetrain();
+
   private final NetworkTableQuerier table = new NetworkTableQuerier();
 
   private final ArmExtend arm = new ArmExtend();
@@ -57,6 +59,7 @@ public class RobotContainer {
 
   //Driving Commands
   private final DriveWithJoysticks driveCommand = new DriveWithJoysticks(swervedrive, xbox, table);
+  //private final MecanumDriveWithJoysticks mecanumDriveCommand = new MecanumDriveWithJoysticks(mecanumDrive, xbox, table);
   private final ParkCommand parkCommand = new ParkCommand(swervedrive);
   private final ChangeSpeedCommand changeSpeedCommand = new ChangeSpeedCommand();
 
@@ -245,6 +248,7 @@ public class RobotContainer {
 
     //Drivetrain -> drive with xbox joysticks
     swervedrive.setDefaultCommand(driveCommand);
+    //mecanumDrive.setDefaultCommand(mecanumDriveCommand);
 
     //LED default command
     led.setDefaultCommand(ledCommand);
