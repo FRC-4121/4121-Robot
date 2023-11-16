@@ -98,10 +98,10 @@ public final class Constants {
     public static Boolean Grabbed = false;
 
     //Pneumatics
-    public static final int GrabOpenChannelID = 5;
-    public static final int GrabCloseChannelID = 6;
-    public static final int BrakeOpenChannelID = 4;
-    public static final int BrakeCloseChannelID = 7;
+    public static final int GrabOpenChannelID = 7;
+    public static final int GrabCloseChannelID = 5;
+    public static final int BrakeOpenChannelID = 6;
+    public static final int BrakeCloseChannelID = 4;
     public static final int ControlModuleID = 61;
 
     // LED's
