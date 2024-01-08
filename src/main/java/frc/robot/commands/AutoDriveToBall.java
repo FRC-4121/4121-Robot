@@ -4,7 +4,7 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.Command;
 
 //import frc.robot.extraClasses.PIDControl;
 import edu.wpi.first.wpilibj.Timer;
@@ -14,7 +14,7 @@ import frc.robot.ExtraClasses.NetworkTableQuerier;
 import static frc.robot.Constants.*;
 
 
-public class AutoDriveToBall extends CommandBase {
+public class AutoDriveToBall extends Command {
 
   private final Drivetrain drivetrain;
   //private final Pneumatics shifter;

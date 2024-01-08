@@ -4,11 +4,11 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Pneumatics;
 import static frc.robot.Constants.*;
 
-public class Grab extends CommandBase {
+public class Grab extends Command {
  
  Pneumatics grab;
  

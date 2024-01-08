@@ -4,12 +4,12 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.ArmExtend;
 import static frc.robot.Constants.*;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-public class ExtendArm extends CommandBase {
+public class ExtendArm extends Command {
   
   private ArmExtend m_arm;
   

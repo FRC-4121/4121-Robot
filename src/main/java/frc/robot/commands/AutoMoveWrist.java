@@ -4,13 +4,13 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.*;
 import edu.wpi.first.wpilibj.Timer;
 import static frc.robot.Constants.*;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-public class AutoMoveWrist extends CommandBase {
+public class AutoMoveWrist extends Command {
   
   private Wrist wrist;
   private Timer timer;

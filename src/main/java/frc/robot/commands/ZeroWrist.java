@@ -4,11 +4,11 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.Command;
 import static frc.robot.Constants.*;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-public class ZeroWrist extends CommandBase {
+public class ZeroWrist extends Command {
   /** Creates a new ZeroWrist. */
   public ZeroWrist() {
     // Use addRequirements() here to declare subsystem dependencies.

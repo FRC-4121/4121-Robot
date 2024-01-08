@@ -4,11 +4,11 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.Command;
 import static frc.robot.Constants.*;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-public class ChangeSpeedCommand extends CommandBase {
+public class ChangeSpeedCommand extends Command {
   /** Creates a new ChangeSpeedCommand. */
   public ChangeSpeedCommand() {
     // Use addRequirements() here to declare subsystem dependencies.

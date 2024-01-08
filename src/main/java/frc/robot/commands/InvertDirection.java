@@ -3,10 +3,10 @@
 // the WPILib BSD license file in the root directory of this project.
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Drivetrain;
 
-public class InvertDirection extends CommandBase {
+public class InvertDirection extends Command {
   
   private Drivetrain drive;
   

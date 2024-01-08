@@ -4,12 +4,12 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.*;
 import static frc.robot.Constants.*;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-public class RotateArmUp extends CommandBase {
+public class RotateArmUp extends Command {
   
   ArmRotate arm;
   Pneumatics pneumatic;

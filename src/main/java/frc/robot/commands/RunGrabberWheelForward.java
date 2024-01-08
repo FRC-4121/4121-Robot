@@ -6,10 +6,10 @@ package frc.robot.commands;
 
 import javax.print.attribute.standard.MediaSize.Other;
 
-import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Grabber;
 
-public class RunGrabberWheelForward extends CommandBase {
+public class RunGrabberWheelForward extends Command {
  
   Grabber grab;
 

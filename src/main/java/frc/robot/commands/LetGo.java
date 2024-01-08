@@ -4,12 +4,12 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Grabber;
 import frc.robot.subsystems.Pneumatics;
 import static frc.robot.Constants.*;
 
-public class LetGo extends CommandBase {
+public class LetGo extends Command {
  
  Pneumatics grab;
  

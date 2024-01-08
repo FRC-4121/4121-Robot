@@ -4,11 +4,11 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Grabber;
 import edu.wpi.first.wpilibj.Timer;
 
-public class AutoRotateGrabberWheelsBackward extends CommandBase {
+public class AutoRotateGrabberWheelsBackward extends Command {
   
   double startTime;
   double stopTime;

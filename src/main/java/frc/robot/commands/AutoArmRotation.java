@@ -4,7 +4,7 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.Command;
 import static frc.robot.Constants.*;
 import frc.robot.subsystems.ArmRotate;
 import frc.robot.subsystems.Pneumatics;
@@ -13,7 +13,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.math.controller.*;
 
-public class AutoArmRotation extends CommandBase {
+public class AutoArmRotation extends Command {
   
   private ArmRotate arm;
   private Pneumatics pneumatic;

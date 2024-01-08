@@ -8,17 +8,17 @@ import static frc.robot.Constants.*;
 import frc.robot.ExtraClasses.PIDControl;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.SwerveDrive;
 import edu.wpi.first.math.controller.*;
 import frc.robot.ExtraClasses.NetworkTableQuerier;
 
 
-import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.Command;
 
 
-public class AutoDrive extends CommandBase {
+public class AutoDrive extends Command {
 
   /** Creates a new AutoDrive. */
   private final SwerveDrive drivetrain;
