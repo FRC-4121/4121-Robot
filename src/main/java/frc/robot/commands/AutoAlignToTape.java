@@ -6,13 +6,13 @@ package frc.robot.commands;
 
 import static frc.robot.Constants.*;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.SwerveDrive;
 import frc.robot.ExtraClasses.NetworkTableQuerier;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.math.controller.*;
 
-public class AutoAlignToTape extends CommandBase {
+public class AutoAlignToTape extends Command {
 
   // Declare class variables
   private final SwerveDrive drivetrain;

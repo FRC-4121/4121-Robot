@@ -6,12 +6,16 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
+import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
+import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import edu.wpi.first.math.kinematics.*;
 import static frc.robot.Constants.*;
 import frc.robot.ExtraClasses.*;
+import frc.robot.ExtraClasses.Gains;
 import com.ctre.phoenix.sensors.CANCoder;
 import com.ctre.phoenix.sensors.CANCoder.*;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -57,6 +61,7 @@ public class SwerveWheel extends SubsystemBase {
     kP_AngleController = anglePIDkPs[wheelID - 1];
     kI_AngleController = anglePIDkIs[wheelID - 1];
     kD_AngleController = anglePIDkDs[wheelID - 1];
+
     // Initialize the swerve motors
     InitSwerveMotors(driveMotorID, angleMotorID, CANCoderID);
 
@@ -82,20 +87,33 @@ public class SwerveWheel extends SubsystemBase {
     swerveAngleMotor = new WPI_TalonFX(angleMotorID);
     canCoder = new CANCoder(CANCoderID);
 
+    // Reset motors to factory default settings
+    swerveDriveMotor.configFactoryDefault();
+    swerveAngleMotor.configFactoryDefault();
+
     // Set brake mode
     swerveDriveMotor.setNeutralMode(NeutralMode.Brake);
     swerveAngleMotor.setNeutralMode(NeutralMode.Brake);
 
-    //Invert angle motor so that positive input moves the wheel clockwise
+    // Set motor inversions
+    swerveDriveMotor.setInverted(!kMotorInvert);
     swerveAngleMotor.setInverted(kMotorInvert);
 
     // Set motor encoders
-    swerveDriveMotor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor, kPIDLoopIdxDrive, kTimeoutMsDrive);
+    swerveDriveMotor.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, kPIDLoopIdxDrive, kTimeoutMsDrive);
     swerveAngleMotor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor, kPIDLoopIdxDrive, kTimeoutMsDrive);
     // swerveDriveMotor.config_kP(0, drivePIDkPs[wheelID - 1], kTimeoutMsDrive);
     // swerveDriveMotor.config_kI(0, drivePIDkIs[wheelID - 1], kTimeoutMsDrive);
     // swerveDriveMotor.config_kD(0, drivePIDkDs[wheelID - 1], kTimeoutMsDrive);
     swerveDriveMotor.config_kF(0, drivePIDkFs[wheelID - 1], kTimeoutMsDrive);
+
+    // Set motor deadband
+    swerveDriveMotor.configNeutralDeadband(kDriveDeadband, kTimeoutMsDrive);
+    swerveAngleMotor.configNeutralDeadband(kAngleDeadband, kTimeoutMsDrive);
+
+    // Set frame periods
+    swerveDriveMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 10, kTimeoutMsDrive);
+    swerveDriveMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_10_MotionMagic, 10, kTimeoutMsDrive);
 
   }
  
@@ -123,6 +141,7 @@ public class SwerveWheel extends SubsystemBase {
     //Putting CANCoder position on smart dashboard
     SmartDashboard.putNumber("Wheel "+ wheelID, encoderAngle);
   
+    
     //Determine shortest rotation distance
     if (Math.abs(target - encoderAngle) > 0.5)
     {
@@ -137,6 +156,7 @@ public class SwerveWheel extends SubsystemBase {
         encoderAngle = encoderAngle - 1.0;
       }
     }
+    
 
     //double output = anglePIDController.run(encoderAngle,target);
     double output = wpiPIDController.calculate(encoderAngle,target);

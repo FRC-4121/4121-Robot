@@ -4,7 +4,7 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.Drivetrain;
@@ -12,7 +12,7 @@ import frc.robot.ExtraClasses.NetworkTableQuerier;
 import static frc.robot.Constants.*;
 
 
-public class AutoTurnUntilSeeBall extends CommandBase {
+public class AutoTurnUntilSeeBall extends Command {
 
   private NetworkTableQuerier ntables;
   private Drivetrain drivetrain = new Drivetrain();

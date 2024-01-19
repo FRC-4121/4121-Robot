@@ -4,12 +4,12 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.Command;
 import static frc.robot.Constants.*;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 
-public class KillAutoCommand extends CommandBase {
+public class KillAutoCommand extends Command {
 
   /** Creates a new KillAutoCommand. */
   public KillAutoCommand() {

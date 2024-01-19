@@ -5,31 +5,36 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.MecanumDrivetrain;
+import frc.robot.subsystems.SwerveDriveWPI;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import static frc.robot.Constants.*;
-import frc.robot.ExtraClasses.NetworkTableQuerier;
+import edu.wpi.first.math.MathUtil;
 
 
 
-public class MecanumDriveWithJoysticks extends Command {
+public class FieldDriveWithJoysticks extends Command {
 
-  private MecanumDrivetrain mecanumdrive;
+  private SwerveDriveWPI swervedrive;
   private XboxController Xbox;
 
-  private NetworkTableQuerier ntables;
+  private final SlewRateLimiter xSpeedLimiter;
+  private final SlewRateLimiter ySpeedLimiter;
+  private final SlewRateLimiter rotSpeedLimiter;
 
- 
 
-  public MecanumDriveWithJoysticks(MecanumDrivetrain drive, XboxController xbox, NetworkTableQuerier table) {
+  public FieldDriveWithJoysticks(SwerveDriveWPI drive, XboxController xbox) {
 
-    mecanumdrive = drive;
+    swervedrive = drive;
     Xbox = xbox;
-    ntables = table;
+
+    xSpeedLimiter = new SlewRateLimiter(3);
+    ySpeedLimiter = new SlewRateLimiter(3);
+    rotSpeedLimiter = new SlewRateLimiter(3);
 
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(mecanumdrive);
+    addRequirements(swervedrive);
   }
 
   
@@ -44,14 +49,14 @@ public class MecanumDriveWithJoysticks extends Command {
   @Override
   public void execute() {
 
-    // Navx Values
-    SmartDashboard.putNumber("Yaw", ntables.getNavXDouble("Orientation.0"));
-    SmartDashboard.putNumber("Pitch", ntables.getNavXDouble("Orientation.1"));
+   final double xSpeed = xSpeedLimiter.calculate(MathUtil.applyDeadband(Xbox.getLeftX(),0.02)) * kJoystickSpeedCorr;
+   final double ySpeed = ySpeedLimiter.calculate(MathUtil.applyDeadband(Xbox.getLeftY(),0.02)) * kJoystickSpeedCorr;
+   final double rotSpeed = rotSpeedLimiter.calculate(MathUtil.applyDeadband(Xbox.getRightX(),0.02)) * kJoystickSpeedCorr;
 
     // Drive using xbox joystick values
     // kSpeedCorrection is to slow down the right motors because left motors were
     // running slower
-    mecanumdrive.drive(kJoystickSpeedCorr * Xbox.getLeftX(), kJoystickSpeedCorr * Xbox.getLeftY(), kJoystickSpeedCorr * Xbox.getRightX(), false);
+    swervedrive.drive(xSpeed, ySpeed, rotSpeed);
 
   }
 

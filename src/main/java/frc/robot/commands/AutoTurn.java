@@ -4,14 +4,14 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.ExtraClasses.PIDControl;
 import static frc.robot.Constants.*;
 
 
-public class AutoTurn extends CommandBase {
+public class AutoTurn extends Command {
 
   // Declare class variables
   double targetAngle;
