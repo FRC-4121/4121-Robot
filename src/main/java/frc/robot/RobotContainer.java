@@ -41,75 +41,48 @@ public class RobotContainer {
   
 
   //Subsystems
-  private final SwerveDrive swervedrive = new SwerveDrive();
+  //private final SwerveDrive swervedrive = new SwerveDrive();
+  private final SwerveDriveWPI swervedrivewpi = new SwerveDriveWPI();
+
 
   //private final MecanumDrivetrain mecanumDrive = new MecanumDrivetrain();
 
   private final NetworkTableQuerier table = new NetworkTableQuerier();
 
-  private final ArmExtend arm = new ArmExtend();
-  private final ArmRotate armRotate = new ArmRotate();
-  private final Wrist wrist = new Wrist();
-  private final Grabber grabber = new Grabber();
-  private final Pneumatics pneumatic = new Pneumatics();
+ 
+  //private final Pneumatics pneumatic = new Pneumatics();
 
   private final LED led = new LED();
 
   //===COMMANDS===//
 
   //Driving Commands
-  private final DriveWithJoysticks driveCommand = new DriveWithJoysticks(swervedrive, xbox, table);
+  //private final DriveWithJoysticks driveCommand = new DriveWithJoysticks(swervedrive, xbox, table);
+  private final FieldDriveWithJoysticks fieldDriveCommand = new FieldDriveWithJoysticks(swervedrivewpi,xbox);
   //private final MecanumDriveWithJoysticks mecanumDriveCommand = new MecanumDriveWithJoysticks(mecanumDrive, xbox, table);
-  private final ParkCommand parkCommand = new ParkCommand(swervedrive);
+  //private final ParkCommand parkCommand = new ParkCommand(swervedrive);
   private final ChangeSpeedCommand changeSpeedCommand = new ChangeSpeedCommand();
 
   // Auto Commands
-  private final AutoDrive autoDriveCommand = new AutoDrive(swervedrive, 0.6, 120, 180, 0, 0, 20, table);
+  //private final AutoDrive autoDriveCommand = new AutoDrive(swervedrive, 0.6, 120, 180, 0, 0, 20, table);
   // private final AutoBalance autoBalanceCommand = new
   // AutoBalance(swervedrive,0.25,0,20,table);
-  private final AutoGroup1 autoGroup = new AutoGroup1(swervedrive, table);
-  private final AutoDriveAndBalance autoDriveAndBalance = new AutoDriveAndBalance(swervedrive, table);
-  private final AutoPlaceAndBalance autoPlaceAndBalance = new AutoPlaceAndBalance(swervedrive, table, armRotate,
-      pneumatic, arm, wrist, grabber);
-  private final AutoPlaceAndGetOut autoPlaceAndGetOut = new AutoPlaceAndGetOut(swervedrive, table, armRotate, pneumatic,
-      arm, wrist, grabber);
-  private final AutoDriveAndLower autoDriveAndLower = new AutoDriveAndLower(swervedrive,table,armRotate,pneumatic,arm,wrist,0.7,160,180);
-  private final AutoArmStartPos autoArmStart = new AutoArmStartPos(armRotate, pneumatic, arm);
-  private final AutoLoadPos autoArmLoad = new AutoLoadPos(armRotate, pneumatic, arm, wrist);
-  private final AutoArmTravelPos autoArmTravel = new AutoArmTravelPos(armRotate, pneumatic, arm, wrist);
-  private final AutoArmFloorPos autoArmFloor = new AutoArmFloorPos(armRotate, pneumatic, arm, wrist);
-  private final AutoArmMidPos autoArmMid = new AutoArmMidPos(swervedrive, armRotate, pneumatic, arm, wrist, grabber, table);
-  private final AutoArmHighPos autoArmHigh = new AutoArmHighPos(swervedrive, armRotate, pneumatic, arm, wrist, grabber, table);
-  private final AutoArmHighCube autoArmHighGoal = new AutoArmHighCube(armRotate, pneumatic, arm, wrist, grabber);
-  private final AutoMoveWrist autoMoveWrist = new AutoMoveWrist(wrist, -53.0, 10);
-  private final AutoAlignToTape autoAlignToTape = new AutoAlignToTape(swervedrive, 0.1, 20, table);
+  //private final AutoGroup1 autoGroup = new AutoGroup1(swervedrive, table);
+  //private final AutoAlignToTape autoAlignToTape = new AutoAlignToTape(swervedrive, 0.1, 20, table);
 
   //KillAuto Command
   private final KillAutoCommand killAutoObject = new KillAutoCommand(); 
-
-  //Arm Commands
-  private final ExtendArm extendArmCommand = new ExtendArm(arm);
-  private final RetractArm retractArmCommand = new RetractArm(arm);
-  private final RotateArmUp rotateArmUpCommand = new RotateArmUp(armRotate, pneumatic);
-  private final RotateArmDown rotateArmDownCommand = new RotateArmDown(armRotate, pneumatic);
-
-  //Wrist Commands
-  private final RunWristUp wristUpCommand = new RunWristUp(wrist);
-  private final RunWristDown wristDownCommand = new RunWristDown(wrist);
-  private final ZeroWrist zeroWristCommand = new ZeroWrist();
   
   //Grabber Commands
-  private final RunGrabberWheelForward grabWheelForwardCommand = new RunGrabberWheelForward(grabber);
-  private final RunGrabberWheelBackward grabWheelBackwardCommand = new RunGrabberWheelBackward(grabber);
-  private final Grab grab = new Grab(pneumatic);
-  private final LetGo letGo = new LetGo(pneumatic);
+  //private final Grab grab = new Grab(pneumatic);
+ 
 
   //LED Command
   private final LEDCommand ledCommand = new LEDCommand(led);
 
   //Brake Commands
-  private final ApplyBrake applyBrakeCommand = new ApplyBrake(pneumatic);
-  private final ReleaseBrake releaseBrakeCommand = new ReleaseBrake(pneumatic);
+  //private final ApplyBrake applyBrakeCommand = new ApplyBrake(pneumatic);
+  //private final ReleaseBrake releaseBrakeCommand = new ReleaseBrake(pneumatic);
 
   //===BUTTONS===// //They're being initialized in RobotContainer
 
@@ -225,7 +198,7 @@ public class RobotContainer {
     zeroRobot();
 
     //Make sure the grabber is closed
-    pneumatic.grab();
+    //pneumatic.grab();
 
     // Start driver cameras
     startDriverCams();
@@ -247,7 +220,8 @@ public class RobotContainer {
   private void configureDefaultCommands() {
 
     //Drivetrain -> drive with xbox joysticks
-    swervedrive.setDefaultCommand(driveCommand);
+    //swervedrive.setDefaultCommand(driveCommand);
+    swervedrivewpi.setDefaultCommand(fieldDriveCommand);
     //mecanumDrive.setDefaultCommand(mecanumDriveCommand);
 
     //LED default command
@@ -262,25 +236,10 @@ public class RobotContainer {
     //Auto
     killAutoButton.onTrue(killAutoObject);
     killAutoButton.onFalse(killAutoObject);
-    autoArmTravelButton.onTrue(autoArmTravel);
-    autoArmFloorButton.onTrue(autoArmFloor);
-    autoArmMidButton.onTrue(autoArmMid);
-    autoArmHighButton.onTrue(autoArmHigh);
-    autoArmLoadButton.onTrue(autoArmLoad);
     changeSpeedButton.onTrue(changeSpeedCommand);
 
     //teleop Commands
-    extendArmButton.whileTrue(extendArmCommand);
-    retractArmButton.whileTrue(retractArmCommand);
-    rotateArmDownButton.whileTrue(rotateArmDownCommand);
-    rotateArmUpButton.whileTrue(rotateArmUpCommand);
-    wristUpButton.whileTrue(wristUpCommand);
-    wristDownButton.whileTrue(wristDownCommand);
-    grabberForwardButton.whileTrue(grabWheelForwardCommand);
-    grabberBackwardButton.whileTrue(grabWheelBackwardCommand);
-    grabButton.whileTrue(grab);
-    letGoButton.whileTrue(letGo);
-    zeroWristButton.onTrue(zeroWristCommand);
+    //grabButton.whileTrue(grab);
     //applyBrakeButton.whileTrue(applyBrakeCommand);
     //releaseBrakeButton.whileTrue(releaseBrakeCommand);
   }
@@ -334,7 +293,7 @@ public class RobotContainer {
     {
       isParked = true;
       SmartDashboard.putBoolean("Robot Parked", true);
-      parkCommand.execute();
+      //parkCommand.execute();
     } else{
       isParked = false;
       SmartDashboard.putBoolean("Robot Parked", false);
@@ -351,39 +310,37 @@ public class RobotContainer {
     Boolean checkAutoProg2 = autoProg2.getAsBoolean();
     Boolean checkAutoSelect = autoSel.getAsBoolean();
 
-    if (!checkAutoSelect) {
+    /*if (!checkAutoSelect) {
 
       if (checkAutoProg1) {
 
-        return autoPlaceAndBalance;
+        return autoDriveCommand;//Changed this to arbitrary command, gonna need to make these actual auto commands
 
       } else if (checkAutoProg2) {
 
-        return autoArmHighGoal;
+        return autoDriveCommand;//Changed this to arbitrary command, gonna need to make these actual auto commands
 
       } else {
 
-        return autoPlaceAndGetOut;
+        return autoDriveCommand;//Changed this to arbitrary command, gonna need to make these actual auto commands
 
       }
     } else {
 
       if (checkAutoProg1) {
 
-        return autoMoveWrist;
-
+        return autoDriveCommand;//Changed this to arbitrary command, gonna need to make these actual auto commands
       } else if (checkAutoProg2) {
 
         return autoAlignToTape;
 
       } else {
 
-        return autoPlaceAndGetOut;
-
+        return autoDriveCommand;//Changed this to arbitrary command, gonna need to make these actual auto commands
       }
 
     }
-
+*/
 
     // Return selected command
     // switch(autoProg) {
@@ -401,6 +358,7 @@ public class RobotContainer {
     //     return autoDriveAndLower;
     // }
 
+    return fieldDriveCommand;
   }
 
   /*
@@ -437,19 +395,11 @@ public class RobotContainer {
   public void zeroRobot() {
     
     //Zero the encoders when robot starts up
-    armRotate.zeroEncoder();
-    arm.zeroExtendEncoder();
-    wrist.zeroEncoder();
 
     //Make sure that the wrist is starting at 0
     currentWristPosition = 0.0;
 
     //Put the encoder value on the smart dashboard
-    SmartDashboard.putNumber("Rotate Position", armRotate.getMasterEncoder());
-    SmartDashboard.putNumber("Extend Position", arm.getExtendEncoder());
-    SmartDashboard.putNumber("Wrist Position", wrist.getEncoderPos());
-    SmartDashboard.putNumber("Rotate Master", armRotate.getMasterEncoder());
-    SmartDashboard.putNumber("Rotate Slave", armRotate.getSlaveEncoder());
   
     //Put the wrist position on the dashboard on startup
     SmartDashboard.putNumber("WristPosition",currentWristPosition);

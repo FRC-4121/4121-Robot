@@ -141,6 +141,7 @@ public class SwerveWheel extends SubsystemBase {
     //Putting CANCoder position on smart dashboard
     SmartDashboard.putNumber("Wheel "+ wheelID, encoderAngle);
   
+    
     //Determine shortest rotation distance
     if (Math.abs(target - encoderAngle) > 0.5)
     {
@@ -155,6 +156,7 @@ public class SwerveWheel extends SubsystemBase {
         encoderAngle = encoderAngle - 1.0;
       }
     }
+    
 
     //double output = anglePIDController.run(encoderAngle,target);
     double output = wpiPIDController.calculate(encoderAngle,target);

@@ -59,9 +59,14 @@ public final class Constants {
     // Motor Limits
     public static final double MaxLinearSpeed = 5; //Max Speed in Meters per second
     public static final double MaxRotationalSpeed = 1.5; //Max Speed in Radians per second, about pi/2 or 90 degrees
+    public static final double MaxRadiansPerSecond = Math.PI;
+    public static final double SlowMaxLinearSpeed = 1;//Max Speed during slow mode in meters per second
+    public static final double SlowRadiansPerSecond = (Math.PI/3);//Max rotational speed during slow mode
     public static final double slowSpeed = 0.3;
     public static final double driveSpeed = 0.7;
     public static  double swerveDriveSpeedLimiter = 0.7;
+    public static double LinearSpeed = 5;
+    public static double RotationalSpeed = Math.PI;
     public static final double autoSwerveDriveSpeedLimiter = 0.6;
     public static final double autoSwerveDriveAngleLimiter = 2.0;
     public static final double slowAngleSpeed = 0.5;

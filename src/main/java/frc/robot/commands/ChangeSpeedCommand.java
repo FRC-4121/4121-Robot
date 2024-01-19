@@ -40,6 +40,15 @@ public class ChangeSpeedCommand extends Command {
 
     }
 
+    //Slow Mode for WPI Swerve Drive
+    if(LinearSpeed == 5){
+      LinearSpeed = SlowMaxLinearSpeed;
+      RotationalSpeed = SlowRadiansPerSecond;
+    } else{
+      LinearSpeed = MaxLinearSpeed;
+      RotationalSpeed = MaxRadiansPerSecond;
+    }
+
   }
 
   // Called once the command ends or is interrupted.

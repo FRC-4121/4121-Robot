@@ -7,11 +7,12 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import static frc.robot.Constants.*;
-import edu.wpi.first.wpilibj.ADXRS450_Gyro;
+import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.math.filter.MedianFilter;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.*;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.SPI;
 
 
 public class SwerveDriveWPI extends SubsystemBase {
@@ -28,13 +29,15 @@ public class SwerveDriveWPI extends SubsystemBase {
 
   private SwerveDriveKinematics kinematics;
 
-  private ADXRS450_Gyro gyro;
+  private AHRS gyro;
   private MedianFilter gyro_filter;
 
   private double joystickDeadband;
 
-  
-  
+  private double frontLeftAngle;
+  private double backLeftAngle;
+  private double frontRightAngle;
+  private double backRightAngle;
 
   /** Creates a new SwerveDrive. */
   public SwerveDriveWPI() {
@@ -54,9 +57,9 @@ public class SwerveDriveWPI extends SubsystemBase {
     joystickDeadband = 0.05;
 
     // Initialize Roborio gyro
-    gyro = new ADXRS450_Gyro();
+    gyro = new AHRS(SPI.Port.kMXP);
     SmartDashboard.putNumber("Zero Gyro", 0);
-    gyro.calibrate();
+    //gyro.calibrate();
     gyro.reset();
 
     gyro_filter = new MedianFilter(FILTER_WINDOW_SIZE);
@@ -71,24 +74,32 @@ public class SwerveDriveWPI extends SubsystemBase {
 
 
     //Convert speeds into their native units
-    double vxMetersPerSecond = -(leftX * MaxLinearSpeed);
-    double vyMetersPerSecond = -(leftY * MaxLinearSpeed);
+    double vxMetersPerSecond = -(leftY * LinearSpeed);
+    double vyMetersPerSecond = (leftX * LinearSpeed);
 
     double vTotalMetersPerSecond = Math.sqrt((vxMetersPerSecond * vxMetersPerSecond) + (vyMetersPerSecond * vyMetersPerSecond));
     
-    if(vTotalMetersPerSecond > MaxLinearSpeed){
-      vTotalMetersPerSecond = MaxLinearSpeed;
+    if(vTotalMetersPerSecond > LinearSpeed){
+      vTotalMetersPerSecond = LinearSpeed;
     }
 
-    double omegaRadiansPerSecond = -((((-MaxRotationalSpeed / MaxLinearSpeed) * vTotalMetersPerSecond) + MaxRotationalSpeed) * rightX);
-   
+    //double omegaRadiansPerSecond = -((((-MaxRotationalSpeed / MaxLinearSpeed) * vTotalMetersPerSecond) + MaxRotationalSpeed) * rightX);
+    double omegaRadiansPerSecond = (RotationalSpeed) * rightX;
 
     //Create Chassis Speed
     ChassisSpeeds speeds = ChassisSpeeds.fromFieldRelativeSpeeds(vxMetersPerSecond, vyMetersPerSecond, omegaRadiansPerSecond, Rotation2d.fromDegrees(getGyroAngle()));
+  
+    //ChassisSpeeds speeds = new ChassisSpeeds(vxMetersPerSecond, vyMetersPerSecond, omegaRadiansPerSecond);
+
+
+    SmartDashboard.putNumber("x meters per second",vxMetersPerSecond);
+    SmartDashboard.putNumber("y meters per second",vyMetersPerSecond);
+    SmartDashboard.putNumber("omega meters per second",omegaRadiansPerSecond);
 
     // Convert to module states
     SwerveModuleState[] moduleStates = kinematics.toSwerveModuleStates(speeds);
 
+    /* 
     // Front left module state
     SwerveModuleState frontLeft = SwerveModuleState.optimize(moduleStates[0], new Rotation2d(getGyroAngle()));
 
@@ -100,6 +111,30 @@ public class SwerveDriveWPI extends SubsystemBase {
 
     // Back right module state
     SwerveModuleState backRight = SwerveModuleState.optimize(moduleStates[3], new Rotation2d(getGyroAngle()));
+    */
+
+    frontLeftAngle = moduleStates[2].angle.getDegrees();
+    frontRightAngle = moduleStates[3].angle.getDegrees();
+    backLeftAngle =  moduleStates[0].angle.getDegrees();
+    backRightAngle = moduleStates[1].angle.getDegrees();
+
+    //Correcting negative angles to be within 0 to 360
+    if (backRightAngle < 0)
+    {
+      backRightAngle = 360 + backRightAngle;
+    }
+    if (backLeftAngle < 0)
+    {
+      backLeftAngle = 360 + backLeftAngle;
+    }
+    if (frontRightAngle < 0)
+    {
+      frontRightAngle = 360 + frontRightAngle;
+    }
+    if (frontLeftAngle < 0)
+    {
+      frontLeftAngle = 360 + frontLeftAngle;
+    }
 
     //Checking if robot is in park mode 
     if (Math.abs(leftX) < joystickDeadband && Math.abs(leftY) < joystickDeadband && Math.abs(rightX) < joystickDeadband) {
@@ -114,10 +149,25 @@ public class SwerveDriveWPI extends SubsystemBase {
      else {
 
       if (!isParked) {
-        leftFront.drive(frontLeft.speedMetersPerSecond, frontLeft.angle.getDegrees());
-        rightFront.drive(frontRight.speedMetersPerSecond, frontRight.angle.getDegrees());
-        leftBack.drive(backLeft.speedMetersPerSecond, backLeft.angle.getDegrees());
-        rightBack.drive(backRight.speedMetersPerSecond, backRight.angle.getDegrees());
+
+        leftFront.drive(moduleStates[0].speedMetersPerSecond, frontLeftAngle);
+        rightFront.drive(moduleStates[1].speedMetersPerSecond, frontRightAngle);
+        leftBack.drive(moduleStates[2].speedMetersPerSecond, backLeftAngle);
+        rightBack.drive(moduleStates[3].speedMetersPerSecond, backRightAngle);
+
+        SmartDashboard.putNumber("Left Front Speed", moduleStates[0].speedMetersPerSecond);
+        SmartDashboard.putNumber("Left Front Angle", moduleStates[0].angle.getDegrees());
+        SmartDashboard.putNumber("Corrected Left Front Angle", frontLeftAngle);
+        SmartDashboard.putNumber("Right Front Speed", moduleStates[1].speedMetersPerSecond);
+        SmartDashboard.putNumber("Right Front Angle", moduleStates[1].angle.getDegrees());
+        SmartDashboard.putNumber("Corrected Right Front Angle", frontRightAngle);
+        SmartDashboard.putNumber("Left Back Speed", moduleStates[2].speedMetersPerSecond);
+        SmartDashboard.putNumber("Left Back Angle", moduleStates[2].angle.getDegrees());
+        SmartDashboard.putNumber("Corrected Left Back Angle", backLeftAngle);
+        SmartDashboard.putNumber("Right Back Speed", moduleStates[3].speedMetersPerSecond);
+        SmartDashboard.putNumber("Right Back Angle", moduleStates[3].angle.getDegrees());
+        SmartDashboard.putNumber("Corrected Right Back Angle", backRightAngle);
+
       }
 
     }
@@ -153,7 +203,7 @@ public class SwerveDriveWPI extends SubsystemBase {
     if (zeroGyro == 1)
     {
       SmartDashboard.putNumber("Zero Gyro", 0);
-      gyro.calibrate();
+      //gyro.calibrate();
       zeroGyro();
     }
 
