@@ -184,7 +184,7 @@ public class RobotContainer {
     // grabCamera.setResolution(160, 120);
     // grabCamera.setBrightness(100);
     // grabCamera.setFPS(24);
-    CameraServer.startAutomaticCapture("Arm Cam", 0);
+    //CameraServer.startAutomaticCapture("Arm Cam", 0);
     // camSink = CameraServer.getVideo();
     // camSource = CameraServer.putVideo("Grab Cam", 160, 120);
     // camSource = new CameraBuilder(0, "Grab Cam (Camera)").res(160, 120).brightness(100).fps(24).finish();

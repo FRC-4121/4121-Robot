@@ -73,11 +73,10 @@ public class CameraBuilder {
 
   // Finalize construction and attach to the camera server with CameraServer.startAutomaticCapture. When this is done, CameraServer.addCamera is called, which should(?) make it stream video.
   public UsbCamera attachAutoCapture() {
-    UsbCamera cam = new UsbCamera(name, dev);
+    UsbCamera cam = CameraServer.startAutomaticCapture(name, dev);
     cam.setBrightness(brightness_);
     cam.setFPS(fps_);
     cam.setResolution(width_, height_);
-    CameraServer.startAutomaticCapture(cam);
     return cam;
   }
 };
