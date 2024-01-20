@@ -5,17 +5,12 @@
 package frc.robot.commands;
 
 import static frc.robot.Constants.*;
-import frc.robot.ExtraClasses.PIDControl;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.SwerveDrive;
 import edu.wpi.first.math.controller.*;
 import frc.robot.ExtraClasses.NetworkTableQuerier;
-
-
-import edu.wpi.first.wpilibj2.command.Command;
 
 
 public class AutoDrive extends Command {
@@ -27,15 +22,11 @@ public class AutoDrive extends Command {
   private double targetRotation;
   private double chassisRotation;
   private double targetSpeed;
-  private double direction;
   private double stopTime;
   private double currentGyroAngle = 0;
   private double gyroOffset;
-  private double driveDirection;
-  private double driveSpeed;
   private double frontAngle;
 
-  private double angleCorrection, speedCorrection;
   private double startTime;
   private double distanceTraveled;
 
@@ -48,12 +39,8 @@ public class AutoDrive extends Command {
 
   private NetworkTableQuerier ntables;
 
-  private double totalRotationsLeft = 0;
-  private double totalRotationsRight = 0;
-
   private Timer timer = new Timer();
   private PIDController pidFrontAngle;
-  private PIDController pidDriveDistance; 
 
   //Distance is in inches, target rotation is a value from -1 to 1 or and angle? 
   public AutoDrive(SwerveDrive drive, double speed, double dis, double ang, double rot, double heading, double time, NetworkTableQuerier table) {
@@ -86,13 +73,10 @@ public class AutoDrive extends Command {
 
     //ntables.zeroPiGyro();
 
-    angleCorrection = 0;
-    speedCorrection = 1;
     gyroOffset = 0.0;
 
     //The constants for these need to be figured out
     pidFrontAngle = new PIDController(kP_DriveAngle, kI_DriveAngle, kD_DriveAngle);
-    pidDriveDistance = new PIDController(kP_Straight, kI_Straight, kD_Straight);
 
     startingPitch = ntables.getNavXDouble("Orientation.1");
 

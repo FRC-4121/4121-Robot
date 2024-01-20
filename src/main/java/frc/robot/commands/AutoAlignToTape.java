@@ -23,7 +23,6 @@ public class AutoAlignToTape extends Command {
   private double tapeOffset;
   private double leftStickX;
   private double leftStickY;
-  private double rightStickX;
   private double gyroOffset;
   private double currentGyroAngle;
   private double targetRotation;
@@ -58,7 +57,6 @@ public class AutoAlignToTape extends Command {
     // Initialize drive variables
     leftStickX = 0.0;
     leftStickY = 0.0;
-    rightStickX = 0.0;
     gyroOffset = 0.0;
     currentGyroAngle = 0.0;
     targetRotation = 0.0;

@@ -13,6 +13,20 @@ import edu.wpi.first.math.filter.MedianFilter;
 
 public class SwerveDrive extends SubsystemBase {
   
+  // Declare motor CAN IDs
+  private final int kLeftFrontDrive = 1;
+  private final int kLeftFrontAngle = 2;
+  private final int kLeftFrontCoder = 3;
+  private final int kRightFrontDrive = 4;
+  private final int kRightFrontAngle = 5;
+  private final int kRightFrontCoder = 6;
+  private final int kRightBackDrive = 7;
+  private final int kRightBackAngle = 8;
+  private final int kRightBackCoder = 9;
+  private final int kLeftBackDrive = 10;
+  private final int kLeftBackAngle = 11;
+  private final int kLeftBackCoder = 12;
+  
   private SwerveWheel leftFront;
   private SwerveWheel leftBack;
   private SwerveWheel rightFront;
@@ -27,10 +41,10 @@ public class SwerveDrive extends SubsystemBase {
   /** Creates a new SwerveDrive. */
   public SwerveDrive() {
 
-    leftFront = new SwerveWheel(LeftFrontDrive, LeftFrontAngle, LeftFrontCoder);
-    leftBack = new SwerveWheel(LeftBackDrive, LeftBackAngle, LeftBackCoder);
-    rightFront = new SwerveWheel(RightFrontDrive, RightFrontAngle, RightFrontCoder);
-    rightBack = new SwerveWheel(RightBackDrive, RightBackAngle, RightBackCoder);
+    leftFront = new SwerveWheel(kLeftFrontDrive, kLeftFrontAngle, kLeftFrontCoder);
+    leftBack = new SwerveWheel(kLeftBackDrive, kLeftBackAngle, kLeftBackCoder);
+    rightFront = new SwerveWheel(kRightFrontDrive, kRightFrontAngle, kRightFrontCoder);
+    rightBack = new SwerveWheel(kRightBackDrive, kRightBackAngle, kRightBackCoder);
 
     joystickDeadband = 0.05;
 

@@ -4,7 +4,6 @@ import edu.wpi.first.wpilibj.Counter;
 import edu.wpi.first.wpilibj.DigitalSource;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.math.filter.MedianFilter;
-import static frc.robot.Constants.*;
 
 
 public class LidarSensor {

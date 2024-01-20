@@ -73,18 +73,6 @@ public class Robot extends TimedRobot {
       SmartDashboard.putNumber("Zero Positions", 0);
     }
 
-    // Check for robot zero command and zero the robot
-    if (SmartDashboard.getNumber("Zero Wrist", 0) == 1) {
-      m_robotContainer.zeroWrist();
-      SmartDashboard.putNumber("Zero Wrist", 0);
-    }
-
-    // Check alignment with game pieces
-    m_robotContainer.checkTargetAlignment();
-
-    // Check alignment with vision tape
-    m_robotContainer.checkTapeAlignment();
-
   }
 
   /** This function is called once each time the robot enters Disabled mode. */

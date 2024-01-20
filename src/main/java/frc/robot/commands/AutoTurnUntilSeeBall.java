@@ -18,13 +18,9 @@ public class AutoTurnUntilSeeBall extends Command {
   private Drivetrain drivetrain = new Drivetrain();
   private double stopTime;
   private double startTime;
-  private double ballOffset;
-  private double ballDistance;
   private boolean foundBall;
   private Timer timer = new Timer();
-  private double angleCorrection, angleError, speedCorrection;
-  private boolean holdGyro;
-  private boolean ballOnBoard;
+  private double angleCorrection, speedCorrection;
   private int direction;
   private double kAutoDriveSpeed = 60;
   private boolean closeToBall; //end the code when you're close to the ball and lined up with it.
@@ -52,10 +48,8 @@ public class AutoTurnUntilSeeBall extends Command {
     startTime = timer.get();
 
     angleCorrection = 0;
-    angleError = 0;
     speedCorrection = 1;
     //direction = -1; //this ovrrides what's in the constructor.
-    ballOnBoard = false; // whenever the ball is in the robot, this should become true. but i think its useless
     foundBall = false;
 
     // WE will only use the gyro in auto so make code in here i think
@@ -66,8 +60,8 @@ public class AutoTurnUntilSeeBall extends Command {
   @Override
   public void execute() {
     // Get vision values
-    ballOffset = ntables.getVisionDouble("BallOffset0");
-    ballDistance = ntables.getVisionDouble("BallDistance0");
+    // ballOffset = ntables.getVisionDouble("BallOffset0");
+    // ballDistance = ntables.getVisionDouble("BallDistance0");
     foundBall = ntables.getVisionBoolean("FoundBall");
     SmartDashboard.putBoolean("FoundBall", foundBall);
 

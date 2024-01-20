@@ -34,20 +34,6 @@ public final class Constants {
      * Swerve drive constants
      */
 
-    // Motor CAN IDs
-    public static final int LeftFrontDrive = 1;
-    public static final int LeftFrontAngle = 2;
-    public static final int LeftFrontCoder = 3;
-    public static final int RightFrontDrive = 4;
-    public static final int RightFrontAngle = 5;
-    public static final int RightFrontCoder = 6;
-    public static final int RightBackDrive = 7;
-    public static final int RightBackAngle = 8;
-    public static final int RightBackCoder = 9;
-    public static final int LeftBackDrive = 10;
-    public static final int LeftBackAngle = 11;
-    public static final int LeftBackCoder = 12;
-
     // Swerve Calculation Constants
     public static final double DRIVETRAIN_TRACKWIDTH_METERS = 0.546;
     public static final double DRIVETRAIN_WHEELBASE_METERS = 0.546;
@@ -77,6 +63,7 @@ public final class Constants {
     public static final double kJoystickSpeedCorr = 1;
     public static double startingPitch = 23;
     public static boolean isParked = false;
+    public static boolean isFieldOriented = true;
 
     // Motion Magic Constants
     public static final int kSlotIdxDrive = 0;

@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import static frc.robot.Constants.*;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 
 public class Pneumatics extends SubsystemBase {
@@ -28,7 +29,11 @@ public class Pneumatics extends SubsystemBase {
 
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
+    
+    // Send compressor information to dashboard
+    SmartDashboard.putBoolean("Compressor Active", compressor.isEnabled());
+    SmartDashboard.putNumber("Compressor Current", compressor.getCurrent());
+
   }
 
   //Extend with the solenoid
