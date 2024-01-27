@@ -48,9 +48,9 @@ public class FieldDriveWithJoysticks extends Command {
   @Override
   public void execute() {
 
-   final double xSpeed = xSpeedLimiter.calculate(MathUtil.applyDeadband(Xbox.getLeftX(),0.02)) * kJoystickSpeedCorr;
-   final double ySpeed = ySpeedLimiter.calculate(MathUtil.applyDeadband(Xbox.getLeftY(),0.02)) * kJoystickSpeedCorr;
-   final double rotSpeed = rotSpeedLimiter.calculate(MathUtil.applyDeadband(Xbox.getRightX(),0.02)) * kJoystickSpeedCorr;
+   final double xSpeed = xSpeedLimiter.calculate(MathUtil.applyDeadband(Xbox.getLeftX(),0.01)) * kJoystickSpeedCorr;
+   final double ySpeed = ySpeedLimiter.calculate(MathUtil.applyDeadband(Xbox.getLeftY(),0.01)) * kJoystickSpeedCorr;
+   final double rotSpeed = -rotSpeedLimiter.calculate(MathUtil.applyDeadband(Xbox.getRightX(),0.01)) * kJoystickSpeedCorr;
 
     // Drive using xbox joystick values
     // kSpeedCorrection is to slow down the right motors because left motors were

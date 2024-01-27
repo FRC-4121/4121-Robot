@@ -77,7 +77,7 @@ public class SwerveWheel extends SubsystemBase {
     // Create filters
     angle_filter = new MedianFilter(FILTER_WINDOW_SIZE);
     rateLimiter = new SlewRateLimiter(100000.0, -50.0, 0.0);
-  }
+  } 
 
   /* Initialize motors */
   private void InitSwerveMotors(int driveMotorID, int angleMotorID, int CANCoderID) {

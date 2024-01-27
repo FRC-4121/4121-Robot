@@ -54,9 +54,12 @@ public class SwerveDriveWPI extends SubsystemBase {
   // Declare NavX gyro Objects
   private AHRS gyro;
   private MedianFilter gyro_filter;
+  private MedianFilter yaw_filter; 
 
   // Declare misc variables
   private double joystickDeadband;
+  private double maxYawRate = 7.0;
+  private double yawDrift;
 
   /**
    *  
@@ -83,9 +86,11 @@ public class SwerveDriveWPI extends SubsystemBase {
     SmartDashboard.putNumber("Zero Gyro", 0);
     //gyro.calibrate();
     gyro.reset();
+    gyro.resetDisplacement();
 
     // Initialize gyro filter
     gyro_filter = new MedianFilter(FILTER_WINDOW_SIZE);
+    yaw_filter = new MedianFilter(FILTER_WINDOW_SIZE);
 
     // Initialize misc variables
     joystickDeadband = 0.05;
@@ -139,14 +144,23 @@ public class SwerveDriveWPI extends SubsystemBase {
     }
 
     //double omegaRadiansPerSecond = -((((-MaxRotationalSpeed / MaxLinearSpeed) * vTotalMetersPerSecond) + MaxRotationalSpeed) * rightX);
-    double omegaRadiansPerSecond = (RotationalSpeed) * rightX;
+    if(rightX == 0){
+      yawDrift = getGyroYawRate();
+    } else{
+      yawDrift = 0;
+    }
+    
+    double omegaRadiansPerSecond = (RotationalSpeed) * (rightX + (yawDrift/maxYawRate));
 
     // Put values on dashboard for testing/debugging
     SmartDashboard.putNumber("x meters per second",vxMetersPerSecond);
     SmartDashboard.putNumber("y meters per second",vyMetersPerSecond);
     SmartDashboard.putNumber("omega meters per second",omegaRadiansPerSecond);
     SmartDashboard.putNumber("Gyro Angle", getGyroAngle());
-
+    SmartDashboard.putNumber("Yaw Rate", getGyroYawRate());
+    SmartDashboard.putNumber("X Disp", (gyro.getDisplacementX()*100/2.54));//converted from meters to inches
+    SmartDashboard.putNumber("Y Disp", (gyro.getDisplacementY()*100/2.54));//converted from meters to inches
+  
     // Create Chassis Speed based on drive mode
     if (isFieldOriented) {
 
@@ -250,6 +264,17 @@ public class SwerveDriveWPI extends SubsystemBase {
 
     double correctedGyro = gyro_filter.calculate(gyro.getAngle() % 360.0);
     return correctedGyro;
+
+  }
+
+  /**
+   * Get the current yaw rate of the gyro
+   * @return
+   */
+  public double getGyroYawRate() {
+
+    double yawRate = yaw_filter.calculate(gyro.getRate());
+    return yawRate;
 
   }
 
