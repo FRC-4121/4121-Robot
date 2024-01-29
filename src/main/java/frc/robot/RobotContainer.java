@@ -31,6 +31,7 @@ public class RobotContainer {
   //Subsystems
   //private final SwerveDrive swervedrive = new SwerveDrive();
   private final SwerveDriveWPI swervedrivewpi = new SwerveDriveWPI();
+  private final Intake noteIntake = new Intake();
 
   // Extra systems
   private final NetworkTableQuerier table = new NetworkTableQuerier();
