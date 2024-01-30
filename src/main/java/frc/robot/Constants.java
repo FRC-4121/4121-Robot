@@ -344,6 +344,26 @@ public final class Constants {
     public static double kHighGearMultiplier = 0.70;
     public static double currentGear = kHighGearMultiplier;
 
+    //Shooter variables
+    public static double shooterTargetRPM = 100;// need to test to figure out
+    public static double shooterActualRPM = 0;
+    public static final double shooterRPMTol = 100;  // tolerance for shooter RPM
+    public static boolean shootLow = true;
+    public static double lidarMin = 2;
+    public static double lidarMax = 140;//need to test to find
+    public static double visionDistanceTolerance = 10;
+    public static double defaultShooterSpeed = 0.26;
+    public static final double kP_Shoot = 0.00027; //was 0.1
+    public static final double kI_Shoot = 0.000025;
+    public static final double kD_Shoot = 0.000055;
+    public static final double kF_Shoot = -1;
+    public static final double distanceCorrection = 0;//need to find
+    public static final int kPIDLoopIdxShoot = 0;
+    public static final int kTimeoutMsShoot = 20;
+    public static final int kShooterMaxRPM = 6100;
+    public static boolean toggleShooterOnOrOff = true; //true runs the shooter motors, false keeps them off.
+    public static boolean OKToShoot = false;
+    public static int isBallShot = 0;
     public static boolean photoSensorIsNotBlocked;
     
 }
