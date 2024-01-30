@@ -364,4 +364,6 @@ public final class Constants {
     public static boolean toggleShooterOnOrOff = true; //true runs the shooter motors, false keeps them off.
     public static boolean OKToShoot = false;
     public static int isBallShot = 0;
+    public static boolean photoSensorIsNotBlocked;
+    
 }
