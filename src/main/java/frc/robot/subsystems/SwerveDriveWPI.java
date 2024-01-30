@@ -151,6 +151,7 @@ public class SwerveDriveWPI extends SubsystemBase {
     }
     
     double omegaRadiansPerSecond = (RotationalSpeed) * (rightX + (yawDrift/maxYawRate));
+    //double omegaRadiansPerSecond = (RotationalSpeed) * (rightX);
 
     // Put values on dashboard for testing/debugging
     SmartDashboard.putNumber("x meters per second",vxMetersPerSecond);
