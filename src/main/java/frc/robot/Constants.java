@@ -343,4 +343,7 @@ public final class Constants {
     public static double kLowGearMultiplier = 0.40;
     public static double kHighGearMultiplier = 0.70;
     public static double currentGear = kHighGearMultiplier;
+
+    public static boolean photoSensorIsNotBlocked;
+    
 }
