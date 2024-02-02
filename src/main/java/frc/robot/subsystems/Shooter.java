@@ -18,11 +18,16 @@ public class Shooter extends SubsystemBase {
   private CANSparkMax shooterMotorTop;
   private CANSparkMax shooterMotorBottom;
 
+  //Motor IDs
+  private final int intakeID = 12;
+  private final int topShooterID = 7;
+  private final int bottomShooterID = 8;
+
    /** Creates a new Shooter. */
   public Shooter() {
-    intakeMotor = new WPI_TalonSRX(2);
-    shooterMotorTop = new CANSparkMax(7, MotorType.kBrushless);
-    shooterMotorBottom = new CANSparkMax(8, MotorType.kBrushless);
+    intakeMotor = new WPI_TalonSRX(intakeID);
+    shooterMotorTop = new CANSparkMax(topShooterID, MotorType.kBrushless);
+    shooterMotorBottom = new CANSparkMax(bottomShooterID, MotorType.kBrushless);
 
   }
 

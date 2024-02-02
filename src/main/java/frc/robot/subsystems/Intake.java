@@ -12,7 +12,7 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 public class Intake extends SubsystemBase {
 
   //create intake variables
-  private int INTAKE_ID = 1;
+  private int INTAKE_ID = 21;
 
   //create intake motor
   private CANSparkMax intakeMotor;

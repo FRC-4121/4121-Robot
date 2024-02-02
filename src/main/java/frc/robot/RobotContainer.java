@@ -24,14 +24,15 @@ public class RobotContainer {
 
   //Driver controllers
   private final XboxController xbox = new XboxController(0);
-  //private final XboxController secondaryXbox = new XboxController(1);
+  private final XboxController secondaryXbox = new XboxController(1);
   private final Joystick launchpad = new Joystick(2);
   //private final Joystick testbed = new Joystick(3);
   
   //Subsystems
   //private final SwerveDrive swervedrive = new SwerveDrive();
   private final SwerveDriveWPI swervedrivewpi = new SwerveDriveWPI();
-  private final Intake noteIntake = new Intake();
+  private final Intake intake = new Intake();
+  private final Shooter shooter = new Shooter();
 
   // Extra systems
   private final NetworkTableQuerier table = new NetworkTableQuerier();
@@ -54,12 +55,20 @@ public class RobotContainer {
   //LED Command
   private final LEDCommand ledCommand = new LEDCommand(led);
 
+  //Shooter Command
+  private final RunShooterAmp ampShooterCommand = new RunShooterAmp(shooter);
+  private final RunShooterSpeaker speakerShooterCommand = new RunShooterSpeaker(shooter);
+
+  private final RunIntake intakeCommand = new RunIntake(intake);
 
   //===BUTTONS===//
 
   // Xbox Buttons and Triggers
   private final Trigger changeSpeedButton;
   private final Trigger changeModeButton;
+  private final Trigger intakeButton;
+  private final Trigger speakerShootButton;
+  private final Trigger ampShootButton;
   
   // Launchpad (OI) Buttons/Switches
   private final Trigger killAutoButton;
@@ -77,6 +86,9 @@ public class RobotContainer {
     // Initialize Xbox Buttons
     changeSpeedButton = new JoystickButton(xbox, xboxXButton);
     changeModeButton = new JoystickButton(xbox, xboxYButton);
+    intakeButton = new JoystickButton(secondaryXbox, xboxXButton);
+    speakerShootButton = new JoystickButton(secondaryXbox, xboxAButton);
+    ampShootButton = new JoystickButton(secondaryXbox, xboxYButton);
     
     // Initialize Launchpad (OI) Buttons/Switches
     killAutoButton = new JoystickButton(launchpad,LaunchPadButton1);
@@ -123,6 +135,9 @@ public class RobotContainer {
     // Teleop Commands
     changeSpeedButton.onTrue(changeSpeedCommand);
     changeModeButton.onTrue(changeModeCommand);
+    intakeButton.onTrue(intakeCommand);
+    speakerShootButton.onTrue(speakerShooterCommand);
+    ampShootButton.onTrue(ampShooterCommand);
 
   }
 

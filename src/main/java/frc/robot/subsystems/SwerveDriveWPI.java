@@ -277,7 +277,7 @@ public class SwerveDriveWPI extends SubsystemBase {
     double yawRate = yaw_filter.calculate(gyro.getRate());
     return yawRate;
 
-  }
+  } 
 
   /**
    * 
