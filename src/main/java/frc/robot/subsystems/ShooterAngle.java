@@ -17,9 +17,6 @@ public class ShooterAngle extends SubsystemBase {
   //Motors
   private CANSparkMax pivotMotor;
 
-  //Motor ID's
-  private final int pivotMotorID = 15;//need to find\
-  
   //Duty Cycle Encoder (for use w/ Rev Through Bore Encoder)
   public final DutyCycleEncoder encoder;
 
@@ -31,7 +28,7 @@ public class ShooterAngle extends SubsystemBase {
   public ShooterAngle() {
 
     // Create a new Spark MAX controller for shooter angle
-    pivotMotor = new CANSparkMax(pivotMotorID,MotorType.kBrushless);
+    pivotMotor = new CANSparkMax(kPivotMotorID,MotorType.kBrushless);
 
     // Factory reset so we can get the Spark MAX to a know state before
     // configuring.  Useful if we swap out a controller.

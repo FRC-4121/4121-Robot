@@ -28,13 +28,13 @@ public class AutoShooterAmpPos extends Command {
   @Override
   public void execute() {
 
-  if(!((shooter.getTopSwitch() == true) || shooter.getPosition() == AmpAngle))
-  {
+  //if(!((shooter.getTopSwitch() == true) || shooter.getPosition() == AmpAngle))
+  //{
 
   //Angle the shooter to the amp position
-  shooter.autoRunPivot(AmpAngle);
+  //shooter.autoRunPivot(AmpAngle);
 
-  } 
+  //} 
 
   }
 

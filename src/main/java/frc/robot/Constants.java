@@ -109,6 +109,9 @@ public final class Constants {
          * Shooter Angle System Constants 
          */
 
+        // Angle motor CAN IDs
+        public static final int kPivotMotorID = 15;
+
         // PID values
         public static final double kShooterAngleKP = 1;
         public static final double kShooterAngleKI = 0;
