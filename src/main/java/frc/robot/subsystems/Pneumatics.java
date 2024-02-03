@@ -10,19 +10,19 @@ import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import static frc.robot.Constants.*;
+import static frc.robot.Constants.MechanismConstants.*;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 
 public class Pneumatics extends SubsystemBase {
   
+  //Module and channels need to be found and set in constants
+
   //Channel needs to be found, should be a constant
   private Compressor compressor = new Compressor(ControlModuleID,PneumaticsModuleType.CTREPCM);
 
-  //Module and channels need to be found and set in constants
-  private DoubleSolenoid grabber = new DoubleSolenoid(ControlModuleID, PneumaticsModuleType.CTREPCM, GrabOpenChannelID, GrabCloseChannelID);
-
-  //Solenoid for brake
-  private DoubleSolenoid brake = new DoubleSolenoid(ControlModuleID, PneumaticsModuleType.CTREPCM, BrakeOpenChannelID, BrakeCloseChannelID);
+  //Solenoid for climber
+  private DoubleSolenoid climber = new DoubleSolenoid(ControlModuleID, PneumaticsModuleType.CTREPCM, ClimberOpenChannelID, ClimberCloseChannelID);
   
   /** Creates a new Pneumatics. */
   public Pneumatics() {}
@@ -36,23 +36,13 @@ public class Pneumatics extends SubsystemBase {
 
   }
 
-  //Extend with the solenoid
-  public void grab() {
-    grabber.set(Value.kReverse);
+  //Extend the climber
+  public void extendClimber(){
+    climber.set(Value.kForward);//Need to find if this is forward or back
   }
 
-  //Retract with the solenoid
-  public void letGo() {
-    grabber.set(Value.kForward);
-  }
-
-  //Apply the brake
-  public void releaseBrake() {
-    brake.set(Value.kReverse); 
-  }
-
-  //Release the brake
-  public void applyBrake() {
-    brake.set(Value.kForward); 
+  //Retract the climber
+  public void retractClimber(){
+    climber.set(Value.kReverse);//Need to find if this is forward or back
   }
 }

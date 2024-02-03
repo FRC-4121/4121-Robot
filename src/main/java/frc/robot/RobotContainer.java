@@ -2,6 +2,8 @@
 package frc.robot;
 
 import static frc.robot.Constants.*;
+import static frc.robot.Constants.MechanismConstants.*;
+import static frc.robot.Constants.ControlConstants.*;
 
 import frc.robot.subsystems.*;
 import frc.robot.ExtraClasses.NetworkTableQuerier;

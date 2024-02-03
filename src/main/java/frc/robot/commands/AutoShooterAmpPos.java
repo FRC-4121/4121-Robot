@@ -6,6 +6,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.ShooterAngle;
+import static frc.robot.Constants.MechanismConstants.*;
 
 public class AutoShooterAmpPos extends Command {
   
@@ -27,17 +28,23 @@ public class AutoShooterAmpPos extends Command {
   @Override
   public void execute() {
 
-  //If we are at the amp angle within tolerance, dont move shooter
-  //if(Angle != AmpAngle +- tolerance)
-  //Run angle down until we hit the limit switch
-  //shooter.GetTopSwitch() == True 
-  //Set angle as amp angle
+  if(!((shooter.getTopSwitch() == true) || shooter.getPosition() == AmpAngle))
+  {
+
+  //Angle the shooter to the amp position
+  shooter.autoRunPivot(AmpAngle);
+
+  } 
 
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+
+  shooter.runPivot(0);
+
+  }
 
   // Returns true when the command should end.
   @Override

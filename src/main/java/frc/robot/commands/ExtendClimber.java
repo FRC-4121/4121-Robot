@@ -7,12 +7,12 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Pneumatics;
 
-public class ReleaseBrake extends Command {
+public class ExtendClimber extends Command {
   
   Pneumatics pneumatic;
   
-  /** Creates a new RetractBrake. */
-  public ReleaseBrake(Pneumatics pneumatics) {
+  /** Creates a new ExtendClimber. */
+  public ExtendClimber(Pneumatics pneumatics) {
     
     pneumatic = pneumatics;
     
@@ -27,8 +27,7 @@ public class ReleaseBrake extends Command {
   @Override
   public void execute() {
 
-    pneumatic.releaseBrake();
-
+    pneumatic.extendClimber();
   }
 
   // Called once the command ends or is interrupted.

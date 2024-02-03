@@ -7,6 +7,7 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.LED;
 import static frc.robot.Constants.*;
+import static frc.robot.Constants.MechanismConstants.*;
 
 public class LEDCommand extends Command {
   

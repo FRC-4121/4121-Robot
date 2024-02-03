@@ -6,34 +6,28 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Pneumatics;
-import static frc.robot.Constants.*;
 
-public class Grab extends Command {
- 
- Pneumatics grab;
- 
-  /** Creates a new Grab. */
-  public Grab(Pneumatics grabber) {
+public class RetractClimber extends Command {
+  
+  Pneumatics pneumatic;
+  
+  /** Creates a new ExtendClimber. */
+  public RetractClimber(Pneumatics pneumatics) {
     
-    grab = grabber;
+    pneumatic = pneumatics;
     
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-  }
+  public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
 
-      grab.grab();
-      
-      //Assumed we have grabbed the cone
-      GrabbedCone = true;
-    
+    pneumatic.retractClimber();
   }
 
   // Called once the command ends or is interrupted.
@@ -43,6 +37,6 @@ public class Grab extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return true;
+    return false;
   }
 }

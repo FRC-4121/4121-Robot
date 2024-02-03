@@ -7,26 +7,13 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import static frc.robot.Constants.*;
+import static frc.robot.Constants.DriveConstants.*;
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.math.filter.MedianFilter;
 
 
 public class SwerveDrive extends SubsystemBase {
-  
-  // Declare motor CAN IDs
-  private final int kLeftFrontDrive = 1;
-  private final int kLeftFrontAngle = 2;
-  private final int kLeftFrontCoder = 3;
-  private final int kRightFrontDrive = 4;
-  private final int kRightFrontAngle = 5;
-  private final int kRightFrontCoder = 6;
-  private final int kRightBackDrive = 7;
-  private final int kRightBackAngle = 8;
-  private final int kRightBackCoder = 9;
-  private final int kLeftBackDrive = 10;
-  private final int kLeftBackAngle = 11;
-  private final int kLeftBackCoder = 12;
-  
+   
   private SwerveWheel leftFront;
   private SwerveWheel leftBack;
   private SwerveWheel rightFront;

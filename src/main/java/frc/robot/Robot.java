@@ -118,9 +118,6 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
 
-    // Turn off auto arm extend control
-    runAutoArmExtend = false;
-
     // Get the autonomous command
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 

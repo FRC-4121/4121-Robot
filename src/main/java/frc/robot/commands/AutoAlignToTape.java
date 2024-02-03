@@ -5,6 +5,7 @@
 package frc.robot.commands;
 
 import static frc.robot.Constants.*;
+import static frc.robot.Constants.MechanismConstants.*;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.SwerveDrive;
