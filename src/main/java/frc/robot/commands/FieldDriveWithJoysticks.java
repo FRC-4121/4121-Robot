@@ -28,8 +28,8 @@ public class FieldDriveWithJoysticks extends Command {
     swervedrive = drive;
     Xbox = xbox;
 
-    xSpeedLimiter = new SlewRateLimiter(3);
-    ySpeedLimiter = new SlewRateLimiter(3);
+    xSpeedLimiter = new SlewRateLimiter(2);
+    ySpeedLimiter = new SlewRateLimiter(2);
     rotSpeedLimiter = new SlewRateLimiter(3);
 
     // Use addRequirements() here to declare subsystem dependencies.
