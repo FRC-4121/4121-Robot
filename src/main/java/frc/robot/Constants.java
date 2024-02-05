@@ -109,6 +109,9 @@ public final class Constants {
          * Shooter Angle System Constants 
          */
 
+        // Angle motor CAN IDs
+        public static final int kPivotMotorID = 15;
+
         // PID values
         public static final double kShooterAngleKP = 1;
         public static final double kShooterAngleKI = 0;
@@ -117,9 +120,9 @@ public final class Constants {
         public static final double kShooterAngleMinOutput = -1;
         public static final double kShooterAngleMaxOutput = 1;
 
-        // Velocity factor in degrees per second
-        public static final double kAngleEncoderPositionFactor = (2 * Math.PI);  // radians
-        public static final double kAngleEncoderVelocityFactor = (2 * Math.PI) / 60;  // radians per second
+        // Encoder Values
+        public static final int kAngleEncoderID = 1;
+        public static final double kDistancePerRotation = 4.0;
 
         // Angle Motor Configuration
         public static final IdleMode kAngleMotorIdleMode = IdleMode.kBrake;
@@ -129,7 +132,6 @@ public final class Constants {
         
         //Angles for certain shots
         public static final double AmpAngle = 60;//degrees, needs to be confirmed
-
 
         /**
          * Pneumatic System Constants
