@@ -74,16 +74,14 @@ public class RobotContainer {
   
   // Launchpad (OI) Buttons/Switches
   private final Trigger killAutoButton;
-  private static JoystickButton yellowButton;
-  private static JoystickButton purpleButton;
+  private static JoystickButton blueTeamButton;
+  private static JoystickButton redTeamButton;
   private static JoystickButton parkButton;
+  private static JoystickButton leftButton;
+  private static JoystickButton rightButton;
 
   //===CONSTRUCTOR===//
   public RobotContainer() { 
-    
-    // Initialize Color Buttons
-    yellowButton = new JoystickButton(launchpad, LaunchPadSwitch5top);
-    purpleButton = new JoystickButton(launchpad, LaunchPadSwitch5bottom);
   
     // Initialize Xbox Buttons
     changeSpeedButton = new JoystickButton(xbox, xboxXButton);
@@ -95,7 +93,11 @@ public class RobotContainer {
     // Initialize Launchpad (OI) Buttons/Switches
     killAutoButton = new JoystickButton(launchpad,LaunchPadButton1);
     parkButton = new JoystickButton(launchpad,LaunchPadSwitch3);
-
+    blueTeamButton = new JoystickButton(launchpad, LaunchPadSwitch5top);
+    redTeamButton = new JoystickButton(launchpad, LaunchPadSwitch5bottom);
+    rightButton = new JoystickButton(launchpad, LaunchPadSwitch6bottom);
+    leftButton = new JoystickButton(launchpad, LaunchPadSwitch6top);
+  
     // Configure default commands
     configureDefaultCommands();
 
@@ -149,23 +151,34 @@ public class RobotContainer {
   public void getColorSelection()
   {
     
-    if (purpleButton.getAsBoolean() == true) {
+    if (redTeamButton.getAsBoolean() == true) {
       
       ledColor = 0.91; //Purple
-      getCone = false;
+      allianceColor = false;
  
-    } else if (yellowButton.getAsBoolean() == true) {
+    } else if (blueTeamButton.getAsBoolean() == true) {
       
       ledColor = 0.69; //Yellow
-      getCone = true;
+      allianceColor = true;
 
     } else {
       
       ledColor = 0.55; //Orange
-      getCone = false;
+      
 
     }
   }
+
+  //Auto Position
+ public void getAutoPosition() {
+  if (leftButton.getAsBoolean() == true) {
+    autoPosition = 0; // 0 is left
+  } else if(rightButton.getAsBoolean() == true) {
+    autoPosition = 2; // 2 is right
+  } else {
+    autoPosition = 1; // 1 is center
+  }
+ }
 
   /*
    * Park and unpark the robot

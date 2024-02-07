@@ -75,6 +75,9 @@ public class Robot extends TimedRobot {
     // Get ball color
     m_robotContainer.getColorSelection();
 
+    //Get auto position
+    m_robotContainer.getAutoPosition();
+
     //get park selection
     m_robotContainer.getParkSelection();
 
