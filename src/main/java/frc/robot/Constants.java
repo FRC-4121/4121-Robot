@@ -151,6 +151,7 @@ public final class Constants {
         public static Boolean getCone = false; // Are the led's yellow
         public static int autoPosition = 1; // 0 = left, 1 = center, 2 = right
         public static Boolean allianceColor = true; // true = blue, red = false
+        public static Boolean ringOnBoard = true;
 
         /**
          * Vision System Constants
