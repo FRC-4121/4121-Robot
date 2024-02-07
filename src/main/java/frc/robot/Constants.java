@@ -149,6 +149,8 @@ public final class Constants {
         // General Constants
         public static double ledColor = 0.63; // 0.65 is orange, the default color
         public static Boolean getCone = false; // Are the led's yellow
+        public static int autoPosition = 1; // 0 = left, 1 = center, 2 = right
+        public static Boolean allianceColor = true; // true = blue, red = falses
 
         /**
          * Vision System Constants
