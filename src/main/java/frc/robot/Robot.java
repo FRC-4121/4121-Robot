@@ -52,8 +52,8 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("Zero Positions", 0);
     SmartDashboard.putNumber("Zero Wrist", 0);
 
-    // Put auto program option on the dashboard
-    SmartDashboard.putNumber("Auto Program", 0);
+    // Put auto program notes to shoot on the dashboard
+    SmartDashboard.putNumber("Auto Notes", 2);
 
    }
 
@@ -72,7 +72,7 @@ public class Robot extends TimedRobot {
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
 
-    // Get ball color
+    // Get team color
     m_robotContainer.getColorSelection();
 
     //Get auto position
@@ -90,8 +90,19 @@ public class Robot extends TimedRobot {
       SmartDashboard.putNumber("Zero Positions", 0);
     }
 
+    // Check for number of notes to shoot in auto
+    autoNotes = SmartDashboard.getNumber("Auto Notes", 2);
+
+    // Check current speed setting and update dashboard
+    if (LinearSpeed == 5){
+      SmartDashboard.putBoolean("Slow Mode", false);
+    } else {
+      SmartDashboard.putBoolean("Slow Mode", true);
+    }
+
     // Check status of photo sensor
     photoSensorIsNotBlocked = photoSensor.isNotBlocked();
+
 
   }
 
@@ -128,6 +139,9 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
     }
+
+    //Set robot to robot oriented driving
+    isFieldOriented = false;
   }
 
   /** This function is called periodically during autonomous. */
@@ -147,6 +161,9 @@ public class Robot extends TimedRobot {
 
     // Turn on auto shooter speed control
     runAutoSpeedControl = true;
+
+    //Set robot to field oriented driving
+    isFieldOriented = true;
 
   }
 

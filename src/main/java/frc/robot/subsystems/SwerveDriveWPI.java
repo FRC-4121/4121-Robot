@@ -7,6 +7,8 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import static frc.robot.Constants.*;
+import static frc.robot.Constants.DriveConstants.*;
+import static frc.robot.Constants.MechanismConstants.*;
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.math.filter.MedianFilter;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -264,6 +266,15 @@ public class SwerveDriveWPI extends SubsystemBase {
   public double getGyroAngle() {
 
     double correctedGyro = gyro_filter.calculate(gyro.getAngle() % 360.0);
+    if (autoPosition == "Left") {
+      SmartDashboard.putNumber("C-Gyro",correctedGyro + leftGyroCorrection);
+      return correctedGyro + leftGyroCorrection;
+    }
+    if (autoPosition == "Right") {
+      SmartDashboard.putNumber("C-Gyro",correctedGyro + rightGyroCorrection);
+      return correctedGyro + rightGyroCorrection;
+    }
+    SmartDashboard.putNumber("C-Gyro",correctedGyro);
     return correctedGyro;
 
   }

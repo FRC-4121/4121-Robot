@@ -16,38 +16,17 @@ public class NetworkTableQuerier implements Runnable {
 
     // Create network tables
     private static NetworkTableInstance networkTableInstance;
-    private static NetworkTable visionTable;
-    private static NetworkTable navxTable;
+    private static NetworkTable controlTable;
+    private static NetworkTable cam1Table;
+    private static NetworkTable cam2Table;
 
     // Create network table entries
     private static NetworkTableEntry robotStop;
+    private static NetworkTableEntry timeString;
     private static NetworkTableEntry zeroGyro;
-    private static NetworkTableEntry piGyroAngle;
-    private static NetworkTableEntry ballDistance0;
-    private static NetworkTableEntry ballAngle0;
-    private static NetworkTableEntry ballOffset0;
-    private static NetworkTableEntry ballScreenPercent0;
-    private static NetworkTableEntry foundBall;
-    private static NetworkTableEntry foundTape;
-    private static NetworkTableEntry tapeDistance;
-    private static NetworkTableEntry tapeOffset;
     private static NetworkTableEntry targetLock;
-    private static NetworkTableEntry saveVideo; 
-    private static NetworkTableEntry markersFound;
     private static NetworkTableEntry colorSelection;
 
-    private static NetworkTableEntry navxYaw;
-    private static NetworkTableEntry navxPitch;
-    private static NetworkTableEntry navxRoll;
-    private static NetworkTableEntry navxVelX;
-    private static NetworkTableEntry navxVelY;
-    private static NetworkTableEntry navxVelZ;
-    private static NetworkTableEntry navxAccelX;
-    private static NetworkTableEntry navxAccelY;
-    private static NetworkTableEntry navxAccelZ;
-    private static NetworkTableEntry navxDistX;
-    private static NetworkTableEntry navxDistY;
-    private static NetworkTableEntry navxDistZ;
 
     // Declare class variables
     private boolean runNetworkTables;
@@ -101,8 +80,8 @@ public class NetworkTableQuerier implements Runnable {
         
     }
 
-    public NetworkTable getVisionTable() {
-        return visionTable;
+    public NetworkTable getControlTable() {
+        return controlTable;
     }
 
     /**
@@ -111,12 +90,13 @@ public class NetworkTableQuerier implements Runnable {
     private void initNetworkTables() {
 
         networkTableInstance = NetworkTableInstance.getDefault();
-        visionTable = networkTableInstance.getTable("vision");
-        navxTable = networkTableInstance.getTable("navx");
+        controlTable = networkTableInstance.getTable("control");
+        cam1Table = networkTableInstance.getTable("usb1");
+        cam2Table = networkTableInstance.getTable("usb2");
 
-        robotStop = visionTable.getEntry("RobotStop");
-        colorSelection = visionTable.getEntry("ColorSelection");
-        zeroGyro = navxTable.getEntry("ZeroGyro");
+        robotStop = controlTable.getEntry("RobotStop");
+        zeroGyro = controlTable.getEntry("ZeroGyro");
+        colorSelection = controlTable.getEntry("ColorSelection");
 
         robotStop.setNumber(0);
         zeroGyro.setNumber(0);
@@ -131,39 +111,14 @@ public class NetworkTableQuerier implements Runnable {
      */
     private void queryNetworkTables() {
 
-        robotStop = visionTable.getEntry("RobotStop");
-        zeroGyro = navxTable.getEntry("ZeroGyro");
+        robotStop = controlTable.getEntry("RobotStop");
 
-        piGyroAngle = navxTable.getEntry("GyroAngle");
-        navxYaw = navxTable.getEntry("Orientation.0");
-        navxPitch = navxTable.getEntry("Orientation.1");
-        navxRoll = navxTable.getEntry("Orientation.2");
-        navxVelX = navxTable.getEntry("Velocity.0");
-        navxVelY = navxTable.getEntry("Velocity.1");
-        navxVelZ = navxTable.getEntry("Velocity.2");
-        navxAccelX = navxTable.getEntry("Acceleration.0");
-        navxAccelY = navxTable.getEntry("Acceleration.1");
-        navxAccelZ = navxTable.getEntry("Acceleration.2");
-        navxDistX = navxTable.getEntry("Position.0");
-        navxDistY = navxTable.getEntry("Position.1");
-        navxDistZ = navxTable.getEntry("Position.2");
-
-        ballDistance0 = visionTable.getEntry("BallDistance0");
-        ballAngle0 = visionTable.getEntry("BallAngle0");
-        ballOffset0 = visionTable.getEntry("BallOffset0");
-        ballScreenPercent0 = visionTable.getEntry("BallScreenPercent0");
-        foundBall = visionTable.getEntry("FoundBall");
-        foundTape = visionTable.getEntry("FoundTape");
-        targetLock = visionTable.getEntry("TargetLock");
-        tapeDistance = visionTable.getEntry("TapeDistance");
-        tapeOffset = visionTable.getEntry("TapeOffset");
-        saveVideo = visionTable.getEntry("SaveVideo");
-        colorSelection = visionTable.getEntry("BallColor");
+        targetLock = controlTable.getEntry("TargetLock");
+        colorSelection = controlTable.getEntry("BallColor");
 
 
 
         SmartDashboard.putBoolean("TargetLock", targetLock.getBoolean(false));
-        SmartDashboard.putNumber("TapeOffset", tapeOffset.getDouble(0));
     }
 
     /*
@@ -177,12 +132,18 @@ public class NetworkTableQuerier implements Runnable {
      * "TapeOffset"
      * "TapeDistance" 
      */
-    public synchronized double getVisionDouble(String entry) {
+    public synchronized double getControlDouble(String entry) {
 
-        return visionTable.getEntry(entry).getDouble(0);
+        return controlTable.getEntry(entry).getDouble(0);
+
     }
-    public synchronized void putVisionDouble(String entry, double value) {
-        visionTable.getEntry(entry).setDouble(value);
+
+    public synchronized void putControlDouble(String entry, double value) {
+        controlTable.getEntry(entry).setDouble(value);
+    }
+
+    public synchronized void putControlString(String entry, String value) {
+        controlTable.getEntry(entry).setString(value);
     }
 
     /*
@@ -194,20 +155,76 @@ public class NetworkTableQuerier implements Runnable {
      * "FoundTape"
      * "TargetLock" 
      */
-    public synchronized boolean getVisionBoolean(String entry) {
+    public synchronized boolean getVisionBoolean(String camera, String entry) {
 
-        return visionTable.getEntry(entry).getBoolean(false);
+        boolean camValue = false;
+
+        if (camera == "Cam1") {
+            camValue = cam1Table.getEntry(entry).getBoolean(false);
+        } else{
+            camValue = cam2Table.getEntry(entry).getBoolean(false);
+        }
+        return camValue;
     }
 
+    public synchronized double getVisionDouble(String camera, String entry) {
 
-    /**
-     * Get the Found Tape flag
-     * @return
-     */
-    public synchronized boolean getFoundTapeFlag() {
+        double camValue = 0;
 
-        return foundTape.getBoolean(false);
+        if (camera == "Cam1") {
+            camValue = cam1Table.getEntry(entry).getDouble(0);
+        } else{
+            camValue = cam2Table.getEntry(entry).getDouble(0);
+        }
+        return camValue;
+    }
 
+    public synchronized double getRingsFound(String camera) {
+
+        double camValue = 0;
+
+        if (camera == "Cam1") {
+            camValue = cam1Table.getEntry("RingsFound").getDouble(0);
+        } else{
+            camValue = cam2Table.getEntry("RingsFound").getDouble(0);
+        }
+        return camValue;
+    }
+
+    public synchronized double getRingInfo(String camera, int ring, String entry) {
+
+        double camValue = 0;
+
+        if (camera == "Cam1") {
+            camValue = cam1Table.getEntry("Rings." + ring + "." + entry).getDouble(0);
+        } else{
+            camValue = cam2Table.getEntry("Rings." + ring + "." + entry).getDouble(0);
+        }
+        return camValue;
+    }
+
+    public synchronized double getTagsFound(String camera) {
+
+        double camValue = 0;
+
+        if (camera == "Cam1") {
+            camValue = cam1Table.getEntry("usb1.TagsFound").getDouble(0);
+        } else{
+            camValue = cam2Table.getEntry("usb2.TagsFound").getDouble(0);
+        }
+        return camValue;
+    }
+
+    public synchronized double getTagInfo(String camera, int tag, String entry) {
+
+        double camValue = 0;
+
+        if (camera == "Cam1") {
+            camValue = cam1Table.getEntry("usb1.Tags." + tag + "." + entry).getDouble(0);
+        } else{
+            camValue = cam2Table.getEntry("usb2.Tags." + tag + "." + entry).getDouble(0);
+        }
+        return camValue;
     }
 
 
@@ -222,36 +239,6 @@ public class NetworkTableQuerier implements Runnable {
     }
 
 
-    /**
-     * Get the tape offset
-     * @return
-     */
-    public synchronized double getTapeOffset() {
-
-        return tapeOffset.getDouble(0.0);
-
-    }
-
-
-    /**
-     * Get the tape distance
-     * @return
-     */
-    public synchronized double getTapeDistance() {
-
-        return tapeDistance.getDouble(0.0);
-
-    }
-
-
-    /**
-     * Get the VMX gyro angle
-     * @return
-     */
-    public synchronized double getPiGyro() {
-
-        return navxTable.getEntry("GyroAngle").getDouble(0);
-    }
 
 
     /**
@@ -274,10 +261,5 @@ public class NetworkTableQuerier implements Runnable {
     public synchronized void setColor(int color)
     {
         colorSelection.setNumber(color);
-    }
-
-    public synchronized double getNavXDouble(String entry)
-    {
-        return navxTable.getEntry(entry).getDouble(0);
     }
 }

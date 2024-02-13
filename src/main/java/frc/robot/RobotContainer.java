@@ -17,7 +17,6 @@ import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.cscore.VideoSink;
 import edu.wpi.first.cscore.VideoSource;
 
-
 public class RobotContainer {
   
   // Camera
@@ -50,6 +49,7 @@ public class RobotContainer {
   private final ChangeDriveMode changeModeCommand = new ChangeDriveMode();
 
   // Auto Commands
+  private final AutoPickupNote autoPickupNoteCommand = new AutoPickupNote(swervedrivewpi,intake,shooter,table, 10);
 
   //KillAuto Command
   private final KillAutoCommand killAutoObject = new KillAutoCommand(); 
@@ -172,11 +172,11 @@ public class RobotContainer {
   //Auto Position
  public void getAutoPosition() {
   if (leftButton.getAsBoolean() == true) {
-    autoPosition = 0; // 0 is left
+    autoPosition = "Left"; 
   } else if(rightButton.getAsBoolean() == true) {
-    autoPosition = 2; // 2 is right
+    autoPosition = "Right";
   } else {
-    autoPosition = 1; // 1 is center
+    autoPosition = "Center"; 
   }
  }
 
@@ -202,7 +202,89 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
 
-    return fieldDriveCommand;
+    String autoDecision = autoPosition + Double.toString(autoNotes - 1);
+    Command autoCommand = autoPickupNoteCommand;
+
+    switch (autoDecision) {
+
+      case "Left0":
+        autoCommand = fieldDriveCommand;
+        break;
+
+      case "Left1":
+        autoCommand = fieldDriveCommand;
+        break;
+
+      case "Left2":
+        autoCommand = fieldDriveCommand;
+        break;
+
+      case "Left3":
+        autoCommand = fieldDriveCommand;
+        break;
+
+      case "Left4":
+        autoCommand = fieldDriveCommand;
+        break;
+
+      case "Left5":
+        autoCommand = fieldDriveCommand;
+        break;
+
+      case "Right0":
+        autoCommand = fieldDriveCommand;
+        break;
+
+      case "Right1":
+        autoCommand = fieldDriveCommand;
+        break;
+
+      case "Right2":
+        autoCommand = fieldDriveCommand;
+        break;
+
+      case "Right3":
+        autoCommand = fieldDriveCommand;
+        break;
+
+      case "Right4":
+        autoCommand = fieldDriveCommand;
+        break;
+
+      case "Right5":
+        autoCommand = fieldDriveCommand;
+        break;
+
+      case "Center0":
+        autoCommand = fieldDriveCommand;
+        break;
+
+      case "Center1":
+        autoCommand = autoPickupNoteCommand;
+        break;
+
+      case "Center2":
+        autoCommand = fieldDriveCommand;
+        break;
+
+      case "Center3":
+        autoCommand = fieldDriveCommand;
+        break;
+
+      case "Center4":
+        autoCommand = fieldDriveCommand;
+        break;
+
+      case "Center5":
+        autoCommand = fieldDriveCommand;
+        break;
+
+      default: 
+        break;
+        
+    }
+
+    return autoCommand;
 
   }
 
@@ -246,7 +328,7 @@ public class RobotContainer {
    */
   public void stopPi() {
 
-    table.putVisionDouble("RobotStop", 1.0);
+    table.putControlDouble("RobotStop", 1.0);
 
   }
 

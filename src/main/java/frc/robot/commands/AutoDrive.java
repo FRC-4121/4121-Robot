@@ -78,7 +78,7 @@ public class AutoDrive extends Command {
     //The constants for these need to be figured out
     pidFrontAngle = new PIDController(kP_DriveAngle, kI_DriveAngle, kD_DriveAngle);
 
-    startingPitch = ntables.getNavXDouble("Orientation.1");
+    startingPitch =0;
 
   }
 
@@ -101,14 +101,14 @@ public class AutoDrive extends Command {
       SmartDashboard.putNumber("Left Back Start", leftBackEncoderStart);
       SmartDashboard.putNumber("Right Back Start", rightBackEncoderStart);
 
-      gyroOffset = ntables.getPiGyro();
+      gyroOffset = 0;
       SmartDashboard.putNumber("Gyro Offset", gyroOffset);
 
       firstRun = false;
     }
 
     // Calculate angle correction based on gyro reading
-    currentGyroAngle = ntables.getPiGyro() - gyroOffset;
+    currentGyroAngle = 0  - gyroOffset;
     SmartDashboard.putNumber("Current Gyro", currentGyroAngle);
     
     targetRotation = pidFrontAngle.calculate(currentGyroAngle / 360.0, frontAngle) + chassisRotation;

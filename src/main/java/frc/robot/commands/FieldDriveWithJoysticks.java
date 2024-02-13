@@ -55,7 +55,13 @@ public class FieldDriveWithJoysticks extends Command {
     // Drive using xbox joystick values
     // kSpeedCorrection is to slow down the right motors because left motors were
     // running slower
-    swervedrive.drive(xSpeed, ySpeed, rotSpeed);
+   /*  if (Xbox.getLeftX() == 0 && Xbox.getLeftY() == 0 && Xbox.getRightX() == 0) {
+      swervedrive.parkBot();
+    } else {
+      swervedrive.drive(xSpeed, ySpeed, rotSpeed);
+    }*/
+
+     swervedrive.drive(xSpeed, ySpeed, rotSpeed);
 
   }
 

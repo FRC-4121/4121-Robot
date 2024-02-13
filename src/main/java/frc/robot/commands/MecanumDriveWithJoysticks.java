@@ -43,11 +43,6 @@ public class MecanumDriveWithJoysticks extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-
-    // Navx Values
-    SmartDashboard.putNumber("Yaw", ntables.getNavXDouble("Orientation.0"));
-    SmartDashboard.putNumber("Pitch", ntables.getNavXDouble("Orientation.1"));
-
     // Drive using xbox joystick values
     // kSpeedCorrection is to slow down the right motors because left motors were
     // running slower

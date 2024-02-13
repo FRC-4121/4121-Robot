@@ -52,6 +52,8 @@ public final class Constants {
         public static final double DRIVETRAIN_WHEELBASE_INCH = 21.5;
         public static final double lengthFromAxle = 23.5;
         public static final double widthFromAxle = 19.5;
+        public static final double leftGyroCorrection = 63;//Gyro correction in degrees
+        public static final double rightGyroCorrection = 297;//Gyro correction in degrees
 
         // Swerve drive PID constants
         public static final double drivePIDkPs[] = { 0.0, 0.0, 0.0, 0.0 };
@@ -62,6 +64,12 @@ public final class Constants {
         public static final double anglePIDkIs[] = { 2.25, 2.25, 2.25, 2.25 };
         public static final double anglePIDkDs[] = { 0.04, 0.04, 0.04, 0.04 };
         public static double angleLimiters[] = { 1.0, 1.0, 1.0, 1.0 };
+
+        // Auto drive PID constants
+        public static final double kAutoDrivePIDkp = 0.03;
+        public static final double kAutoDrivePIDkI = 0.0;
+        public static final double kAutoDrivePIDkD = 0.0;
+        public static final double kAutoDrivePIDkF = 0.0;
 
         // Motion magic constants
         public static final int kSlotIdxDrive = 0;
@@ -149,7 +157,7 @@ public final class Constants {
         // General Constants
         public static double ledColor = 0.63; // 0.65 is orange, the default color
         public static Boolean getCone = false; // Are the led's yellow
-        public static int autoPosition = 1; // 0 = left, 1 = center, 2 = right
+        public static String autoPosition = "Left"; 
         public static Boolean allianceColor = true; // true = blue, red = false
         public static Boolean ringOnBoard = true;
 
@@ -264,7 +272,7 @@ public final class Constants {
 
     // General variables
     public static boolean killAuto = false;
-    public static int ballsOnBoard = 1;
+    public static double autoNotes = 1;
 
     public static final boolean kMotorInvert = true;// True -> right side motors are inverted
     public static final double kTalonFXPPR = 2048;

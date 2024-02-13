@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkLowLevel.MotorType;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 
 public class Intake extends SubsystemBase {
@@ -15,13 +16,13 @@ public class Intake extends SubsystemBase {
   private int INTAKE_ID = 21;
 
   //create intake motor
-  private CANSparkMax intakeMotor;
+  private WPI_TalonFX intakeMotor;
 
 
   /** Creates a new intake. */
   public Intake() {
 
-    intakeMotor = new CANSparkMax(INTAKE_ID, MotorType.kBrushless);
+    intakeMotor = new WPI_TalonFX(INTAKE_ID);
 
   }
 
