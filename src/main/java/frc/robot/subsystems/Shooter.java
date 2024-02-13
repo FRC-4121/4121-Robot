@@ -9,13 +9,14 @@ import edu.wpi.first.math.filter.MedianFilter;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 public class Shooter extends SubsystemBase {
    //attributes; variables
-   private WPI_TalonSRX intakeMotor; 
+  private WPI_VictorSPX intakeMotor; 
   private WPI_TalonFX shooterMotorTop;
   private WPI_TalonFX shooterMotorBottom;
 
@@ -26,7 +27,7 @@ public class Shooter extends SubsystemBase {
 
    /** Creates a new Shooter. */
   public Shooter() {
-    intakeMotor = new WPI_TalonSRX(intakeID);
+    intakeMotor = new WPI_VictorSPX(intakeID);
     shooterMotorTop = new WPI_TalonFX(topShooterID);
     shooterMotorBottom = new WPI_TalonFX(bottomShooterID);
 
