@@ -146,8 +146,8 @@ public final class Constants {
          */
 
         // Pneumatics Controller IDs
-        public static final int ClimberOpenChannelID = 4;//Need to find
-        public static final int ClimberCloseChannelID = 5;//Need to find
+        public static final int ClimberOpenChannelID = 0;
+        public static final int ClimberCloseChannelID = 1;
         public static final int ControlModuleID = 61;
 
         /**

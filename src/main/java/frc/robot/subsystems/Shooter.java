@@ -20,9 +20,9 @@ public class Shooter extends SubsystemBase {
   private WPI_TalonFX shooterMotorBottom;
 
   //Motor IDs
-  private final int intakeID = 12;
-  private final int topShooterID = 7;
-  private final int bottomShooterID = 8;
+  private final int intakeID = 16;
+  private final int topShooterID = 13;
+  private final int bottomShooterID = 14;
 
    /** Creates a new Shooter. */
   public Shooter() {
