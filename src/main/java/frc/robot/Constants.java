@@ -238,7 +238,7 @@ public final class Constants {
     }
 
     // Motor Limits
-    public static final double MaxLinearSpeed = 5; //Max Speed in Meters per second
+    public static final double MaxLinearSpeed = 4; //Max Speed in Meters per second
     public static final double MaxRotationalSpeed = 1.5; //Max Speed in Radians per second, about pi/2 or 90 degrees
     public static final double MaxRadiansPerSecond = Math.PI;
     public static final double SlowMaxLinearSpeed = 1;//Max Speed during slow mode in meters per second
