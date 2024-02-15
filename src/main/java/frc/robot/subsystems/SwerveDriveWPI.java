@@ -77,10 +77,10 @@ public class SwerveDriveWPI extends SubsystemBase {
     rightBack = new SwerveWheel(kRightBackDrive, kRightBackAngle, kRightBackCoder);
 
     // Initialize swerve kinematics objects
-    leftFrontTranslation = new Translation2d(0.229,0.292);//X-0.297, Y-0.288 
-    leftBackTranslation = new Translation2d(-0.229,0.292);//0.292,0.229
-    rightFrontTranslation = new Translation2d(0.229,-0.292);
-    rightBackTranslation = new Translation2d(-0.229,-0.292);
+    leftFrontTranslation = new Translation2d(0.297,0.288);//X-0.297, Y-0.288 
+    leftBackTranslation = new Translation2d(-0.297,0.288);//0.229,0.292 for last years bot
+    rightFrontTranslation = new Translation2d(0.297,-0.288);
+    rightBackTranslation = new Translation2d(-0.297,-0.288);
     kinematics = new SwerveDriveKinematics(leftFrontTranslation,rightFrontTranslation,leftBackTranslation,rightBackTranslation);
 
     // Initialize NavX gyro
