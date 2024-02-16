@@ -20,18 +20,14 @@ public class PhotoElecSensor {
     }
 
     //Method for if we have a ring,if it's blocked, we have a ring
-    public boolean isNotBlocked() {
+    public void isNoteOnBoard() {
 
         if(photoSensor.get())
         {
-            ringOnBoard = false;//If the photosensor is not blocked, a ring is not on board
+            noteOnBoard = false;//If the photosensor is not blocked, a ring is not on board
         } else{
-            ringOnBoard = true;//If the photosensor is blocked, a ring is on board
+            noteOnBoard = true;//If the photosensor is blocked, a ring is on board
         }
-
-        SmartDashboard.putBoolean("Ring On Board", ringOnBoard);
-
-        return photoSensor.get();
         
     }
 }

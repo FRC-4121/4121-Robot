@@ -134,12 +134,24 @@ public final class Constants {
 
         // Angle Motor Configuration
         public static final IdleMode kAngleMotorIdleMode = IdleMode.kBrake;
-        public static final int kAngleMotorCurrentLimit = 20;  // amps
-        public static final Boolean kAngleInverted = false;
-        public static final double kAngleEncoderOffest = 0;//Need to find
+        public static final int kAngleMotorCurrentLimit = 20;
+        public static final double AngleMotorSpeed = 0.5;
+
         
         //Angles for certain shots
         public static final double AmpAngle = 60;//degrees, needs to be confirmed
+        public static final double HighSpeakerAngle = 52;
+        public static final double LowSpeakerAngle = 35;
+        public static final double MaxSpeakerAngle = 60;
+        public static final double MinSpeakerAngle = 30;
+
+
+        //Current Shooter Angle
+        public static double CurrentShooterAngle = 52;
+        public static final double ShooterAngleTolerance = 1;
+
+        //Shooter Angle Encoder
+        public static double MaxEncoderPos = 100000;//Need to set
 
         /**
          * Pneumatic System Constants
@@ -159,7 +171,8 @@ public final class Constants {
         public static Boolean getCone = false; // Are the led's yellow
         public static String autoPosition = "Left"; 
         public static Boolean allianceColor = true; // true = blue, red = false
-        public static Boolean ringOnBoard = true;
+        public static Boolean noteOnBoard = true;
+        public static Boolean readyToShoot = false;
 
         /**
          * Vision System Constants

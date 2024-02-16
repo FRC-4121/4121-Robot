@@ -8,7 +8,9 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import static frc.robot.Constants.MechanismConstants.*;
+import static frc.robot.Constants.*;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
+
 
 import edu.wpi.first.wpilibj.DigitalInput;
 
@@ -48,19 +50,36 @@ public class ShooterAngle extends SubsystemBase {
   }
 
   public void runPivot(double speed){
+    
     pivotMotor.set(speed);
+
+    if(TopSwitch.get() == true)
+    {
+      encoder.reset();
+    } else if(BottomSwitch.get() == true)
+    {
+      MaxEncoderPos = encoder.getAbsolutePosition();
+    }
+
+    CurrentShooterAngle = encoder.getAbsolutePosition() * ((MinSpeakerAngle-MaxSpeakerAngle)/MaxEncoderPos) + MaxSpeakerAngle;
   }
 
+  //Should Zero encoder, set angle to max
   public Boolean getTopSwitch(){
     return TopSwitch.get();
   }
 
+  //Should set encoder to max, angle to min
   public Boolean getBottomSwitch(){
     return BottomSwitch.get();
   }
 
-  public double getEncoderDistance() {
-    return encoder.getDistance();
+  public double getEncoderValue() {
+    return encoder.get();
+  }
+
+  public double getAbsoluteEncoderPosition(){
+    return encoder.getAbsolutePosition();
   }
 
   @Override

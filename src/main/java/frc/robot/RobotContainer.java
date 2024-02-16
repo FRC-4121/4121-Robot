@@ -7,6 +7,7 @@ import static frc.robot.Constants.ControlConstants.*;
 
 import frc.robot.subsystems.*;
 import frc.robot.ExtraClasses.NetworkTableQuerier;
+import frc.robot.ExtraClasses.PhotoElecSensor;
 import frc.robot.commands.*;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
@@ -34,10 +35,12 @@ public class RobotContainer {
   private final SwerveDriveWPI swervedrivewpi = new SwerveDriveWPI();
   private final Intake intake = new Intake();
   private final Shooter shooter = new Shooter();
+  private final ShooterAngle shooterAngle = new ShooterAngle();
 
   // Extra systems
   private final NetworkTableQuerier table = new NetworkTableQuerier();
   private final LED led = new LED();
+  private PhotoElecSensor photoSensor = new PhotoElecSensor();
 
 
   //===COMMANDS===//
@@ -50,6 +53,7 @@ public class RobotContainer {
 
   // Auto Commands
   private final AutoPickupNote autoPickupNoteCommand = new AutoPickupNote(swervedrivewpi,intake,shooter,table, 10);
+  private final AutoShooterAmpPos autoShooterAmpPosCommand = new AutoShooterAmpPos(shooterAngle,shooter,5.0);
 
   //KillAuto Command
   private final KillAutoCommand killAutoObject = new KillAutoCommand(); 
@@ -79,6 +83,7 @@ public class RobotContainer {
   private static JoystickButton parkButton;
   private static JoystickButton leftButton;
   private static JoystickButton rightButton;
+  private static JoystickButton ampAngleButton;
 
   //===CONSTRUCTOR===//
   public RobotContainer() { 
@@ -97,6 +102,7 @@ public class RobotContainer {
     redTeamButton = new JoystickButton(launchpad, LaunchPadSwitch5bottom);
     rightButton = new JoystickButton(launchpad, LaunchPadSwitch6bottom);
     leftButton = new JoystickButton(launchpad, LaunchPadSwitch6top);
+    ampAngleButton = new JoystickButton(launchpad, LaunchPadSwitch1top);
   
     // Configure default commands
     configureDefaultCommands();
@@ -142,6 +148,7 @@ public class RobotContainer {
     intakeButton.onTrue(intakeCommand);
     speakerShootButton.onTrue(speakerShooterCommand);
     ampShootButton.onTrue(ampShooterCommand);
+    ampAngleButton.onTrue(autoShooterAmpPosCommand);
 
   }
 
@@ -329,6 +336,23 @@ public class RobotContainer {
   public void stopPi() {
 
     table.putControlDouble("RobotStop", 1.0);
+
+  }
+
+  public void updateRobotStatus() {
+    
+    //Update shooter position
+    SmartDashboard.putBoolean("Top Shooter", shooterAngle.getTopSwitch());
+    SmartDashboard.putBoolean("Bottom Shooter", shooterAngle.getBottomSwitch());
+    SmartDashboard.putNumber("Shooter Angle", CurrentShooterAngle);
+    SmartDashboard.putNumber("Shooter Encoder", shooterAngle.getAbsoluteEncoderPosition());
+
+    //Update Photo Sensor
+    photoSensor.isNoteOnBoard();
+    SmartDashboard.putBoolean("Note On Board", noteOnBoard);
+
+    //Update Ready to Shoot
+    SmartDashboard.putBoolean("Ready To Shoot", readyToShoot);
 
   }
 

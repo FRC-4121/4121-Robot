@@ -39,7 +39,7 @@ public class AutoShootCommand extends Command {
     double currentTime = timer.get();
     double elapsedTime = currentTime - startTime;
 
-    if((elapsedTime >= delayTime) && ringOnBoard)
+    if((elapsedTime >= delayTime) && noteOnBoard)
     {
      shooter.runShooter(1.0);
      shooter.runIntake(1.0);  
@@ -59,11 +59,11 @@ public class AutoShootCommand extends Command {
   public boolean isFinished() {
      boolean doneYet = false;
     
-    if (ringOnBoard == false)
+    if (noteOnBoard == false)
     {
       doneYet = true;
     }
-    if(timer.get() >= endTime)
+    if(timer.get() >= endTime-startTime)
     {
       doneYet = true;
     }
