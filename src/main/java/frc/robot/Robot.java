@@ -79,6 +79,9 @@ public class Robot extends TimedRobot {
     // Stream cameras
     m_robotContainer.streamCams();
 
+    //Update Robot Status
+    m_robotContainer.updateRobotStatus();
+
     // Check for robot zero command and zero the robot
     if (SmartDashboard.getNumber("Zero Positions", 0) == 1) {
       m_robotContainer.zeroRobot();

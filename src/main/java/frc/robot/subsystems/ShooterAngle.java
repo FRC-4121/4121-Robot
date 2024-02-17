@@ -10,8 +10,6 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import static frc.robot.Constants.MechanismConstants.*;
 import static frc.robot.Constants.*;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
-
-
 import edu.wpi.first.wpilibj.DigitalInput;
 
 public class ShooterAngle extends SubsystemBase {
@@ -23,8 +21,8 @@ public class ShooterAngle extends SubsystemBase {
   public final DutyCycleEncoder encoder;
 
   //Limit switches to know when we have rotated all the way down or all the way up
-  private DigitalInput TopSwitch = new DigitalInput(2);
-  private DigitalInput BottomSwitch = new DigitalInput(3);
+  private DigitalInput TopSwitch = new DigitalInput(0);
+  private DigitalInput BottomSwitch = new DigitalInput(9);
 
   /** Creates a new ShooterAngle. */
   public ShooterAngle() {

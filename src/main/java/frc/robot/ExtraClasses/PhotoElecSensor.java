@@ -15,7 +15,7 @@ public class PhotoElecSensor {
     
     public PhotoElecSensor() {
 
-        photoSensor = new DigitalInput(0);
+        photoSensor = new DigitalInput(5);
 
     }
 

@@ -129,7 +129,7 @@ public final class Constants {
         public static final double kShooterAngleMaxOutput = 1;
 
         // Encoder Values
-        public static final int kAngleEncoderID = 1;
+        public static final int kAngleEncoderID = 2;
         public static final double kDistancePerRotation = 4.0;
 
         // Angle Motor Configuration
@@ -158,9 +158,13 @@ public final class Constants {
          */
 
         // Pneumatics Controller IDs
-        public static final int ClimberOpenChannelID = 0;
-        public static final int ClimberCloseChannelID = 1;
+        public static final int ClimberOpenChannelID = 9;
+        public static final int ClimberCloseChannelID = 8;
         public static final int ControlModuleID = 61;
+
+        //Pneumatic General Constants
+        public static boolean ClimberExtended = false;
+        public static double pressureSensorVoltage = 5;
 
         /**
          * LED String Constants

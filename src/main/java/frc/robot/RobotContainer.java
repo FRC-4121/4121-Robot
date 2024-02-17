@@ -36,6 +36,7 @@ public class RobotContainer {
   private final Intake intake = new Intake();
   private final Shooter shooter = new Shooter();
   private final ShooterAngle shooterAngle = new ShooterAngle();
+  private final Pneumatics pneumatic = new Pneumatics();
 
   // Extra systems
   private final NetworkTableQuerier table = new NetworkTableQuerier();
@@ -65,7 +66,17 @@ public class RobotContainer {
   private final RunShooterAmp ampShooterCommand = new RunShooterAmp(shooter);
   private final RunShooterSpeaker speakerShooterCommand = new RunShooterSpeaker(shooter);
 
+  //Shooter Angle Command
+  private final RunAngleUp angleUpCommand = new RunAngleUp(shooterAngle);
+  private final RunAngleDown angleDownCommand = new RunAngleDown(shooterAngle);
+
+  //Intake Command
   private final RunIntake intakeCommand = new RunIntake(intake);
+
+  //Climber Command
+  private final RunClimber climberCommand = new RunClimber(pneumatic);
+  private final RunClimberUp climberUpCommand = new RunClimberUp(pneumatic);
+  private final RunClimberDown climberDownCommand = new RunClimberDown(pneumatic);
 
   //===BUTTONS===//
 
@@ -75,6 +86,11 @@ public class RobotContainer {
   private final Trigger intakeButton;
   private final Trigger speakerShootButton;
   private final Trigger ampShootButton;
+  private final Trigger climberButton;
+  private final Trigger runAngleDownButton;
+  private final Trigger runAngleUpButton;
+  private final Trigger climberUpButton;
+  private final Trigger climberDownButton;
   
   // Launchpad (OI) Buttons/Switches
   private final Trigger killAutoButton;
@@ -92,8 +108,13 @@ public class RobotContainer {
     changeSpeedButton = new JoystickButton(xbox, xboxXButton);
     changeModeButton = new JoystickButton(xbox, xboxYButton);
     intakeButton = new JoystickButton(secondaryXbox, xboxXButton);
-    speakerShootButton = new JoystickButton(secondaryXbox, xboxAButton);
+    speakerShootButton = new JoystickButton(xbox, xboxAButton);
     ampShootButton = new JoystickButton(secondaryXbox, xboxYButton);
+    climberButton = new JoystickButton(xbox, xboxBButton);
+    runAngleDownButton = new JoystickButton(xbox,xboxLeftBumber);
+    runAngleUpButton = new JoystickButton(xbox,xboxRightBumber);
+    climberUpButton = new JoystickButton(secondaryXbox,xboxAButton);
+    climberDownButton = new JoystickButton(secondaryXbox,xboxBButton);
     
     // Initialize Launchpad (OI) Buttons/Switches
     killAutoButton = new JoystickButton(launchpad,LaunchPadButton1);
@@ -149,6 +170,12 @@ public class RobotContainer {
     speakerShootButton.onTrue(speakerShooterCommand);
     ampShootButton.onTrue(ampShooterCommand);
     ampAngleButton.onTrue(autoShooterAmpPosCommand);
+    climberButton.onTrue(climberCommand);
+    runAngleDownButton.onTrue(angleDownCommand);
+    runAngleUpButton.onTrue(angleUpCommand);
+    climberUpButton.onTrue(climberUpCommand);
+    climberDownButton.onTrue(climberDownCommand);
+
 
   }
 
@@ -353,6 +380,15 @@ public class RobotContainer {
 
     //Update Ready to Shoot
     SmartDashboard.putBoolean("Ready To Shoot", readyToShoot);
+
+    //Update Climber Position
+    SmartDashboard.putBoolean("Climb Extended", ClimberExtended);
+
+    //Update Gyro Position
+    SmartDashboard.putNumber("Gyro Angle", swervedrivewpi.getGyroAngle());
+
+    //Update Pressure
+    SmartDashboard.putNumber("Pressure", pneumatic.getPressure());
 
   }
 

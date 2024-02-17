@@ -6,13 +6,14 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Pneumatics;
+import static frc.robot.Constants.MechanismConstants.*;
 
-public class ExtendClimber extends Command {
+public class RunClimberDown extends Command {
   
   Pneumatics pneumatic;
   
   /** Creates a new ExtendClimber. */
-  public ExtendClimber(Pneumatics pneumatics) {
+  public RunClimberDown(Pneumatics pneumatics) {
     
     pneumatic = pneumatics;
     
@@ -27,7 +28,9 @@ public class ExtendClimber extends Command {
   @Override
   public void execute() {
 
-    pneumatic.extendClimber();
+      pneumatic.retractClimber();
+    
+
   }
 
   // Called once the command ends or is interrupted.
@@ -37,6 +40,7 @@ public class ExtendClimber extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return true;
   }
 }
+
