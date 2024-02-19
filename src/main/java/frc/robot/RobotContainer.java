@@ -65,6 +65,7 @@ public class RobotContainer {
   //Shooter Command
   private final RunShooterAmp ampShooterCommand = new RunShooterAmp(shooter);
   private final RunShooterSpeaker speakerShooterCommand = new RunShooterSpeaker(shooter);
+  private final AutoShooterSpeed shooterSpeedCommand = new AutoShooterSpeed(shooter);
 
   //Shooter Angle Command
   private final RunAngleUp angleUpCommand = new RunAngleUp(shooterAngle);
@@ -147,9 +148,13 @@ public class RobotContainer {
    */
   private void configureDefaultCommands() {
 
+    // Swerve drive default command
     swervedrivewpi.setDefaultCommand(fieldDriveCommand);
 
-    //LED default command
+    // Shooter default command
+    shooter.setDefaultCommand(shooterSpeedCommand);
+
+    // LED default command
     led.setDefaultCommand(ledCommand);
 
   }
@@ -179,40 +184,68 @@ public class RobotContainer {
 
   }
 
-   /*
-    * Sets the LED color for the selected target object
-    */
+  /*
+  * Sets the LED color for the selected target object
+  */
   public void getColorSelection()
   {
     
     if (redTeamButton.getAsBoolean() == true) {
       
       ledColor = 0.91; //Purple
-      allianceColor = false;
+      blueAlliance = false;
  
     } else if (blueTeamButton.getAsBoolean() == true) {
       
       ledColor = 0.69; //Yellow
-      allianceColor = true;
+      blueAlliance = true;
 
     } else {
       
       ledColor = 0.55; //Orange
       
-
     }
   }
 
-  //Auto Position
- public void getAutoPosition() {
-  if (leftButton.getAsBoolean() == true) {
-    autoPosition = "Left"; 
-  } else if(rightButton.getAsBoolean() == true) {
-    autoPosition = "Right";
-  } else {
-    autoPosition = "Center"; 
+  /*
+   * Determine the alliance color based on OI
+   * switch position
+   */
+  public void getAllianceColor() 
+  {
+
+    if (redTeamButton.getAsBoolean() == true) {
+      
+      blueAlliance = false;
+ 
+    } else if (blueTeamButton.getAsBoolean() == true) {
+      
+      blueAlliance = true;
+
+    } else {
+      
+      blueAlliance = true;
+      
+    }
+
   }
- }
+
+  /*
+   * Get the starting position in auto
+   * Set by a switch on the OI
+   */
+  public void getAutoPosition() 
+  {
+
+    if (leftButton.getAsBoolean() == true) {
+      autoPosition = "Left"; 
+    } else if(rightButton.getAsBoolean() == true) {
+      autoPosition = "Right";
+    } else {
+      autoPosition = "Center"; 
+    }
+
+  }
 
   /*
    * Park and unpark the robot
@@ -229,6 +262,38 @@ public class RobotContainer {
       isParked = false;
       SmartDashboard.putBoolean("Robot Parked", false);
     }
+  }
+
+  /*
+   * Updates the speed of the shooter motors based on which
+   * AprilTags are visible
+   */
+  public void updateShooterSpeed() {
+
+    // Get AprilTag status
+    int tagsFound = table.getTagsFound("Cam2");
+
+    // Determine shooter speed based on which tags are seen
+    if (tagsFound > 0) {
+
+      // Determine the closest note
+      int closestTag = 0;
+      if(tagsFound > 1){
+        for(int i = 0; i < tagsFound; i++){
+          if(table.getRingInfo("Cam2",i,"distance") < closestDistance){
+            closestDistance = table.getRingInfo("Cam2",i,"distance");
+            closestNote = i;
+          }
+        }
+      }
+
+    } else {
+
+      // No AprilTags found so set idle shooter speed
+      ShooterMode = "IDLE";
+      
+    }
+
   }
   
   /*
@@ -366,6 +431,10 @@ public class RobotContainer {
 
   }
 
+  /*
+   * Send updates on important values to dashboard
+   * Called from RobotPeriodic
+   */
   public void updateRobotStatus() {
     
     //Update shooter position

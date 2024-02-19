@@ -8,14 +8,19 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Shooter;
 
 
-
 public class RunShooterAmp extends Command {
-  /** Creates a new RunShooterAmp. */
-private Shooter shooter;
+
+  // Declare local variables
+  private Shooter shooter;
 
   public RunShooterAmp(Shooter shoot) {
-    // Use addRequirements() here to declare subsystem dependencies.
+
+    // Initialize local variables
     shooter = shoot;
+
+    // Set subsystem requirements
+    addRequirements(shooter);
+
   }
 
   // Called when the command is initially scheduled.

@@ -42,13 +42,18 @@ public class Robot extends TimedRobot {
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
   
-
     // Put zero positions option on the dashboard
     SmartDashboard.putNumber("Zero Positions", 0);
     SmartDashboard.putNumber("Zero Wrist", 0);
 
     // Put auto program notes to shoot on the dashboard
     SmartDashboard.putNumber("Auto Notes", 2);
+
+    // Set the shooter speed to idle
+    MechanismConstants.ShooterMode = "IDLE";
+
+    // Get the alliance color
+    m_robotContainer.getAllianceColor();
 
    }
 
@@ -61,14 +66,15 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
+
     // Runs the Scheduler.  This is responsible for polling buttons, adding newly-scheduled
     // commands, running already-scheduled commands, removing finished or interrupted commands,
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
 
-    // Get team color
-    m_robotContainer.getColorSelection();
+    // Keep checking alliance color
+    m_robotContainer.getAllianceColor();
 
     //Get auto position
     m_robotContainer.getAutoPosition();

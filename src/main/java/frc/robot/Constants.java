@@ -114,6 +114,23 @@ public final class Constants {
     public static final class MechanismConstants {
 
         /*
+         * Shooter Constants
+         */
+
+        // Motor CAN IDs
+        private static final int TopShooterID = 13;
+        private static final int BottomShooterID = 14;
+
+        // General constants
+        private static final double TopShootSpeakerSpeed = -0.65;
+        private static final double BottomShootSpeakerSpeed = 0.65;
+        private static final double TopShootAmpSpeed = -0.22;
+        private static final double BottomShootAmpSpeed = 0.04;
+        private static final double TopShootIdleSpeed = -0.1;
+        private static final double BottomShootIdleSpeed = 0.1;
+        private static final String ShooterMode = "IDLE";
+
+        /*
          * Shooter Angle System Constants 
          */
 
@@ -136,15 +153,15 @@ public final class Constants {
         public static final IdleMode kAngleMotorIdleMode = IdleMode.kBrake;
         public static final int kAngleMotorCurrentLimit = 20;
         public static final double AngleMotorSpeed = 0.5;
-
-        
-        //Angles for certain shots
+  
+        //Angles and distances for certain shots
         public static final double AmpAngle = 60;//degrees, needs to be confirmed
         public static final double HighSpeakerAngle = 52;
         public static final double LowSpeakerAngle = 35;
         public static final double MaxSpeakerAngle = 60;
         public static final double MinSpeakerAngle = 30;
-
+        public static final double MinAutoDistance = 40;
+        public static final double MaxAutoDistance = 120;
 
         //Current Shooter Angle
         public static double CurrentShooterAngle = 52;
@@ -152,6 +169,20 @@ public final class Constants {
 
         //Shooter Angle Encoder
         public static double MaxEncoderPos = 100000;//Need to set
+
+        /*
+         * Processor System Constants
+         */
+
+        // Motor CAN IDs
+        private final int ProcessorMotorID = 16;
+
+        /*
+         * Intake System Constants
+         */
+
+        // Motor CAN IDs
+        private int IntakeMotorID = 21;
 
         /**
          * Pneumatic System Constants
@@ -173,10 +204,7 @@ public final class Constants {
         // General Constants
         public static double ledColor = 0.63; // 0.65 is orange, the default color
         public static Boolean getCone = false; // Are the led's yellow
-        public static String autoPosition = "Left"; 
-        public static Boolean allianceColor = true; // true = blue, red = false
-        public static Boolean noteOnBoard = true;
-        public static Boolean readyToShoot = false;
+       
 
         /**
          * Vision System Constants
@@ -252,6 +280,12 @@ public final class Constants {
         public static final int LaunchPadDial2 = 15;
         public static final int LaunchPadDial3 = 16; // high bit
 
+        /*
+         * General Control Constants
+         */
+
+        public static final double kJoystickSpeedCorr = 1;
+
     }
 
     // Motor Limits
@@ -272,16 +306,13 @@ public final class Constants {
     public static final double MaxVoltsMK4 = 12.0; // max voltage of swerve module
 
     // General Constants
-    public static final double kJoystickSpeedCorr = 1;
-    public static double startingPitch = 23;
     public static boolean isParked = false;
     public static boolean isFieldOriented = true;
-
-
-
-    
-
-
+    public static String autoPosition = "Left"; 
+    public static Boolean blueAlliance = true; // true = blue, red = false
+    public static Boolean noteOnBoard = true;
+    public static Boolean readyToShoot = false;
+    public static boolean photoSensorIsNotBlocked;
 
     /**
      * General Robot Constants
@@ -354,6 +385,5 @@ public final class Constants {
     public static boolean toggleShooterOnOrOff = true; //true runs the shooter motors, false keeps them off.
     public static boolean OKToShoot = false;
     public static int isBallShot = 0;
-    public static boolean photoSensorIsNotBlocked;
     
 }
