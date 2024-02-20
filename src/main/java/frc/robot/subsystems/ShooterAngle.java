@@ -11,11 +11,13 @@ import static frc.robot.Constants.MechanismConstants.*;
 import static frc.robot.Constants.*;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.DigitalInput;
+//import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 public class ShooterAngle extends SubsystemBase {
   
   //Motors
   private CANSparkMax pivotMotor;
+  //private WPI_TalonFX pivotMotor;
 
   //Duty Cycle Encoder (for use w/ Rev Through Bore Encoder)
   public final DutyCycleEncoder encoder;
@@ -29,6 +31,7 @@ public class ShooterAngle extends SubsystemBase {
 
     // Create a new Spark MAX controller for shooter angle
     pivotMotor = new CANSparkMax(kPivotMotorID,MotorType.kBrushless);
+    //pivotMotor = new WPI_TalonFX(kPivotMotorID);
 
     // Factory reset so we can get the Spark MAX to a know state before
     // configuring.  Useful if we swap out a controller.
