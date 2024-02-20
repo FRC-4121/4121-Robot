@@ -71,6 +71,7 @@ public class RobotContainer {
   //Shooter Angle Command
   private final RunAngleUp angleUpCommand = new RunAngleUp(shooterAngle);
   private final RunAngleDown angleDownCommand = new RunAngleDown(shooterAngle);
+  private final AutoShooterPos autoShooterPosCommand = new AutoShooterPos(shooterAngle, table);
 
   //Intake Command
   private final RunIntake intakeCommand = new RunIntake(intake);
@@ -149,6 +150,9 @@ public class RobotContainer {
 
     // Shooter default command
     //shooter.setDefaultCommand(shooterSpeedCommand);
+
+    // Shooter angle default command
+    //shootAngle.setDefaultCommand(autoShooterPosCommand);
 
     // LED default command
     led.setDefaultCommand(ledCommand);
@@ -435,8 +439,10 @@ public class RobotContainer {
     //Update shooter position
     SmartDashboard.putBoolean("Top Shooter", shooterAngle.getTopSwitch());
     SmartDashboard.putBoolean("Bottom Shooter", shooterAngle.getBottomSwitch());
-    SmartDashboard.putNumber("Shooter Angle", CurrentShooterAngle);
     SmartDashboard.putNumber("Shooter Encoder", shooterAngle.getAbsoluteEncoderPosition());
+    SmartDashboard.putNumber("Shooter Angle", CurrentShooterAngle);
+    SmartDashboard.putNumber("Last Angle", LastShooterAngle);
+    SmartDashboard.putNumber("Can Shoot", readyToShoot);
 
     //Update Photo Sensor
     photoSensor.isNoteOnBoard();

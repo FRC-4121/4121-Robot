@@ -163,10 +163,13 @@ public final class Constants {
         public static final double MinSpeakerAngle = 30;
         public static final double MinAutoDistance = 40;
         public static final double MaxAutoDistance = 120;
+        public static final double IdleAngle = 40;
 
-        //Current Shooter Angle
+        //Shooter Angles
         public static double CurrentShooterAngle = 52;
         public static final double ShooterAngleTolerance = 1;
+        public static double ShooterTargetAngle = 40;
+        public static double LastShooterAngle = 40;
 
         //Shooter Angle Encoder
         public static double MaxEncoderPos = 100000;//Need to set
@@ -206,21 +209,17 @@ public final class Constants {
         public static double ledColor = 0.63; // 0.65 is orange, the default color
         public static Boolean getCone = false; // Are the led's yellow
        
-
         /**
          * Vision System Constants
          */
 
         // General Constants
-        public static final double targetCubeOffset = 5.8;
-        public static final double targetConeOffset = 8.2;
-        public static final double targetTapeOffsetLow = -8.0;
-        public static final double targetTapeOffsetHigh = -7.7;
-        public static final double targetTapeDistLow = 33.3;
-        public static final double targetTapeDistHigh = 47.9;
-        public static final double visionTolerance = 0.5;
-        public static final double visionTapeTolerance = 0.2;
-        public static final double kCameraCorrection = 3.5;
+        public static final int BlueSpeakerCenterID = 7;
+        public static final int BlueSpeakerSideID = 8;
+        public static final int BlueAmpID = 6;
+        public static final int RedSpeakerCenterID = 4;
+        public static final int RedSpeakerSideID = 3;
+        public static final int RedAmpID = 5;
 
         /**
          * LIDAR Sensor Constants
