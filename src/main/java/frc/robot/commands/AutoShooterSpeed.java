@@ -6,7 +6,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Shooter;
-import frc.robot.Constants.MechanismConstants.*;
+import static frc.robot.Constants.MechanismConstants.*;
 
 public class AutoShooterSpeed extends Command {
 

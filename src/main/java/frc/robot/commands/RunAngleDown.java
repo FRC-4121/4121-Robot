@@ -27,9 +27,12 @@ public class RunAngleDown extends Command {
   @Override
   public void execute() {
 
-    //Run Shooter Angle Down
+     if (shootAngle.getBottomSwitch() == false)
+    {
+      //Run Shooter Angle Down
     shootAngle.runPivot(-0.1);
-
+    }
+    
   }
 
   // Called once the command ends or is interrupted.
@@ -42,13 +45,6 @@ public class RunAngleDown extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    boolean doneYet = false;
-    
-    if (shootAngle.getBottomSwitch() == true)
-    {
-      doneYet = true;
-    }
-    
-    return doneYet;
+    return false;
   }
 }

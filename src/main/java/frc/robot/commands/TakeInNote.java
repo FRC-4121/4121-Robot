@@ -7,6 +7,7 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.*;
 import static frc.robot.Constants.*;
+import edu.wpi.first.wpilibj.Timer;
 
 public class TakeInNote extends Command {
 
@@ -22,7 +23,7 @@ public class TakeInNote extends Command {
 
     // Set local variables
     noteIntake = intake;
-    noteProcessor = processor;
+    noteProcessor = process;
     stopTime = time;
 
     addRequirements(noteIntake, noteProcessor);

@@ -23,32 +23,22 @@ public class ChangeSpeedCommand extends Command {
   @Override
   public void execute() {
 
-    if(swerveDriveSpeedLimiter == driveSpeed){
-      swerveDriveSpeedLimiter = slowSpeed;
-      for(int i = 0; i < 4; i++){
-        angleLimiters[i] = slowAngleSpeed;
-      }
-
-      SmartDashboard.putBoolean("Slow Mode", true);
-      
-    } else{
-      swerveDriveSpeedLimiter = driveSpeed;
-      for(int i = 0; i < 4; i++){
-        angleLimiters[i] = angleSpeed;
-      }
-
-      SmartDashboard.putBoolean("Slow Mode", false);
-
-    }
-
     //Slow Mode for WPI Swerve Drive
-    if(LinearSpeed == 5){
+    if(isSlowMode == false){
       LinearSpeed = SlowMaxLinearSpeed;
       RotationalSpeed = SlowRadiansPerSecond;
+      isSlowMode = true;
+      SmartDashboard.putBoolean("Slow Mode", true);
+      System.out.println("Slow Mode");
     } else{
       LinearSpeed = MaxLinearSpeed;
       RotationalSpeed = MaxRadiansPerSecond;
+      isSlowMode = false;
+      SmartDashboard.putBoolean("Slow Mode", false);
+      System.out.println("Fast Mode");
     }
+
+    
 
   }
 

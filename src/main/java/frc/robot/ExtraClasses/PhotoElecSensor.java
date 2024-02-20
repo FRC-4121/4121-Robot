@@ -5,7 +5,7 @@
 package frc.robot.ExtraClasses;
 
 import edu.wpi.first.wpilibj.DigitalInput;
-import static frc.robot.Constants.MechanismConstants.*;
+import static frc.robot.Constants.*;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /** Add your docs here. */

@@ -6,6 +6,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.ShooterAngle;
+import static frc.robot.Constants.*;
 import static frc.robot.Constants.MechanismConstants.*;
 import frc.robot.ExtraClasses.NetworkTableQuerier;
 import edu.wpi.first.wpilibj.Timer;
@@ -80,7 +81,7 @@ public class AutoShooterPos extends Command {
 
     double time = timer.get();
 
-    if (Math.Abs(CurrentShooterAngle - targetAngle) <= angleTolerance) {
+    if (Math.abs(CurrentShooterAngle - targetAngle) <= angleTolerance) {
       thereYet = true;
     }
     else if (shootAngle.getTopSwitch() == true) {

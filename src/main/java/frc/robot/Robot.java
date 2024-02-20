@@ -33,8 +33,6 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
   
-    // CameraServer.startAutomaticCapture("Arm Cam", 0);
-
     new CameraBuilder(0, "Camera 0").fps(15).attachAutoCapture();
     new CameraBuilder(1, "Camera 1").fps(15).attachAutoCapture();
 

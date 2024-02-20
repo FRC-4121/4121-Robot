@@ -78,7 +78,6 @@ public class AutoDrive extends Command {
     //The constants for these need to be figured out
     pidFrontAngle = new PIDController(kP_DriveAngle, kI_DriveAngle, kD_DriveAngle);
 
-    startingPitch =0;
 
   }
 

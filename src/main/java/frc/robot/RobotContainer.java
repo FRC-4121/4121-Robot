@@ -37,6 +37,7 @@ public class RobotContainer {
   private final Shooter shooter = new Shooter();
   private final ShooterAngle shooterAngle = new ShooterAngle();
   private final Pneumatics pneumatic = new Pneumatics();
+  private final Processor processor = new Processor();
 
   // Extra systems
   private final NetworkTableQuerier table = new NetworkTableQuerier();
@@ -64,7 +65,7 @@ public class RobotContainer {
 
   //Shooter Command
   private final RunShooterAmp ampShooterCommand = new RunShooterAmp(shooter);
-  private final RunShooterSpeaker speakerShooterCommand = new RunShooterSpeaker(shooter);
+  private final RunShooterSpeaker speakerShooterCommand = new RunShooterSpeaker(shooter, processor,intake,5);
   private final AutoShooterSpeed shooterSpeedCommand = new AutoShooterSpeed(shooter);
 
   //Shooter Angle Command
@@ -73,11 +74,10 @@ public class RobotContainer {
 
   //Intake Command
   private final RunIntake intakeCommand = new RunIntake(intake);
+  private final TakeInNote takeInNoteCommand = new TakeInNote(intake,processor,10);
 
   //Climber Command
   private final RunClimber climberCommand = new RunClimber(pneumatic);
-  private final RunClimberUp climberUpCommand = new RunClimberUp(pneumatic);
-  private final RunClimberDown climberDownCommand = new RunClimberDown(pneumatic);
 
   //===BUTTONS===//
 
@@ -90,8 +90,6 @@ public class RobotContainer {
   private final Trigger climberButton;
   private final Trigger runAngleDownButton;
   private final Trigger runAngleUpButton;
-  private final Trigger climberUpButton;
-  private final Trigger climberDownButton;
   
   // Launchpad (OI) Buttons/Switches
   private final Trigger killAutoButton;
@@ -106,16 +104,14 @@ public class RobotContainer {
   public RobotContainer() { 
   
     // Initialize Xbox Buttons
-    changeSpeedButton = new JoystickButton(xbox, xboxXButton);
-    changeModeButton = new JoystickButton(xbox, xboxYButton);
+    changeSpeedButton = new JoystickButton(xbox, xboxYButton);
+    changeModeButton = new JoystickButton(xbox, xboxXButton);
     intakeButton = new JoystickButton(secondaryXbox, xboxXButton);
     speakerShootButton = new JoystickButton(xbox, xboxAButton);
     ampShootButton = new JoystickButton(secondaryXbox, xboxYButton);
     climberButton = new JoystickButton(xbox, xboxBButton);
     runAngleDownButton = new JoystickButton(xbox,xboxLeftBumber);
     runAngleUpButton = new JoystickButton(xbox,xboxRightBumber);
-    climberUpButton = new JoystickButton(secondaryXbox,xboxAButton);
-    climberDownButton = new JoystickButton(secondaryXbox,xboxBButton);
     
     // Initialize Launchpad (OI) Buttons/Switches
     killAutoButton = new JoystickButton(launchpad,LaunchPadButton1);
@@ -152,7 +148,7 @@ public class RobotContainer {
     swervedrivewpi.setDefaultCommand(fieldDriveCommand);
 
     // Shooter default command
-    shooter.setDefaultCommand(shooterSpeedCommand);
+    //shooter.setDefaultCommand(shooterSpeedCommand);
 
     // LED default command
     led.setDefaultCommand(ledCommand);
@@ -171,15 +167,13 @@ public class RobotContainer {
     // Teleop Commands
     changeSpeedButton.onTrue(changeSpeedCommand);
     changeModeButton.onTrue(changeModeCommand);
-    intakeButton.onTrue(intakeCommand);
+    intakeButton.onTrue(takeInNoteCommand);
     speakerShootButton.onTrue(speakerShooterCommand);
     ampShootButton.onTrue(ampShooterCommand);
     ampAngleButton.onTrue(autoShooterAmpPosCommand);
     climberButton.onTrue(climberCommand);
-    runAngleDownButton.onTrue(angleDownCommand);
-    runAngleUpButton.onTrue(angleUpCommand);
-    climberUpButton.onTrue(climberUpCommand);
-    climberDownButton.onTrue(climberDownCommand);
+    runAngleDownButton.whileTrue(angleDownCommand);
+    runAngleUpButton.whileTrue(angleUpCommand);
 
 
   }
@@ -271,18 +265,19 @@ public class RobotContainer {
   public void updateShooterSpeed() {
 
     // Get AprilTag status
-    int tagsFound = table.getTagsFound("Cam2");
+    double tagsFound = table.getTagsFound("Cam2");
 
     // Determine shooter speed based on which tags are seen
     if (tagsFound > 0) {
 
       // Determine the closest note
       int closestTag = 0;
+      double closestDistance = 9999.0;
       if(tagsFound > 1){
         for(int i = 0; i < tagsFound; i++){
           if(table.getRingInfo("Cam2",i,"distance") < closestDistance){
             closestDistance = table.getRingInfo("Cam2",i,"distance");
-            closestNote = i;
+            closestTag = i;
           }
         }
       }
@@ -458,6 +453,9 @@ public class RobotContainer {
 
     //Update Pressure
     SmartDashboard.putNumber("Pressure", pneumatic.getPressure());
+
+    //Update Slow Mode
+    SmartDashboard.putBoolean("Slow Mode", isSlowMode);
 
   }
 

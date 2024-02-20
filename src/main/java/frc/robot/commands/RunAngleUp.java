@@ -28,7 +28,11 @@ public class RunAngleUp extends Command {
   public void execute() {
 
     //Run Shooter Angle Up
-    shootAngle.runPivot(0.5);
+    if (shootAngle.getTopSwitch() == false)
+    {
+      shootAngle.runPivot(1.0);
+    }
+    
 
   }
 
@@ -42,13 +46,6 @@ public class RunAngleUp extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    boolean doneYet = false;
-    
-    if (shootAngle.getTopSwitch() == true)
-    {
-      doneYet = true;
-    }
-    
-    return doneYet;
+    return false;
   }
 }

@@ -6,23 +6,32 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Shooter;
-import frc.robot.subsystem.Processor;
+import frc.robot.subsystems.Processor;
+import frc.robot.subsystems.Intake;
+
+import static frc.robot.Constants.MechanismConstants.BottomShootSpeakerSpeed;
+import static frc.robot.Constants.MechanismConstants.TopShootSpeakerSpeed;
+import static frc.robot.Constants.MechanismConstants.shooterDelay;
+
 import edu.wpi.first.wpilibj.Timer;
 
 public class RunShooterSpeaker extends Command {
   
   private Shooter shooter;
   private Processor processor;
+  private Intake intake;
   private Timer timer = new Timer();
   private double startTime;
-  private double delay;
+  private double stopTime;
   private boolean canShoot;
   
   /** Creates a new RunShooterSpeaker. */
-  public RunShooterSpeaker(Shooter shoot, Processor process) {
+  public RunShooterSpeaker(Shooter shoot, Processor process, Intake in, double endTime) {
     // Use addRequirements() here to declare subsystem dependencies.
       shooter = shoot;
       processor = process;
+      stopTime = endTime;
+      intake = in;
 
       addRequirements(shooter, processor);
 
@@ -34,7 +43,6 @@ public class RunShooterSpeaker extends Command {
 
     timer.start();
     startTime = timer.get();
-    delay = 0.5;
     canShoot = false;
 
   }
@@ -43,14 +51,16 @@ public class RunShooterSpeaker extends Command {
   @Override
   public void execute() {
 
-    if (timer.get() - startTime > delay) {
+    if (timer.get() - startTime > shooterDelay) {
       canShoot = true;
     }
 
-    shooter.runShooter(1);
+    shooter.runShooterAuto(TopShootSpeakerSpeed, BottomShootSpeakerSpeed);
 
     if (canShoot) {
-      processor.runProcessor(1.0);
+      processor.runProcessor(0.5);
+      intake.runIntake(0.5);
+
     }
   }
 
@@ -59,12 +69,25 @@ public class RunShooterSpeaker extends Command {
   public void end(boolean interrupted) {
 
     shooter.runShooter(0);
+    processor.runProcessor(0.0);
+    intake.runIntake(0);
     
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    // Initialize return flag
+    boolean thereYet = false;
+
+    // Get the current time
+    double time = timer.get();
+
+    if (stopTime <= time - startTime) {
+      thereYet = true;
+    }
+
+    // Return flag
+    return thereYet;
   }
 }

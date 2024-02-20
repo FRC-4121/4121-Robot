@@ -139,6 +139,7 @@ public class SwerveDriveWPI extends SubsystemBase {
     //Convert speeds into their native units
     double vxMetersPerSecond = -(leftY * LinearSpeed);
     double vyMetersPerSecond = (leftX * LinearSpeed);
+    System.out.println("Linear Speed: " + LinearSpeed);
 
     double vTotalMetersPerSecond = Math.sqrt((vxMetersPerSecond * vxMetersPerSecond) + (vyMetersPerSecond * vyMetersPerSecond));
     

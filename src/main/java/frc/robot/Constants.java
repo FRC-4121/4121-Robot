@@ -118,17 +118,18 @@ public final class Constants {
          */
 
         // Motor CAN IDs
-        private static final int TopShooterID = 13;
-        private static final int BottomShooterID = 14;
+        public static final int TopShooterID = 13;
+        public static final int BottomShooterID = 14;
 
         // General constants
-        private static final double TopShootSpeakerSpeed = -0.65;
-        private static final double BottomShootSpeakerSpeed = 0.65;
-        private static final double TopShootAmpSpeed = -0.22;
-        private static final double BottomShootAmpSpeed = 0.04;
-        private static final double TopShootIdleSpeed = -0.1;
-        private static final double BottomShootIdleSpeed = 0.1;
-        private static final String ShooterMode = "IDLE";
+        public static final double TopShootSpeakerSpeed = -0.75;
+        public static final double BottomShootSpeakerSpeed = -0.75;
+        public static final double TopShootAmpSpeed = -0.22;
+        public static final double BottomShootAmpSpeed = -0.04;
+        public static final double TopShootIdleSpeed = -0.1;
+        public static final double BottomShootIdleSpeed = 0.1;
+        public static String ShooterMode = "IDLE";
+        public static final double shooterDelay = 0.5;
 
         /*
          * Shooter Angle System Constants 
@@ -175,14 +176,14 @@ public final class Constants {
          */
 
         // Motor CAN IDs
-        private final int ProcessorMotorID = 16;
+        public static final int ProcessorMotorID = 16;
 
         /*
          * Intake System Constants
          */
 
         // Motor CAN IDs
-        private int IntakeMotorID = 21;
+        public static final int IntakeMotorID = 21;
 
         /**
          * Pneumatic System Constants
@@ -289,15 +290,15 @@ public final class Constants {
     }
 
     // Motor Limits
-    public static final double MaxLinearSpeed = 4; //Max Speed in Meters per second
+    public static final double MaxLinearSpeed = 3; //Max Speed in Meters per second
     public static final double MaxRotationalSpeed = 1.5; //Max Speed in Radians per second, about pi/2 or 90 degrees
     public static final double MaxRadiansPerSecond = Math.PI;
-    public static final double SlowMaxLinearSpeed = 1;//Max Speed during slow mode in meters per second
+    public static final double SlowMaxLinearSpeed = 0.75;//Max Speed during slow mode in meters per second
     public static final double SlowRadiansPerSecond = (Math.PI/3);//Max rotational speed during slow mode
     public static final double slowSpeed = 0.3;
     public static final double driveSpeed = 0.7;
     public static  double swerveDriveSpeedLimiter = 0.7;
-    public static double LinearSpeed = 5;
+    public static double LinearSpeed = 3;
     public static double RotationalSpeed = Math.PI;
     public static final double autoSwerveDriveSpeedLimiter = 0.6;
     public static final double autoSwerveDriveAngleLimiter = 2.0;
@@ -308,6 +309,7 @@ public final class Constants {
     // General Constants
     public static boolean isParked = false;
     public static boolean isFieldOriented = true;
+    public static boolean isSlowMode = false;
     public static String autoPosition = "Left"; 
     public static Boolean blueAlliance = true; // true = blue, red = false
     public static Boolean noteOnBoard = true;

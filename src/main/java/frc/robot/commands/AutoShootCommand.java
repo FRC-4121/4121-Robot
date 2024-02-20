@@ -5,7 +5,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.*;
 import static frc.robot.Constants.*;
 import static frc.robot.Constants.MechanismConstants.*;
 import edu.wpi.first.wpilibj.Timer;
@@ -13,17 +13,22 @@ import edu.wpi.first.wpilibj.Timer;
 public class AutoShootCommand extends Command {
 
   private Shooter shooter;
+  private Processor processor;
   private Timer timer = new Timer();
   private double startTime;
   private double endTime;
   private double delayTime;
 
   /** Creates a new AutoShootCommand. */
-  public AutoShootCommand(Shooter shoot, Double stopTime, Double delay) {
+  public AutoShootCommand(Shooter shoot, Processor process, Double stopTime, Double delay) {
+
     shooter = shoot;
+    processor = process;
     endTime = stopTime;
     delayTime = delay;
-    // Use addRequirements() here to declare subsystem dependencies.
+    
+    addRequirements(shooter, processor);
+
   }
 
   // Called when the command is initially scheduled.
@@ -42,7 +47,7 @@ public class AutoShootCommand extends Command {
     if((elapsedTime >= delayTime) && noteOnBoard)
     {
      shooter.runShooter(1.0);
-     shooter.runIntake(1.0);  
+     processor.runProcessor(1.0);  
     }
 
   }
@@ -51,7 +56,7 @@ public class AutoShootCommand extends Command {
   @Override
   public void end(boolean interrupted) {
     shooter.runShooter(0);
-    shooter.runIntake(0);
+    processor.runProcessor(0); 
   }
 
   // Returns true when the command should end.
