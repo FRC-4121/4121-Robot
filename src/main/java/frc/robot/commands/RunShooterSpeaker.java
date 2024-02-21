@@ -20,14 +20,14 @@ public class RunShooterSpeaker extends Command {
   private Shooter shooter;
   private Processor processor;
   private Intake intake;
-  private Timer timer = new Timer();
+  private Timer timer;
   private double startTime;
   private double stopTime;
   private boolean canShoot;
   
   /** Creates a new RunShooterSpeaker. */
   public RunShooterSpeaker(Shooter shoot, Processor process, Intake in, double endTime) {
-    // Use addRequirements() here to declare subsystem dependencies.
+
       shooter = shoot;
       processor = process;
       stopTime = endTime;
@@ -41,8 +41,12 @@ public class RunShooterSpeaker extends Command {
   @Override
   public void initialize() {
 
+    // Initialize a new timer and get current time
+    timer = new Timer();
     timer.start();
     startTime = timer.get();
+
+    // Initialize local variables
     canShoot = false;
 
   }
@@ -62,13 +66,15 @@ public class RunShooterSpeaker extends Command {
       intake.runIntake(0.5);
 
     }
+
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
 
-    shooter.runShooter(0);
+    // Stop all motors
+    shooter.runShooterAuto(0.0, 0.0);
     processor.runProcessor(0.0);
     intake.runIntake(0);
     
@@ -77,6 +83,7 @@ public class RunShooterSpeaker extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
+
     // Initialize return flag
     boolean thereYet = false;
 
@@ -89,5 +96,6 @@ public class RunShooterSpeaker extends Command {
 
     // Return flag
     return thereYet;
+
   }
 }

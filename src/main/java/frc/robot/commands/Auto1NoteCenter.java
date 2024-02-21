@@ -5,31 +5,41 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.*;
+import static frc.robot.Constants.*;
 import static frc.robot.Constants.MechanismConstants.*;
+import frc.robot.ExtraClasses.NetworkTableQuerier;
 import edu.wpi.first.wpilibj.Timer;
 
-public class RunShooterAmp extends Command {
+public class Auto1NoteCenter extends Command {
 
   // Declare local variables
+  private SwerveDriveWPI swerve;
   private Shooter shooter;
   private Processor processor;
   private Intake intake;
+  private NetworkTableQuerier ntable;
+
   private Timer timer;
   private double startTime;
   private double stopTime;
+
   private boolean canShoot;
 
-  public RunShooterAmp(Shooter shoot, Processor process, Intake in, double endTime) {
 
-    // Initialize local variables
+  /** Creates a new Auto1NoteCenter. */
+  public Auto1NoteCenter(SwerveDriveWPI drive, Shooter, shoot, Processor process, Intake in, NetworkTableQuerier table, double endtime) {
+
+    // Set local variables
+    swerve = drive;
     shooter = shoot;
     processor = process;
     intake = in;
-    stopTime = endTime;
+    ntable = table;
+    stopTime = endtime;
 
     // Set subsystem requirements
-    addRequirements(shooter, processor, intake);
+    addRequirements(serve, shooter, processor, intake);
 
   }
 
@@ -51,20 +61,6 @@ public class RunShooterAmp extends Command {
   @Override
   public void execute() {
 
-    if (timer.get() - startTime > shooterDelay) {
-
-      canShoot = true;
-
-    }
-
-    shooter.runShooterAuto(TopShootAmpSpeed, BottomShootAmpSpeed);
-
-    if (canShoot) {
-
-      processor.runProcessor(0.5);
-      intake.runIntake(0.5);
-
-    }
 
   }
 
@@ -73,6 +69,7 @@ public class RunShooterAmp extends Command {
   public void end(boolean interrupted) {
 
     // Stop all motors
+    swerve.stopDrive();
     shooter.runShooterAuto(0.0, 0.0);
     processor.runProcessor(0.0);
     intake.runIntake(0);
@@ -95,6 +92,6 @@ public class RunShooterAmp extends Command {
 
     // Return flag
     return thereYet;
-
+    
   }
 }

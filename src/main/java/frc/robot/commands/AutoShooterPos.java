@@ -9,7 +9,6 @@ import frc.robot.subsystems.ShooterAngle;
 import static frc.robot.Constants.*;
 import static frc.robot.Constants.MechanismConstants.*;
 import frc.robot.ExtraClasses.NetworkTableQuerier;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.math.controller.*;
 
 public class AutoShooterPos extends Command {
@@ -152,7 +151,8 @@ public class AutoShooterPos extends Command {
 
     } else {
 
-      ShooterTargetAngle = LastShooterAngle;
+      ShooterTargetAngle = HighSpeakerAngle;
+      LastShooterAngle = ShooterTargetAngle;
 
     }
 

@@ -63,6 +63,12 @@ public class SwerveDriveWPI extends SubsystemBase {
   private double maxYawRate = 7.0;
   private double yawDrift;
 
+  // Declare distance calculation variables
+  private double LeftFrontStartingEncoder;
+  private double LeftRearStartingEncoder;
+  private double RightFrontStartingEncoder;
+  private double RighRearStartingEncoder;
+
   /**
    *  
    * Creates a new SwerveDrive
@@ -373,6 +379,32 @@ public class SwerveDriveWPI extends SubsystemBase {
     rightFront.drive(0, 225);
     leftBack.drive(0, 45);
     rightBack.drive(0, 315);
+  }
+
+  /*
+   * Set the starting values for a drive distance calculation
+   */
+  public void resetDistance() {
+
+    LeftFrontStartingEncoder = getLeftFrontDriveEncoder();
+    LeftRearStartingEncoder = getLeftBackDriveEncoder();
+    RightFrontStartingEncoder = getRightFrontDriveEncoder();
+    RighRearStartingEncoder = getRightBackDriveEncoder();
+
+  }
+
+  /*
+   * Calculate the drive distance
+   */
+  public double calculateDriveDistance() {
+
+    // Initialize return value
+    double driveDistance = 0.0;
+
+
+    // Return calculated distance
+    return driveDistance;
+
   }
   
 }
