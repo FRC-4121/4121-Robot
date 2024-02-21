@@ -14,7 +14,7 @@ public class LED extends SubsystemBase {
   /** Creates a new LED. */
   public LED() {
 
-    ledController = new Spark(0); 
+    ledController = new Spark(7); 
 
   }
 

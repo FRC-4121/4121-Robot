@@ -125,7 +125,7 @@ public final class Constants {
         public static final double TopShootSpeakerSpeed = -0.75;
         public static final double BottomShootSpeakerSpeed = -0.75;
         public static final double TopShootAmpSpeed = -0.22;
-        public static final double BottomShootAmpSpeed = -0.04;
+        public static final double BottomShootAmpSpeed = -0.1;
         public static final double TopShootIdleSpeed = -0.1;
         public static final double BottomShootIdleSpeed = 0.1;
         public static String ShooterMode = "IDLE";
@@ -172,7 +172,7 @@ public final class Constants {
         public static double LastShooterAngle = 40;
 
         //Shooter Angle Encoder
-        public static double MaxEncoderPos = 25230;//Need to set
+        public static double MaxEncoderPos = 25230;
 
         /*
          * Processor System Constants
@@ -293,7 +293,7 @@ public final class Constants {
     public static final double MaxRotationalSpeed = 1.5; //Max Speed in Radians per second, about pi/2 or 90 degrees
     public static final double MaxRadiansPerSecond = Math.PI;
     public static final double SlowMaxLinearSpeed = 0.75;//Max Speed during slow mode in meters per second
-    public static final double SlowRadiansPerSecond = (Math.PI/3);//Max rotational speed during slow mode
+    public static final double SlowRadiansPerSecond = (Math.PI/2);//Max rotational speed during slow mode
     public static final double slowSpeed = 0.3;
     public static final double driveSpeed = 0.7;
     public static  double swerveDriveSpeedLimiter = 0.7;

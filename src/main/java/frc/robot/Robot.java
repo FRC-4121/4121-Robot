@@ -77,8 +77,11 @@ public class Robot extends TimedRobot {
     //Get auto position
     m_robotContainer.getAutoPosition();
 
-    //get park selection
+    //Get park selection
     m_robotContainer.getParkSelection();
+
+    //Get color selection
+    m_robotContainer.getColorSelection();
 
     // Stream cameras
     m_robotContainer.streamCams();

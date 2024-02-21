@@ -5,7 +5,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.*;
 import static frc.robot.Constants.MechanismConstants.*;
 import edu.wpi.first.wpilibj.Timer;
 
@@ -61,7 +61,7 @@ public class RunShooterAmp extends Command {
 
     if (canShoot) {
 
-      processor.runProcessor(0.5);
+      processor.runProcessor(0.8);
       intake.runIntake(0.5);
 
     }

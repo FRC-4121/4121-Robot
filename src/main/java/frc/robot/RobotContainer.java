@@ -64,7 +64,7 @@ public class RobotContainer {
   private final LEDCommand ledCommand = new LEDCommand(led);
 
   //Shooter Command
-  private final RunShooterAmp ampShooterCommand = new RunShooterAmp(shooter);
+  private final RunShooterAmp ampShooterCommand = new RunShooterAmp(shooter,processor,intake,5);
   private final RunShooterSpeaker speakerShooterCommand = new RunShooterSpeaker(shooter, processor,intake,5);
   private final AutoShooterSpeed shooterSpeedCommand = new AutoShooterSpeed(shooter);
 
@@ -107,12 +107,12 @@ public class RobotContainer {
     // Initialize Xbox Buttons
     changeSpeedButton = new JoystickButton(xbox, xboxYButton);
     changeModeButton = new JoystickButton(xbox, xboxXButton);
-    intakeButton = new JoystickButton(secondaryXbox, xboxXButton);
-    speakerShootButton = new JoystickButton(xbox, xboxAButton);
+    intakeButton = new JoystickButton(xbox, xboxAButton);
+    speakerShootButton = new JoystickButton(secondaryXbox, xboxXButton);
     ampShootButton = new JoystickButton(secondaryXbox, xboxYButton);
     climberButton = new JoystickButton(xbox, xboxBButton);
-    runAngleDownButton = new JoystickButton(xbox,xboxLeftBumber);
-    runAngleUpButton = new JoystickButton(xbox,xboxRightBumber);
+    runAngleDownButton = new JoystickButton(secondaryXbox,xboxLeftBumber);
+    runAngleUpButton = new JoystickButton(secondaryXbox,xboxRightBumber);
     
     // Initialize Launchpad (OI) Buttons/Switches
     killAutoButton = new JoystickButton(launchpad,LaunchPadButton1);
@@ -188,20 +188,13 @@ public class RobotContainer {
   public void getColorSelection()
   {
     
-    if (redTeamButton.getAsBoolean() == true) {
+    if (noteOnBoard == true) {
       
-      ledColor = 0.91; //Purple
-      blueAlliance = false;
+      ledColor = 0.65; //Orange
  
-    } else if (blueTeamButton.getAsBoolean() == true) {
-      
-      ledColor = 0.69; //Yellow
-      blueAlliance = true;
-
     } else {
       
-      ledColor = 0.55; //Orange
-      
+      ledColor = 0.55; //Default Pattern 
     }
   }
 

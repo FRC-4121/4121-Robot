@@ -28,7 +28,7 @@ public class Auto1NoteCenter extends Command {
 
 
   /** Creates a new Auto1NoteCenter. */
-  public Auto1NoteCenter(SwerveDriveWPI drive, Shooter, shoot, Processor process, Intake in, NetworkTableQuerier table, double endtime) {
+  public Auto1NoteCenter(SwerveDriveWPI drive, Shooter shoot, Processor process, Intake in, NetworkTableQuerier table, double endtime) {
 
     // Set local variables
     swerve = drive;
@@ -39,7 +39,7 @@ public class Auto1NoteCenter extends Command {
     stopTime = endtime;
 
     // Set subsystem requirements
-    addRequirements(serve, shooter, processor, intake);
+    addRequirements(swerve, shooter, processor, intake);
 
   }
 
