@@ -20,7 +20,7 @@ public class AutoShooterPos extends Command {
   private double tagsFound;
   private int closestTag;
   private double closestDistance;
-  private double tagID;
+  private int tagID;
   private double tagDistance;
   private boolean isMyTag;
 
@@ -79,7 +79,7 @@ public class AutoShooterPos extends Command {
       }
 
       // Get ID and distance for closest tag
-      tagID = ntable.getTagInfo("Cam2", closestTag, "id");
+      tagID = (int)ntable.getTagInfo("Cam2", closestTag, "id");
       tagDistance = ntable.getTagInfo("Cam2", closestTag, "distance");
 
       // Determine if the tag belongs to my alliance
@@ -99,7 +99,7 @@ public class AutoShooterPos extends Command {
 
             case BlueAmpID:
               ShooterTargetAngle = AmpAngle;
-              LastShooterAngle = ShooterTargetAngle
+              LastShooterAngle = ShooterTargetAngle;
               break;
 
             case BlueSpeakerCenterID:
@@ -160,7 +160,7 @@ public class AutoShooterPos extends Command {
     double pidOutput = wpiPIDController.calculate(CurrentShooterAngle, ShooterTargetAngle);
 
     // Run angle motor at new speed (as long as we aren't at bounds)
-    if (Math.abs(CurrentShooterAngle - ShooterTarget) > ShooterAngleTolerance) {
+    if (Math.abs(CurrentShooterAngle - ShooterTargetAngle) > ShooterAngleTolerance) {
       if (pidOutput > 0 && shootAngle.getTopSwitch() == false) {
         shootAngle.runPivot(AngleMotorSpeed * pidOutput);
       }

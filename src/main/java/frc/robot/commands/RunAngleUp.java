@@ -30,7 +30,7 @@ public class RunAngleUp extends Command {
     //Run Shooter Angle Up
     if (shootAngle.getTopSwitch() == false)
     {
-      shootAngle.runPivot(1.0);
+      shootAngle.runPivot(AngleMotorSpeed);
     }
     
 

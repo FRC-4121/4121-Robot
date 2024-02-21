@@ -55,7 +55,7 @@ public class RobotContainer {
 
   // Auto Commands
   private final AutoPickupNote autoPickupNoteCommand = new AutoPickupNote(swervedrivewpi,intake,shooter,table, 10);
-  private final AutoShooterAmpPos autoShooterAmpPosCommand = new AutoShooterAmpPos(shooterAngle,shooter,5.0);
+  private final AutoShooterAmpPos autoShooterAmpPosCommand = new AutoShooterAmpPos(shooterAngle,shooter,processor,intake,5.0);
 
   //KillAuto Command
   private final KillAutoCommand killAutoObject = new KillAutoCommand(); 
@@ -439,10 +439,10 @@ public class RobotContainer {
     //Update shooter position
     SmartDashboard.putBoolean("Top Shooter", shooterAngle.getTopSwitch());
     SmartDashboard.putBoolean("Bottom Shooter", shooterAngle.getBottomSwitch());
-    SmartDashboard.putNumber("Shooter Encoder", shooterAngle.getAbsoluteEncoderPosition());
+    SmartDashboard.putNumber("Shooter Encoder", shooterAngle.getIntegratedValue());
     SmartDashboard.putNumber("Shooter Angle", CurrentShooterAngle);
     SmartDashboard.putNumber("Last Angle", LastShooterAngle);
-    SmartDashboard.putNumber("Can Shoot", readyToShoot);
+    SmartDashboard.putBoolean("Can Shoot", readyToShoot);
 
     //Update Photo Sensor
     photoSensor.isNoteOnBoard();

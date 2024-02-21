@@ -14,15 +14,19 @@ public class AutoShooterAmpPos extends Command {
   
   private ShooterAngle shooterAngle;
   private Shooter shooter;
+  private Processor processor;
+  private Intake intake;
   private Timer timer = new Timer();
   private double startTime;
   private double endTime;
   
   /** Creates a new AutoShooterAmpPos. */
-  public AutoShooterAmpPos(ShooterAngle shootAngle, Shooter shoot, Double endingTime) {
+  public AutoShooterAmpPos(ShooterAngle shootAngle, Shooter shoot, Processor process, Intake in, Double endingTime) {
     
     shooter = shoot;
     shooterAngle = shootAngle;
+    processor = process;
+    intake = in;
     endTime = endingTime;
 
     // Use addRequirements() here to declare subsystem dependencies.
@@ -33,20 +37,27 @@ public class AutoShooterAmpPos extends Command {
   public void initialize() {
     timer.start();
     startTime = timer.get();
+
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
 
-  //Run the shooter at the correct Amp Speeds  
-  shooter.runShooterAmp(1.0);
+    if (noteOnBoard) {
 
-  //Check to see if we are at the amp angle
-  if((CurrentShooterAngle < MaxSpeakerAngle - ShooterAngleTolerance) && shooterAngle.getTopSwitch() == false){
-    shooterAngle.runPivot(-AngleMotorSpeed);
-  } 
+      // Run the shooter at the correct Amp Speeds
+      shooter.runShooterAuto(TopShootAmpSpeed, BottomShootAmpSpeed);
 
+      // Check to see if we are at the amp angle
+      if ((Math.abs(CurrentShooterAngle - AmpAngle) < ShooterAngleTolerance) && shooterAngle.getTopSwitch() == false) {
+        shooterAngle.runPivot(AngleMotorSpeed);
+      } else {
+        shooterAngle.runPivot(0);
+        processor.runProcessor(0.5);
+        intake.runIntake(0.5);
+      }
+    }
 
   }
 
@@ -54,8 +65,9 @@ public class AutoShooterAmpPos extends Command {
   @Override
   public void end(boolean interrupted) {
 
-  shooter.runShooterAmp(0);
-  shooterAngle.runPivot(0);
+    shooter.runShooter(0);
+    processor.runProcessor(0.0);
+    intake.runIntake(0);
 
   }
 
@@ -64,15 +76,9 @@ public class AutoShooterAmpPos extends Command {
   public boolean isFinished() {
      boolean doneYet = false;
     
-    if(CurrentShooterAngle == AmpAngle)
+    if(!noteOnBoard)
     {
       doneYet = true;
-      readyToShoot = true;
-    }
-    if (shooterAngle.getTopSwitch() == true)
-    {
-      doneYet = true;
-      readyToShoot = true;
     }
     if(timer.get() >= endTime-startTime)
     {

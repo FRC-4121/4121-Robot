@@ -30,7 +30,7 @@ public class RunAngleDown extends Command {
      if (shootAngle.getBottomSwitch() == false)
     {
       //Run Shooter Angle Down
-    shootAngle.runPivot(-0.1);
+    shootAngle.runPivot(-AngleMotorSpeed);
     }
     
   }

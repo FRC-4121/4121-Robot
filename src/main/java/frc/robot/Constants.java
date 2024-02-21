@@ -153,7 +153,7 @@ public final class Constants {
         // Angle Motor Configuration
         public static final IdleMode kAngleMotorIdleMode = IdleMode.kBrake;
         public static final int kAngleMotorCurrentLimit = 20;
-        public static final double AngleMotorSpeed = 0.5;
+        public static final double AngleMotorSpeed = 0.2;
   
         //Angles and distances for certain shots
         public static final double AmpAngle = 60;//degrees, needs to be confirmed
@@ -172,7 +172,7 @@ public final class Constants {
         public static double LastShooterAngle = 40;
 
         //Shooter Angle Encoder
-        public static double MaxEncoderPos = 100000;//Need to set
+        public static double MaxEncoderPos = 25230;//Need to set
 
         /*
          * Processor System Constants

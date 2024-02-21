@@ -268,6 +268,10 @@ public class SwerveDriveWPI extends SubsystemBase {
   public double getGyroAngle() {
 
     double correctedGyro = gyro_filter.calculate(gyro.getAngle() % 360.0);
+    if(correctedGyro < 0)
+    {
+      correctedGyro = 360 + correctedGyro;
+    }
     if (autoPosition == "Left") {
       SmartDashboard.putNumber("C-Gyro",correctedGyro + leftGyroCorrection);
       return correctedGyro + leftGyroCorrection;
