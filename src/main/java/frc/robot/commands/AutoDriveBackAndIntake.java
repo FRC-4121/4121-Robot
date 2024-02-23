@@ -4,19 +4,17 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.subsystems.SwerveDrive;
-import frc.robot.ExtraClasses.NetworkTableQuerier;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import frc.robot.subsystems.*;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class AutoGroup1 extends SequentialCommandGroup {
-  /** Creates a new AutoGroup1. */
-  public AutoGroup1(SwerveDrive swerve, NetworkTableQuerier table) {
+public class AutoDriveBackAndIntake extends ParallelCommandGroup {
+  /** Creates a new AutoDriveBackAndIntake. */
+  public AutoDriveBackAndIntake(Processor process, Intake in, double endTime,SwerveDriveWPI swerve) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    //Distance compounds after each command
-    addCommands(new AutoDrive(swerve, 0.6, 84, 0, 0,0, 5,table), new AutoDrive(swerve, 0.6, 120, 45, 0,0, 5,table),new AutoDrive(swerve, 0.6, 150, 270, 0,0, 5,table));
+    addCommands(new AutoDrive(swerve, 0.1, 110.0, 0.0, 0.0, 10.0),new TakeInNote(in,process,endTime));
   }
 }

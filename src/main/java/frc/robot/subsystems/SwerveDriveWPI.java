@@ -280,11 +280,11 @@ public class SwerveDriveWPI extends SubsystemBase {
     }
     if (autoPosition == "Left") {
       SmartDashboard.putNumber("C-Gyro",correctedGyro + leftGyroCorrection);
-      return correctedGyro + leftGyroCorrection;
+      return (correctedGyro + leftGyroCorrection) % 360;
     }
     if (autoPosition == "Right") {
       SmartDashboard.putNumber("C-Gyro",correctedGyro + rightGyroCorrection);
-      return correctedGyro + rightGyroCorrection;
+      return (correctedGyro + rightGyroCorrection) % 360;
     }
     SmartDashboard.putNumber("C-Gyro",correctedGyro);
     return correctedGyro;
@@ -400,7 +400,16 @@ public class SwerveDriveWPI extends SubsystemBase {
 
     // Initialize return value
     double driveDistance = 0.0;
+    
+    // Get total rotations driven since last distance reset
+    double totalRotationsLeftFront = getLeftFrontDriveEncoder() - LeftFrontStartingEncoder;
+    double totalRotationsRightFront = getRightFrontDriveEncoder() - RightFrontStartingEncoder;
+    double totalRotationsLeftBack = getLeftBackDriveEncoder() - LeftRearStartingEncoder;
+    double totalRotationsRightBack = getRightBackDriveEncoder() - RighRearStartingEncoder;
 
+    // Calculate distance by averaging encoders
+    double averageRotations = ((totalRotationsLeftFront + totalRotationsRightFront + totalRotationsLeftBack + totalRotationsRightBack) / 4.0);
+    driveDistance = (kWheelDiameter * Math.PI * averageRotations) / (kTalonFXPPR * kDriveGearRatio);
 
     // Return calculated distance
     return driveDistance;

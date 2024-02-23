@@ -52,8 +52,8 @@ public final class Constants {
         public static final double DRIVETRAIN_WHEELBASE_INCH = 21.5;
         public static final double lengthFromAxle = 23.5;
         public static final double widthFromAxle = 19.5;
-        public static final double leftGyroCorrection = 63;//Gyro correction in degrees
-        public static final double rightGyroCorrection = 297;//Gyro correction in degrees
+        public static final double leftGyroCorrection = 53;//Gyro correction in degrees
+        public static final double rightGyroCorrection = 307;//Gyro correction in degrees
 
         // Swerve drive PID constants
         public static final double drivePIDkPs[] = { 0.0, 0.0, 0.0, 0.0 };
@@ -124,8 +124,8 @@ public final class Constants {
         // General constants
         public static final double TopShootSpeakerSpeed = -0.75;
         public static final double BottomShootSpeakerSpeed = -0.75;
-        public static final double TopShootAmpSpeed = -0.22;
-        public static final double BottomShootAmpSpeed = -0.1;
+        public static final double TopShootAmpSpeed = -0.08;//0.08 optimal
+        public static final double BottomShootAmpSpeed = -0.3;//0.3 optimal
         public static final double TopShootIdleSpeed = -0.1;
         public static final double BottomShootIdleSpeed = 0.1;
         public static String ShooterMode = "IDLE";

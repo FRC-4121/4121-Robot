@@ -54,8 +54,10 @@ public class RobotContainer {
   private final ChangeDriveMode changeModeCommand = new ChangeDriveMode();
 
   // Auto Commands
+  private final AutoDrive autoDriveCommand = new AutoDrive(swervedrivewpi, 0.1, 110.0, 0.0, 0.0, 10.0);
   private final AutoPickupNote autoPickupNoteCommand = new AutoPickupNote(swervedrivewpi,intake,shooter,table, 10);
   private final AutoShooterAmpPos autoShooterAmpPosCommand = new AutoShooterAmpPos(shooterAngle,shooter,processor,intake,5.0);
+  private final AutoRunShooterSpeakerDriveBackIntake autoShootDriveIntakeCommand = new AutoRunShooterSpeakerDriveBackIntake(shooter,processor,intake,15,swervedrivewpi);
 
   //KillAuto Command
   private final KillAutoCommand killAutoObject = new KillAutoCommand(); 
@@ -293,14 +295,24 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
 
-    String autoDecision = autoPosition + Double.toString(autoNotes - 1);
-    Command autoCommand = autoPickupNoteCommand;
+    String position = "Center";
+    if (!blueAlliance) {
+      if (autoPosition == "Left") {
+        position = "Right";
+      }
+      else if (autoPosition == "Right") {
+        position = "Left";
+      }
+    }
+    else 
+    {
+      position = autoPosition;
+    }
+
+    String autoDecision = position + Double.toString(autoNotes);
+    Command autoCommand = autoShootDriveIntakeCommand;
 
     switch (autoDecision) {
-
-      case "Left0":
-        autoCommand = fieldDriveCommand;
-        break;
 
       case "Left1":
         autoCommand = fieldDriveCommand;
@@ -311,18 +323,6 @@ public class RobotContainer {
         break;
 
       case "Left3":
-        autoCommand = fieldDriveCommand;
-        break;
-
-      case "Left4":
-        autoCommand = fieldDriveCommand;
-        break;
-
-      case "Left5":
-        autoCommand = fieldDriveCommand;
-        break;
-
-      case "Right0":
         autoCommand = fieldDriveCommand;
         break;
 
@@ -338,18 +338,6 @@ public class RobotContainer {
         autoCommand = fieldDriveCommand;
         break;
 
-      case "Right4":
-        autoCommand = fieldDriveCommand;
-        break;
-
-      case "Right5":
-        autoCommand = fieldDriveCommand;
-        break;
-
-      case "Center0":
-        autoCommand = fieldDriveCommand;
-        break;
-
       case "Center1":
         autoCommand = autoPickupNoteCommand;
         break;
@@ -362,15 +350,8 @@ public class RobotContainer {
         autoCommand = fieldDriveCommand;
         break;
 
-      case "Center4":
-        autoCommand = fieldDriveCommand;
-        break;
-
-      case "Center5":
-        autoCommand = fieldDriveCommand;
-        break;
-
       default: 
+        autoCommand = autoShootDriveIntakeCommand;
         break;
         
     }
