@@ -69,6 +69,10 @@ public class SwerveDriveWPI extends SubsystemBase {
   private double RightFrontStartingEncoder;
   private double RighRearStartingEncoder;
 
+  // Declare collision detection variables;
+  private double lastLinearAccelX;
+  private double lastLinearAccelY;
+
   /**
    *  
    * Creates a new SwerveDrive
@@ -103,6 +107,8 @@ public class SwerveDriveWPI extends SubsystemBase {
 
     // Initialize misc variables
     joystickDeadband = 0.05;
+    lastLinearAccelX = 0.0;
+    lastLinearAccelY = 0.0;
 
   }
 
@@ -245,6 +251,20 @@ public class SwerveDriveWPI extends SubsystemBase {
         SmartDashboard.putNumber("Corrected Right Back Angle", backRightAngle);
 
       }
+
+    }
+
+    // Check for collision
+    double currLinearAccelX = gyro.getWorldLinearAccelX();
+    double currentJerkX = currLinearAccelX - lastLinearAccelX;
+    lastLinearAccelX = currLinearAccelX;
+    double currLinearAccelY = gyro.getWorldLinearAccelY();
+    double currentJerkY = currLinearAccelY - lastLinearAccelY;
+    lastLinearAccelY = currLinearAccelY;
+          
+    if ( (Math.abs(currentJerkX) > kCollisionThreshold_DeltaG ) || (Math.abs(currentJerkY) > kCollisionThreshold_DeltaG) ) {
+
+      impactDetected = true;
 
     }
   

@@ -83,8 +83,8 @@ public class Robot extends TimedRobot {
     //Get color selection
     m_robotContainer.getColorSelection();
 
-    // Stream cameras
-    m_robotContainer.streamCams();
+    //Check for note on board
+    m_robotContainer.checkForNote();
 
     //Update Robot Status
     m_robotContainer.updateRobotStatus();

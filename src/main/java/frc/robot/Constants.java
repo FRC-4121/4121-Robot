@@ -82,6 +82,9 @@ public final class Constants {
         public static final double kPeakDriveReverse = -1.0;
         public static final Gains driveGains = new Gains(0.2, 0.0, 0.0, 0.2, 0, 1.0);
 
+        // Collision constants
+        public static final double kCollisionThresholdDeltaG = 0.2;
+
         /*
          * West coast drive values
          */
@@ -314,6 +317,7 @@ public final class Constants {
     public static Boolean noteOnBoard = true;
     public static Boolean readyToShoot = false;
     public static boolean photoSensorIsNotBlocked;
+    public static Boolean impactDetected = false;
 
     /**
      * General Robot Constants

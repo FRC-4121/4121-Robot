@@ -139,13 +139,23 @@ public class AutoDrive extends Command {
     // Get distance travelled
     distanceTraveled = drivetrain.calculateDriveDistance();
 
-    // Check distance against target
-   if (distanceTraveled >= targetDriveDistance) {
+    // Check for stopping conditions
+    if (impactDetected) {
+
+      thereYet = true;
+
+    } else if (distanceTraveled >= targetDriveDistance) {
+
        thereYet = true;
+
     } else if (time - startTime >= stopTime) {
+
       thereYet = true;
+
     } else if (killAuto == true) {
+
       thereYet = true;
+
     }
 
     return thereYet;

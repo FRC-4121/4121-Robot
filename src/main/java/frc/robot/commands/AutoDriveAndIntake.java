@@ -12,9 +12,9 @@ import frc.robot.subsystems.*;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class AutoDriveBackAndIntake extends ParallelCommandGroup {
   /** Creates a new AutoDriveBackAndIntake. */
-  public AutoDriveBackAndIntake(Processor process, Intake in, double endTime,SwerveDriveWPI swerve) {
+  public AutoDriveBackAndIntake(SwerveDriveWPI swerve, Processor process, Intake in, double speed, double dist, double ang, double heading, double endTime) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    addCommands(new AutoDrive(swerve, 0.1, 110.0, 0.0, 0.0, 10.0),new TakeInNote(in,process,endTime));
+    addCommands(new AutoDrive(swerve, speed, dist, ang, heading, 10.0), new TakeInNote(in, process, endTime));
   }
 }

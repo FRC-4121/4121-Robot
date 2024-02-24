@@ -57,7 +57,9 @@ public class RobotContainer {
   private final AutoDrive autoDriveCommand = new AutoDrive(swervedrivewpi, 0.1, 110.0, 0.0, 0.0, 10.0);
   private final AutoPickupNote autoPickupNoteCommand = new AutoPickupNote(swervedrivewpi,intake,shooter,table, 10);
   private final AutoShooterAmpPos autoShooterAmpPosCommand = new AutoShooterAmpPos(shooterAngle,shooter,processor,intake,5.0);
-  private final AutoRunShooterSpeakerDriveBackIntake autoShootDriveIntakeCommand = new AutoRunShooterSpeakerDriveBackIntake(shooter,processor,intake,15,swervedrivewpi);
+  private final Auto1NoteCenter auto1NoteCenterCommand = new Auto1NoteCenter(swervedrivewpi, shooter, processor, intake, 0.1, 100.0, 0.0, 0.0, 10);
+  private final Auto1NoteLeft auto1NoteLeftCommand = new Auto1NoteLeft(swervedrivewpi, shooter, processor, intake, 0.1, 90.0, 10.0, 0.0, 10);
+  private final Auto1NoteRight auto1NoteRightCommand = new Auto1NoteRight(swervedrivewpi, shooter, processor, intake, 0.1, 90.0, 10.0, 0.0, 10);
 
   //KillAuto Command
   private final KillAutoCommand killAutoObject = new KillAutoCommand(); 
@@ -258,6 +260,15 @@ public class RobotContainer {
   }
 
   /*
+   * Check for the presence of a note
+   */
+  public void checkForNote() {
+
+    photoSensor.isNoteOnBoard();
+
+  }
+
+  /*
    * Updates the speed of the shooter motors based on which
    * AprilTags are visible
    */
@@ -310,12 +321,12 @@ public class RobotContainer {
     }
 
     String autoDecision = position + Double.toString(autoNotes);
-    Command autoCommand = autoShootDriveIntakeCommand;
+    Command autoCommand = auto1NoteCenterCommand;
 
     switch (autoDecision) {
 
       case "Left1":
-        autoCommand = fieldDriveCommand;
+        autoCommand = auto1NoteLeftCommand;
         break;
 
       case "Left2":
@@ -327,7 +338,7 @@ public class RobotContainer {
         break;
 
       case "Right1":
-        autoCommand = fieldDriveCommand;
+        autoCommand = auto1NoteRightCommand;
         break;
 
       case "Right2":
@@ -339,7 +350,7 @@ public class RobotContainer {
         break;
 
       case "Center1":
-        autoCommand = autoPickupNoteCommand;
+        autoCommand = auto1NoteCenterCommand;
         break;
 
       case "Center2":
@@ -351,41 +362,13 @@ public class RobotContainer {
         break;
 
       default: 
-        autoCommand = autoShootDriveIntakeCommand;
+        autoCommand = auto1NoteCenterCommand;
         break;
         
     }
 
     return autoCommand;
 
-  }
-
-  /*
-   * Start driver cameras
-  */ 
-  public void startDriverCams() {
-
-    // UsbCamera grabCamera = new UsbCamera("Grab Cam", 0);
-    // grabCamera.setResolution(160, 120);
-    // grabCamera.setBrightness(100);
-    // grabCamera.setFPS(24);
-    //CameraServer.startAutomaticCapture("Arm Cam", 0);
-    // camSink = CameraServer.getVideo();
-    // camSource = CameraServer.putVideo("Grab Cam", 160, 120);
-    // camSource = new CameraBuilder(0, "Grab Cam (Camera)").res(160, 120).brightness(100).fps(24).finish();
-    // camSink = new MjpegServer("Grab Cam (Server)", 1181);
-    // camSink.setSource(camSource);
-    SmartDashboard.putBoolean("Cam Started",true);
-
-  }
-
-  /*
-   * Stream cameras every cycle
-   */
-  public void streamCams() {
-
-    // camSource = CameraServer.putVideo("Grab Cam", 160, 120);
-    
   }
 
   /*
@@ -419,7 +402,6 @@ public class RobotContainer {
     SmartDashboard.putBoolean("Can Shoot", readyToShoot);
 
     //Update Photo Sensor
-    photoSensor.isNoteOnBoard();
     SmartDashboard.putBoolean("Note On Board", noteOnBoard);
 
     //Update Ready to Shoot
@@ -434,8 +416,9 @@ public class RobotContainer {
     //Update Pressure
     SmartDashboard.putNumber("Pressure", pneumatic.getPressure());
 
-    //Update Slow Mode
+    //Update drive values
     SmartDashboard.putBoolean("Slow Mode", isSlowMode);
+    SmartDashboard.putBoolean("Impact Detected", impactDetected);
 
   }
 
