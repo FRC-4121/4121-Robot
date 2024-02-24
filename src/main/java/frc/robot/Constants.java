@@ -139,7 +139,7 @@ public final class Constants {
         public static final int kPivotMotorID = 15;
 
         // PID values
-        public static final double kShooterAngleKP = 1;
+        public static final double kShooterAngleKP = 0.01;
         public static final double kShooterAngleKI = 0;
         public static final double kShooterAngleKD = 0;
         public static final double kShooterAngleFF = 0;
@@ -153,7 +153,7 @@ public final class Constants {
         // Angle Motor Configuration
         public static final IdleMode kAngleMotorIdleMode = IdleMode.kBrake;
         public static final int kAngleMotorCurrentLimit = 20;
-        public static final double AngleMotorSpeed = 0.2;
+        public static final double AngleMotorSpeed = 0.9;
   
         //Angles and distances for certain shots
         public static final double AmpAngle = 60;//degrees, needs to be confirmed

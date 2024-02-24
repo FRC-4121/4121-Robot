@@ -161,17 +161,23 @@ public class AutoShooterPos extends Command {
 
     // Run angle motor at new speed (as long as we aren't at bounds)
     if (Math.abs(CurrentShooterAngle - ShooterTargetAngle) > ShooterAngleTolerance) {
+
       if (pidOutput > 0 && shootAngle.getTopSwitch() == false) {
+
         shootAngle.runPivot(AngleMotorSpeed * pidOutput);
+
       }
       else if (pidOutput < 0 && shootAngle.getBottomSwitch() == false) {
+
         shootAngle.runPivot(AngleMotorSpeed * pidOutput);
+
       }
 
       readyToShoot = false;
 
     } else {
 
+      shootAngle.runPivot(0.0);
       readyToShoot = true;
 
     }
@@ -191,7 +197,13 @@ public class AutoShooterPos extends Command {
   @Override
   public boolean isFinished() {
 
-    return false;
+    boolean thereYet = false;
+
+    if (killAuto) {
+      thereyet = true;
+    }
+
+    return thereYet;
 
   }
 
