@@ -57,9 +57,10 @@ public class RobotContainer {
   private final AutoDrive autoDriveCommand = new AutoDrive(swervedrivewpi, 0.1, 110.0, 0.0, 0.0, 10.0);
   private final AutoPickupNote autoPickupNoteCommand = new AutoPickupNote(swervedrivewpi,intake,shooter,table, 10);
   private final AutoShooterAmpPos autoShooterAmpPosCommand = new AutoShooterAmpPos(shooterAngle,shooter,processor,intake,5.0);
-  private final Auto1NoteCenter auto1NoteCenterCommand = new Auto1NoteCenter(swervedrivewpi, shooter, processor, intake, 0.1, 100.0, 0.0, 0.0, 10);
-  private final Auto1NoteLeft auto1NoteLeftCommand = new Auto1NoteLeft(swervedrivewpi, shooter, processor, intake, 0.1, 90.0, 10.0, 0.0, 10);
-  private final Auto1NoteRight auto1NoteRightCommand = new Auto1NoteRight(swervedrivewpi, shooter, processor, intake, 0.1, 90.0, 10.0, 0.0, 10);
+  private final AutoShooterPos autoShooterPosCommand = new AutoShooterPos(shooterAngle, table);
+  private final Auto1NoteCenter auto1NoteCenterCommand = new Auto1NoteCenter(swervedrivewpi, shooter, processor, intake);
+  private final Auto1NoteLeft auto1NoteLeftCommand = new Auto1NoteLeft(swervedrivewpi, shooter, processor, intake);
+  private final Auto1NoteRight auto1NoteRightCommand = new Auto1NoteRight(swervedrivewpi, shooter, processor, intake);
 
   //KillAuto Command
   private final KillAutoCommand killAutoObject = new KillAutoCommand(); 
@@ -75,7 +76,7 @@ public class RobotContainer {
   //Shooter Angle Command
   private final RunAngleUp angleUpCommand = new RunAngleUp(shooterAngle);
   private final RunAngleDown angleDownCommand = new RunAngleDown(shooterAngle);
-  private final AutoShooterPos autoShooterPosCommand = new AutoShooterPos(shooterAngle, table);
+  
 
   //Intake Command
   private final RunIntake intakeCommand = new RunIntake(intake);
@@ -95,6 +96,7 @@ public class RobotContainer {
   private final Trigger climberButton;
   private final Trigger runAngleDownButton;
   private final Trigger runAngleUpButton;
+  private final Trigger autoShooterPosButton;
   
   // Launchpad (OI) Buttons/Switches
   private final Trigger killAutoButton;
@@ -104,6 +106,7 @@ public class RobotContainer {
   private static JoystickButton leftButton;
   private static JoystickButton rightButton;
   private static JoystickButton ampAngleButton;
+  private static JoystickButton autoShooterPositionButton;
 
   //===CONSTRUCTOR===//
   public RobotContainer() { 
@@ -117,6 +120,7 @@ public class RobotContainer {
     climberButton = new JoystickButton(xbox, xboxBButton);
     runAngleDownButton = new JoystickButton(secondaryXbox,xboxLeftBumber);
     runAngleUpButton = new JoystickButton(secondaryXbox,xboxRightBumber);
+    autoShooterPosButton = new JoystickButton(secondaryXbox,xboxBButton);
     
     // Initialize Launchpad (OI) Buttons/Switches
     killAutoButton = new JoystickButton(launchpad,LaunchPadButton1);
@@ -126,6 +130,7 @@ public class RobotContainer {
     rightButton = new JoystickButton(launchpad, LaunchPadSwitch6bottom);
     leftButton = new JoystickButton(launchpad, LaunchPadSwitch6top);
     ampAngleButton = new JoystickButton(launchpad, LaunchPadSwitch1top);
+    autoShooterPositionButton = new JoystickButton(launchpad, LaunchPadSwitch7);
   
     // Configure default commands
     configureDefaultCommands();
@@ -136,8 +141,6 @@ public class RobotContainer {
     //Make sure the positions are zero
     zeroRobot();
 
-    // Start driver cameras
-    startDriverCams();
 
   }
 
@@ -156,7 +159,7 @@ public class RobotContainer {
     //shooter.setDefaultCommand(shooterSpeedCommand);
 
     // Shooter angle default command
-    //shootAngle.setDefaultCommand(autoShooterPosCommand);
+    shooterAngle.setDefaultCommand(autoShooterPosCommand);
 
     // LED default command
     led.setDefaultCommand(ledCommand);
@@ -182,6 +185,7 @@ public class RobotContainer {
     climberButton.onTrue(climberCommand);
     runAngleDownButton.whileTrue(angleDownCommand);
     runAngleUpButton.whileTrue(angleUpCommand);
+    autoShooterPosButton.onTrue(autoShooterPosCommand);
 
 
   }
@@ -194,11 +198,21 @@ public class RobotContainer {
     
     if (noteOnBoard == true) {
       
-      ledColor = 0.65; //Orange
+      //ledColor = 0.65; //Orange
+      
+      //Orange
+      ledRed = 0;
+      ledGreen = 255;
+      ledBlue = 0;
  
     } else {
       
-      ledColor = 0.55; //Default Pattern 
+      //ledColor = 0.55; //Default Pattern 
+      //Orange
+      ledRed = 255;
+      ledGreen = 165;
+      ledBlue = 0;
+
     }
   }
 
@@ -256,6 +270,19 @@ public class RobotContainer {
     } else{
       isParked = false;
       SmartDashboard.putBoolean("Robot Parked", false);
+    }
+  }
+
+  public void getAngleSelection()
+  {
+    if (autoShooterPositionButton.getAsBoolean() == true)
+    {
+      AutoShooterPositioning = true;
+      SmartDashboard.putBoolean("Auto Positioning", true);
+      //parkCommand.execute();
+    } else{
+      AutoShooterPositioning = false;
+      SmartDashboard.putBoolean("Auto Positioning", false);
     }
   }
 

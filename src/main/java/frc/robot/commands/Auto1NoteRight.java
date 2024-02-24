@@ -5,6 +5,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import frc.robot.subsystems.*;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
@@ -14,6 +15,6 @@ public class Auto1NoteRight extends SequentialCommandGroup {
   public Auto1NoteRight(SwerveDriveWPI swerve, Shooter shoot, Processor process, Intake in) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    addCommands(shoot, process, in, 2), new AutoDriveAndIntake(swerve, process, in, 0.1, 90.0, 350.0, 0.0, 10.0);
+    addCommands(new RunShooterSpeaker(shoot, process, in, 2), new AutoDriveAndIntake(swerve, process, in, 0.1, 90.0, 350.0, 0.0, 10.0));
   }
 }

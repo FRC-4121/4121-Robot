@@ -60,7 +60,6 @@ public class SwerveDriveWPI extends SubsystemBase {
 
   // Declare misc variables
   private double joystickDeadband;
-  private double maxYawRate = 7.0;
   private double yawDrift;
 
   // Declare distance calculation variables
@@ -262,7 +261,7 @@ public class SwerveDriveWPI extends SubsystemBase {
     double currentJerkY = currLinearAccelY - lastLinearAccelY;
     lastLinearAccelY = currLinearAccelY;
           
-    if ( (Math.abs(currentJerkX) > kCollisionThreshold_DeltaG ) || (Math.abs(currentJerkY) > kCollisionThreshold_DeltaG) ) {
+    if ( (Math.abs(currentJerkX) > kCollisionThresholdDeltaG ) || (Math.abs(currentJerkY) > kCollisionThresholdDeltaG) ) {
 
       impactDetected = true;
 

@@ -91,8 +91,8 @@ public class NetworkTableQuerier implements Runnable {
 
         networkTableInstance = NetworkTableInstance.getDefault();
         controlTable = networkTableInstance.getTable("control");
-        cam1Table = networkTableInstance.getTable("usb1");
-        cam2Table = networkTableInstance.getTable("usb2");
+        cam1Table = networkTableInstance.getTable("CAM1");
+        cam2Table = networkTableInstance.getTable("CAM2");
 
         robotStop = controlTable.getEntry("RobotStop");
         zeroGyro = controlTable.getEntry("ZeroGyro");
@@ -207,10 +207,12 @@ public class NetworkTableQuerier implements Runnable {
 
         double camValue = 0;
 
-        if (camera == "Cam1") {
-            camValue = cam1Table.getEntry("usb1.TagsFound").getDouble(0);
+        if (camera == "CAM1") {
+            System.out.println("Getting CAM1 Tags");
+            camValue = cam1Table.getEntry("TagsFound").getDouble(0);
         } else{
-            camValue = cam2Table.getEntry("usb2.TagsFound").getDouble(0);
+            System.out.println("Getting CAM2 Tags");
+            camValue = cam2Table.getEntry("TagsFound").getDouble(0);
         }
         return camValue;
     }
@@ -218,11 +220,13 @@ public class NetworkTableQuerier implements Runnable {
     public synchronized double getTagInfo(String camera, int tag, String entry) {
 
         double camValue = 0;
+        String infoString = "Tags." + tag + "." + entry;
+        System.out.println(infoString);
 
-        if (camera == "Cam1") {
-            camValue = cam1Table.getEntry("usb1.Tags." + tag + "." + entry).getDouble(0);
+        if (camera == "CAM1") {
+            camValue = cam1Table.getEntry(infoString).getDouble(0);
         } else{
-            camValue = cam2Table.getEntry("usb2.Tags." + tag + "." + entry).getDouble(0);
+            camValue = cam2Table.getEntry(infoString).getDouble(0);
         }
         return camValue;
     }

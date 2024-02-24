@@ -142,7 +142,7 @@ public final class Constants {
         public static final int kPivotMotorID = 15;
 
         // PID values
-        public static final double kShooterAngleKP = 0.01;
+        public static final double kShooterAngleKP = 0.045;
         public static final double kShooterAngleKI = 0;
         public static final double kShooterAngleKD = 0;
         public static final double kShooterAngleFF = 0;
@@ -156,16 +156,16 @@ public final class Constants {
         // Angle Motor Configuration
         public static final IdleMode kAngleMotorIdleMode = IdleMode.kBrake;
         public static final int kAngleMotorCurrentLimit = 20;
-        public static final double AngleMotorSpeed = 0.9;
+        public static final double AngleMotorSpeed = 0.25;
   
         //Angles and distances for certain shots
         public static final double AmpAngle = 60;//degrees, needs to be confirmed
-        public static final double HighSpeakerAngle = 52;
-        public static final double LowSpeakerAngle = 35;
+        public static final double HighSpeakerAngle = 50;
+        public static final double LowSpeakerAngle = 32.5;
         public static final double MaxSpeakerAngle = 60;
         public static final double MinSpeakerAngle = 30;
-        public static final double MinAutoDistance = 40;
-        public static final double MaxAutoDistance = 120;
+        public static final double MinAutoDistance = 90;
+        public static final double MaxAutoDistance = 140;
         public static final double IdleAngle = 40;
 
         //Shooter Angles
@@ -173,6 +173,7 @@ public final class Constants {
         public static final double ShooterAngleTolerance = 1;
         public static double ShooterTargetAngle = 40;
         public static double LastShooterAngle = 40;
+        public static Boolean AutoShooterPositioning = false;
 
         //Shooter Angle Encoder
         public static double MaxEncoderPos = 25230;
@@ -209,7 +210,10 @@ public final class Constants {
          */
 
         // General Constants
-        public static double ledColor = 0.63; // 0.65 is orange, the default color
+        //public static double ledColor = 0.63; // 0.65 is orange, the default color
+        public static int ledRed = 255;
+        public static int ledGreen = 165;
+        public static int ledBlue = 0;
         public static Boolean getCone = false; // Are the led's yellow
        
         /**
@@ -297,6 +301,9 @@ public final class Constants {
     public static final double MaxRadiansPerSecond = Math.PI;
     public static final double SlowMaxLinearSpeed = 0.75;//Max Speed during slow mode in meters per second
     public static final double SlowRadiansPerSecond = (Math.PI/2);//Max rotational speed during slow mode
+    public static double maxYawRate = 7.0;
+    public static final double FastMaxYawRate = 7.0;
+    public static final double SlowMaxYawRate = 4.0;
     public static final double slowSpeed = 0.3;
     public static final double driveSpeed = 0.7;
     public static  double swerveDriveSpeedLimiter = 0.7;

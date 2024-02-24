@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import edu.wpi.first.math.filter.MedianFilter;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 public class ShooterAngle extends SubsystemBase {
   
   //Motors
@@ -36,6 +37,7 @@ public class ShooterAngle extends SubsystemBase {
     // Create a new Spark MAX controller for shooter angle
     //pivotMotor = new CANSparkMax(kPivotMotorID,MotorType.kBrushless);
     pivotMotor = new WPI_TalonFX(kPivotMotorID);
+    pivotMotor.setNeutralMode(NeutralMode.Brake);
 
     //COnfigure Motors encoder
     pivotMotor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor,0,20);

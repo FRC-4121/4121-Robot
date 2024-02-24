@@ -10,6 +10,8 @@ import static frc.robot.Constants.*;
 import static frc.robot.Constants.MechanismConstants.*;
 import frc.robot.ExtraClasses.NetworkTableQuerier;
 import edu.wpi.first.math.controller.*;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.math.filter.MedianFilter;
 
 public class AutoShooterPos extends Command {
 
@@ -24,6 +26,8 @@ public class AutoShooterPos extends Command {
   private boolean isMyTag;
 
   private PIDController wpiPIDController;
+
+  private MedianFilter filter; 
  
   /** Creates a new AutoShooterPos. */
   public AutoShooterPos(ShooterAngle angle, NetworkTableQuerier table) {
@@ -31,6 +35,8 @@ public class AutoShooterPos extends Command {
     // Set local variables
     shootAngle = angle;
     ntable = table;
+
+    filter = new MedianFilter(20);
 
     addRequirements(shootAngle);
 
@@ -58,8 +64,13 @@ public class AutoShooterPos extends Command {
   @Override
   public void execute() {
 
+    if(AutoShooterPositioning) {
+    
+    System.out.println("Started Auto Shooter Angle");
+
     // Determine if we see any AprilTags
-    tagsFound = ntable.getTagsFound("Cam2");
+    tagsFound = ntable.getTagsFound("CAM2");
+    System.out.println("Tags Found:"+tagsFound);
 
     // If AprilTags found, determine which ones and set target angle
     // If no AprilTags found, set target angle to IDLE position
@@ -78,8 +89,12 @@ public class AutoShooterPos extends Command {
       }
 
       // Get ID and distance for closest tag
-      tagID = (int)ntable.getTagInfo("Cam2", closestTag, "id");
-      tagDistance = ntable.getTagInfo("Cam2", closestTag, "distance");
+      tagID = (int)ntable.getTagInfo("CAM2", closestTag, "id");
+      tagDistance = ntable.getTagInfo("CAM2", closestTag, "distance");
+      System.out.println("Tag Distance:"+tagDistance);
+      System.out.println("TagID:"+tagID);
+  
+      System.out.println("Blue Alliance:"+blueAlliance);
 
       // Determine if the tag belongs to my alliance
       if (blueAlliance && (tagID == BlueAmpID || tagID == BlueSpeakerCenterID || tagID == BlueSpeakerSideID)) {
@@ -89,89 +104,114 @@ public class AutoShooterPos extends Command {
         isMyTag = true;
       }
 
-      // Set target angle based on which AprilTag was found for my alliance
       if (isMyTag) {
+        System.out.println("Auto Angle Tag Found");
+      }
 
-        if (blueAlliance) {
+      // Set target angle based on which AprilTag was found for my alliance
+      if (tagDistance > MinAutoDistance && tagDistance < MaxAutoDistance) {
+        System.out.println("Auto Angle Adjust");
+        if (isMyTag) {
 
-          switch (tagID) {
+          if (blueAlliance) {
 
-            case BlueAmpID:
-              ShooterTargetAngle = AmpAngle;
-              LastShooterAngle = ShooterTargetAngle;
-              break;
+            switch (tagID) {
 
-            case BlueSpeakerCenterID:
-              ShooterTargetAngle = getTargetAngle(tagDistance);
-              LastShooterAngle = ShooterTargetAngle;
-              break;
+              case BlueAmpID:
+                ShooterTargetAngle = AmpAngle;
+                LastShooterAngle = ShooterTargetAngle;
+                break;
 
-            case BlueSpeakerSideID:
-              ShooterTargetAngle = getTargetAngle(tagDistance);
-              LastShooterAngle = ShooterTargetAngle;
-              break;
+              case BlueSpeakerCenterID:
+                ShooterTargetAngle = getTargetAngle(tagDistance);
+                LastShooterAngle = ShooterTargetAngle;
+                break;
 
-            default:
-              ShooterTargetAngle = LastShooterAngle;
+              case BlueSpeakerSideID:
+                ShooterTargetAngle = getTargetAngle(tagDistance);
+                LastShooterAngle = ShooterTargetAngle;
+                break;
 
+              default:
+                ShooterTargetAngle = LastShooterAngle;
+
+            }
+
+          } else {
+
+            switch (tagID) {
+
+              case RedAmpID:
+                ShooterTargetAngle = AmpAngle;
+                LastShooterAngle = ShooterTargetAngle;
+                break;
+
+              case RedSpeakerCenterID:
+                ShooterTargetAngle = getTargetAngle(tagDistance);
+                LastShooterAngle = ShooterTargetAngle;
+                break;
+
+              case RedSpeakerSideID:
+                ShooterTargetAngle = getTargetAngle(tagDistance);
+                LastShooterAngle = ShooterTargetAngle;
+                break;
+
+              default:
+                ShooterTargetAngle = LastShooterAngle;
+
+            }
 
           }
-  
+
         } else {
 
-          switch (tagID) {
-
-            case RedAmpID:
-              ShooterTargetAngle = AmpAngle;
-              LastShooterAngle = ShooterTargetAngle;
-              break;
-
-            case RedSpeakerCenterID:
-              ShooterTargetAngle = getTargetAngle(tagDistance);
-              LastShooterAngle = ShooterTargetAngle;
-              break;
-
-            case RedSpeakerSideID:
-              ShooterTargetAngle = getTargetAngle(tagDistance);
-              LastShooterAngle = ShooterTargetAngle;
-              break;
-
-            default:
-              ShooterTargetAngle = LastShooterAngle;
-              
-          }
+          ShooterTargetAngle = LastShooterAngle;
 
         }
 
       } else {
 
-        ShooterTargetAngle = LastShooterAngle;
-
+        ShooterTargetAngle = IdleAngle;
+        LastShooterAngle = ShooterTargetAngle;
       }
 
     } else {
 
-      ShooterTargetAngle = HighSpeakerAngle;
+      ShooterTargetAngle = IdleAngle;
       LastShooterAngle = ShooterTargetAngle;
 
     }
 
     // Determine new motor speed from PID controller
     double pidOutput = wpiPIDController.calculate(CurrentShooterAngle, ShooterTargetAngle);
+    if(pidOutput >1)
+    {
+      pidOutput = 1;
+    } else if (pidOutput < -1)
+    {
+      pidOutput = -1;
+    }
+
+    System.out.println("Target Angle:" + ShooterTargetAngle);
+    System.out.println("PID Output:" + pidOutput);
 
     // Run angle motor at new speed (as long as we aren't at bounds)
     if (Math.abs(CurrentShooterAngle - ShooterTargetAngle) > ShooterAngleTolerance) {
 
+      double angleSpeed = AngleMotorSpeed * pidOutput;
+
       if (pidOutput > 0 && shootAngle.getTopSwitch() == false) {
 
-        shootAngle.runPivot(AngleMotorSpeed * pidOutput);
+        shootAngle.runPivot(angleSpeed);
 
       }
       else if (pidOutput < 0 && shootAngle.getBottomSwitch() == false) {
 
-        shootAngle.runPivot(AngleMotorSpeed * pidOutput);
+        shootAngle.runPivot(angleSpeed);
 
       }
+
+      System.out.println("Angle Motor Speed:" + angleSpeed);
 
       readyToShoot = false;
 
@@ -180,7 +220,10 @@ public class AutoShooterPos extends Command {
       shootAngle.runPivot(0.0);
       readyToShoot = true;
 
+      System.out.println("Angle Motor Speed: 0.0");
+
     }
+  }
 
   }
 
@@ -188,6 +231,7 @@ public class AutoShooterPos extends Command {
   @Override
   public void end(boolean interrupted) {
 
+    System.out.println("Auto Shooter Angle Stopped");
     // Stop the shooter angle motor
     shootAngle.runPivot(0);
 
@@ -200,7 +244,7 @@ public class AutoShooterPos extends Command {
     boolean thereYet = false;
 
     if (killAuto) {
-      thereyet = true;
+      thereYet = true;
     }
 
     return thereYet;
@@ -210,7 +254,10 @@ public class AutoShooterPos extends Command {
   // Calculate the target angle based on vision distance
   public double getTargetAngle(double distance) {
 
-    double calcAngle = ((HighSpeakerAngle - LowSpeakerAngle)/(MaxAutoDistance - MinAutoDistance)) * (distance - MinAutoDistance) + LowSpeakerAngle;
+    System.out.println("Target Distance: " + distance);
+    double calcAngle = filter.calculate(((HighSpeakerAngle - LowSpeakerAngle)/(MaxAutoDistance - MinAutoDistance)) * (MaxAutoDistance - distance) + LowSpeakerAngle);
+    System.out.println("Calculated Angle: " + calcAngle);
+    SmartDashboard.putNumber("Target Angle:",calcAngle);
     return calcAngle;
 
   }

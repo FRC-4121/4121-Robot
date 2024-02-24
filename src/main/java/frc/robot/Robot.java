@@ -83,6 +83,9 @@ public class Robot extends TimedRobot {
     //Get color selection
     m_robotContainer.getColorSelection();
 
+    //Get shooter selection
+    m_robotContainer.getAngleSelection();
+
     //Check for note on board
     m_robotContainer.checkForNote();
 

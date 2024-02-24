@@ -27,12 +27,14 @@ public class ChangeSpeedCommand extends Command {
     if(isSlowMode == false){
       LinearSpeed = SlowMaxLinearSpeed;
       RotationalSpeed = SlowRadiansPerSecond;
+      maxYawRate = SlowMaxYawRate;
       isSlowMode = true;
       SmartDashboard.putBoolean("Slow Mode", true);
       System.out.println("Slow Mode");
     } else{
       LinearSpeed = MaxLinearSpeed;
       RotationalSpeed = MaxRadiansPerSecond;
+      maxYawRate = FastMaxYawRate;
       isSlowMode = false;
       SmartDashboard.putBoolean("Slow Mode", false);
       System.out.println("Fast Mode");
