@@ -54,13 +54,15 @@ public class RobotContainer {
   private final ChangeDriveMode changeModeCommand = new ChangeDriveMode();
 
   // Auto Commands
-  private final AutoDrive autoDriveCommand = new AutoDrive(swervedrivewpi, 0.1, 110.0, 0.0, 0.0, 10.0);
+  private final AutoDrive autoDriveCommand = new AutoDrive(swervedrivewpi, 0.1, 110.0, 0.0, 0.0, 0.02, 10.0);
   private final AutoPickupNote autoPickupNoteCommand = new AutoPickupNote(swervedrivewpi,intake,shooter,table, 10);
   private final AutoShooterAmpPos autoShooterAmpPosCommand = new AutoShooterAmpPos(shooterAngle,shooter,processor,intake,5.0);
   private final AutoShooterPos autoShooterPosCommand = new AutoShooterPos(shooterAngle, table);
   private final Auto1NoteCenter auto1NoteCenterCommand = new Auto1NoteCenter(swervedrivewpi, shooter, processor, intake);
   private final Auto1NoteLeft auto1NoteLeftCommand = new Auto1NoteLeft(swervedrivewpi, shooter, processor, intake);
   private final Auto1NoteRight auto1NoteRightCommand = new Auto1NoteRight(swervedrivewpi, shooter, processor, intake);
+  private final Auto2NoteCenter auto2NoteCenterCommand = new Auto2NoteCenter(swervedrivewpi, shooter, processor, intake);
+  private final Auto2NoteLeft auto2NoteLeftCommand = new Auto2NoteLeft(swervedrivewpi, shooter, processor, intake);
 
   //KillAuto Command
   private final KillAutoCommand killAutoObject = new KillAutoCommand(); 
@@ -185,7 +187,7 @@ public class RobotContainer {
     climberButton.onTrue(climberCommand);
     runAngleDownButton.whileTrue(angleDownCommand);
     runAngleUpButton.whileTrue(angleUpCommand);
-    autoShooterPosButton.onTrue(autoShooterPosCommand);
+    autoShooterPosButton.onTrue(autoDriveCommand);
 
 
   }
@@ -347,9 +349,11 @@ public class RobotContainer {
       position = autoPosition;
     }
 
-    String autoDecision = position + Double.toString(autoNotes);
+    String autoDecision = position + Integer.toString(autoNotes);
     Command autoCommand = auto1NoteCenterCommand;
 
+    System.out.println("Auto Cmd: " + autoDecision);
+    SmartDashboard.putString("Auto Cmd: ", autoDecision);
     switch (autoDecision) {
 
       case "Left1":
@@ -357,11 +361,11 @@ public class RobotContainer {
         break;
 
       case "Left2":
-        autoCommand = fieldDriveCommand;
+        autoCommand = auto2NoteLeftCommand;
         break;
 
       case "Left3":
-        autoCommand = fieldDriveCommand;
+        autoCommand = auto2NoteLeftCommand;
         break;
 
       case "Right1":
@@ -381,11 +385,11 @@ public class RobotContainer {
         break;
 
       case "Center2":
-        autoCommand = fieldDriveCommand;
+        autoCommand = auto2NoteCenterCommand;
         break;
 
       case "Center3":
-        autoCommand = fieldDriveCommand;
+        autoCommand = auto2NoteCenterCommand;
         break;
 
       default: 
@@ -402,7 +406,7 @@ public class RobotContainer {
    * Zero positions of all mechanisms
    */
   public void zeroRobot() {
-    
+    shooterAngle.zeroEncoder();
   }
 
   /*

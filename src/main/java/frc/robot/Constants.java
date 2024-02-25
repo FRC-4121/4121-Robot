@@ -64,12 +64,21 @@ public final class Constants {
         public static final double anglePIDkIs[] = { 2.25, 2.25, 2.25, 2.25 };
         public static final double anglePIDkDs[] = { 0.04, 0.04, 0.04, 0.04 };
         public static double angleLimiters[] = { 1.0, 1.0, 1.0, 1.0 };
+        public static final double kAnglePIDkp = 0.3;
+        public static final double kAnglePIDkd = 0.0;
+        public static final double kAnglePIDki = 0.0;
 
         // Auto drive PID constants
         public static final double kAutoDrivePIDkp = 0.03;
         public static final double kAutoDrivePIDkI = 0.0;
         public static final double kAutoDrivePIDkD = 0.0;
         public static final double kAutoDrivePIDkF = 0.0;
+        public static final double FastMaxYawRate = 0.2;
+        public static final double SlowMaxYawRate = 0.35;
+        public static double maxYawRate = 0.2;
+        public static final double kP_DriveAngle = 0.01;
+        public static final double kI_DriveAngle = 0.0;
+        public static final double kD_DriveAngle = 0.0;
 
         // Motion magic constants
         public static final int kSlotIdxDrive = 0;
@@ -83,7 +92,25 @@ public final class Constants {
         public static final Gains driveGains = new Gains(0.2, 0.0, 0.0, 0.2, 0, 1.0);
 
         // Collision constants
-        public static final double kCollisionThresholdDeltaG = 0.2;
+        public static final double kCollisionThresholdDeltaG = 80000;
+
+        // Motor Limits
+        public static final double MaxLinearSpeed = 3; // Max Speed in Meters per second
+        public static final double MaxRotationalSpeed = 1.5; // Max Speed in Radians per second, about pi/2 or 90
+                                                             // degrees
+        public static final double MaxRadiansPerSecond = Math.PI;
+        public static final double SlowMaxLinearSpeed = 0.75;// Max Speed during slow mode in meters per second
+        public static final double SlowRadiansPerSecond = (Math.PI / 2);// Max rotational speed during slow mode
+        public static final double slowSpeed = 0.3;
+        public static final double driveSpeed = 0.7;
+        public static double swerveDriveSpeedLimiter = 0.7;
+        public static double LinearSpeed = 3;
+        public static double RotationalSpeed = Math.PI;
+        public static final double autoSwerveDriveSpeedLimiter = 0.6;
+        public static final double autoSwerveDriveAngleLimiter = 2.0;
+        public static final double slowAngleSpeed = 0.5;
+        public static final double angleSpeed = 1.0;
+        public static final double MaxVoltsMK4 = 12.0; // max voltage of swerve module
 
         /*
          * West coast drive values
@@ -125,8 +152,8 @@ public final class Constants {
         public static final int BottomShooterID = 14;
 
         // General constants
-        public static final double TopShootSpeakerSpeed = -0.75;
-        public static final double BottomShootSpeakerSpeed = -0.75;
+        public static final double TopShootSpeakerSpeed = -0.65;
+        public static final double BottomShootSpeakerSpeed = -0.65;
         public static final double TopShootAmpSpeed = -0.08;//0.08 optimal
         public static final double BottomShootAmpSpeed = -0.3;//0.3 optimal
         public static final double TopShootIdleSpeed = -0.1;
@@ -160,13 +187,13 @@ public final class Constants {
   
         //Angles and distances for certain shots
         public static final double AmpAngle = 60;//degrees, needs to be confirmed
-        public static final double HighSpeakerAngle = 50;
-        public static final double LowSpeakerAngle = 32.5;
+        public static final double HighSpeakerAngle = 38;
+        public static final double LowSpeakerAngle = 31.5;
         public static final double MaxSpeakerAngle = 60;
         public static final double MinSpeakerAngle = 30;
         public static final double MinAutoDistance = 90;
         public static final double MaxAutoDistance = 140;
-        public static final double IdleAngle = 40;
+        public static final double IdleAngle = 53;
 
         //Shooter Angles
         public static double CurrentShooterAngle = 52;
@@ -295,26 +322,6 @@ public final class Constants {
 
     }
 
-    // Motor Limits
-    public static final double MaxLinearSpeed = 3; //Max Speed in Meters per second
-    public static final double MaxRotationalSpeed = 1.5; //Max Speed in Radians per second, about pi/2 or 90 degrees
-    public static final double MaxRadiansPerSecond = Math.PI;
-    public static final double SlowMaxLinearSpeed = 0.75;//Max Speed during slow mode in meters per second
-    public static final double SlowRadiansPerSecond = (Math.PI/2);//Max rotational speed during slow mode
-    public static double maxYawRate = 7.0;
-    public static final double FastMaxYawRate = 7.0;
-    public static final double SlowMaxYawRate = 4.0;
-    public static final double slowSpeed = 0.3;
-    public static final double driveSpeed = 0.7;
-    public static  double swerveDriveSpeedLimiter = 0.7;
-    public static double LinearSpeed = 3;
-    public static double RotationalSpeed = Math.PI;
-    public static final double autoSwerveDriveSpeedLimiter = 0.6;
-    public static final double autoSwerveDriveAngleLimiter = 2.0;
-    public static final double slowAngleSpeed = 0.5;
-    public static final double angleSpeed = 1.0;
-    public static final double MaxVoltsMK4 = 12.0; // max voltage of swerve module
-
     // General Constants
     public static boolean isParked = false;
     public static boolean isFieldOriented = true;
@@ -332,7 +339,7 @@ public final class Constants {
 
     // General variables
     public static boolean killAuto = false;
-    public static double autoNotes = 1;
+    public static int autoNotes = 1;
 
     public static final boolean kMotorInvert = true;// True -> right side motors are inverted
     public static final double kTalonFXPPR = 2048;
@@ -361,9 +368,6 @@ public final class Constants {
     public static final double kI_Turn = 0.0;
     public static final double kD_Turn = 0.0015;// was 0.0004
     
-    public static final double kP_DriveAngle = 11.0;
-    public static final double kI_DriveAngle = 8.0;
-    public static final double kD_DriveAngle = 0.04;
 
     public static final double kSpeedCorrection = 0.9; // this will be used to compensate for differnces in the drive
                                                        // motors

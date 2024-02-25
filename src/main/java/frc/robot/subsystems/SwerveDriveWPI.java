@@ -15,6 +15,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.*;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.math.controller.*;
 
 
 public class SwerveDriveWPI extends SubsystemBase {
@@ -72,6 +73,9 @@ public class SwerveDriveWPI extends SubsystemBase {
   private double lastLinearAccelX;
   private double lastLinearAccelY;
 
+  // Declare PID controller
+  private PIDController wpiPIDController;
+
   /**
    *  
    * Creates a new SwerveDrive
@@ -108,6 +112,10 @@ public class SwerveDriveWPI extends SubsystemBase {
     joystickDeadband = 0.05;
     lastLinearAccelX = 0.0;
     lastLinearAccelY = 0.0;
+
+    // Create PID controller
+    wpiPIDController = new PIDController(kAnglePIDkp, kAnglePIDki, kAnglePIDkd);
+    wpiPIDController.setTolerance(1.0, 5);
 
   }
 
@@ -165,7 +173,8 @@ public class SwerveDriveWPI extends SubsystemBase {
       yawDrift = 0;
     }
     
-    double omegaRadiansPerSecond = (RotationalSpeed) * (rightX + (yawDrift/maxYawRate));
+    double pidOutput = -wpiPIDController.calculate(yawDrift, 0.0);    
+    double omegaRadiansPerSecond = (RotationalSpeed) * (rightX + pidOutput);
     //double omegaRadiansPerSecond = (RotationalSpeed) * (rightX);
 
     // Put values on dashboard for testing/debugging

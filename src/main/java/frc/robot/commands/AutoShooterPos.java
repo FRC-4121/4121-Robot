@@ -255,7 +255,7 @@ public class AutoShooterPos extends Command {
   public double getTargetAngle(double distance) {
 
     System.out.println("Target Distance: " + distance);
-    double calcAngle = filter.calculate(((HighSpeakerAngle - LowSpeakerAngle)/(MaxAutoDistance - MinAutoDistance)) * (MaxAutoDistance - distance) + LowSpeakerAngle);
+    double calcAngle = filter.calculate(((LowSpeakerAngle - HighSpeakerAngle)/(MaxAutoDistance - MinAutoDistance)) * (distance - MinAutoDistance) + HighSpeakerAngle);
     System.out.println("Calculated Angle: " + calcAngle);
     SmartDashboard.putNumber("Target Angle:",calcAngle);
     return calcAngle;

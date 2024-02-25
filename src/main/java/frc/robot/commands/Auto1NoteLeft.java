@@ -15,6 +15,6 @@ public class Auto1NoteLeft extends SequentialCommandGroup {
   public Auto1NoteLeft(SwerveDriveWPI swerve, Shooter shoot, Processor process, Intake in) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    addCommands(new RunShooterSpeaker(shoot, process, in, 2), new AutoDriveAndIntake(swerve, process, in, 0.1, 90.0, 10.0, 0.0, 10.0));
+    addCommands(new RunShooterSpeaker(shoot, process, in, 2), new AutoDriveAndIntake(swerve, process, in, 0.1, 80.0, 10.0, 0.0, 0.045, 10.0));
   }
 }

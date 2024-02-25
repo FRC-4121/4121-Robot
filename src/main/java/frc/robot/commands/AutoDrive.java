@@ -6,6 +6,7 @@ package frc.robot.commands;
 
 import static frc.robot.Constants.*;
 import static frc.robot.Constants.ControlConstants.*;
+import static frc.robot.Constants.DriveConstants.*;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -35,13 +36,14 @@ public class AutoDrive extends Command {
   private PIDController pidFrontAngle;
 
   //Distance is in inches, target rotation is a value from -1 to 1 or and angle? 
-  public AutoDrive(SwerveDriveWPI drive, double speed, double dis, double ang, double heading, double time) {
+  public AutoDrive(SwerveDriveWPI drive, double speed, double dis, double ang, double heading, double rotation, double time) {
    
     targetSpeed = speed;
     targetDriveDistance = dis;
     targetAngle = ang; //Divide by 360 to get a value from 0 to 1 for compatibility with SwerveDrive as a RightX
     frontAngle = heading;
     stopTime = time;
+    targetRotation = rotation;
     drivetrain = drive;
 
     addRequirements(drivetrain);
@@ -78,7 +80,7 @@ public class AutoDrive extends Command {
 
     if (firstRun) {
       
-      drivetrain.resetDistance();;
+      drivetrain.resetDistance();
 
       gyroOffset = 0;
       SmartDashboard.putNumber("Gyro Offset", gyroOffset);
@@ -90,7 +92,7 @@ public class AutoDrive extends Command {
     currentGyroAngle = drivetrain.getGyroAngle();
   
     //targetRotation = pidFrontAngle.calculate(currentGyroAngle, frontAngle) * kJoystickSpeedCorr;
-    targetRotation = 0;
+    
 
     SmartDashboard.putNumber("DriveSpeed", targetSpeed);
     // Enforce minimum speed
@@ -140,11 +142,7 @@ public class AutoDrive extends Command {
     distanceTraveled = drivetrain.calculateDriveDistance();
 
     // Check for stopping conditions
-    if (impactDetected) {
-
-      thereYet = true;
-
-    } else if (distanceTraveled >= targetDriveDistance) {
+    if (distanceTraveled >= targetDriveDistance) {
 
        thereYet = true;
 

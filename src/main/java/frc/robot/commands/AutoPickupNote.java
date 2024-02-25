@@ -13,9 +13,7 @@ import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 import frc.robot.ExtraClasses.NetworkTableQuerier;
 import static frc.robot.Constants.*;
-import static frc.robot.Constants.DriveConstants.kAutoDrivePIDkD;
-import static frc.robot.Constants.DriveConstants.kAutoDrivePIDkI;
-import static frc.robot.Constants.DriveConstants.kAutoDrivePIDkp;
+import static frc.robot.Constants.DriveConstants.*;
 
 import edu.wpi.first.math.controller.*;
 

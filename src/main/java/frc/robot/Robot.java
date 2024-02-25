@@ -8,9 +8,11 @@ import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.Constants.MechanismConstants;
 import frc.robot.subsystems.cameras.CameraBuilder;
 
 import static frc.robot.Constants.*;
+import static frc.robot.Constants.DriveConstants.*;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
@@ -99,10 +101,10 @@ public class Robot extends TimedRobot {
     }
 
     // Check for number of notes to shoot in auto
-    autoNotes = SmartDashboard.getNumber("Auto Notes", 2);
+    autoNotes = (int)SmartDashboard.getNumber("Auto Notes", 2);
 
     // Check current speed setting and update dashboard
-    if (LinearSpeed == 5){
+    if (LinearSpeed == MaxLinearSpeed){
       SmartDashboard.putBoolean("Slow Mode", false);
     } else {
       SmartDashboard.putBoolean("Slow Mode", true);
@@ -145,8 +147,11 @@ public class Robot extends TimedRobot {
       m_autonomousCommand.schedule();
     }
 
+    // Zero the shooter angle encoder
+    m_robotContainer.zeroRobot();
+
     //Set robot to robot oriented driving
-    isFieldOriented = false;
+    isFieldOriented = true;
   }
 
   /** This function is called periodically during autonomous. */
