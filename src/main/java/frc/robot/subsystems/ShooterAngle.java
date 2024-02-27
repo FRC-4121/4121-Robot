@@ -64,10 +64,18 @@ public class ShooterAngle extends SubsystemBase {
 
   public void runPivot(double speed){
     
+    if(CurrentShooterAngle >= 50)
+    {
+      pivotMotor.set(speed*0.5);
+    } else{
     pivotMotor.set(speed);
+    }
 
     if(TopSwitch.get() == true)
     {
+      if(speed > 0){
+        pivotMotor.set(0);
+      }
       pivotMotor.setSelectedSensorPosition(0);
     } else if(BottomSwitch.get() == true)
     {

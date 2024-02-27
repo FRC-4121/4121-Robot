@@ -152,6 +152,12 @@ public class Robot extends TimedRobot {
 
     //Set robot to robot oriented driving
     isFieldOriented = true;
+
+    //Make sure the robot is in fast mode
+    LinearSpeed = MaxLinearSpeed;
+    RotationalSpeed = MaxRadiansPerSecond;
+    maxYawRate = FastMaxYawRate;
+    isSlowMode = false;
   }
 
   /** This function is called periodically during autonomous. */

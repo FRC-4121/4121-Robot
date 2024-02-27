@@ -24,9 +24,9 @@ public class PhotoElecSensor {
 
         if(photoSensor.get())
         {
-            noteOnBoard = false;//If the photosensor is not blocked, a ring is not on board
+            noteOnBoard = true;//If the photosensor is not blocked, a ring is not on board
         } else{
-            noteOnBoard = true;//If the photosensor is blocked, a ring is on board
+            noteOnBoard = false;//If the photosensor is blocked, a ring is on board
         }
         
     }

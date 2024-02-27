@@ -152,8 +152,8 @@ public final class Constants {
         public static final int BottomShooterID = 14;
 
         // General constants
-        public static final double TopShootSpeakerSpeed = -0.65;
-        public static final double BottomShootSpeakerSpeed = -0.65;
+        public static final double TopShootSpeakerSpeed = -0.7;
+        public static final double BottomShootSpeakerSpeed = -0.7;
         public static final double TopShootAmpSpeed = -0.08;//0.08 optimal
         public static final double BottomShootAmpSpeed = -0.3;//0.3 optimal
         public static final double TopShootIdleSpeed = -0.1;
@@ -188,7 +188,7 @@ public final class Constants {
         //Angles and distances for certain shots
         public static final double AmpAngle = 60;//degrees, needs to be confirmed
         public static final double HighSpeakerAngle = 38;
-        public static final double LowSpeakerAngle = 31.5;
+        public static final double LowSpeakerAngle = 30;
         public static final double MaxSpeakerAngle = 60;
         public static final double MinSpeakerAngle = 30;
         public static final double MinAutoDistance = 90;
@@ -196,7 +196,7 @@ public final class Constants {
         public static final double IdleAngle = 53;
 
         //Shooter Angles
-        public static double CurrentShooterAngle = 52;
+        public static double CurrentShooterAngle = 60;
         public static final double ShooterAngleTolerance = 1;
         public static double ShooterTargetAngle = 40;
         public static double LastShooterAngle = 40;
@@ -237,10 +237,7 @@ public final class Constants {
          */
 
         // General Constants
-        //public static double ledColor = 0.63; // 0.65 is orange, the default color
-        public static int ledRed = 255;
-        public static int ledGreen = 165;
-        public static int ledBlue = 0;
+        public static double ledColor = 0.55; // 0.65 is orange, the default color
         public static Boolean getCone = false; // Are the led's yellow
        
         /**

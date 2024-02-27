@@ -18,6 +18,6 @@ public class Auto2NoteCenter extends SequentialCommandGroup {
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(new RunShooterSpeaker(shoot, process, in, 2), 
     new AutoDriveAndIntake(swerve,process,in,0.2, 100.0, 0.0, 0.0, 0.02, 10.0), 
-    new AutoRunShooterSpeaker(shoot, process, in, 2));
+    new AutoRunShooterSpeaker(shoot, process, in, 4));
   }
 }
