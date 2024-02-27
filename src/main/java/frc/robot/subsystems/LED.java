@@ -6,29 +6,16 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.motorcontrol.Spark;
-import edu.wpi.first.wpilibj.AddressableLED;
-import edu.wpi.first.wpilibj.AddressableLEDBuffer;
-import edu.wpi.first.wpilibj.AddressableLED.*;
 
 public class LED extends SubsystemBase {
   
   //Blinkin
-  //Spark ledController;
+  Spark ledController;
 
-  //Rio LED
-  AddressableLED led;
-  AddressableLEDBuffer buffer;
-  
   /** Creates a new LED. */
   public LED() {
 
-    //ledController = new Spark(7); 
-    led = new AddressableLED(0);
-    buffer = new AddressableLEDBuffer(120);
-    led.setLength(buffer.getLength());
-    led.setData(buffer);
-    led.start();
-
+    ledController = new Spark(7); 
 
   }
 
@@ -37,13 +24,8 @@ public class LED extends SubsystemBase {
     // This method will be called once per scheduler run
   }
 
-  public void setColor(int red, int green, int blue) {
+  public void setColor(double color) {
     
-    //ledController.set(color);
-    for(int i = 0; i < buffer.getLength(); i++){
-    buffer.setRGB(i,red,green,blue);
-    }
-
-    led.setData(buffer);
+    ledController.set(color);
   }
 }

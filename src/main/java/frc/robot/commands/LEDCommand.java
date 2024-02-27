@@ -30,7 +30,7 @@ public class LEDCommand extends Command {
   @Override
   public void execute() {
 
-    led.setColor(ledRed,ledGreen,ledBlue);
+    led.setColor(ledColor);
 
   }
 

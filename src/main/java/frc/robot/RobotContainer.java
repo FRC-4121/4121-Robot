@@ -63,6 +63,7 @@ public class RobotContainer {
   private final Auto1NoteRight auto1NoteRightCommand = new Auto1NoteRight(swervedrivewpi, shooter, processor, intake);
   private final Auto2NoteCenter auto2NoteCenterCommand = new Auto2NoteCenter(swervedrivewpi, shooter, processor, intake);
   private final Auto2NoteLeft auto2NoteLeftCommand = new Auto2NoteLeft(swervedrivewpi, shooter, processor, intake);
+  private final Auto2NoteRight auto2NoteRightCommand = new Auto2NoteRight(swervedrivewpi, shooter, processor, intake);
 
   //KillAuto Command
   private final KillAutoCommand killAutoObject = new KillAutoCommand(); 
@@ -202,22 +203,16 @@ public class RobotContainer {
     
     if (noteOnBoard == true) {
       
-      //ledColor = 0.65; //Orange
-      
-      //Orange
-      ledRed = 0;
-      ledGreen = 255;
-      ledBlue = 0;
+      ledColor = 0.65; //Orange
+    
  
     } else {
       
-      //ledColor = 0.55; //Default Pattern 
-      //Orange
-      ledRed = 255;
-      ledGreen = 165;
-      ledBlue = 0;
+      ledColor = 0.55; //Default Pattern 
 
     }
+
+    led.setColor(ledColor);
   }
 
   /*
@@ -375,11 +370,11 @@ public class RobotContainer {
         break;
 
       case "Right2":
-        autoCommand = fieldDriveCommand;
+        autoCommand = auto2NoteRightCommand;
         break;
 
       case "Right3":
-        autoCommand = fieldDriveCommand;
+        autoCommand = auto2NoteRightCommand;
         break;
 
       case "Center1":

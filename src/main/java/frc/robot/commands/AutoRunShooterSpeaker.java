@@ -53,7 +53,7 @@ public class AutoRunShooterSpeaker extends Command {
   @Override
   public void execute() {
 
-    if (timer.get() - startTime > 1) {
+    if (timer.get() - startTime > 2) {
 
       canShoot = true;
     } 

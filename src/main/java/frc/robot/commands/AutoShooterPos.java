@@ -79,13 +79,19 @@ public class AutoShooterPos extends Command {
       // Find the closest tag
       for (int i = 0; i < tagsFound; i++) {
 
-        if (ntable.getTagInfo("Cam2",i,"distance") < closestDistance) {
+        if (blueAlliance) {
+          if (ntable.getTagInfo("Cam2", i, "id") == BlueSpeakerCenterID) {
 
-          closestDistance = ntable.getTagInfo("Cam2",i,"distance");
-          closestTag = i;
+            closestTag = i;
 
+          }
+        } else {
+          if (ntable.getTagInfo("Cam2", i, "id") == RedSpeakerCenterID) {
+
+            closestTag = i;
+
+          }
         }
-
       }
 
       // Get ID and distance for closest tag
@@ -97,10 +103,10 @@ public class AutoShooterPos extends Command {
       System.out.println("Blue Alliance:"+blueAlliance);
 
       // Determine if the tag belongs to my alliance
-      if (blueAlliance && (tagID == BlueAmpID || tagID == BlueSpeakerCenterID || tagID == BlueSpeakerSideID)) {
+      if (blueAlliance && tagID == BlueSpeakerCenterID) {
         isMyTag = true;
       }
-      else if (!blueAlliance && (tagID == RedAmpID || tagID == RedSpeakerCenterID || tagID == RedSpeakerSideID)) {
+      else if (!blueAlliance && tagID == RedSpeakerCenterID) {
         isMyTag = true;
       }
 
