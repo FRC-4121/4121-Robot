@@ -46,14 +46,17 @@ public final class Constants {
         public static final int kLeftBackCoder = 12;
 
         // Swerve drive calculation constants
+        public static final double kTalonFXPPR = 2048;
+        public static final double kWheelDiameter = 4.0;
+        public static final double kDriveGearRatio = 8.14;        
         public static final double DRIVETRAIN_TRACKWIDTH_METERS = 0.546;
         public static final double DRIVETRAIN_WHEELBASE_METERS = 0.546;
         public static final double DRIVETRAIN_TRACKWIDTH_INCH = 21.50;
         public static final double DRIVETRAIN_WHEELBASE_INCH = 21.5;
         public static final double lengthFromAxle = 23.5;
         public static final double widthFromAxle = 19.5;
-        public static final double leftGyroCorrection = 53;//Gyro correction in degrees
-        public static final double rightGyroCorrection = 307;//Gyro correction in degrees
+        public static final double leftGyroCorrection = -53;//Gyro correction in degrees (was 53)
+        public static final double rightGyroCorrection = 53;//Gyro correction in degrees (was 307)
 
         // Swerve drive PID constants
         public static final double drivePIDkPs[] = { 0.0, 0.0, 0.0, 0.0 };
@@ -317,12 +320,16 @@ public final class Constants {
         /*
          * General Control Constants
          */
-
         public static final double kJoystickSpeedCorr = 1;
+        public static final double kJoystickTolerance = 0.01;
 
     }
 
-    // General Constants
+    /**
+     * General Robot Constants
+     */
+
+    // General Crescendo Constants
     public static boolean isParked = false;
     public static boolean isFieldOriented = true;
     public static boolean isSlowMode = false;
@@ -332,22 +339,17 @@ public final class Constants {
     public static Boolean readyToShoot = false;
     public static boolean photoSensorIsNotBlocked;
     public static Boolean impactDetected = false;
-
-    /**
-     * General Robot Constants
-     */
+    public static int autoNotes = 1;
 
     // General variables
     public static boolean killAuto = false;
-    public static int autoNotes = 1;
+    public static final double degreesToRads = 0.0174533;
 
     public static final boolean kMotorInvert = true;// True -> right side motors are inverted
-    public static final double kTalonFXPPR = 2048;
-    public static final double kWheelDiameter = 3.75;
+
     public static final double kLowGearSpeedCap = 0.8;// In case full speed draws excessive power, these are an
                                                       // emergency measure
     public static final double kHighGearSpeedCap = 1.0;
-    public static final double kDriveGearRatio = 8.14;
     public static final double kManualDriveSpeed = 0.75;
     public static final double kAutoDriveSpeed = 0.5;
     public static final double kAutoDriveSpeedMin = 0.25;
@@ -382,14 +384,6 @@ public final class Constants {
     public static double currentGear = kHighGearMultiplier;
 
     //Shooter variables
-    public static double shooterTargetRPM = 100;// need to test to figure out
-    public static double shooterActualRPM = 0;
-    public static final double shooterRPMTol = 100;  // tolerance for shooter RPM
-    public static boolean shootLow = true;
-    public static double lidarMin = 2;
-    public static double lidarMax = 140;//need to test to find
-    public static double visionDistanceTolerance = 10;
-    public static double defaultShooterSpeed = 0.26;
     public static final double kP_Shoot = 0.00027; //was 0.1
     public static final double kI_Shoot = 0.000025;
     public static final double kD_Shoot = 0.000055;

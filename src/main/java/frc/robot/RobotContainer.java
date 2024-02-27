@@ -143,6 +143,8 @@ public class RobotContainer {
     //Make sure the positions are zero
     zeroRobot();
 
+    // Calibrate the gyro
+    swervedrivewpi.calibrateGyro();
 
   }
 
@@ -403,10 +405,11 @@ public class RobotContainer {
   }
 
   /*
-   * Zero positions of all mechanisms
+   * Zero positions of all mechanisms and gyro
    */
   public void zeroRobot() {
     shooterAngle.zeroEncoder();
+    swervedrivewpi.zeroGyro();
   }
 
   /*

@@ -89,9 +89,10 @@ public class AutoDrive extends Command {
     }
 
     // Calculate heading correction based on gyro reading and target heading
-    currentGyroAngle = drivetrain.getGyroAngle();
+    //currentGyroAngle = drivetrain.getGyroAngle();
+    currentGyroAngle = drivetrain.getGyroYaw();
   
-    //targetRotation = pidFrontAngle.calculate(currentGyroAngle, frontAngle) * kJoystickSpeedCorr;
+    targetRotation = pidFrontAngle.calculate(Math.toRadians(currentGyroAngle), Math.toRadians(frontAngle));
     
 
     SmartDashboard.putNumber("DriveSpeed", targetSpeed);

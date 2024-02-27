@@ -61,7 +61,6 @@ public class SwerveDriveWPI extends SubsystemBase {
 
   // Declare misc variables
   private double joystickDeadband;
-  private double yawDrift;
 
   // Declare distance calculation variables
   private double LeftFrontStartingEncoder;
@@ -143,8 +142,8 @@ public class SwerveDriveWPI extends SubsystemBase {
    * Moves the robot by calculating the speed and angle for each
    * swerve module based on joystick input
    * 
-   * @param leftX  The left-right position of the left joystick. Controls slew.
-   * @param leftY  The up-down position of the left joystick. Controls forward/backward.
+   * @param leftX  The left-right position of the left joystick. Controls slew.  This is Y direction (left +) in WPI coordinate system.
+   * @param leftY  The up-down position of the left joystick. Controls forward/backward.  This is X direction (up +) in WPI coordinate system.
    * @param rightX  The left-right position of the right joystick. Controls rotation.
    * 
    */
@@ -167,14 +166,15 @@ public class SwerveDriveWPI extends SubsystemBase {
     }
 
     //double omegaRadiansPerSecond = -((((-MaxRotationalSpeed / MaxLinearSpeed) * vTotalMetersPerSecond) + MaxRotationalSpeed) * rightX);
-    if(rightX == 0){
-      yawDrift = getGyroYawRate();
+    double omegaRadiansPerSecond = 0.0;
+    if(Math.abs(rightX) < kJoystickTolerance){
+      double pidOutput = wpiPIDController.calculate(getGyroYawRate()*degreesToRads, 0.0); 
+      omegaRadiansPerSecond = RotationalSpeed * pidOutput;
     } else{
-      yawDrift = 0;
+      omegaRadiansPerSecond = RotationalSpeed * rightX;
     }
     
-    double pidOutput = -wpiPIDController.calculate(yawDrift, 0.0);    
-    double omegaRadiansPerSecond = (RotationalSpeed) * (rightX + pidOutput);
+    //double omegaRadiansPerSecond = (RotationalSpeed) * (rightX + pidOutput);
     //double omegaRadiansPerSecond = (RotationalSpeed) * (rightX);
 
     // Put values on dashboard for testing/debugging
@@ -189,7 +189,8 @@ public class SwerveDriveWPI extends SubsystemBase {
     // Create Chassis Speed based on drive mode
     if (isFieldOriented) {
 
-      speeds = ChassisSpeeds.fromFieldRelativeSpeeds(vxMetersPerSecond, vyMetersPerSecond, omegaRadiansPerSecond, Rotation2d.fromDegrees(getGyroAngle()));
+      //speeds = ChassisSpeeds.fromFieldRelativeSpeeds(vxMetersPerSecond, vyMetersPerSecond, omegaRadiansPerSecond, Rotation2d.fromDegrees(getGyroAngle()));
+      speeds = ChassisSpeeds.fromFieldRelativeSpeeds(vxMetersPerSecond, vyMetersPerSecond, omegaRadiansPerSecond, Rotation2d.fromDegrees(getGyroYaw()));
 
     }
     else {
@@ -320,12 +321,43 @@ public class SwerveDriveWPI extends SubsystemBase {
   }
 
   /**
+   * Gets the gyro yaw angle (-180 to 180)
+   * @return Corrected yaw angle
+   */
+  public double getGyroYaw() {
+
+    // Get filtered yaw angle (in degrees)
+    // Negate value to be consistent with WPI coordinate system
+    double gyroYaw = -gyro_filter.calculate(gyro.getYaw());
+
+    // Make sure we don't see -180
+    if (gyroYaw == -180.0) {
+      gyroYaw = 180.0;
+    }
+
+    // Correct angle for starting position
+    if (autoPosition == "Left") {
+      gyroYaw = gyroYaw + leftGyroCorrection;
+    }
+    if (autoPosition == "Right") {
+      gyroYaw = gyroYaw + rightGyroCorrection;
+    }
+
+    // Put angle on the dashboard for driver
+    SmartDashboard.putNumber("C-Gyro", gyroYaw);
+
+    // Return yaw angle
+    return gyroYaw;
+
+  }
+
+  /**
    * Get the current yaw rate of the gyro
    * @return
    */
   public double getGyroYawRate() {
 
-    double yawRate = yaw_filter.calculate(gyro.getRate());
+    double yawRate = -yaw_filter.calculate(gyro.getRate());
     return yawRate;
 
   } 
@@ -339,6 +371,13 @@ public class SwerveDriveWPI extends SubsystemBase {
     // gyro.calibrate();
     gyro.reset();
 
+  }
+
+  /*
+   * Calibrate the gyro board
+   */
+  public void calibrateGyro() {
+    gyro.calibrate();
   }
 
   /** 
