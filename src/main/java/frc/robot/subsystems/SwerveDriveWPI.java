@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import static frc.robot.Constants.*;
 import static frc.robot.Constants.DriveConstants.*;
 import static frc.robot.Constants.MechanismConstants.*;
+import static frc.robot.Constants.ControlConstants.*;
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.math.filter.MedianFilter;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -189,8 +190,8 @@ public class SwerveDriveWPI extends SubsystemBase {
     // Create Chassis Speed based on drive mode
     if (isFieldOriented) {
 
-      //speeds = ChassisSpeeds.fromFieldRelativeSpeeds(vxMetersPerSecond, vyMetersPerSecond, omegaRadiansPerSecond, Rotation2d.fromDegrees(getGyroAngle()));
-      speeds = ChassisSpeeds.fromFieldRelativeSpeeds(vxMetersPerSecond, vyMetersPerSecond, omegaRadiansPerSecond, Rotation2d.fromDegrees(getGyroYaw()));
+      speeds = ChassisSpeeds.fromFieldRelativeSpeeds(vxMetersPerSecond, vyMetersPerSecond, omegaRadiansPerSecond, Rotation2d.fromDegrees(getGyroAngle()));
+      //speeds = ChassisSpeeds.fromFieldRelativeSpeeds(vxMetersPerSecond, vyMetersPerSecond, omegaRadiansPerSecond, Rotation2d.fromDegrees(getGyroYaw()));
 
     }
     else {
@@ -371,13 +372,6 @@ public class SwerveDriveWPI extends SubsystemBase {
     // gyro.calibrate();
     gyro.reset();
 
-  }
-
-  /*
-   * Calibrate the gyro board
-   */
-  public void calibrateGyro() {
-    gyro.calibrate();
   }
 
   /** 

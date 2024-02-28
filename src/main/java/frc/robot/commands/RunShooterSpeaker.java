@@ -9,6 +9,7 @@ import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Processor;
 import frc.robot.subsystems.Intake;
 
+import static frc.robot.Constants.MechanismConstants.*;
 import static frc.robot.Constants.MechanismConstants.BottomShootSpeakerSpeed;
 import static frc.robot.Constants.MechanismConstants.TopShootSpeakerSpeed;
 import static frc.robot.Constants.MechanismConstants.shooterDelay;
@@ -49,6 +50,8 @@ public class RunShooterSpeaker extends Command {
     // Initialize local variables
     canShoot = false;
 
+    PauseAutoPosition = true;
+
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -77,6 +80,8 @@ public class RunShooterSpeaker extends Command {
     shooter.runShooterAuto(0.0, 0.0);
     processor.runProcessor(0.0);
     intake.runIntake(0);
+
+    PauseAutoPosition = false;
     
   }
 

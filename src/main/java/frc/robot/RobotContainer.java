@@ -82,7 +82,8 @@ public class RobotContainer {
   
 
   //Intake Command
-  private final RunIntake intakeCommand = new RunIntake(intake);
+  private final RunIntake intakeCommand = new RunIntake(intake,processor);
+  private final RunProcessorBack processorBackCommand = new RunProcessorBack(processor);
   private final TakeInNote takeInNoteCommand = new TakeInNote(intake,processor,10);
 
   //Climber Command
@@ -100,6 +101,8 @@ public class RobotContainer {
   private final Trigger runAngleDownButton;
   private final Trigger runAngleUpButton;
   private final Trigger autoShooterPosButton;
+  private final Trigger manualIntakeButton;
+  private final Trigger processorBackButton;
   
   // Launchpad (OI) Buttons/Switches
   private final Trigger killAutoButton;
@@ -124,6 +127,8 @@ public class RobotContainer {
     runAngleDownButton = new JoystickButton(secondaryXbox,xboxLeftBumber);
     runAngleUpButton = new JoystickButton(secondaryXbox,xboxRightBumber);
     autoShooterPosButton = new JoystickButton(secondaryXbox,xboxBButton);
+    processorBackButton = new JoystickButton(secondaryXbox,xboxAButton);
+    manualIntakeButton = new JoystickButton(xbox,xboxLeftBumber);
     
     // Initialize Launchpad (OI) Buttons/Switches
     killAutoButton = new JoystickButton(launchpad,LaunchPadButton1);
@@ -143,10 +148,6 @@ public class RobotContainer {
 
     //Make sure the positions are zero
     zeroRobot();
-
-    // Calibrate the gyro
-    swervedrivewpi.calibrateGyro();
-
   }
 
 

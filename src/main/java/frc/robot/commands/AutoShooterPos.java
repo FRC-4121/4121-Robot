@@ -201,6 +201,7 @@ public class AutoShooterPos extends Command {
     System.out.println("Target Angle:" + ShooterTargetAngle);
     System.out.println("PID Output:" + pidOutput);
 
+    if(PauseAutoPosition == false) {
     // Run angle motor at new speed (as long as we aren't at bounds)
     if (Math.abs(CurrentShooterAngle - ShooterTargetAngle) > ShooterAngleTolerance) {
 
@@ -229,7 +230,7 @@ public class AutoShooterPos extends Command {
       System.out.println("Angle Motor Speed: 0.0");
 
     }
-  }
+  }}
 
   }
 

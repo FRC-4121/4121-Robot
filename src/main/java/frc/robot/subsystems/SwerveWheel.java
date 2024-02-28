@@ -132,12 +132,14 @@ public class SwerveWheel extends SubsystemBase {
     if (target == 1.0) {
       target = 0.0;
     }
+    //double target = angle;
 
     //Normalize encoder to have a max value of 1 and correct for discontinuity at 360 degrees (should be 0)
     double encoderAngle = canCoder.getAbsolutePosition() / 360;
     if (encoderAngle == 1.0) {
       encoderAngle = 0.0;
     }
+    //double encoderAngle = canCoder.getAbsolutePosition() / 180;
 
     //Putting CANCoder position on smart dashboard
     SmartDashboard.putNumber("Wheel "+ wheelID, encoderAngle);

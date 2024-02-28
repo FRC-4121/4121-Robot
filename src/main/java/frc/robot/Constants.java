@@ -67,8 +67,8 @@ public final class Constants {
         public static final double anglePIDkIs[] = { 2.25, 2.25, 2.25, 2.25 };
         public static final double anglePIDkDs[] = { 0.04, 0.04, 0.04, 0.04 };
         public static double angleLimiters[] = { 1.0, 1.0, 1.0, 1.0 };
-        public static final double kAnglePIDkp = 0.3;
-        public static final double kAnglePIDkd = 0.0;
+        public static final double kAnglePIDkp = 10.0;
+        public static final double kAnglePIDkd = 0.075;
         public static final double kAnglePIDki = 0.0;
 
         // Auto drive PID constants
@@ -155,8 +155,8 @@ public final class Constants {
         public static final int BottomShooterID = 14;
 
         // General constants
-        public static final double TopShootSpeakerSpeed = -0.7;
-        public static final double BottomShootSpeakerSpeed = -0.7;
+        public static final double TopShootSpeakerSpeed = -0.8;
+        public static final double BottomShootSpeakerSpeed = -0.8;
         public static final double TopShootAmpSpeed = -0.08;//0.08 optimal
         public static final double BottomShootAmpSpeed = -0.3;//0.3 optimal
         public static final double TopShootIdleSpeed = -0.1;
@@ -172,7 +172,7 @@ public final class Constants {
         public static final int kPivotMotorID = 15;
 
         // PID values
-        public static final double kShooterAngleKP = 0.045;
+        public static final double kShooterAngleKP = 0.06;
         public static final double kShooterAngleKI = 0;
         public static final double kShooterAngleKD = 0;
         public static final double kShooterAngleFF = 0;
@@ -186,27 +186,29 @@ public final class Constants {
         // Angle Motor Configuration
         public static final IdleMode kAngleMotorIdleMode = IdleMode.kBrake;
         public static final int kAngleMotorCurrentLimit = 20;
-        public static final double AngleMotorSpeed = 0.25;
+        public static final double AngleMotorSpeed = 0.35;
+        public static final double ManualAngleMotorSpeed = 0.25;
   
         //Angles and distances for certain shots
         public static final double AmpAngle = 60;//degrees, needs to be confirmed
-        public static final double HighSpeakerAngle = 38;
+        public static final double HighSpeakerAngle = 53;
         public static final double LowSpeakerAngle = 30;
-        public static final double MaxSpeakerAngle = 60;
+        public static final double MaxSpeakerAngle = 55;
         public static final double MinSpeakerAngle = 30;
-        public static final double MinAutoDistance = 90;
-        public static final double MaxAutoDistance = 140;
+        public static final double MinAutoDistance = 70;
+        public static final double MaxAutoDistance = 150;
         public static final double IdleAngle = 53;
 
         //Shooter Angles
         public static double CurrentShooterAngle = 60;
-        public static final double ShooterAngleTolerance = 1;
+        public static final double ShooterAngleTolerance = 0.5;
         public static double ShooterTargetAngle = 40;
         public static double LastShooterAngle = 40;
         public static Boolean AutoShooterPositioning = false;
+        public static Boolean PauseAutoPosition = false;
 
         //Shooter Angle Encoder
-        public static double MaxEncoderPos = 25230;
+        public static double MaxEncoderPos = 26500;
 
         /*
          * Processor System Constants
