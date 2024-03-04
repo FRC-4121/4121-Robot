@@ -13,6 +13,7 @@ import frc.robot.subsystems.cameras.CameraBuilder;
 
 import static frc.robot.Constants.*;
 import static frc.robot.Constants.DriveConstants.*;
+import static frc.robot.Constants.MechanismConstants.*;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
@@ -152,6 +153,9 @@ public class Robot extends TimedRobot {
 
     //Set robot to robot oriented driving
     isFieldOriented = true;
+
+    //Make sure that the Auto Shooter Command will run
+    AutoShooterPositioning = true;
 
     //Make sure the robot is in fast mode
     LinearSpeed = MaxLinearSpeed;

@@ -25,8 +25,8 @@ public class RobotContainer {
   VideoSource camSource;
 
   //Driver controllers
-  private final XboxController xbox = new XboxController(0);
-  private final XboxController secondaryXbox = new XboxController(1);
+  private final XboxController xbox = new XboxController(1);
+  private final XboxController secondaryXbox = new XboxController(0);
   private final Joystick launchpad = new Joystick(2);
   //private final Joystick testbed = new Joystick(3);
   
@@ -55,15 +55,16 @@ public class RobotContainer {
 
   // Auto Commands
   private final AutoDrive autoDriveCommand = new AutoDrive(swervedrivewpi, 0.1, 110.0, 0.0, 0.0, 0.02, 10.0);
-  private final AutoPickupNote autoPickupNoteCommand = new AutoPickupNote(swervedrivewpi,intake,shooter,table, 10);
+  private final AutoPickupNote autoPickupNoteCommand = new AutoPickupNote(swervedrivewpi,table,0, 10);
   private final AutoShooterAmpPos autoShooterAmpPosCommand = new AutoShooterAmpPos(shooterAngle,shooter,processor,intake,5.0);
   private final AutoShooterPos autoShooterPosCommand = new AutoShooterPos(shooterAngle, table);
+  private final AutoShooterAngle autoShooterAngleCommand = new AutoShooterAngle(shooterAngle,37,5);
   private final Auto1NoteCenter auto1NoteCenterCommand = new Auto1NoteCenter(swervedrivewpi, shooter, processor, intake);
   private final Auto1NoteLeft auto1NoteLeftCommand = new Auto1NoteLeft(swervedrivewpi, shooter, processor, intake);
   private final Auto1NoteRight auto1NoteRightCommand = new Auto1NoteRight(swervedrivewpi, shooter, processor, intake);
-  private final Auto2NoteCenter auto2NoteCenterCommand = new Auto2NoteCenter(swervedrivewpi, shooter, processor, intake);
-  private final Auto2NoteLeft auto2NoteLeftCommand = new Auto2NoteLeft(swervedrivewpi, shooter, processor, intake);
-  private final Auto2NoteRight auto2NoteRightCommand = new Auto2NoteRight(swervedrivewpi, shooter, processor, intake);
+  private final Auto2NoteCenter auto2NoteCenterCommand = new Auto2NoteCenter(swervedrivewpi, shooter, processor, intake, shooterAngle, table);
+  private final Auto2NoteLeft auto2NoteLeftCommand = new Auto2NoteLeft(swervedrivewpi, shooter, processor, shooterAngle, intake);
+  private final Auto2NoteRight auto2NoteRightCommand = new Auto2NoteRight(swervedrivewpi, shooter, processor, shooterAngle, intake);
 
   //KillAuto Command
   private final KillAutoCommand killAutoObject = new KillAutoCommand(); 
@@ -73,7 +74,8 @@ public class RobotContainer {
 
   //Shooter Command
   private final RunShooterAmp ampShooterCommand = new RunShooterAmp(shooter,processor,intake,5);
-  private final RunShooterSpeaker speakerShooterCommand = new RunShooterSpeaker(shooter, processor,intake,5);
+  private final RunShooterSpeaker speakerShooterCommand = new RunShooterSpeaker(shooter, processor,intake,1.5);
+  private final RunShooterTrap trapShooterCommand = new RunShooterTrap(shooter, processor,intake,1.5);
   private final AutoShooterSpeed shooterSpeedCommand = new AutoShooterSpeed(shooter);
 
   //Shooter Angle Command
@@ -97,10 +99,10 @@ public class RobotContainer {
   private final Trigger intakeButton;
   private final Trigger speakerShootButton;
   private final Trigger ampShootButton;
+  private final Trigger autoAngleShootButton;
   private final Trigger climberButton;
   private final Trigger runAngleDownButton;
   private final Trigger runAngleUpButton;
-  private final Trigger autoShooterPosButton;
   private final Trigger manualIntakeButton;
   private final Trigger processorBackButton;
   
@@ -126,13 +128,13 @@ public class RobotContainer {
     climberButton = new JoystickButton(xbox, xboxBButton);
     runAngleDownButton = new JoystickButton(secondaryXbox,xboxLeftBumber);
     runAngleUpButton = new JoystickButton(secondaryXbox,xboxRightBumber);
-    autoShooterPosButton = new JoystickButton(secondaryXbox,xboxBButton);
     processorBackButton = new JoystickButton(secondaryXbox,xboxAButton);
     manualIntakeButton = new JoystickButton(xbox,xboxLeftBumber);
+    autoAngleShootButton = new JoystickButton(secondaryXbox,xboxBButton);
+    parkButton = new JoystickButton(xbox,xboxRightBumber);
     
     // Initialize Launchpad (OI) Buttons/Switches
     killAutoButton = new JoystickButton(launchpad,LaunchPadButton1);
-    parkButton = new JoystickButton(launchpad,LaunchPadSwitch3);
     blueTeamButton = new JoystickButton(launchpad, LaunchPadSwitch5top);
     redTeamButton = new JoystickButton(launchpad, LaunchPadSwitch5bottom);
     rightButton = new JoystickButton(launchpad, LaunchPadSwitch6bottom);
@@ -186,12 +188,14 @@ public class RobotContainer {
     changeModeButton.onTrue(changeModeCommand);
     intakeButton.onTrue(takeInNoteCommand);
     speakerShootButton.onTrue(speakerShooterCommand);
+    autoAngleShootButton.onTrue(autoShooterAngleCommand);
     ampShootButton.onTrue(ampShooterCommand);
     ampAngleButton.onTrue(autoShooterAmpPosCommand);
     climberButton.onTrue(climberCommand);
     runAngleDownButton.whileTrue(angleDownCommand);
     runAngleUpButton.whileTrue(angleUpCommand);
-    autoShooterPosButton.onTrue(autoDriveCommand);
+    manualIntakeButton.whileTrue(intakeCommand);
+
 
 
   }

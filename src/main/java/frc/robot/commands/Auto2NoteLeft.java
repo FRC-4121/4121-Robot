@@ -13,11 +13,13 @@ import frc.robot.subsystems.*;
 public class Auto2NoteLeft extends SequentialCommandGroup {
   /** Creates a new Auto2NoteLeft. */
   /** Creates a new Auto2NoteCenter. */
-  public Auto2NoteLeft(SwerveDriveWPI swerve, Shooter shoot, Processor process, Intake in) {
+  public Auto2NoteLeft(SwerveDriveWPI swerve, Shooter shoot, Processor process, ShooterAngle angle, Intake in) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(new RunShooterSpeaker(shoot, process, in, 2), 
-    new AutoDriveAndIntake(swerve,process,in,0.1, 80.0, 10.0, 0.0, 0.05, 10.0), 
-    new AutoRunShooterSpeaker(shoot, process, in, 2));
+    new AutoDriveAndIntake(swerve,process,in,0.1, 80.0, 10.0, 10.0, 0.0, 5.0),
+    new AutoShooterAngle(angle,37,3),
+    new AutoDrive(swerve,-0.1, 8.0, 10.0, 20.0, 0.0, 2.0),
+    new AutoRunShooterSpeaker(shoot, process, in, 4));
   }
 }

@@ -8,12 +8,15 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Processor;
 import frc.robot.subsystems.Intake;
+
 import static frc.robot.Constants.MechanismConstants.*;
+import static frc.robot.Constants.MechanismConstants.BottomShootSpeakerSpeed;
+import static frc.robot.Constants.MechanismConstants.TopShootSpeakerSpeed;
+import static frc.robot.Constants.MechanismConstants.shooterDelay;
 
 import edu.wpi.first.wpilibj.Timer;
 
-public class AutoRunShooterSpeaker extends Command {
-  
+public class RunShooterTrap extends Command {
   
   private Shooter shooter;
   private Processor processor;
@@ -24,7 +27,7 @@ public class AutoRunShooterSpeaker extends Command {
   private boolean canShoot;
   
   /** Creates a new RunShooterSpeaker. */
-  public AutoRunShooterSpeaker(Shooter shoot, Processor process, Intake in, double endTime) {
+  public RunShooterTrap(Shooter shoot, Processor process, Intake in, double endTime) {
 
       shooter = shoot;
       processor = process;
@@ -47,18 +50,19 @@ public class AutoRunShooterSpeaker extends Command {
     // Initialize local variables
     canShoot = false;
 
+    PauseAutoPosition = true;
+
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
 
-    if ((timer.get() - startTime > 0.5) && Math.abs(CurrentShooterAngle - IdleAngle) > ShooterAngleTolerance) {
-
+    if (timer.get() - startTime > shooterDelay) {
       canShoot = true;
-    } 
+    }
 
-    shooter.runShooterAuto(TopShootSpeakerSpeed,BottomShootSpeakerSpeed);
+    shooter.runShooterAuto(TopShooterTrapSpeed, BottomShooterTrapSpeed);
 
     if (canShoot) {
       processor.runProcessor(0.5);
@@ -76,6 +80,8 @@ public class AutoRunShooterSpeaker extends Command {
     shooter.runShooterAuto(0.0, 0.0);
     processor.runProcessor(0.0);
     intake.runIntake(0);
+
+    PauseAutoPosition = false;
     
   }
 
@@ -98,3 +104,4 @@ public class AutoRunShooterSpeaker extends Command {
 
   }
 }
+

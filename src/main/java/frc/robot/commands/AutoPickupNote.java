@@ -21,8 +21,6 @@ import edu.wpi.first.math.controller.*;
 public class AutoPickupNote extends Command {
 
   private SwerveDriveWPI drive;
-  private Intake intake;
-  private Shooter processor;
   private NetworkTableQuerier table;
 
   private double startTime;
@@ -48,14 +46,13 @@ public class AutoPickupNote extends Command {
   private Timer timer = new Timer();
 
   /** Creates a new AutoPickupNote. */
-  public AutoPickupNote(SwerveDriveWPI swerve, Intake take, Shooter shoot, NetworkTableQuerier ntable, double time) {
+  public AutoPickupNote(SwerveDriveWPI swerve, NetworkTableQuerier ntable, double rotation, double time) {
 
     drive = swerve;
-    intake = take;
-    processor = shoot;
     table = ntable;
     stopTime = time;
-    addRequirements(drive, intake, processor);
+    rotSpeed = rotation;
+    addRequirements(drive);
 
   }
 
@@ -76,7 +73,7 @@ public class AutoPickupNote extends Command {
     rotBaseSpeed = 0.5;
     xSpeed = 0;
     ySpeed = 0;
-    rotSpeed = 0;
+    //rotSpeed = 0;
     noteOffset = -9999;
     xSpeedSlope = 0.02;
 
@@ -95,7 +92,7 @@ public class AutoPickupNote extends Command {
   public void execute() {
 
     //Checking how many notes found
-    notesFound = table.getRingsFound("Cam1");
+    notesFound = table.getRingsFound("CAM1");
 
     // Calculate drived action based on notes found
     if(notesFound > 0){
@@ -103,7 +100,7 @@ public class AutoPickupNote extends Command {
       // Determine the closest note
       if(notesFound > 1){
         for(int i = 0; i < notesFound; i++){
-          if(table.getRingInfo("Cam1",i,"distance") < closestDistance){
+          if(table.getRingInfo("CAM1",i,"distance") < closestDistance){
             closestDistance = table.getRingInfo("Cam1",i,"distance");
             closestNote = i;
           }
@@ -111,8 +108,8 @@ public class AutoPickupNote extends Command {
       }
 
       // Get closest note distance and offset
-      noteDistance = table.getRingInfo("Cam1",closestNote,"distance");
-      noteOffset = table.getRingInfo("Cam1",closestNote,"offset");
+      noteDistance = table.getRingInfo("CAM1",closestNote,"distance");
+      noteOffset = table.getRingInfo("CAM1",closestNote,"offset");
 
       // Determine drive direction based on note offset
       if (Math.abs(noteOffset) > noteOffsetTolerance) {
@@ -128,14 +125,14 @@ public class AutoPickupNote extends Command {
           xSpeed = xBaseSpeed * -pidOutput;
         }        
         ySpeed = -yBaseSpeed;
-        rotSpeed = rotBaseSpeed * -pidOutput;
+        //rotSpeed = rotBaseSpeed * -pidOutput;
 
       } else {
 
         // Drive straight to note
         xSpeed = 0;
         ySpeed = -yBaseSpeed * 1.5;
-        rotSpeed = 0;
+        //rotSpeed = 0;
       }
 
     } else {
@@ -143,7 +140,7 @@ public class AutoPickupNote extends Command {
         // Drive straight to note
         xSpeed = 0;
         ySpeed = -yBaseSpeed * 1.5;
-        rotSpeed = 0;
+        //rotSpeed = 0;
 
     }
   
@@ -180,7 +177,7 @@ public class AutoPickupNote extends Command {
 
     double time = timer.get();
 
-    if (photoSensorIsNotBlocked == false) {
+    if (noteOnBoard == true) {
       thereYet = true;
     }
     else if (stopTime <= time - startTime) {

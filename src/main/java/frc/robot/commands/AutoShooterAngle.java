@@ -75,12 +75,12 @@ public class AutoShooterAngle extends Command {
 
       if (pidOutput > 0 && shootAngle.getTopSwitch() == false) {
 
-        shootAngle.runPivot(angleSpeed);
+        shootAngle.runPivot(AngleMotorMinSpeed + angleSpeed);
 
       }
       else if (pidOutput < 0 && shootAngle.getBottomSwitch() == false) {
 
-        shootAngle.runPivot(angleSpeed);
+        shootAngle.runPivot(-AngleMotorMinSpeed + angleSpeed);
 
       }
 

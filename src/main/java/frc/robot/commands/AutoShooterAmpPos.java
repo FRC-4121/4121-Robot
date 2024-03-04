@@ -44,7 +44,7 @@ public class AutoShooterAmpPos extends Command {
   @Override
   public void execute() {
 
-    if (noteOnBoard) {
+    if (!noteOnBoard) {
 
       // Run the shooter at the correct Amp Speeds
       shooter.runShooterAuto(TopShootAmpSpeed, BottomShootAmpSpeed);
@@ -76,7 +76,7 @@ public class AutoShooterAmpPos extends Command {
   public boolean isFinished() {
      boolean doneYet = false;
     
-    if(!noteOnBoard)
+    if(noteOnBoard)
     {
       doneYet = true;
     }

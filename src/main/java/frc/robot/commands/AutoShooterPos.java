@@ -96,7 +96,7 @@ public class AutoShooterPos extends Command {
 
       // Get ID and distance for closest tag
       tagID = (int)ntable.getTagInfo("CAM2", closestTag, "id");
-      tagDistance = ntable.getTagInfo("CAM2", closestTag, "distance");
+      tagDistance = filter.calculate(ntable.getTagInfo("CAM2", closestTag, "distance"));
       System.out.println("Tag Distance:"+tagDistance);
       System.out.println("TagID:"+tagID);
   
@@ -178,19 +178,21 @@ public class AutoShooterPos extends Command {
       } else {
 
         ShooterTargetAngle = IdleAngle;
+        //ShooterTargetAngle = LastShooterAngle;
         LastShooterAngle = ShooterTargetAngle;
       }
 
     } else {
 
       ShooterTargetAngle = IdleAngle;
+      //ShooterTargetAngle = LastShooterAngle;
       LastShooterAngle = ShooterTargetAngle;
 
     }
 
     // Determine new motor speed from PID controller
     double pidOutput = wpiPIDController.calculate(CurrentShooterAngle, ShooterTargetAngle);
-    if(pidOutput >1)
+    if(pidOutput > 1)
     {
       pidOutput = 1;
     } else if (pidOutput < -1)
@@ -209,16 +211,16 @@ public class AutoShooterPos extends Command {
 
       if (pidOutput > 0 && shootAngle.getTopSwitch() == false) {
 
-        shootAngle.runPivot(angleSpeed);
+        shootAngle.runPivot(AngleMotorMinSpeed + angleSpeed);
+        SmartDashboard.putNumber("Angle Input",AngleMotorMinSpeed + angleSpeed);
 
       }
       else if (pidOutput < 0 && shootAngle.getBottomSwitch() == false) {
 
-        shootAngle.runPivot(angleSpeed);
+        shootAngle.runPivot(-AngleMotorMinSpeed + angleSpeed);
+        SmartDashboard.putNumber("Angle Input", -AngleMotorMinSpeed + angleSpeed);
 
       }
-
-      System.out.println("Angle Motor Speed:" + angleSpeed);
 
       readyToShoot = false;
 
@@ -261,9 +263,12 @@ public class AutoShooterPos extends Command {
   // Calculate the target angle based on vision distance
   public double getTargetAngle(double distance) {
 
-    System.out.println("Target Distance: " + distance);
-    double calcAngle = filter.calculate(((LowSpeakerAngle - HighSpeakerAngle)/(MaxAutoDistance - MinAutoDistance)) * (distance - MinAutoDistance) + HighSpeakerAngle);
-    System.out.println("Calculated Angle: " + calcAngle);
+    double calcAngle = ((LowSpeakerAngle - HighSpeakerAngle)/(MaxAutoDistance - MinAutoDistance)) * (distance - MinAutoDistance) + HighSpeakerAngle;
+    if(calcAngle > MaxSpeakerAngle){
+      calcAngle = MaxSpeakerAngle;
+    } else if(calcAngle < MinSpeakerAngle){
+      calcAngle = MinSpeakerAngle;
+    }
     SmartDashboard.putNumber("Target Angle:",calcAngle);
     return calcAngle;
 

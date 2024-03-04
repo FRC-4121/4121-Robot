@@ -55,8 +55,10 @@ public final class Constants {
         public static final double DRIVETRAIN_WHEELBASE_INCH = 21.5;
         public static final double lengthFromAxle = 23.5;
         public static final double widthFromAxle = 19.5;
-        public static final double leftGyroCorrection = -53;//Gyro correction in degrees (was 53)
-        public static final double rightGyroCorrection = 53;//Gyro correction in degrees (was 307)
+        public static final double leftGyroCorrection = 53;//Gyro correction in degrees (was 53)
+        public static final double autoLeftGyroCorrection = 53;
+        public static final double rightGyroCorrection = 307;//Gyro correction in degrees (was 307)
+        public static final double autoRightGyroCorrection = -53;
 
         // Swerve drive PID constants
         public static final double drivePIDkPs[] = { 0.0, 0.0, 0.0, 0.0 };
@@ -68,11 +70,11 @@ public final class Constants {
         public static final double anglePIDkDs[] = { 0.04, 0.04, 0.04, 0.04 };
         public static double angleLimiters[] = { 1.0, 1.0, 1.0, 1.0 };
         public static final double kAnglePIDkp = 10.0;
-        public static final double kAnglePIDkd = 0.075;
+        public static final double kAnglePIDkd = 0.1;
         public static final double kAnglePIDki = 0.0;
 
         // Auto drive PID constants
-        public static final double kAutoDrivePIDkp = 0.03;
+        public static final double kAutoDrivePIDkp = 0.02;
         public static final double kAutoDrivePIDkI = 0.0;
         public static final double kAutoDrivePIDkD = 0.0;
         public static final double kAutoDrivePIDkF = 0.0;
@@ -159,6 +161,8 @@ public final class Constants {
         public static final double BottomShootSpeakerSpeed = -0.8;
         public static final double TopShootAmpSpeed = -0.08;//0.08 optimal
         public static final double BottomShootAmpSpeed = -0.3;//0.3 optimal
+        public static final double TopShooterTrapSpeed = -0.45;
+        public static final double BottomShooterTrapSpeed = -0.45;
         public static final double TopShootIdleSpeed = -0.1;
         public static final double BottomShootIdleSpeed = 0.1;
         public static String ShooterMode = "IDLE";
@@ -172,9 +176,9 @@ public final class Constants {
         public static final int kPivotMotorID = 15;
 
         // PID values
-        public static final double kShooterAngleKP = 0.06;
+        public static final double kShooterAngleKP = 0.002;
         public static final double kShooterAngleKI = 0;
-        public static final double kShooterAngleKD = 0;
+        public static final double kShooterAngleKD = 0.0; //0.001
         public static final double kShooterAngleFF = 0;
         public static final double kShooterAngleMinOutput = -1;
         public static final double kShooterAngleMaxOutput = 1;
@@ -188,23 +192,24 @@ public final class Constants {
         public static final int kAngleMotorCurrentLimit = 20;
         public static final double AngleMotorSpeed = 0.35;
         public static final double ManualAngleMotorSpeed = 0.25;
+        public static final double AngleMotorMinSpeed = 0.15;
   
         //Angles and distances for certain shots
         public static final double AmpAngle = 60;//degrees, needs to be confirmed
-        public static final double HighSpeakerAngle = 53;
-        public static final double LowSpeakerAngle = 30;
+        public static final double HighSpeakerAngle = 48;
+        public static final double LowSpeakerAngle = 32;
         public static final double MaxSpeakerAngle = 55;
-        public static final double MinSpeakerAngle = 30;
+        public static final double MinSpeakerAngle = 32;
         public static final double MinAutoDistance = 70;
-        public static final double MaxAutoDistance = 150;
-        public static final double IdleAngle = 53;
+        public static final double MaxAutoDistance = 190;
+        public static final double IdleAngle = 53;//37 for 2nd shot
 
         //Shooter Angles
         public static double CurrentShooterAngle = 60;
         public static final double ShooterAngleTolerance = 0.5;
         public static double ShooterTargetAngle = 40;
         public static double LastShooterAngle = 40;
-        public static Boolean AutoShooterPositioning = false;
+        public static Boolean AutoShooterPositioning = true;
         public static Boolean PauseAutoPosition = false;
 
         //Shooter Angle Encoder

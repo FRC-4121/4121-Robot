@@ -6,6 +6,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.subsystems.*;
+import frc.robot.ExtraClasses.NetworkTableQuerier;
 
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
@@ -13,11 +14,14 @@ import frc.robot.subsystems.*;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class Auto2NoteCenter extends SequentialCommandGroup {
   /** Creates a new Auto2NoteCenter. */
-  public Auto2NoteCenter(SwerveDriveWPI swerve, Shooter shoot, Processor process, Intake in) {
+  public Auto2NoteCenter(SwerveDriveWPI swerve, Shooter shoot, Processor process, Intake in, ShooterAngle angle, NetworkTableQuerier table) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(new RunShooterSpeaker(shoot, process, in, 2), 
-    new AutoDriveAndIntake(swerve,process,in,0.2, 100.0, 0.0, 0.0, 0.02, 10.0), 
-    new AutoRunShooterSpeaker(shoot, process, in, 4));
+    new AutoPickupAndIntake(swerve, in, process, table),
+    new AutoShooterAngle(angle,37,1.5), 
+    new AutoRunShooterSpeaker(shoot, process, in, 2));
   }
+  //new AutoDriveAndIntake(swerve,process,in,0.2, 100.0, 0.0, 0.0, 0.02, 10.0),
+  //new AutoPickupAndIntake(swerve, in, process, table)
 }
