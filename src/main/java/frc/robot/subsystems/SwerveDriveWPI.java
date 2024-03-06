@@ -4,7 +4,6 @@
 
 package frc.robot.subsystems;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import static frc.robot.Constants.*;
 import static frc.robot.Constants.DriveConstants.*;
@@ -12,42 +11,33 @@ import static frc.robot.Constants.MechanismConstants.*;
 import static frc.robot.Constants.ControlConstants.*;
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.math.filter.MedianFilter;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.*;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.math.controller.*;
-
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.util.PathPlannerLogging;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 
 public class SwerveDriveWPI extends SubsystemBase {
   
-  // Declare motor CAN IDs
-  private final int kLeftFrontDrive = 1;
-  private final int kLeftFrontAngle = 2;
-  private final int kLeftFrontCoder = 3;
-  private final int kRightFrontDrive = 4;
-  private final int kRightFrontAngle = 5;
-  private final int kRightFrontCoder = 6;
-  private final int kRightBackDrive = 7;
-  private final int kRightBackAngle = 8;
-  private final int kRightBackCoder = 9;
-  private final int kLeftBackDrive = 10;
-  private final int kLeftBackAngle = 11;
-  private final int kLeftBackCoder = 12;
-
   // Declare swerve modules
   private SwerveWheel leftFront;
   private SwerveWheel leftBack;
   private SwerveWheel rightFront;
   private SwerveWheel rightBack;
 
-  // Declare swerve kinematics objects
+  // Declare swerve kinematics and odometry objects
   private SwerveDriveKinematics kinematics;
   private Translation2d leftFrontTranslation;
   private Translation2d leftBackTranslation;
   private Translation2d rightFrontTranslation;
   private Translation2d rightBackTranslation;
   private ChassisSpeeds speeds;
+  private SwerveDriveOdometry odometry;
 
   // Declare swerve module inputs
   private double frontLeftAngle;
@@ -62,6 +52,10 @@ public class SwerveDriveWPI extends SubsystemBase {
 
   // Declare misc variables
   private double joystickDeadband;
+
+  // Declare speed variables
+  private double vxMetersPerSecond;
+  private double vyMetersPerSecond;
 
   // Declare distance calculation variables
   private double LeftFrontStartingEncoder;
@@ -84,10 +78,10 @@ public class SwerveDriveWPI extends SubsystemBase {
   public SwerveDriveWPI() {
 
     // Initialize new swerve modules
-    leftFront = new SwerveWheel(kLeftFrontDrive, kLeftFrontAngle, kLeftFrontCoder);
-    leftBack = new SwerveWheel(kLeftBackDrive, kLeftBackAngle, kLeftBackCoder);
-    rightFront = new SwerveWheel(kRightFrontDrive, kRightFrontAngle, kRightFrontCoder);
-    rightBack = new SwerveWheel(kRightBackDrive, kRightBackAngle, kRightBackCoder);
+    leftFront = new SwerveWheel("LF", kLeftFrontDrive, kLeftFrontAngle, kLeftFrontCoder);
+    leftBack = new SwerveWheel("LB", kLeftBackDrive, kLeftBackAngle, kLeftBackCoder);
+    rightFront = new SwerveWheel("RF", kRightFrontDrive, kRightFrontAngle, kRightFrontCoder);
+    rightBack = new SwerveWheel("RB", kRightBackDrive, kRightBackAngle, kRightBackCoder);
 
     // Initialize swerve kinematics objects
     leftFrontTranslation = new Translation2d(0.297,0.288);//X-0.297, Y-0.288 
@@ -96,9 +90,12 @@ public class SwerveDriveWPI extends SubsystemBase {
     rightBackTranslation = new Translation2d(-0.297,-0.288);
     kinematics = new SwerveDriveKinematics(leftFrontTranslation,rightFrontTranslation,leftBackTranslation,rightBackTranslation);
 
+    // Initialize swerve odometry object
+    odometry = new SwerveDriveOdometry(kinematics, getGyroRotation2d(), getModulePositions());
+
     // Initialize NavX gyro
     gyro = new AHRS(SPI.Port.kMXP);
-    SmartDashboard.putNumber("Zero Gyro", 0);
+   
     //gyro.calibrate();
     gyro.reset();
     gyro.resetDisplacement();
@@ -140,6 +137,27 @@ public class SwerveDriveWPI extends SubsystemBase {
 
   /**
    * 
+   * Drive the robot relative to robot coordinate system
+   * 
+   * @param robotRelativeSpeeds A set of chassis speeds
+   * 
+   */
+  public void driveRobotRelative(ChassisSpeeds robotRelativeSpeeds) {
+
+  }
+
+  /**
+   * 
+   * Drive the robot relative to a field coordinate system
+   * 
+   * @param fieldRelativeSpeeds A set of chassis speeds
+   */
+  public void driveFieldRelative(ChassisSpeeds fieldRelativeSpeeds) {
+
+  }
+
+  /**
+   * 
    * Moves the robot by calculating the speed and angle for each
    * swerve module based on joystick input
    * 
@@ -150,33 +168,18 @@ public class SwerveDriveWPI extends SubsystemBase {
    */
   public void drive(double leftX, double leftY, double rightX) {
 
-    // Put joystick positions on dashboard for testing/debugging
-    SmartDashboard.putNumber("Left X", leftX);
-    SmartDashboard.putNumber("Left Y", leftY);
-    SmartDashboard.putNumber("Right X", rightX);
+    // Convert joystick positions to linear speeds in meters/second
+    vxMetersPerSecond = -(leftY * LinearSpeed);
+    vyMetersPerSecond = (leftX * LinearSpeed);
 
-    //Convert speeds into their native units
-    double vxMetersPerSecond = -(leftY * LinearSpeed);
-    double vyMetersPerSecond = (leftX * LinearSpeed);
-    System.out.println("Linear Speed: " + LinearSpeed);
-
-    double vTotalMetersPerSecond = Math.sqrt((vxMetersPerSecond * vxMetersPerSecond) + (vyMetersPerSecond * vyMetersPerSecond));
-    
-    if(vTotalMetersPerSecond > LinearSpeed){
-      vTotalMetersPerSecond = LinearSpeed;
-    }
-
-    //double omegaRadiansPerSecond = -((((-MaxRotationalSpeed / MaxLinearSpeed) * vTotalMetersPerSecond) + MaxRotationalSpeed) * rightX);
+    // Get rotational speed
     double omegaRadiansPerSecond = 0.0;
     if(Math.abs(rightX) < kJoystickTolerance){
-      double pidOutput = wpiPIDController.calculate(getGyroYawRate()*degreesToRads, 0.0); 
+      double pidOutput = wpiPIDController.calculate(Math.toRadians(getGyroYawRate()), 0.0); 
       omegaRadiansPerSecond = RotationalSpeed * pidOutput;
     } else{
       omegaRadiansPerSecond = RotationalSpeed * rightX;
     }
-    
-    //double omegaRadiansPerSecond = (RotationalSpeed) * (rightX + pidOutput);
-    //double omegaRadiansPerSecond = (RotationalSpeed) * (rightX);
 
     // Put values on dashboard for testing/debugging
     SmartDashboard.putNumber("x meters per second",vxMetersPerSecond);
@@ -297,8 +300,9 @@ public class SwerveDriveWPI extends SubsystemBase {
 
   /**
    * 
-   * Get the gyro angle and filter (smooth) it 
-   * @return Smoothed gyro angle
+   * Get a smoothed gyro angle
+   * 
+   * @return Gyro angle in degrees (0 to 360)
    * 
    */
   public double getGyroAngle() {
@@ -308,28 +312,31 @@ public class SwerveDriveWPI extends SubsystemBase {
     {
       correctedGyro = 360 + correctedGyro;
     }
+
+    // Correct gyro for starting position
     if (autoPosition == "Left") {
-      SmartDashboard.putNumber("C-Gyro",correctedGyro + leftGyroCorrection);
       return (correctedGyro + leftGyroCorrection) % 360;
     }
     if (autoPosition == "Right") {
-      SmartDashboard.putNumber("C-Gyro",correctedGyro + rightGyroCorrection);
       return (correctedGyro + rightGyroCorrection) % 360;
     }
-    SmartDashboard.putNumber("C-Gyro",correctedGyro);
+
     return correctedGyro;
 
   }
 
   /**
-   * Gets the gyro yaw angle (-180 to 180)
-   * @return Corrected yaw angle
+   * 
+   * Gets a smoothed gyro yaw angle (-180 to 180)
+   * 
+   * @return Current yaw angle in radians
+   * 
    */
   public double getGyroYaw() {
 
     // Get filtered yaw angle (in degrees)
     // Negate value to be consistent with WPI coordinate system
-    double gyroYaw = -gyro_filter.calculate(gyro.getYaw());
+    double gyroYaw = -gyro_filter.calculate(Math.toRadians(gyro.getYaw()));
 
     // Make sure we don't see -180
     if (gyroYaw == -180.0) {
@@ -344,21 +351,33 @@ public class SwerveDriveWPI extends SubsystemBase {
       gyroYaw = gyroYaw + rightGyroCorrection;
     }
 
-    // Put angle on the dashboard for driver
-    SmartDashboard.putNumber("C-Gyro", gyroYaw);
-
     // Return yaw angle
     return gyroYaw;
 
   }
 
   /**
+   * 
+   * Generates a Rotation2d object from current gyro angle
+   * 
+   * @return Rotation2d for gyro angle
+   */
+  public Rotation2d getGyroRotation2d() {
+
+    return new Rotation2d(getGyroAngle());
+
+  }
+
+  /**
+   * 
    * Get the current yaw rate of the gyro
-   * @return
+   * 
+   * @return Yaw rate in radians/second
+   * 
    */
   public double getGyroYawRate() {
 
-    double yawRate = -yaw_filter.calculate(gyro.getRate());
+    double yawRate = -yaw_filter.calculate(Math.toRadians(gyro.getRate()));
     return yawRate;
 
   } 
@@ -369,7 +388,7 @@ public class SwerveDriveWPI extends SubsystemBase {
    * 
    */
   public void zeroGyro() {
-    // gyro.calibrate();
+  
     gyro.reset();
 
   }
@@ -392,6 +411,8 @@ public class SwerveDriveWPI extends SubsystemBase {
    * 
    * Gets encoder value for left front drive motor
    * 
+   * @return Raw encoder position
+   * 
    */
   public double getLeftFrontDriveEncoder() {
 
@@ -401,6 +422,8 @@ public class SwerveDriveWPI extends SubsystemBase {
   /**
    * 
    * Gets encoder value for right front drive motor
+   * 
+   * @return Raw encoder position
    * 
    */
   public double getRightFrontDriveEncoder() {
@@ -412,6 +435,8 @@ public class SwerveDriveWPI extends SubsystemBase {
    * 
    * Gets encoder value for left back drive motor
    * 
+   * @return Raw encoder position
+   * 
    */
   public double getLeftBackDriveEncoder() {
 
@@ -422,10 +447,13 @@ public class SwerveDriveWPI extends SubsystemBase {
    * 
    * Gets encoder value for right back drive motor
    * 
+   * @return Raw encoder position
+   * 
    */
   public double getRightBackDriveEncoder() {
 
     return rightBack.getDriveEncoderPosition();
+
   }
 
   /**
@@ -442,39 +470,74 @@ public class SwerveDriveWPI extends SubsystemBase {
     rightBack.drive(0, 315);
   }
 
-  /*
-   * Set the starting values for a drive distance calculation
+  /**
+   * 
+   * Reset the encoder positions for all drive modules
+   * 
    */
   public void resetDistance() {
 
-    LeftFrontStartingEncoder = getLeftFrontDriveEncoder();
-    LeftRearStartingEncoder = getLeftBackDriveEncoder();
-    RightFrontStartingEncoder = getRightFrontDriveEncoder();
-    RighRearStartingEncoder = getRightBackDriveEncoder();
+    leftFront.zeroEncoder();
+    leftBack.zeroEncoder();
+    rightFront.zeroEncoder();
+    rightBack.zeroEncoder();
 
   }
 
-  /*
-   * Calculate the drive distance
+  /**
+   * 
+   * Calculate the drive distance for robot by
+   * averaging distance of each module
+   * 
+   * @return Distance driven in meters
+   * 
    */
   public double calculateDriveDistance() {
 
-    // Initialize return value
-    double driveDistance = 0.0;
-    
-    // Get total rotations driven since last distance reset
-    double totalRotationsLeftFront = getLeftFrontDriveEncoder() - LeftFrontStartingEncoder;
-    double totalRotationsRightFront = getRightFrontDriveEncoder() - RightFrontStartingEncoder;
-    double totalRotationsLeftBack = getLeftBackDriveEncoder() - LeftRearStartingEncoder;
-    double totalRotationsRightBack = getRightBackDriveEncoder() - RighRearStartingEncoder;
-
-    // Calculate distance by averaging encoders
-    double averageRotations = ((totalRotationsLeftFront + totalRotationsRightFront + totalRotationsLeftBack + totalRotationsRightBack) / 4.0);
-    driveDistance = (kWheelDiameter * Math.PI * averageRotations) / (kTalonFXPPR * kDriveGearRatio);
-
-    // Return calculated distance
-    return driveDistance;
+    return (leftFront.getDistance() + rightFront.getDistance() + leftBack.getDistance() + rightBack.getDistance()) / 4.0;
 
   }
   
+  /**
+   * 
+   * Gets the current position of all swerve modules
+   * 
+   * @return Array of module positions
+   */
+  public SwerveModulePosition[] getModulePositions() {
+
+    SwerveModulePosition[] positions = new SwerveModulePosition[4];
+
+    position[0] = leftFront.getPosition();
+    position[1] = rightFront.getPosition();
+    position[2] = leftBack.getPosition();
+    position[3] = rightBack.getPosition();
+
+    return position
+
+  }
+
+  /**
+   * 
+   * Gets the current pose of the robot in meters
+   * 
+   * @return Current pose as a Pose2d object
+   */
+  public Pose2d getPose() {
+
+    return odometry.getPoseMeters();
+
+  }
+
+  /**
+   * 
+   * Sets the robot pose to a specified pose
+   * 
+   */
+  public resetPose(Pose2d pose) {
+
+    odometry.resetPose(getGyroRotation2d(), getModulePositions(), pose);
+
+  }
+
 }

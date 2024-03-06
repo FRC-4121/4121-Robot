@@ -23,15 +23,16 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.math.filter.MedianFilter;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.controller.*;
+import edu.wpi.first.math.geometry.Rotation2d;
 
 public class SwerveWheel extends SubsystemBase { 
 
-  /* Declare motor variables */
+  // Declare motor variables
   private WPI_TalonFX swerveDriveMotor;
   private WPI_TalonFX swerveAngleMotor;
   private CANCoder canCoder;
 
-  /* Declare controller variables */
+  // Declare controller variables
   private PIDControl anglePIDController;
   private PIDController wpiPIDController;
   
@@ -40,8 +41,7 @@ public class SwerveWheel extends SubsystemBase {
   private double kI_AngleController;
   private double kD_AngleController;
 
-
-  /* Declare state variables */
+  // Declare state variables
   private double wheelSpeed;
   private double wheelAngle;
   private int wheelID;
@@ -49,11 +49,26 @@ public class SwerveWheel extends SubsystemBase {
   // Declare filters
   private MedianFilter angle_filter;
   private SlewRateLimiter rateLimiter;
+
+  // Declare general variables
+  private String moduleName;
  
 
-  /* Creates a new SwerveWheel. */
-  public SwerveWheel(int driveMotorID, int angleMotorID, int CANCoderID) {
+  /**
+   * 
+   *  Creates a new SwerveWheel
+   * 
+   * @param name  Name of this swerve module
+   * @param driveMotorID  CAN ID for the drive motor
+   * @param angleMotorID  CAN ID for the angle motor
+   * @param CANCoderID  CAN ID for the angle encoder
+   * 
+   */
+  public SwerveWheel(String name, int driveMotorID, int angleMotorID, int CANCoderID) {
     
+    // Set variables
+    moduleName = name;
+
     // Set wheel ID
     wheelID = CANCoderID / 3;
 
@@ -71,16 +86,21 @@ public class SwerveWheel extends SubsystemBase {
     wpiPIDController = new PIDController(kP_AngleController, kI_AngleController, kD_AngleController);
     wpiPIDController.setTolerance(1.5,5);
 
-    SmartDashboard.putNumber("Wheel "+ wheelID + " kP", kP_AngleController);
-    SmartDashboard.putNumber("Wheel "+ wheelID + " kI", kI_AngleController);
-    SmartDashboard.putNumber("Wheel "+ wheelID + " kD", kD_AngleController);
-
     // Create filters
     angle_filter = new MedianFilter(FILTER_WINDOW_SIZE);
     rateLimiter = new SlewRateLimiter(100000.0, -50.0, 0.0);
+
   } 
 
-  /* Initialize motors */
+  /**
+   * 
+   *  Initialize motors
+   * 
+   * @param driveMotorID  CAN ID for the drive motor
+   * @param angleMotorID  CAN ID for the angle motor
+   * @param CANCoderID  CAN ID for the angle encoder
+   * 
+   */
   private void InitSwerveMotors(int driveMotorID, int angleMotorID, int CANCoderID) {
 
     // Create motors
@@ -118,23 +138,35 @@ public class SwerveWheel extends SubsystemBase {
 
   }
  
-  /* Periodically set wheel speed and angle */
+  /**
+   * 
+   * Periodically set wheel speed and angle
+   * 
+   */
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
     
   }
 
+  /**
+   * 
+   * Drive this wheel module at the specified speed and angle
+   * 
+   * @param speed  Speed for the drive motor
+   * @param angle  Wheel angle for this module
+   * 
+   */
   public void drive(double speed, double angle) {
 
-    //Normalize target to have a max value of 1
+    // Normalize target to have a max value of 1
     double target = angle / 360.0;
     if (target == 1.0) {
       target = 0.0;
     }
     //double target = angle;
 
-    //Normalize encoder to have a max value of 1 and correct for discontinuity at 360 degrees (should be 0)
+    // Normalize encoder to have a max value of 1 and correct for discontinuity at 360 degrees (should be 0)
     double encoderAngle = canCoder.getAbsolutePosition() / 360;
     if (encoderAngle == 1.0) {
       encoderAngle = 0.0;
@@ -160,7 +192,6 @@ public class SwerveWheel extends SubsystemBase {
       }
     }
     
-
     //double output = anglePIDController.run(encoderAngle,target);
     double output = wpiPIDController.calculate(encoderAngle,target);
     SmartDashboard.putNumber("Wheel " + wheelID + " PID output", output);
@@ -219,26 +250,94 @@ public class SwerveWheel extends SubsystemBase {
   }
 
 
-  //Get the encoder value of the drive motor
+  /**
+   *
+   * Get the encoder value of the drive motor
+   * 
+   * @return Current position (number of pulses) of the drive encoder
+   * 
+   */
   public double getDriveEncoderPosition() {
 
     return swerveDriveMotor.getSelectedSensorPosition();
 
   }
 
-  //Zeros the encoder for the drive motor
+  /**
+   * 
+   * Zeros the encoder for the drive motor
+   * 
+   */
   public void zeroEncoder() {
 
     //Zero twice because for some reason it doesn't want to zero sometimes
     swerveDriveMotor.setSelectedSensorPosition(0);
     swerveDriveMotor.setSelectedSensorPosition(0);
+
   }
 
+  /**
+   * 
+   * Stop all motors
+   * 
+   */
   public void stop() {
 
     swerveDriveMotor.set(0);
     swerveAngleMotor.set(0);
   }
 
+  /**
+   * 
+   * Calculate the drive distance for this module since last reset
+   * 
+   * @return Drive distance in meters
+   * 
+   */
+  public double getDistance() {
+
+    return (kWheelDiameter * Math.PI * swerveDriveMotor.getSelectedSensorPosition()) / (kTalonFXPPR * kDriveGearRatio);
+
+  }
+
+  /**
+   * 
+   * Calculate the drive velocity for this module
+   * 
+   * @return Drive velocity in meters/second
+   * 
+   */
+  public double getWheelSpeed() {
+
+    double rotationPerSecond = (double)swerveDriveMotor.getSelectedSensorVelocity() / kTalonFXPPR * 10;
+    return (kWheelDiameter * Math.PI * rotationPerSecond) / kDriveGearRatio;
+
+  }
+
+  /**
+   * 
+   * Get the current state of the module
+   * 
+   * @return Current state of this module
+   * 
+   */
+  public SwerveModuleState getState() {
+
+    return new SwerveModuleState(getWheelSpeed(), new Rotation2d(canCoder.getAbsolutePosition() / 360));
+
+  }
+
+  /**
+   * 
+   * Get the current position of the module
+   * 
+   * @return Current position of this module
+   * 
+   */
+  public SwerveModulePosition getPosition() {
+
+    return new SwerveModulePosition(getDistance(), new Rotation2d(canCoder.getAbsolutePosition() / 360));
+
+  }
   
 }

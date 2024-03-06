@@ -446,6 +446,7 @@ public class RobotContainer {
 
     //Update Gyro Position
     SmartDashboard.putNumber("Gyro Angle", swervedrivewpi.getGyroAngle());
+    SmartDashboard.putNUmber("Gyro Yaw", swervedrivewpi.getGyroYaw());
 
     //Update Pressure
     SmartDashboard.putNumber("Pressure", pneumatic.getPressure());
