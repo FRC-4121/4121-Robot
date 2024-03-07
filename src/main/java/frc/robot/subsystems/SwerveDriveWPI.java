@@ -148,11 +148,186 @@ public class SwerveDriveWPI extends SubsystemBase {
 
   /**
    * 
+   * Drive the robot from joystick inputs relative to robot coordinate system
+   * 
+   * @param leftX  Left joystick X direction input
+   * @param leftY  Left joystick Y direction input
+   * @param rightX  Right joystick X direction input
+   * 
+   */
+  public void driveRobotRelative(double leftX, double leftY, double rightX) {
+
+    // Convert joystick positions to linear speeds in meters/second
+    vxMetersPerSecond = -(leftY * LinearSpeed);
+    vyMetersPerSecond = (leftX * LinearSpeed);
+    
+    // Get rotational speed
+    double omegaRadiansPerSecond = 0.0;
+    if(Math.abs(rightX) < kJoystickTolerance){
+      double pidOutput = wpiPIDController.calculate(Math.toRadians(getGyroYawRate()), 0.0); 
+      omegaRadiansPerSecond = RotationalSpeed * pidOutput;
+    } else{
+       omegaRadiansPerSecond = RotationalSpeed * rightX;
+    }
+    
+    // Convert inputs to chassis speeds
+    ChassisSpeeds relativeSpeeds = new ChassisSpeeds(vxMetersPerSecond, vyMetersPerSecond, omegaRadiansPerSecond);
+
+    // Run the swerve modules based on current status 
+    if (Math.abs(leftX) < joystickDeadband && Math.abs(leftY) < joystickDeadband && Math.abs(rightX) < joystickDeadband) {
+
+      // Stop motors without turning wheels
+      leftFront.stop();
+      rightFront.stop();
+      leftBack.stop();
+      rightBack.stop();
+
+    } else {
+
+      if (!isParked) {
+
+        driveRobot(relativeSpeeds);
+
+      }
+
+    }
+
+  }
+
+  /**
+   * 
    * Drive the robot relative to a field coordinate system
    * 
    * @param fieldRelativeSpeeds A set of chassis speeds
+   * 
    */
   public void driveFieldRelative(ChassisSpeeds fieldRelativeSpeeds) {
+
+  }
+
+  /**
+   * 
+   * Drive the robot from joystick inputs relative to a field coordinate system
+   * 
+   * @param leftX  Left joystick X direction input
+   * @param leftY  Left joystick Y direction input
+   * @param rightX  Right joystick X direction input
+   * 
+   */
+  public void driveFieldRelative(double leftX, double leftY, double rightX) {
+
+    // Convert joystick positions to linear speeds in meters/second
+    vxMetersPerSecond = -(leftY * LinearSpeed);
+    vyMetersPerSecond = (leftX * LinearSpeed);
+    
+    // Get rotational speed
+    double omegaRadiansPerSecond = 0.0;
+    if(Math.abs(rightX) < kJoystickTolerance){
+
+      double pidOutput = wpiPIDController.calculate(Math.toRadians(getGyroYawRate()), 0.0); 
+      omegaRadiansPerSecond = RotationalSpeed * pidOutput;
+
+    } else{
+
+       omegaRadiansPerSecond = RotationalSpeed * rightX;
+       
+    }
+    
+    // Convert inputs to chassis speeds
+    ChassisSpeeds fieldSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(vxMetersPerSecond, vyMetersPerSecond, omegaRadiansPerSecond, Rotation2d.fromDegrees(getGyroAngle()));
+
+    // Run the swerve modules based on current status 
+    if (Math.abs(leftX) < joystickDeadband && Math.abs(leftY) < joystickDeadband && Math.abs(rightX) < joystickDeadband) {
+
+      // Stop motors without turning wheels
+      leftFront.stop();
+      rightFront.stop();
+      leftBack.stop();
+      rightBack.stop();
+
+    } else {
+
+      if (!isParked) {
+
+        driveRobot(fieldSpeeds);
+
+      }
+
+    }
+
+  }
+
+  /**
+   * 
+   * Drive the robot
+   * 
+   * @param robotSpeeds  A set of chassis speeds
+   * 
+   */
+  public void driveRobot(ChassisSpeeds robotSpeeds) {
+
+    // Convert chassis speeds to module states
+    SwerveModuleState[] moduleStates = kinematics.toSwerveModuleStates(robotSpeeds);
+
+    // Get calculated module angles
+    frontLeftAngle = moduleStates[2].angle.getDegrees();
+    frontRightAngle = moduleStates[3].angle.getDegrees();
+    backLeftAngle =  moduleStates[0].angle.getDegrees();
+    backRightAngle = moduleStates[1].angle.getDegrees();
+
+    // Correct negative angles to be within 0 to 360
+    if (backRightAngle < 0)
+    {
+      backRightAngle = 360 + backRightAngle;
+    }
+    if (backLeftAngle < 0)
+    {
+      backLeftAngle = 360 + backLeftAngle;
+    }
+    if (frontRightAngle < 0)
+    {
+      frontRightAngle = 360 + frontRightAngle;
+    }
+    if (frontLeftAngle < 0)
+    {
+      frontLeftAngle = 360 + frontLeftAngle;
+    }
+
+    // Run the swerve modules based on current status 
+    if (Math.abs(leftX) < joystickDeadband && Math.abs(leftY) < joystickDeadband && Math.abs(rightX) < joystickDeadband) {
+
+      // Stop motors without turning wheels
+      leftFront.stop();
+      rightFront.stop();
+      leftBack.stop();
+      rightBack.stop();
+
+    } else {
+
+      if (!isParked) {
+
+        leftFront.drive(moduleStates[0].speedMetersPerSecond, frontLeftAngle);
+        rightFront.drive(moduleStates[1].speedMetersPerSecond, frontRightAngle);
+        leftBack.drive(moduleStates[2].speedMetersPerSecond, backLeftAngle);
+        rightBack.drive(moduleStates[3].speedMetersPerSecond, backRightAngle);
+
+      }
+
+    }
+
+    // Check for collision
+    double currLinearAccelX = gyro.getWorldLinearAccelX();
+    double currentJerkX = currLinearAccelX - lastLinearAccelX;
+    lastLinearAccelX = currLinearAccelX;
+    double currLinearAccelY = gyro.getWorldLinearAccelY();
+    double currentJerkY = currLinearAccelY - lastLinearAccelY;
+    lastLinearAccelY = currLinearAccelY;
+          
+    if ( (Math.abs(currentJerkX) > kCollisionThresholdDeltaG ) || (Math.abs(currentJerkY) > kCollisionThresholdDeltaG) ) {
+
+      impactDetected = true;
+
+    }
 
   }
 
@@ -180,15 +355,6 @@ public class SwerveDriveWPI extends SubsystemBase {
     } else{
       omegaRadiansPerSecond = RotationalSpeed * rightX;
     }
-
-    // Put values on dashboard for testing/debugging
-    SmartDashboard.putNumber("x meters per second",vxMetersPerSecond);
-    SmartDashboard.putNumber("y meters per second",vyMetersPerSecond);
-    SmartDashboard.putNumber("omega meters per second",omegaRadiansPerSecond);
-    SmartDashboard.putNumber("Gyro Angle", getGyroAngle());
-    SmartDashboard.putNumber("Yaw Rate", getGyroYawRate());
-    SmartDashboard.putNumber("X Disp", (gyro.getDisplacementX()*100/2.54));//converted from meters to inches
-    SmartDashboard.putNumber("Y Disp", (gyro.getDisplacementY()*100/2.54));//converted from meters to inches
   
     // Create Chassis Speed based on drive mode
     if (isFieldOriented) {
@@ -203,7 +369,7 @@ public class SwerveDriveWPI extends SubsystemBase {
 
     }
   
-    // Convert to module states
+    // Convert chassis speeds to module states
     SwerveModuleState[] moduleStates = kinematics.toSwerveModuleStates(speeds);
 
     // Get calculated module angles
