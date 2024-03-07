@@ -47,7 +47,7 @@ public final class Constants {
 
         // Swerve drive calculation constants
         public static final double kTalonFXPPR = 2048;
-        public static final double kWheelDiameter = 4.0;
+        public static final double kWheelDiameter = 0.1016;  //meters (4 in)
         public static final double kDriveGearRatio = 8.14;        
         public static final double DRIVETRAIN_TRACKWIDTH_METERS = 0.546;
         public static final double DRIVETRAIN_WHEELBASE_METERS = 0.546;
