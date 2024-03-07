@@ -153,30 +153,52 @@ public class FieldDriveWithJoysticks extends Command {
 
             System.out.println("Auto Rotate");
             System.out.println("rotSpeed: " + rotSpeed);
-            swervedrive.drive(xSpeed, ySpeed, rotSpeed);
+
+            if (isFieldOriented) {
+              swervedrive.driveFieldRelative(xSpeed, ySpeed, rotSpeed)
+            } else {
+              swervedrive.driveRobotRelative(xSpeed, ySpeed, rotSpeed);
+            }
+            
 
           } else {
 
-            swervedrive.drive(xSpeed, ySpeed, rotSpeed);
+            if (isFieldOriented) {
+              swervedrive.driveFieldRelative(xSpeed, ySpeed, rotSpeed)
+            } else {
+              swervedrive.driveRobotRelative(xSpeed, ySpeed, rotSpeed);
+            }
 
           }
 
 
         } else {
 
-          swervedrive.drive(xSpeed, ySpeed, rotSpeed);
+          if (isFieldOriented) {
+            swervedrive.driveFieldRelative(xSpeed, ySpeed, rotSpeed)
+          } else {
+            swervedrive.driveRobotRelative(xSpeed, ySpeed, rotSpeed);
+          }
 
         }
 
       } else {
 
-        swervedrive.drive(xSpeed, ySpeed, rotSpeed);
+        if (isFieldOriented) {
+          swervedrive.driveFieldRelative(xSpeed, ySpeed, rotSpeed)
+        } else {
+          swervedrive.driveRobotRelative(xSpeed, ySpeed, rotSpeed);
+        }
 
       }
 
     } else {
 
-      swervedrive.drive(xSpeed, ySpeed, rotSpeed);
+      if (isFieldOriented) {
+        swervedrive.driveFieldRelative(xSpeed, ySpeed, rotSpeed)
+      } else {
+        swervedrive.driveRobotRelative(xSpeed, ySpeed, rotSpeed);
+      }
 
     }
 
