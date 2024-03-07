@@ -28,10 +28,10 @@ public class SwerveDrive extends SubsystemBase {
   /** Creates a new SwerveDrive. */
   public SwerveDrive() {
 
-    leftFront = new SwerveWheel(kLeftFrontDrive, kLeftFrontAngle, kLeftFrontCoder);
-    leftBack = new SwerveWheel(kLeftBackDrive, kLeftBackAngle, kLeftBackCoder);
-    rightFront = new SwerveWheel(kRightFrontDrive, kRightFrontAngle, kRightFrontCoder);
-    rightBack = new SwerveWheel(kRightBackDrive, kRightBackAngle, kRightBackCoder);
+    leftFront = new SwerveWheel("LF", kLeftFrontDrive, kLeftFrontAngle, kLeftFrontCoder);
+    leftBack = new SwerveWheel("LB", kLeftBackDrive, kLeftBackAngle, kLeftBackCoder);
+    rightFront = new SwerveWheel("RF", kRightFrontDrive, kRightFrontAngle, kRightFrontCoder);
+    rightBack = new SwerveWheel("RB", kRightBackDrive, kRightBackAngle, kRightBackCoder);
 
     joystickDeadband = 0.05;
 

@@ -84,6 +84,10 @@ public final class Constants {
         public static final double kP_DriveAngle = 0.01;
         public static final double kI_DriveAngle = 0.0;
         public static final double kD_DriveAngle = 0.0;
+        public static final double kPAutoAlign = 0.006;
+        public static final double kIAutoAlign = 0.0;
+        public static final double kDAutoAlign = 0.003;
+        public static final double kFFAutoAlign = 0.12;
 
         // Motion magic constants
         public static final int kSlotIdxDrive = 0;

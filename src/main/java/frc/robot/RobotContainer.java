@@ -49,7 +49,7 @@ public class RobotContainer {
 
   //Driving Commands
   //private final DriveWithJoysticks driveCommand = new DriveWithJoysticks(swervedrive, xbox, table);
-  private final FieldDriveWithJoysticks fieldDriveCommand = new FieldDriveWithJoysticks(swervedrivewpi,xbox);
+  private final FieldDriveWithJoysticks fieldDriveCommand = new FieldDriveWithJoysticks(swervedrivewpi,xbox,table);
   private final ChangeSpeedCommand changeSpeedCommand = new ChangeSpeedCommand();
   private final ChangeDriveMode changeModeCommand = new ChangeDriveMode();
 
@@ -446,7 +446,7 @@ public class RobotContainer {
 
     //Update Gyro Position
     SmartDashboard.putNumber("Gyro Angle", swervedrivewpi.getGyroAngle());
-    SmartDashboard.putNUmber("Gyro Yaw", swervedrivewpi.getGyroYaw());
+    SmartDashboard.putNumber("Gyro Yaw", swervedrivewpi.getGyroYaw());
 
     //Update Pressure
     SmartDashboard.putNumber("Pressure", pneumatic.getPressure());

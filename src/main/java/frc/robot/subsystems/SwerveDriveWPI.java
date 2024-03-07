@@ -90,9 +90,6 @@ public class SwerveDriveWPI extends SubsystemBase {
     rightBackTranslation = new Translation2d(-0.297,-0.288);
     kinematics = new SwerveDriveKinematics(leftFrontTranslation,rightFrontTranslation,leftBackTranslation,rightBackTranslation);
 
-    // Initialize swerve odometry object
-    odometry = new SwerveDriveOdometry(kinematics, getGyroRotation2d(), getModulePositions());
-
     // Initialize NavX gyro
     gyro = new AHRS(SPI.Port.kMXP);
    
@@ -113,6 +110,9 @@ public class SwerveDriveWPI extends SubsystemBase {
     // Create PID controller
     wpiPIDController = new PIDController(kAnglePIDkp, kAnglePIDki, kAnglePIDkd);
     wpiPIDController.setTolerance(1.0, 5);
+
+    // Initialize swerve odometry object
+    odometry = new SwerveDriveOdometry(kinematics, getGyroRotation2d(), getModulePositions());
 
   }
 
@@ -508,12 +508,12 @@ public class SwerveDriveWPI extends SubsystemBase {
 
     SwerveModulePosition[] positions = new SwerveModulePosition[4];
 
-    position[0] = leftFront.getPosition();
-    position[1] = rightFront.getPosition();
-    position[2] = leftBack.getPosition();
-    position[3] = rightBack.getPosition();
+    positions[0] = leftFront.getPosition();
+    positions[1] = rightFront.getPosition();
+    positions[2] = leftBack.getPosition();
+    positions[3] = rightBack.getPosition();
 
-    return position
+    return positions;
 
   }
 
@@ -534,9 +534,9 @@ public class SwerveDriveWPI extends SubsystemBase {
    * Sets the robot pose to a specified pose
    * 
    */
-  public resetPose(Pose2d pose) {
+  public void resetPose(Pose2d pose) {
 
-    odometry.resetPose(getGyroRotation2d(), getModulePositions(), pose);
+    odometry.resetPosition(getGyroRotation2d(), getModulePositions(), pose);
 
   }
 
