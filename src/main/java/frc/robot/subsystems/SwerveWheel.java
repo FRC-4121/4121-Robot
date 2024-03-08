@@ -191,6 +191,9 @@ public class SwerveWheel extends SubsystemBase {
         encoderAngle = encoderAngle - 1.0;
       }
     }
+
+    // Optimize angle movement to minimize rotational distance
+    
     
     //double output = anglePIDController.run(encoderAngle,target);
     double output = wpiPIDController.calculate(encoderAngle,target);

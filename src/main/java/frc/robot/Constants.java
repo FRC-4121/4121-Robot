@@ -92,7 +92,7 @@ public final class Constants {
         public static final double kPAutoAlign = 0.002;
         public static final double kIAutoAlign = 0.0;
         public static final double kDAutoAlign = 0.001;
-        public static final double kFFAutoAlign = 0.14;
+        public static final double kFFAutoAlign = 0.12;
 
         public static boolean AutoAngleToTarget = true;
 
@@ -203,6 +203,7 @@ public final class Constants {
         public static final double kShooterAngleFF = 0;
         public static final double kShooterAngleMinOutput = -1;
         public static final double kShooterAngleMaxOutput = 1;
+        public static final int kTimeoutMsAngle = 20;
 
         // Encoder Values
         public static final int kAngleEncoderID = 2;

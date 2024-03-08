@@ -85,7 +85,11 @@ public class FieldDriveWithJoysticks extends Command {
   @Override
   public void execute() {
 
+    // Initialize variables
     tagOffset = 0;
+    isMyTag = false;
+
+    // Get joystick positions and convert to speeds
     xSpeed = xSpeedLimiter.calculate(MathUtil.applyDeadband(Xbox.getLeftX(),0.01)) * kJoystickSpeedCorr;
     ySpeed = ySpeedLimiter.calculate(MathUtil.applyDeadband(Xbox.getLeftY(),0.01)) * kJoystickSpeedCorr;
     rotSpeed = -rotSpeedLimiter.calculate(MathUtil.applyDeadband(Xbox.getRightX(), 0.01)) * kJoystickSpeedCorr;
@@ -93,42 +97,42 @@ public class FieldDriveWithJoysticks extends Command {
     System.out.println("ySpeed: " + ySpeed);
     System.out.println("rotSpeed: " + rotSpeed);
 
+    // Check if auto align is enabled before proceeding
     if(AutoAngleToTarget){
 
-      if (Xbox.getRightX() < 0.01) {
+      if (Math.abs(rotSpeed) < 0.01) {
 
         // Determine if we see any AprilTags
         tagsFound = table.getTagsFound("CAM2");
         if (tagsFound > 0) {
 
-          // Find the center tag
+          // Determine if we see the center speaker tag
+          centerTag = -1;
           for (int i = 0; i < tagsFound; i++) {
 
             if (blueAlliance) {
-              if (table.getTagInfo("Cam2", i, "id") == BlueSpeakerCenterID) {
+
+              if ((int)table.getTagInfo("Cam2", i, "id") == BlueSpeakerCenterID) {
 
                 centerTag = i;
+                isMyTag = true;
 
               }
+
             } else {
-              if (table.getTagInfo("Cam2", i, "id") == RedSpeakerCenterID) {
+
+              if ((int)table.getTagInfo("Cam2", i, "id") == RedSpeakerCenterID) {
 
                 centerTag = i;
+                isMyTag = true;
 
               }
+
             }
+
           }
 
-          // Get ID and distance for closest tag
-          tagID = (int) table.getTagInfo("CAM2", centerTag, "id");
-
-          // Determine if the tag belongs to my alliance
-          if (blueAlliance && tagID == BlueSpeakerCenterID) {
-            isMyTag = true;
-          } else if (!blueAlliance && tagID == RedSpeakerCenterID) {
-            isMyTag = true;
-          }
-
+          // If we found the center speaker tag, calculate angle correction
           if (isMyTag) {
 
             // Only find distance and offset if we know we have the right tag
@@ -142,19 +146,29 @@ public class FieldDriveWithJoysticks extends Command {
               double rotSpeed = -wpiPIDController.calculate(tagOffset, 0);
 
               if (rotSpeed > 0) {
+
                 rotSpeed = kFFAutoAlign + rotSpeed;
+
               } else if (rotSpeed < 0) {
+
                 rotSpeed = -kFFAutoAlign + rotSpeed;
+
               }
 
               if (rotSpeed > 0.4) {
+
                 rotSpeed = 0.4;
+
               } else if (rotSpeed < -0.4) {
+
                 rotSpeed = -0.4;
+
               }
 
               if (Math.abs(tagOffset) < 5.0) {
+
                 rotSpeed = 0.0;
+                
               }
 
               System.out.println("Auto Rotate");
@@ -206,7 +220,7 @@ public class FieldDriveWithJoysticks extends Command {
 
       }
 
-     } else {
+    } else {
 
       if (isFieldOriented) {
         swervedrive.driveFieldRelative(xSpeed, ySpeed, rotSpeed);
@@ -214,7 +228,7 @@ public class FieldDriveWithJoysticks extends Command {
         swervedrive.driveRobotRelative(xSpeed, ySpeed, rotSpeed);
       }
 
-     }
+    }
 
   } 
 
