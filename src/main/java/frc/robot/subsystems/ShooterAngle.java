@@ -79,8 +79,17 @@ public class ShooterAngle extends SubsystemBase {
       pivotMotor.setSelectedSensorPosition(0);
     } else if(BottomSwitch.get() == true)
     {
+      if (speed < 0) {
+        pivotMotor.set(0);
+      }
       MaxEncoderPos = getIntegratedValue();
     }
+    double a = getIntegratedValue();
+    double b = (MinSpeakerAngle-MaxSpeakerAngle);
+    double c = b / MaxEncoderPos;
+    double d = a * c;
+    double e = d + MaxSpeakerAngle;
+    System.out.println(a + " " + b + " " + c + " " + d + " " + e);
 
     CurrentShooterAngle = getIntegratedValue() * ((MinSpeakerAngle-MaxSpeakerAngle)/MaxEncoderPos) + MaxSpeakerAngle;
   }
@@ -108,7 +117,7 @@ public class ShooterAngle extends SubsystemBase {
   }
 
   public double getIntegratedValue() {
-    return Math.abs(pivotMotor.getSelectedSensorPosition());
+    return angle_filter.calculate(Math.abs(pivotMotor.getSelectedSensorPosition()));
   }
 
   public void zeroEncoder() {

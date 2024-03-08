@@ -9,6 +9,11 @@ package frc.robot;
 import frc.robot.ExtraClasses.Gains;
 import com.revrobotics.CANSparkBase.IdleMode;
 
+import static frc.robot.Constants.DriveConstants.MaxLinearSpeed;
+
+import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
+import com.pathplanner.lib.util.PIDConstants;
+import com.pathplanner.lib.util.ReplanningConfig;
 
 /**
  * The Constants class provides a dope af place for teams to hold robot-wide numerical or boolean
@@ -84,10 +89,12 @@ public final class Constants {
         public static final double kP_DriveAngle = 0.01;
         public static final double kI_DriveAngle = 0.0;
         public static final double kD_DriveAngle = 0.0;
-        public static final double kPAutoAlign = 0.006;
+        public static final double kPAutoAlign = 0.002;
         public static final double kIAutoAlign = 0.0;
-        public static final double kDAutoAlign = 0.003;
-        public static final double kFFAutoAlign = 0.12;
+        public static final double kDAutoAlign = 0.001;
+        public static final double kFFAutoAlign = 0.14;
+
+        public static boolean AutoAngleToTarget = true;
 
         // Motion magic constants
         public static final int kSlotIdxDrive = 0;
@@ -146,6 +153,16 @@ public final class Constants {
 
     }
 
+    public static final class Swerve {
+        public static final HolonomicPathFollowerConfig pathFollowerConfig = new HolonomicPathFollowerConfig(
+            new PIDConstants(5.0, 0, 0), // Translation constants 
+            new PIDConstants(5.0, 0, 0), // Rotation constants 
+            MaxLinearSpeed, 
+            0.414, // Drive base radius (distance from center to furthest module) 
+            new ReplanningConfig()
+          );
+    }
+
 
     /*
      * Values used for mechanisms
@@ -161,8 +178,8 @@ public final class Constants {
         public static final int BottomShooterID = 14;
 
         // General constants
-        public static final double TopShootSpeakerSpeed = -0.8;
-        public static final double BottomShootSpeakerSpeed = -0.8;
+        public static final double TopShootSpeakerSpeed = -0.9;
+        public static final double BottomShootSpeakerSpeed = -0.9;
         public static final double TopShootAmpSpeed = -0.08;//0.08 optimal
         public static final double BottomShootAmpSpeed = -0.3;//0.3 optimal
         public static final double TopShooterTrapSpeed = -0.45;
@@ -209,8 +226,8 @@ public final class Constants {
         public static final double IdleAngle = 53;//37 for 2nd shot
 
         //Shooter Angles
-        public static double CurrentShooterAngle = 60;
-        public static final double ShooterAngleTolerance = 0.5;
+        public static double CurrentShooterAngle = 55;
+        public static final double ShooterAngleTolerance = 2.0;
         public static double ShooterTargetAngle = 40;
         public static double LastShooterAngle = 40;
         public static Boolean AutoShooterPositioning = true;

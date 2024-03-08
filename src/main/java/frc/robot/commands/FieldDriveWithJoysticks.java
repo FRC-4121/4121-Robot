@@ -11,6 +11,7 @@ import edu.wpi.first.math.filter.SlewRateLimiter;
 import frc.robot.ExtraClasses.NetworkTableQuerier;
 import static frc.robot.Constants.MechanismConstants.*;
 import static frc.robot.Constants.ControlConstants.*;
+import static frc.robot.Constants.DriveConstants.AutoAngleToTarget;
 import static frc.robot.Constants.DriveConstants.kDAutoAlign;
 import static frc.robot.Constants.DriveConstants.kFFAutoAlign;
 import static frc.robot.Constants.DriveConstants.kIAutoAlign;
@@ -84,6 +85,7 @@ public class FieldDriveWithJoysticks extends Command {
   @Override
   public void execute() {
 
+    tagOffset = 0;
     xSpeed = xSpeedLimiter.calculate(MathUtil.applyDeadband(Xbox.getLeftX(),0.01)) * kJoystickSpeedCorr;
     ySpeed = ySpeedLimiter.calculate(MathUtil.applyDeadband(Xbox.getLeftY(),0.01)) * kJoystickSpeedCorr;
     rotSpeed = -rotSpeedLimiter.calculate(MathUtil.applyDeadband(Xbox.getRightX(), 0.01)) * kJoystickSpeedCorr;
@@ -91,91 +93,103 @@ public class FieldDriveWithJoysticks extends Command {
     System.out.println("ySpeed: " + ySpeed);
     System.out.println("rotSpeed: " + rotSpeed);
 
-    if(Xbox.getRightX() < 0.01) { 
+    if(AutoAngleToTarget){
 
-      // Determine if we see any AprilTags
-      tagsFound = table.getTagsFound("CAM2");
-      if (tagsFound > 0) {
+      if (Xbox.getRightX() < 0.01) {
 
-        // Find the center tag
-        for (int i = 0; i < tagsFound; i++) {
+        // Determine if we see any AprilTags
+        tagsFound = table.getTagsFound("CAM2");
+        if (tagsFound > 0) {
 
-          if (blueAlliance) {
-            if (table.getTagInfo("Cam2", i, "id") == BlueSpeakerCenterID) {
+          // Find the center tag
+          for (int i = 0; i < tagsFound; i++) {
 
-              centerTag = i;
+            if (blueAlliance) {
+              if (table.getTagInfo("Cam2", i, "id") == BlueSpeakerCenterID) {
 
-            }
-          } else {
-            if (table.getTagInfo("Cam2", i, "id") == RedSpeakerCenterID) {
+                centerTag = i;
 
-              centerTag = i;
+              }
+            } else {
+              if (table.getTagInfo("Cam2", i, "id") == RedSpeakerCenterID) {
 
+                centerTag = i;
+
+              }
             }
           }
-        }
 
-        // Get ID and distance for closest tag
-        tagID = (int) table.getTagInfo("CAM2", centerTag, "id");
-        tagDistance = distFilter.calculate(table.getTagInfo("CAM2", centerTag, "distance"));
-        tagOffset = offsetFilter.calculate(table.getTagInfo("CAM2", centerTag, "offset"));
+          // Get ID and distance for closest tag
+          tagID = (int) table.getTagInfo("CAM2", centerTag, "id");
 
-        // Determine if the tag belongs to my alliance
-        if (blueAlliance && tagID == BlueSpeakerCenterID) {
-          isMyTag = true;
-        } else if (!blueAlliance && tagID == RedSpeakerCenterID) {
-          isMyTag = true;
-        }
-
-        if (tagDistance > MinAutoDistance && tagDistance < MaxAutoDistance) {
+          // Determine if the tag belongs to my alliance
+          if (blueAlliance && tagID == BlueSpeakerCenterID) {
+            isMyTag = true;
+          } else if (!blueAlliance && tagID == RedSpeakerCenterID) {
+            isMyTag = true;
+          }
 
           if (isMyTag) {
 
-            System.out.println("Tag Offset: " + tagOffset);
+            // Only find distance and offset if we know we have the right tag
+            tagDistance = distFilter.calculate(table.getTagInfo("CAM2", centerTag, "distance"));
+            tagOffset = offsetFilter.calculate(table.getTagInfo("CAM2", centerTag, "offset"));
 
-            double rotSpeed = -wpiPIDController.calculate(tagOffset, 0);
+            if (tagDistance > MinAutoDistance && tagDistance < MaxAutoDistance) {
 
-            if (rotSpeed > 0) {
-              rotSpeed = kFFAutoAlign + rotSpeed;
-            } else if (rotSpeed < 0) {
-              rotSpeed = -kFFAutoAlign + rotSpeed;
-            }
+              System.out.println("Tag Offset: " + tagOffset);
 
-            if (rotSpeed > 0.4) {
-              rotSpeed = 0.4;
-            } else if (rotSpeed < -0.4) {
-              rotSpeed = -0.4;
-            }
+              double rotSpeed = -wpiPIDController.calculate(tagOffset, 0);
 
-            if (Math.abs(tagOffset) < 5.0) {
-              rotSpeed = 0.0;
-            }
+              if (rotSpeed > 0) {
+                rotSpeed = kFFAutoAlign + rotSpeed;
+              } else if (rotSpeed < 0) {
+                rotSpeed = -kFFAutoAlign + rotSpeed;
+              }
 
-            System.out.println("Auto Rotate");
-            System.out.println("rotSpeed: " + rotSpeed);
+              if (rotSpeed > 0.4) {
+                rotSpeed = 0.4;
+              } else if (rotSpeed < -0.4) {
+                rotSpeed = -0.4;
+              }
 
-            if (isFieldOriented) {
-              swervedrive.driveFieldRelative(xSpeed, ySpeed, rotSpeed)
+              if (Math.abs(tagOffset) < 5.0) {
+                rotSpeed = 0.0;
+              }
+
+              System.out.println("Auto Rotate");
+              System.out.println("rotSpeed: " + rotSpeed);
+
+              if (isFieldOriented) {
+                swervedrive.driveFieldRelative(xSpeed, ySpeed, rotSpeed);
+              } else {
+                swervedrive.driveRobotRelative(xSpeed, ySpeed, rotSpeed);
+              }
+
             } else {
-              swervedrive.driveRobotRelative(xSpeed, ySpeed, rotSpeed);
+
+              if (isFieldOriented) {
+                swervedrive.driveFieldRelative(xSpeed, ySpeed, rotSpeed);
+              } else {
+                swervedrive.driveRobotRelative(xSpeed, ySpeed, rotSpeed);
+              }
+
             }
-            
 
           } else {
 
             if (isFieldOriented) {
-              swervedrive.driveFieldRelative(xSpeed, ySpeed, rotSpeed)
+              swervedrive.driveFieldRelative(xSpeed, ySpeed, rotSpeed);
             } else {
               swervedrive.driveRobotRelative(xSpeed, ySpeed, rotSpeed);
             }
 
           }
-
 
         } else {
 
           if (isFieldOriented) {
-            swervedrive.driveFieldRelative(xSpeed, ySpeed, rotSpeed)
+            swervedrive.driveFieldRelative(xSpeed, ySpeed, rotSpeed);
           } else {
             swervedrive.driveRobotRelative(xSpeed, ySpeed, rotSpeed);
           }
@@ -185,22 +199,22 @@ public class FieldDriveWithJoysticks extends Command {
       } else {
 
         if (isFieldOriented) {
-          swervedrive.driveFieldRelative(xSpeed, ySpeed, rotSpeed)
+          swervedrive.driveFieldRelative(xSpeed, ySpeed, rotSpeed);
         } else {
           swervedrive.driveRobotRelative(xSpeed, ySpeed, rotSpeed);
         }
 
       }
 
-    } else {
+     } else {
 
       if (isFieldOriented) {
-        swervedrive.driveFieldRelative(xSpeed, ySpeed, rotSpeed)
+        swervedrive.driveFieldRelative(xSpeed, ySpeed, rotSpeed);
       } else {
         swervedrive.driveRobotRelative(xSpeed, ySpeed, rotSpeed);
       }
 
-    }
+     }
 
   } 
 

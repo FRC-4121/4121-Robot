@@ -114,7 +114,12 @@ public class AutoDrive extends Command {
 
 
     // Run the drive
-    drivetrain.drive(leftStickX, leftStickY, targetRotation);
+    if(isFieldOriented){
+      drivetrain.driveFieldRelative(leftStickX, leftStickY, targetRotation);
+    } else {
+      drivetrain.driveRobotRelative(leftStickX, leftStickY, targetRotation);
+    }
+    
 
     // calculate driven distance
     distanceTraveled = drivetrain.calculateDriveDistance();

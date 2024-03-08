@@ -151,8 +151,12 @@ public class AutoPickupNote extends Command {
     SmartDashboard.putNumber("NoteOffset", noteOffset);
     SmartDashboard.putNumber("Note Dist", noteDistance);
 
-    // Drive the robot
-    drive.drive(xSpeed, ySpeed, rotSpeed);
+    // Run the drive
+    if(isFieldOriented){
+      drive.driveFieldRelative(xSpeed, ySpeed, rotSpeed);
+    } else {
+      drive.driveRobotRelative(xSpeed, ySpeed, rotSpeed);
+    }
 
   }
 

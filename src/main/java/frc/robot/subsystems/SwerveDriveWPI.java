@@ -5,6 +5,8 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
+
 import static frc.robot.Constants.*;
 import static frc.robot.Constants.DriveConstants.*;
 import static frc.robot.Constants.MechanismConstants.*;
@@ -15,6 +17,7 @@ import edu.wpi.first.math.kinematics.*;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.math.controller.*;
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -70,6 +73,9 @@ public class SwerveDriveWPI extends SubsystemBase {
   // Declare PID controller
   private PIDController wpiPIDController;
 
+  //Declare 2d Field
+  private Field2d field;
+
   /**
    *  
    * Creates a new SwerveDrive
@@ -114,6 +120,36 @@ public class SwerveDriveWPI extends SubsystemBase {
     // Initialize swerve odometry object
     odometry = new SwerveDriveOdometry(kinematics, getGyroRotation2d(), getModulePositions());
 
+    // Initialize 2d field
+    field = new Field2d();
+
+    // Configure AutoBuilder
+    AutoBuilder.configureHolonomic(
+      this::getPose, 
+      this::resetPose, 
+      this::getSpeeds, 
+      this::driveRobotRelative, 
+      Constants.Swerve.pathFollowerConfig,
+      () -> {
+          // Boolean supplier that controls when the path will be mirrored for the red alliance
+          // This will flip the path being followed to the red side of the field.
+          // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+
+          /*var alliance = DriverStation.getAlliance();
+          if (alliance.isPresent()) {
+              return alliance.get() == DriverStation.Alliance.Red;
+          }
+          return false;*/
+          return !blueAlliance;
+      },
+      this
+    );
+
+    // Set up custom logging to add the current path to a field 2d widget
+    PathPlannerLogging.setLogActivePathCallback((poses) -> field.getObject("path").setPoses(poses));
+
+    SmartDashboard.putData("Field", field);
+
   }
 
   /**
@@ -143,7 +179,9 @@ public class SwerveDriveWPI extends SubsystemBase {
    * 
    */
   public void driveRobotRelative(ChassisSpeeds robotRelativeSpeeds) {
+    ChassisSpeeds targetSpeeds = ChassisSpeeds.discretize(robotRelativeSpeeds, 0.02);
 
+    driveRobot(targetSpeeds);
   }
 
   /**
@@ -202,7 +240,9 @@ public class SwerveDriveWPI extends SubsystemBase {
    * 
    */
   public void driveFieldRelative(ChassisSpeeds fieldRelativeSpeeds) {
-
+    // Convert inputs to chassis speeds
+    ChassisSpeeds fieldSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(fieldRelativeSpeeds, Rotation2d.fromDegrees(getGyroAngle()));
+    driveRobot(fieldSpeeds);
   }
 
   /**
@@ -294,7 +334,7 @@ public class SwerveDriveWPI extends SubsystemBase {
     }
 
     // Run the swerve modules based on current status 
-    if (Math.abs(leftX) < joystickDeadband && Math.abs(leftY) < joystickDeadband && Math.abs(rightX) < joystickDeadband) {
+    /*if (Math.abs(leftX) < joystickDeadband && Math.abs(leftY) < joystickDeadband && Math.abs(rightX) < joystickDeadband) {
 
       // Stop motors without turning wheels
       leftFront.stop();
@@ -302,7 +342,7 @@ public class SwerveDriveWPI extends SubsystemBase {
       leftBack.stop();
       rightBack.stop();
 
-    } else {
+    } else {*/
 
       if (!isParked) {
 
@@ -313,7 +353,7 @@ public class SwerveDriveWPI extends SubsystemBase {
 
       }
 
-    }
+    //}
 
     // Check for collision
     double currLinearAccelX = gyro.getWorldLinearAccelX();
@@ -341,7 +381,7 @@ public class SwerveDriveWPI extends SubsystemBase {
    * @param rightX  The left-right position of the right joystick. Controls rotation.
    * 
    */
-  public void drive(double leftX, double leftY, double rightX) {
+  /*public void drive(double leftX, double leftY, double rightX) {
 
     // Convert joystick positions to linear speeds in meters/second
     vxMetersPerSecond = -(leftY * LinearSpeed);
@@ -447,7 +487,7 @@ public class SwerveDriveWPI extends SubsystemBase {
 
     }
   
-  }
+  } */
 
   /**
    * 
@@ -681,6 +721,33 @@ public class SwerveDriveWPI extends SubsystemBase {
 
     return positions;
 
+  }
+
+  /**
+   * 
+   * Gets the current states of all swerve modules
+   * 
+   * @return Array of module positions
+   */
+  public SwerveModuleState[] getModuleStates() {
+
+    SwerveModuleState[] states = new SwerveModuleState[4];
+
+    states[0] = leftFront.getState();
+    states[1] = rightFront.getState();
+    states[2] = leftBack.getState();
+    states[3] = rightBack.getState();
+
+    return states;
+
+  }
+
+  public ChassisSpeeds getSpeeds(){
+    return kinematics.toChassisSpeeds(getModuleStates());
+  }
+
+  public ChassisSpeeds getRobotRelativeSpeeds(){
+    return kinematics.toChassisSpeeds(getModuleStates());
   }
 
   /**

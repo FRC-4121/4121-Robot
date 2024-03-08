@@ -209,16 +209,24 @@ public class AutoShooterPos extends Command {
 
       double angleSpeed = AngleMotorSpeed * pidOutput;
 
-      if (pidOutput > 0 && shootAngle.getTopSwitch() == false) {
+      if (pidOutput > 0) {
 
-        shootAngle.runPivot(AngleMotorMinSpeed + angleSpeed);
-        SmartDashboard.putNumber("Angle Input",AngleMotorMinSpeed + angleSpeed);
+        if (shootAngle.getTopSwitch() == false) {
+          shootAngle.runPivot(AngleMotorMinSpeed + angleSpeed);
+          SmartDashboard.putNumber("Angle Input", AngleMotorMinSpeed + angleSpeed);
+        } else {
+          shootAngle.runPivot(0);
+        }
 
       }
-      else if (pidOutput < 0 && shootAngle.getBottomSwitch() == false) {
+      else if (pidOutput < 0) {
 
-        shootAngle.runPivot(-AngleMotorMinSpeed + angleSpeed);
-        SmartDashboard.putNumber("Angle Input", -AngleMotorMinSpeed + angleSpeed);
+        if (shootAngle.getBottomSwitch() == false) {
+          shootAngle.runPivot(-AngleMotorMinSpeed + angleSpeed);
+          SmartDashboard.putNumber("Angle Input", -AngleMotorMinSpeed + angleSpeed);
+        } else {
+          shootAngle.runPivot(0);
+        }
 
       }
 

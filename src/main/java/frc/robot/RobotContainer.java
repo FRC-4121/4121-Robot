@@ -68,6 +68,7 @@ public class RobotContainer {
 
   //KillAuto Command
   private final KillAutoCommand killAutoObject = new KillAutoCommand(); 
+  private final ChangeAutoAngle changeAutoAngle = new ChangeAutoAngle();
   
   //LED Command
   private final LEDCommand ledCommand = new LEDCommand(led);
@@ -115,6 +116,7 @@ public class RobotContainer {
   private static JoystickButton rightButton;
   private static JoystickButton ampAngleButton;
   private static JoystickButton autoShooterPositionButton;
+  private static JoystickButton changeAutoAngleButton;
 
   //===CONSTRUCTOR===//
   public RobotContainer() { 
@@ -141,6 +143,7 @@ public class RobotContainer {
     leftButton = new JoystickButton(launchpad, LaunchPadSwitch6top);
     ampAngleButton = new JoystickButton(launchpad, LaunchPadSwitch1top);
     autoShooterPositionButton = new JoystickButton(launchpad, LaunchPadSwitch7);
+    changeAutoAngleButton = new JoystickButton(launchpad, 20);
   
     // Configure default commands
     configureDefaultCommands();
@@ -195,7 +198,8 @@ public class RobotContainer {
     runAngleDownButton.whileTrue(angleDownCommand);
     runAngleUpButton.whileTrue(angleUpCommand);
     manualIntakeButton.whileTrue(intakeCommand);
-
+    changeAutoAngleButton.onTrue(changeAutoAngle);
+    changeAutoAngleButton.onFalse(changeAutoAngle);
 
 
   }
