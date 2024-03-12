@@ -104,7 +104,7 @@ public class FieldDriveWithJoysticks extends Command {
 
         // Determine if we see any AprilTags
         tagsFound = table.getTagsFound("CAM2");
-        if (tagsFound > 0) {
+        if (tagsFound > 1) {
 
           // Determine if we see the center speaker tag
           centerTag = -1;

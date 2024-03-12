@@ -85,7 +85,7 @@ public class AutoShooterPos extends Command {
 
         if (blueAlliance) {
 
-          if (ntable.getTagInfo("Cam2", i, "id") == BlueSpeakerCenterID) {
+          if (ntable.getTagInfo("CAM2", i, "id") == BlueSpeakerCenterID) {
 
             closestTag = i;
             isMyTag = true;
@@ -94,7 +94,7 @@ public class AutoShooterPos extends Command {
 
         } else {
 
-          if (ntable.getTagInfo("Cam2", i, "id") == RedSpeakerCenterID) {
+          if (ntable.getTagInfo("CAM2", i, "id") == RedSpeakerCenterID) {
 
             closestTag = i;
             isMyTag = true;
@@ -120,20 +120,27 @@ public class AutoShooterPos extends Command {
               case BlueAmpID:
                 ShooterTargetAngle = AmpAngle;
                 LastShooterAngle = ShooterTargetAngle;
+                ShooterTargetEncoder = AmpEncoder;
+                LastShooterEncoder = AmpEncoder;
                 break;
 
               case BlueSpeakerCenterID:
                 ShooterTargetAngle = getTargetAngle(tagDistance);
                 LastShooterAngle = ShooterTargetAngle;
+                ShooterTargetEncoder = getTargetEncoder(tagDistance);
+                LastShooterEncoder = ShooterTargetEncoder;
                 break;
 
               case BlueSpeakerSideID:
                 ShooterTargetAngle = getTargetAngle(tagDistance);
                 LastShooterAngle = ShooterTargetAngle;
+                ShooterTargetEncoder = getTargetEncoder(tagDistance);
+                LastShooterEncoder = ShooterTargetEncoder;
                 break;
 
               default:
                 ShooterTargetAngle = LastShooterAngle;
+                ShooterTargetEncoder = LastShooterEncoder;
 
             }
 
@@ -144,20 +151,27 @@ public class AutoShooterPos extends Command {
               case RedAmpID:
                 ShooterTargetAngle = AmpAngle;
                 LastShooterAngle = ShooterTargetAngle;
+                ShooterTargetEncoder = AmpEncoder;
+                LastShooterEncoder = ShooterTargetEncoder;
                 break;
 
               case RedSpeakerCenterID:
                 ShooterTargetAngle = getTargetAngle(tagDistance);
                 LastShooterAngle = ShooterTargetAngle;
+                ShooterTargetEncoder = getTargetEncoder(tagDistance);
+                LastShooterEncoder = ShooterTargetEncoder;
                 break;
 
               case RedSpeakerSideID:
                 ShooterTargetAngle = getTargetAngle(tagDistance);
                 LastShooterAngle = ShooterTargetAngle;
+                ShooterTargetEncoder = getTargetEncoder(tagDistance);
+                LastShooterEncoder = ShooterTargetEncoder;
                 break;
 
               default:
                 ShooterTargetAngle = LastShooterAngle;
+                ShooterTargetEncoder = LastShooterEncoder;
 
             }
 
@@ -166,6 +180,7 @@ public class AutoShooterPos extends Command {
         } else {
 
           ShooterTargetAngle = LastShooterAngle;
+          ShooterTargetEncoder = LastShooterEncoder;
 
         }
 
@@ -174,6 +189,8 @@ public class AutoShooterPos extends Command {
         ShooterTargetAngle = IdleAngle;
         //ShooterTargetAngle = LastShooterAngle;
         LastShooterAngle = ShooterTargetAngle;
+        ShooterTargetEncoder = IdleEncoder;
+        LastShooterEncoder = ShooterTargetEncoder;
       }
 
     } else {
@@ -181,13 +198,17 @@ public class AutoShooterPos extends Command {
       ShooterTargetAngle = IdleAngle;
       //ShooterTargetAngle = LastShooterAngle;
       LastShooterAngle = ShooterTargetAngle;
+      ShooterTargetEncoder = IdleEncoder;
+      LastShooterEncoder = ShooterTargetEncoder;
 
     }
 
     // Determine new motor speed from PID controller
     double currentEncoder = shootAngle.getIntegratedValue();
-    double targetEncoder = shootAngle.getEncoderForAngle(ShooterTargetAngle);
-    double pidOutput = wpiPIDController.calculate(currentEncoder, targetEncoder);
+    //double targetEncoder = getTargetEncoder(tagDistance);
+    double pidOutput = -wpiPIDController.calculate(currentEncoder, ShooterTargetEncoder);
+
+    //SmartDashboard.putNumber("Target Encoder", targetEncoder);
 
     // Limit PID putput
     if(pidOutput > 1)
@@ -207,7 +228,7 @@ public class AutoShooterPos extends Command {
     if (PauseAutoPosition == false) { 
 
       // Run angle motor at new speed (as long as we aren't at bounds)
-      if (Math.abs(CurrentShooterAngle - ShooterTargetAngle) > ShooterAngleTolerance) {
+      if (Math.abs(currentEncoder - ShooterTargetEncoder) > ShooterAngleTolerance) {
 
         double angleSpeed = AngleMotorSpeed * pidOutput;
 
@@ -250,6 +271,7 @@ public class AutoShooterPos extends Command {
       }
 
     }
+  }
 
   }
 
@@ -294,6 +316,26 @@ public class AutoShooterPos extends Command {
     }
     SmartDashboard.putNumber("Target Angle:",calcAngle);
     return calcAngle;
+
+  }
+
+    /**
+   * 
+   * Calculate the target angle given the distance from target
+   * 
+   * @param distance  Measured distance from target
+   * 
+   *  */ 
+  public double getTargetEncoder(double distance) {
+
+    double calcEncoder = ((MaxEncoderPos - 0)/(MaxAutoDistance - MinAutoDistance)) * (distance - MinAutoDistance);
+    if(calcEncoder > MaxEncoderPos){
+      calcEncoder = MaxEncoderPos;
+    } else if(calcEncoder < 0){
+      calcEncoder = 0;
+    }
+    SmartDashboard.putNumber("Target Encoder:",calcEncoder);
+    return calcEncoder;
 
   }
 

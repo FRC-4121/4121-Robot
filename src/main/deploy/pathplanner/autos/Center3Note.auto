@@ -1,0 +1,37 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 1.37,
+      "y": 5.59
+    },
+    "rotation": 0
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "CenterNote2"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "CenterNote3"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "ShootNote3"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}

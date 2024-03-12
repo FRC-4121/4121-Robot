@@ -46,6 +46,7 @@ public class Robot extends TimedRobot {
     // Put zero mechanism options on the dashboard
     SmartDashboard.putNumber("Zero Gyro", 0);
     SmartDashboard.putNumber("Zero Positions", 0);
+    SmartDashboard.putNumber("Zero Encoder", 0);
 
     // Put auto program notes to shoot on the dashboard
     SmartDashboard.putNumber("Auto Notes", 2);
@@ -89,6 +90,9 @@ public class Robot extends TimedRobot {
     //Get shooter selection
     m_robotContainer.getAngleSelection();
 
+    //Get angle to target selection
+    m_robotContainer.getAngleToTargetSelection();
+
     //Check for note on board
     m_robotContainer.checkForNote();
 
@@ -99,6 +103,12 @@ public class Robot extends TimedRobot {
     if (SmartDashboard.getNumber("Zero Positions", 0) == 1) {
       m_robotContainer.zeroRobot();
       SmartDashboard.putNumber("Zero Positions", 0);
+    }
+
+    // Check for robot zero command and zero the robot
+    if (SmartDashboard.getNumber("Zero Encoder", 0) == 1) {
+      m_robotContainer.zeroDriveEncoder();
+      SmartDashboard.putNumber("Zero Encoder", 0);
     }
 
     // Check for number of notes to shoot in auto

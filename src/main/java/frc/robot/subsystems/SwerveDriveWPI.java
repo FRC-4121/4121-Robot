@@ -169,6 +169,14 @@ public class SwerveDriveWPI extends SubsystemBase {
       zeroGyro();
     }
 
+    //Update robot odometry
+    odometry.update(getGyroRotation2d(),getModulePositions());
+
+    SmartDashboard.putString("Pose",getPose().toString());
+
+    //Update field position
+    field.setRobotPose(getPose());
+
   }
 
   /**
@@ -179,9 +187,11 @@ public class SwerveDriveWPI extends SubsystemBase {
    * 
    */
   public void driveRobotRelative(ChassisSpeeds robotRelativeSpeeds) {
-    ChassisSpeeds targetSpeeds = ChassisSpeeds.discretize(robotRelativeSpeeds, 0.02);
+    //ChassisSpeeds targetSpeeds = ChassisSpeeds.discretize(robotRelativeSpeeds, 0.02);
 
-    driveRobot(targetSpeeds);
+    driveRobotAuto(robotRelativeSpeeds);
+
+    System.out.println("Robot Relative Drive");
   }
 
   /**
@@ -315,6 +325,7 @@ public class SwerveDriveWPI extends SubsystemBase {
     backLeftAngle =  moduleStates[0].angle.getDegrees();
     backRightAngle = moduleStates[1].angle.getDegrees();
 
+
     // Correct negative angles to be within 0 to 360
     if (backRightAngle < 0)
     {
@@ -332,6 +343,81 @@ public class SwerveDriveWPI extends SubsystemBase {
     {
       frontLeftAngle = 360 + frontLeftAngle;
     }
+
+    
+    System.out.println("lf" + frontLeftAngle);
+    System.out.println("rf" + frontRightAngle);
+    System.out.println("lb" + backLeftAngle);
+    System.out.println("rb" + backRightAngle);
+
+    // Run the swerve modules based on current status 
+    /*if (Math.abs(leftX) < joystickDeadband && Math.abs(leftY) < joystickDeadband && Math.abs(rightX) < joystickDeadband) {
+
+      // Stop motors without turning wheels
+      leftFront.stop();
+      rightFront.stop();
+      leftBack.stop();
+      rightBack.stop();
+
+    } else {*/
+
+      if (!isParked) {
+
+        leftFront.drive(moduleStates[0].speedMetersPerSecond, frontLeftAngle);
+        rightFront.drive(moduleStates[1].speedMetersPerSecond, frontRightAngle);
+        leftBack.drive(moduleStates[2].speedMetersPerSecond, backLeftAngle);
+        rightBack.drive(moduleStates[3].speedMetersPerSecond, backRightAngle);
+
+      }
+
+    //}
+
+    // Check for collision
+    double currLinearAccelX = gyro.getWorldLinearAccelX();
+    double currentJerkX = currLinearAccelX - lastLinearAccelX;
+    lastLinearAccelX = currLinearAccelX;
+    double currLinearAccelY = gyro.getWorldLinearAccelY();
+    double currentJerkY = currLinearAccelY - lastLinearAccelY;
+    lastLinearAccelY = currLinearAccelY;
+          
+    if ( (Math.abs(currentJerkX) > kCollisionThresholdDeltaG ) || (Math.abs(currentJerkY) > kCollisionThresholdDeltaG) ) {
+
+      impactDetected = true;
+
+    }
+
+  }
+
+  /**
+   * 
+   * Drive the robot
+   * 
+   * @param robotSpeeds  A set of chassis speeds
+   * 
+   */
+  public void driveRobotAuto(ChassisSpeeds robotSpeeds) {
+
+    System.out.println("drive robot auto");
+
+    // Convert chassis speeds to module states
+    SwerveModuleState[] moduleStates = kinematics.toSwerveModuleStates(robotSpeeds);
+
+    // Get calculated module angles
+    frontLeftAngle = moduleStates[0].angle.getDegrees();
+    frontRightAngle = moduleStates[1].angle.getDegrees();
+    backLeftAngle =  moduleStates[2].angle.getDegrees();
+    backRightAngle = moduleStates[3].angle.getDegrees();
+
+    // Correct negative angles to be within 0 to 360
+    backRightAngle = fromWPIAngle(backRightAngle);
+    backLeftAngle = fromWPIAngle(backLeftAngle);
+    frontRightAngle = fromWPIAngle(frontRightAngle);
+    frontLeftAngle = fromWPIAngle(frontLeftAngle);
+   
+    System.out.println("lf" + frontLeftAngle);
+    System.out.println("rf" + frontRightAngle);
+    System.out.println("lb" + backLeftAngle);
+    System.out.println("rb" + backRightAngle);
 
     // Run the swerve modules based on current status 
     /*if (Math.abs(leftX) < joystickDeadband && Math.abs(leftY) < joystickDeadband && Math.abs(rightX) < joystickDeadband) {
@@ -570,7 +656,7 @@ public class SwerveDriveWPI extends SubsystemBase {
    */
   public Rotation2d getGyroRotation2d() {
 
-    return new Rotation2d(getGyroAngle());
+    return new Rotation2d(Math.toRadians(toWPIAngle(getGyroAngle())));
 
   }
 
@@ -700,7 +786,11 @@ public class SwerveDriveWPI extends SubsystemBase {
    */
   public double calculateDriveDistance() {
 
-    return (leftFront.getDistance() + rightFront.getDistance() + leftBack.getDistance() + rightBack.getDistance()) / 4.0;
+    double distance = (leftFront.getDistance() + rightFront.getDistance() + leftBack.getDistance() + rightBack.getDistance()) / 4.0;
+
+    SmartDashboard.putNumber("Distance", distance);
+
+    return distance;
 
   }
   
@@ -771,6 +861,26 @@ public class SwerveDriveWPI extends SubsystemBase {
 
     odometry.resetPosition(getGyroRotation2d(), getModulePositions(), pose);
 
+    SmartDashboard.putString("Starting Pose",getPose().toString());
+
+  }
+
+  public double fromWPIAngle(double angle) {
+    if (angle > 0) {
+      angle = (180 - angle) + 180;
+    } else if (angle < 0) {
+      angle = -angle;
+    }
+    return angle;
+  }
+
+  public double toWPIAngle(double angle) {
+    if (angle > 180) {
+      angle = -(angle - 360);
+    } else if (angle > 0 && angle <=180) {
+      angle = -angle;
+    }
+    return angle;
   }
 
 }

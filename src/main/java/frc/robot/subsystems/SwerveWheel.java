@@ -16,7 +16,7 @@ import edu.wpi.first.math.kinematics.*;
 import static frc.robot.Constants.*;
 import static frc.robot.Constants.DriveConstants.*;
 import frc.robot.ExtraClasses.*;
-import frc.robot.ExtraClasses.Gains;
+
 import com.ctre.phoenix.sensors.CANCoder;
 import com.ctre.phoenix.sensors.CANCoder.*;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -159,6 +159,8 @@ public class SwerveWheel extends SubsystemBase {
    */
   public void drive(double speed, double angle) {
 
+    SmartDashboard.putNumber(moduleName + " angle", angle);
+
     // Normalize target to have a max value of 1
     double target = angle / 360.0;
     if (target == 1.0) {
@@ -176,8 +178,23 @@ public class SwerveWheel extends SubsystemBase {
     //Putting CANCoder position on smart dashboard
     SmartDashboard.putNumber("Wheel "+ wheelID, encoderAngle);
   
+    double dist1 = Math.abs(target-encoderAngle);
+    double dist2 = 1.0 - dist1;
+
+    if (dist1 > 0.25 && dist2 > 0.25) {
+
+      target = target + 0.5;
+      if (target > 1.0) {
+        target = target - 1.0;
+      } else if (target == 1.0) {
+        target = 0.0;
+      }
+
+      speed = -speed;
     
-    //Determine shortest rotation distance
+    }
+    
+    /*//Determine shortest rotation distance
     if (Math.abs(target - encoderAngle) > 0.5)
     {
       double diff = 1 - Math.abs(target - encoderAngle);
@@ -190,7 +207,7 @@ public class SwerveWheel extends SubsystemBase {
       {
         encoderAngle = encoderAngle - 1.0;
       }
-    }
+    }*/
 
     // Optimize angle movement to minimize rotational distance
     
@@ -299,6 +316,8 @@ public class SwerveWheel extends SubsystemBase {
    */
   public double getDistance() {
 
+    SmartDashboard.putNumber(moduleName + " distance",(kWheelDiameter * Math.PI * swerveDriveMotor.getSelectedSensorPosition()) / (kTalonFXPPR * kDriveGearRatio) );
+
     return (kWheelDiameter * Math.PI * swerveDriveMotor.getSelectedSensorPosition()) / (kTalonFXPPR * kDriveGearRatio);
 
   }
@@ -326,7 +345,7 @@ public class SwerveWheel extends SubsystemBase {
    */
   public SwerveModuleState getState() {
 
-    return new SwerveModuleState(getWheelSpeed(), new Rotation2d(canCoder.getAbsolutePosition() / 360));
+    return new SwerveModuleState(getWheelSpeed(), new Rotation2d(Math.toRadians(toWPIAngle(canCoder.getAbsolutePosition()))));
 
   }
 
@@ -339,8 +358,26 @@ public class SwerveWheel extends SubsystemBase {
    */
   public SwerveModulePosition getPosition() {
 
-    return new SwerveModulePosition(getDistance(), new Rotation2d(canCoder.getAbsolutePosition() / 360));
+    return new SwerveModulePosition(getDistance(), new Rotation2d(Math.toRadians(toWPIAngle(canCoder.getAbsolutePosition()))));
 
+  }
+
+   public double fromWPIAngle(double angle) {
+    if (angle > 0) {
+      angle = (180 - angle) + 180;
+    } else if (angle < 0) {
+      angle = -angle;
+    }
+    return angle;
+  }
+
+  public double toWPIAngle(double angle) {
+    if (angle > 180) {
+      angle = -(angle - 360);
+    } else if (angle > 0 && angle <=180) {
+      angle = -angle;
+    }
+    return angle;
   }
   
 }

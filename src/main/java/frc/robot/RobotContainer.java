@@ -4,6 +4,7 @@ package frc.robot;
 import static frc.robot.Constants.*;
 import static frc.robot.Constants.MechanismConstants.*;
 import static frc.robot.Constants.ControlConstants.*;
+import static frc.robot.Constants.DriveConstants.AutoAngleToTarget;
 
 import frc.robot.subsystems.*;
 import frc.robot.ExtraClasses.NetworkTableQuerier;
@@ -17,6 +18,12 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.cscore.VideoSink;
 import edu.wpi.first.cscore.VideoSource;
+import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.path.PathPlannerPath;
+import com.fasterxml.jackson.core.sym.Name;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.commands.PathPlannerAuto;
+
 
 public class RobotContainer {
   
@@ -46,6 +53,9 @@ public class RobotContainer {
 
 
   //===COMMANDS===//
+
+  //Named Commands
+  
 
   //Driving Commands
   //private final DriveWithJoysticks driveCommand = new DriveWithJoysticks(swervedrive, xbox, table);
@@ -91,6 +101,8 @@ public class RobotContainer {
 
   //Climber Command
   private final RunClimber climberCommand = new RunClimber(pneumatic);
+
+  
 
   //===BUTTONS===//
 
@@ -198,8 +210,6 @@ public class RobotContainer {
     runAngleDownButton.whileTrue(angleDownCommand);
     runAngleUpButton.whileTrue(angleUpCommand);
     manualIntakeButton.whileTrue(intakeCommand);
-    changeAutoAngleButton.onTrue(changeAutoAngle);
-    changeAutoAngleButton.onFalse(changeAutoAngle);
 
 
   }
@@ -294,6 +304,19 @@ public class RobotContainer {
     }
   }
 
+  public void getAngleToTargetSelection()
+  {
+    if (changeAutoAngleButton.getAsBoolean() == false)
+    {
+      AutoAngleToTarget = true;
+      SmartDashboard.putBoolean("Auto Positioning", true);
+      //parkCommand.execute();
+    } else{
+      AutoAngleToTarget = false;
+      SmartDashboard.putBoolean("Auto Positioning", false);
+    }
+  }
+
   /*
    * Check for the presence of a note
    */
@@ -360,7 +383,12 @@ public class RobotContainer {
 
     System.out.println("Auto Cmd: " + autoDecision);
     SmartDashboard.putString("Auto Cmd: ", autoDecision);
-    switch (autoDecision) {
+
+    //PathPlannerPath testPath = PathPlannerPath.fromPathFile("TestPath");
+      //return AutoBuilder.followPath(testPath);
+    return new PathPlannerAuto("TestAuto2");
+
+    /*switch (autoDecision) {
 
       case "Left1":
         autoCommand = auto1NoteLeftCommand;
@@ -404,7 +432,7 @@ public class RobotContainer {
         
     }
 
-    return autoCommand;
+    return autoCommand;*/
 
   }
 
@@ -414,6 +442,10 @@ public class RobotContainer {
   public void zeroRobot() {
     shooterAngle.zeroEncoder();
     swervedrivewpi.zeroGyro();
+  }
+
+  public void zeroDriveEncoder() {
+    swervedrivewpi.zeroEncoders();
   }
 
   /*

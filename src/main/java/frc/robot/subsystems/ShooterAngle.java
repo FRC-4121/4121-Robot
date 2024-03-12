@@ -16,6 +16,7 @@ import edu.wpi.first.math.filter.MedianFilter;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.DemandType;
 
 public class ShooterAngle extends SubsystemBase {
   
@@ -113,10 +114,11 @@ public class ShooterAngle extends SubsystemBase {
    */
   public void runPivotToAngle(double angle) {
 
-    int targetPosition = -getEncoderForAngle(angle);
+    double targetPosition = -getEncoderForAngle(angle);
     pivotMotor.set(ControlMode.Position, targetPosition, DemandType.ArbitraryFeedForward, AngleMotorMinSpeed);
 
     CurrentShooterAngle = getCurrentAngle();
+    CurrentShooterEncoder = getIntegratedValue();
 
   }
 
