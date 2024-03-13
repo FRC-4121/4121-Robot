@@ -1,6 +1,8 @@
 
 package frc.robot;
 
+import java.util.List;
+
 import static frc.robot.Constants.*;
 import static frc.robot.Constants.MechanismConstants.*;
 import static frc.robot.Constants.ControlConstants.*;
@@ -13,6 +15,7 @@ import frc.robot.commands.*;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.*;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.cameraserver.CameraServer;
@@ -20,6 +23,8 @@ import edu.wpi.first.cscore.VideoSink;
 import edu.wpi.first.cscore.VideoSource;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.path.PathPlannerPath;
+import com.pathplanner.lib.path.GoalEndState;
+import com.pathplanner.lib.path.PathConstraints;
 import com.fasterxml.jackson.core.sym.Name;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathPlannerAuto;
@@ -55,8 +60,8 @@ public class RobotContainer {
   //===COMMANDS===//
 
   //Named Commands
+  NamedCommands.registerCommand("TakeInNote", takeInNoteCommand);
   
-
   //Driving Commands
   //private final DriveWithJoysticks driveCommand = new DriveWithJoysticks(swervedrive, xbox, table);
   private final FieldDriveWithJoysticks fieldDriveCommand = new FieldDriveWithJoysticks(swervedrivewpi,xbox,table);
@@ -386,7 +391,7 @@ public class RobotContainer {
 
     //PathPlannerPath testPath = PathPlannerPath.fromPathFile("TestPath");
       //return AutoBuilder.followPath(testPath);
-    return new PathPlannerAuto("TestAuto2");
+    return new PathPlannerAuto("Center4Note");
 
     /*switch (autoDecision) {
 

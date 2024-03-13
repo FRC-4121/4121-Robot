@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.87602821359489,
-        "y": 7.20286825189035
+        "x": 4.69845139404972,
+        "y": 3.3727209251850745
       },
       "isLocked": false,
       "linkedName": "CenterNote1"
@@ -20,16 +20,34 @@
         "y": 5.791895429944707
       },
       "prevControl": {
-        "x": 7.184938245362304,
-        "y": 6.620778634043702
+        "x": 7.251413761030089,
+        "y": 4.918551349228233
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": "CenterNote2"
     }
   ],
-  "rotationTargets": [],
-  "constraintZones": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.6,
+      "rotationDegrees": 36.93,
+      "rotateFast": false
+    }
+  ],
+  "constraintZones": [
+    {
+      "name": "New Constraints Zone",
+      "minWaypointRelativePos": 0.5,
+      "maxWaypointRelativePos": 1.0,
+      "constraints": {
+        "maxVelocity": 1.5,
+        "maxAcceleration": 4.0,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0
+      }
+    }
+  ],
   "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 2.5,
@@ -39,7 +57,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -25.50999999999999,
+    "rotation": 36.928458892014056,
     "rotateFast": false
   },
   "reversed": false,

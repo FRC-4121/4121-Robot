@@ -155,7 +155,7 @@ public final class Constants {
 
     public static final class Swerve {
         public static final HolonomicPathFollowerConfig pathFollowerConfig = new HolonomicPathFollowerConfig(
-            new PIDConstants(2.7, 0, 0.18), // Translation constants 
+            new PIDConstants(2.8, 0, 0.2), // Translation constants 
             new PIDConstants(1.4, 0, 0.18), // Rotation constants 
             MaxLinearSpeed, 
             0.414, // Drive base radius (distance from center to furthest module) 
