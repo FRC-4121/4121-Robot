@@ -32,86 +32,79 @@ import com.pathplanner.lib.commands.PathPlannerAuto;
 
 public class RobotContainer {
   
-  // Camera
-  VideoSink camSink;
-  VideoSource camSource;
+  //===Controllers===//
 
-  //Driver controllers
-  private final XboxController xbox = new XboxController(1);
-  private final XboxController secondaryXbox = new XboxController(0);
-  private final Joystick launchpad = new Joystick(2);
-  //private final Joystick testbed = new Joystick(3);
+  // Declare Driver Controllers
+  private final XboxController xbox;
+  private final XboxController secondaryXbox;
+  private final Joystick launchpad;
+
+  //===Subsystems===//
   
-  //Subsystems
-  //private final SwerveDrive swervedrive = new SwerveDrive();
-  private final SwerveDriveWPI swervedrivewpi = new SwerveDriveWPI();
-  private final Intake intake = new Intake();
-  private final Shooter shooter = new Shooter();
-  private final ShooterAngle shooterAngle = new ShooterAngle();
-  private final Pneumatics pneumatic = new Pneumatics();
-  private final Processor processor = new Processor();
+  // Declare Subsystems
+  private final SwerveDriveWPI swervedrivewpi;
+  private final Intake intake;
+  private final Shooter shooter;
+  private final ShooterAngle shooterAngle;
+  private final Pneumatics pneumatic;
+  private final Processor processor;
 
-  // Extra systems
-  private final NetworkTableQuerier table = new NetworkTableQuerier();
-  private final LED led = new LED();
-  private PhotoElecSensor photoSensor = new PhotoElecSensor();
+  //===Extra Systems===//
 
+  // Declare Extra Systems
+  private final NetworkTableQuerier table;
+  private final LED led;
+  private PhotoElecSensor photoSensor;
 
   //===COMMANDS===//
 
-  //Named Commands
-  NamedCommands.registerCommand("TakeInNote", takeInNoteCommand);
-  
-  //Driving Commands
+  // Declare Driving Commands
   //private final DriveWithJoysticks driveCommand = new DriveWithJoysticks(swervedrive, xbox, table);
-  private final FieldDriveWithJoysticks fieldDriveCommand = new FieldDriveWithJoysticks(swervedrivewpi,xbox,table);
-  private final ChangeSpeedCommand changeSpeedCommand = new ChangeSpeedCommand();
-  private final ChangeDriveMode changeModeCommand = new ChangeDriveMode();
+  private final FieldDriveWithJoysticks fieldDriveCommand;
+  private final ChangeSpeedCommand changeSpeedCommand;
+  private final ChangeDriveMode changeModeCommand;
 
-  // Auto Commands
-  private final AutoDrive autoDriveCommand = new AutoDrive(swervedrivewpi, 0.1, 110.0, 0.0, 0.0, 0.02, 10.0);
-  private final AutoPickupNote autoPickupNoteCommand = new AutoPickupNote(swervedrivewpi,table,0, 10);
-  private final AutoShooterAmpPos autoShooterAmpPosCommand = new AutoShooterAmpPos(shooterAngle,shooter,processor,intake,5.0);
-  private final AutoShooterPos autoShooterPosCommand = new AutoShooterPos(shooterAngle, table);
-  private final AutoShooterAngle autoShooterAngleCommand = new AutoShooterAngle(shooterAngle,37,5);
-  private final Auto1NoteCenter auto1NoteCenterCommand = new Auto1NoteCenter(swervedrivewpi, shooter, processor, intake);
-  private final Auto1NoteLeft auto1NoteLeftCommand = new Auto1NoteLeft(swervedrivewpi, shooter, processor, intake);
-  private final Auto1NoteRight auto1NoteRightCommand = new Auto1NoteRight(swervedrivewpi, shooter, processor, intake);
-  private final Auto2NoteCenter auto2NoteCenterCommand = new Auto2NoteCenter(swervedrivewpi, shooter, processor, intake, shooterAngle, table);
-  private final Auto2NoteLeft auto2NoteLeftCommand = new Auto2NoteLeft(swervedrivewpi, shooter, processor, shooterAngle, intake);
-  private final Auto2NoteRight auto2NoteRightCommand = new Auto2NoteRight(swervedrivewpi, shooter, processor, shooterAngle, intake);
+  // Declare Auto Commands
+  private final AutoDrive autoDriveCommand;
+  private final AutoPickupNote autoPickupNoteCommand;
+  private final AutoShooterAmpPos autoShooterAmpPosCommand;
+  private final AutoShooterPos autoShooterPosCommand;
+  private final AutoShooterAngle autoShooterAngleCommand;
+  private final Auto1NoteCenter auto1NoteCenterCommand;
+  private final Auto1NoteLeft auto1NoteLeftCommand;
+  private final Auto1NoteRight auto1NoteRightCommand;
+  private final Auto2NoteCenter auto2NoteCenterCommand;
+  private final Auto2NoteLeft auto2NoteLeftCommand;
+  private final Auto2NoteRight auto2NoteRightCommand;
 
-  //KillAuto Command
-  private final KillAutoCommand killAutoObject = new KillAutoCommand(); 
-  private final ChangeAutoAngle changeAutoAngle = new ChangeAutoAngle();
+  // Declare KillAuto Commands
+  private final KillAutoCommand killAutoObject; 
+  private final ChangeAutoAngle changeAutoAngle;
   
-  //LED Command
-  private final LEDCommand ledCommand = new LEDCommand(led);
+  // Declare LED Commands
+  private final LEDCommand ledCommand;
 
-  //Shooter Command
-  private final RunShooterAmp ampShooterCommand = new RunShooterAmp(shooter,processor,intake,5);
-  private final RunShooterSpeaker speakerShooterCommand = new RunShooterSpeaker(shooter, processor,intake,1.5);
-  private final RunShooterTrap trapShooterCommand = new RunShooterTrap(shooter, processor,intake,1.5);
-  private final AutoShooterSpeed shooterSpeedCommand = new AutoShooterSpeed(shooter);
+  // Declare Shooter Commands
+  private final RunShooterAmp ampShooterCommand;
+  private final RunShooterSpeaker speakerShooterCommand;
+  private final RunShooterTrap trapShooterCommand;
+  private final AutoShooterSpeed shooterSpeedCommand;
 
-  //Shooter Angle Command
-  private final RunAngleUp angleUpCommand = new RunAngleUp(shooterAngle);
-  private final RunAngleDown angleDownCommand = new RunAngleDown(shooterAngle);
+  // Declare Shooter Angle Commands
+  private final RunAngleUp angleUpCommand;
+  private final RunAngleDown angleDownCommand;
   
+  // Declare Intake Commands
+  private final RunIntake intakeCommand;
+  private final RunProcessorBack processorBackCommand;
+  private final TakeInNote takeInNoteCommand;
 
-  //Intake Command
-  private final RunIntake intakeCommand = new RunIntake(intake,processor);
-  private final RunProcessorBack processorBackCommand = new RunProcessorBack(processor);
-  private final TakeInNote takeInNoteCommand = new TakeInNote(intake,processor,10);
-
-  //Climber Command
-  private final RunClimber climberCommand = new RunClimber(pneumatic);
-
-  
+  // Declare Climber Commands
+  private final RunClimber climberCommand;
 
   //===BUTTONS===//
 
-  // Xbox Buttons and Triggers
+  // Declare Xbox Buttons and Triggers
   private final Trigger changeSpeedButton;
   private final Trigger changeModeButton;
   private final Trigger intakeButton;
@@ -124,7 +117,7 @@ public class RobotContainer {
   private final Trigger manualIntakeButton;
   private final Trigger processorBackButton;
   
-  // Launchpad (OI) Buttons/Switches
+  // Declare Launchpad (OI) Buttons/Switches
   private final Trigger killAutoButton;
   private static JoystickButton blueTeamButton;
   private static JoystickButton redTeamButton;
@@ -135,9 +128,78 @@ public class RobotContainer {
   private static JoystickButton autoShooterPositionButton;
   private static JoystickButton changeAutoAngleButton;
 
-  //===CONSTRUCTOR===//
+  /**
+   * 
+   * Class Constructor
+   * 
+   */
   public RobotContainer() { 
   
+    // Initialize driver controllers
+    xbox = new XboxController(1);
+    secondaryXbox = new XboxController(0);
+    launchpad = new Joystick(2);
+  
+    // Initialize Subsystems
+    swervedrivewpi = new SwerveDriveWPI();
+    intake = new Intake();
+    shooter = new Shooter();
+    shooterAngle = new ShooterAngle();
+    pneumatic = new Pneumatics();
+    processor = new Processor();
+
+    // Initialize extra systems
+    table = new NetworkTableQuerier();
+    led = new LED();
+    photoSensor = new PhotoElecSensor();
+
+    // Register Named Commands
+    NamedCommands.registerCommand("TakeInNote", takeInNoteCommand);
+  
+    // Initialize Driving Commands
+    //private final DriveWithJoysticks driveCommand = new DriveWithJoysticks(swervedrive, xbox, table);
+    fieldDriveCommand = new FieldDriveWithJoysticks(swervedrivewpi,xbox,table);
+    changeSpeedCommand = new ChangeSpeedCommand();
+    changeModeCommand = new ChangeDriveMode();
+
+    // Initialize Auto Commands
+    autoDriveCommand = new AutoDrive(swervedrivewpi, 0.1, 110.0, 0.0, 0.0, 0.02, 10.0);
+    autoPickupNoteCommand = new AutoPickupNote(swervedrivewpi,table,0, 10);
+    autoShooterAmpPosCommand = new AutoShooterAmpPos(shooterAngle,shooter,processor,intake,5.0);
+    autoShooterPosCommand = new AutoShooterPos(shooterAngle, table);
+    autoShooterAngleCommand = new AutoShooterAngle(shooterAngle,37,5);
+    auto1NoteCenterCommand = new Auto1NoteCenter(swervedrivewpi, shooter, processor, intake);
+    auto1NoteLeftCommand = new Auto1NoteLeft(swervedrivewpi, shooter, processor, intake);
+    auto1NoteRightCommand = new Auto1NoteRight(swervedrivewpi, shooter, processor, intake);
+    auto2NoteCenterCommand = new Auto2NoteCenter(swervedrivewpi, shooter, processor, intake, shooterAngle, table);
+    auto2NoteLeftCommand = new Auto2NoteLeft(swervedrivewpi, shooter, processor, shooterAngle, intake);
+    auto2NoteRightCommand = new Auto2NoteRight(swervedrivewpi, shooter, processor, shooterAngle, intake);
+
+    // Initialize KillAuto Commands
+    killAutoObject = new KillAutoCommand(); 
+    changeAutoAngle = new ChangeAutoAngle();
+  
+    // Initialize LED Command
+    ledCommand = new LEDCommand(led);
+
+    // Initialize Shooter Commands
+    ampShooterCommand = new RunShooterAmp(shooter,processor,intake,5);
+    speakerShooterCommand = new RunShooterSpeaker(shooter, processor,intake,1.5);
+    trapShooterCommand = new RunShooterTrap(shooter, processor,intake,1.5);
+    shooterSpeedCommand = new AutoShooterSpeed(shooter);
+
+    // Initialize Shooter Angle Commands
+    angleUpCommand = new RunAngleUp(shooterAngle);
+    angleDownCommand = new RunAngleDown(shooterAngle);
+  
+    // Initialize Intake Commands
+    intakeCommand = new RunIntake(intake,processor);
+    processorBackCommand = new RunProcessorBack(processor);
+    takeInNoteCommand = new TakeInNote(intake,processor,10);
+
+    // Initialize Climber Commands
+    climberCommand = new RunClimber(pneumatic);
+
     // Initialize Xbox Buttons
     changeSpeedButton = new JoystickButton(xbox, xboxYButton);
     changeModeButton = new JoystickButton(xbox, xboxXButton);
@@ -168,15 +230,18 @@ public class RobotContainer {
     // Configure the button bindings
     configureButtonBindings();
 
-    //Make sure the positions are zero
+    // Make sure the positions are zero
     zeroRobot();
+
   }
 
 
   //===METHODS, WHERE STUFF IS CONFIGURED===///
 
-  /*
-   * Set default commands for all subsystems
+  /**
+   *
+   *  Set default commands for all subsystems
+   * 
    */
   private void configureDefaultCommands() {
 
@@ -194,8 +259,10 @@ public class RobotContainer {
 
   }
   
-  /*
+  /**
+   * 
    * Assign commands to button actions
+   * 
    */
   private void configureButtonBindings() {
 
@@ -216,12 +283,13 @@ public class RobotContainer {
     runAngleUpButton.whileTrue(angleUpCommand);
     manualIntakeButton.whileTrue(intakeCommand);
 
-
   }
 
-  /*
-  * Sets the LED color for the selected target object
-  */
+  /**
+   * 
+   * Sets the LED color for the selected target object
+   * 
+   */
   public void getColorSelection()
   {
     
@@ -239,9 +307,11 @@ public class RobotContainer {
     led.setColor(ledColor);
   }
 
-  /*
+  /**
+   * 
    * Determine the alliance color based on OI
    * switch position
+   * 
    */
   public void getAllianceColor() 
   {
@@ -262,9 +332,11 @@ public class RobotContainer {
 
   }
 
-  /*
+  /**
+   * 
    * Get the starting position in auto
    * Set by a switch on the OI
+   * 
    */
   public void getAutoPosition() 
   {
@@ -279,8 +351,10 @@ public class RobotContainer {
 
   }
 
-  /*
+  /**
+   * 
    * Park and unpark the robot
+   * 
    */
   public void getParkSelection()
   {
@@ -296,6 +370,11 @@ public class RobotContainer {
     }
   }
 
+  /**
+   * 
+   * Gets the value of the Auto Shooter Angle switch
+   * 
+   */
   public void getAngleSelection()
   {
     if (autoShooterPositionButton.getAsBoolean() == true)
@@ -309,6 +388,11 @@ public class RobotContainer {
     }
   }
 
+  /**
+   * 
+   * Get the value of the Auto Align Robot switch
+   * 
+   */
   public void getAngleToTargetSelection()
   {
     if (changeAutoAngleButton.getAsBoolean() == false)
@@ -322,8 +406,10 @@ public class RobotContainer {
     }
   }
 
-  /*
+  /**
+   * 
    * Check for the presence of a note
+   * 
    */
   public void checkForNote() {
 
@@ -331,9 +417,11 @@ public class RobotContainer {
 
   }
 
-  /*
+  /**
+   * 
    * Updates the speed of the shooter motors based on which
    * AprilTags are visible
+   * 
    */
   public void updateShooterSpeed() {
 
@@ -364,8 +452,10 @@ public class RobotContainer {
 
   }
   
-  /*
+  /**
+   * 
    * Return the correct auto command to the scheduler
+   * 
    */
   public Command getAutonomousCommand() {
 
@@ -441,8 +531,10 @@ public class RobotContainer {
 
   }
 
-  /*
+  /**
+   * 
    * Zero positions of all mechanisms and gyro
+   * 
    */
   public void zeroRobot() {
     shooterAngle.zeroEncoder();
@@ -453,8 +545,10 @@ public class RobotContainer {
     swervedrivewpi.zeroEncoders();
   }
 
-  /*
+  /**
+   * 
    * Send a signal to stop the Pi codes
+   * 
    */
   public void stopPi() {
 
@@ -462,9 +556,11 @@ public class RobotContainer {
 
   }
 
-  /*
+  /**
+   * 
    * Send updates on important values to dashboard
    * Called from RobotPeriodic
+   * 
    */
   public void updateRobotStatus() {
     
