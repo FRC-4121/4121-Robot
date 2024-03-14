@@ -155,8 +155,8 @@ public final class Constants {
 
     public static final class Swerve {
         public static final HolonomicPathFollowerConfig pathFollowerConfig = new HolonomicPathFollowerConfig(
-            new PIDConstants(2.8, 0, 0.2), // Translation constants 
-            new PIDConstants(1.4, 0, 0.18), // Rotation constants 
+            new PIDConstants(2.8, 0, 0.18), // Translation constants 
+            new PIDConstants(1.6, 0, 0.16), // Rotation constants 
             MaxLinearSpeed, 
             0.414, // Drive base radius (distance from center to furthest module) 
             new ReplanningConfig()
@@ -197,9 +197,9 @@ public final class Constants {
         public static final int kPivotMotorID = 15;
 
         // PID values
-        public static final double kShooterAngleKP = 0.000005;
-        public static final double kShooterAngleKI = 0;
-        public static final double kShooterAngleKD = 0.000001; //0.001
+        public static final double kShooterAngleKP = 0.5;//0.00009
+        public static final double kShooterAngleKI = 0.1;//0.0000002
+        public static final double kShooterAngleKD = 0.025;//0.000025 
         public static final double kShooterAngleFF = 0;
         public static final double kShooterAngleMinOutput = -1;
         public static final double kShooterAngleMaxOutput = 1;

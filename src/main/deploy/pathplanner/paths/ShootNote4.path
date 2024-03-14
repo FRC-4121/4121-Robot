@@ -16,16 +16,16 @@
     },
     {
       "anchor": {
-        "x": 4.0309337109401735,
-        "y": 5.023948878140267
+        "x": 4.136331239852207,
+        "y": 5.141057243598081
       },
       "prevControl": {
-        "x": 4.522788845862997,
-        "y": 4.42669621430541
+        "x": 4.62818637477503,
+        "y": 4.543804579763224
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "CenterNote3"
     }
   ],
   "rotationTargets": [
@@ -36,7 +36,25 @@
     }
   ],
   "constraintZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "AngleFar",
+      "waypointRelativePos": 0.45,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "AngleFar"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 2.5,
     "maxAcceleration": 4.0,

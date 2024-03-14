@@ -89,6 +89,8 @@ public class RobotContainer {
   private final RunShooterSpeaker speakerShooterCommand;
   private final RunShooterTrap trapShooterCommand;
   private final AutoShooterSpeed shooterSpeedCommand;
+  private final AutoShooterAngle autoShootMediumCommand;
+  private final AutoShooterAngle autoShootFarCommand;
 
   // Declare Shooter Angle Commands
   private final RunAngleUp angleUpCommand;
@@ -153,8 +155,7 @@ public class RobotContainer {
     led = new LED();
     photoSensor = new PhotoElecSensor();
 
-    // Register Named Commands
-    NamedCommands.registerCommand("TakeInNote", takeInNoteCommand);
+    
   
     // Initialize Driving Commands
     //private final DriveWithJoysticks driveCommand = new DriveWithJoysticks(swervedrive, xbox, table);
@@ -187,6 +188,8 @@ public class RobotContainer {
     speakerShooterCommand = new RunShooterSpeaker(shooter, processor,intake,1.5);
     trapShooterCommand = new RunShooterTrap(shooter, processor,intake,1.5);
     shooterSpeedCommand = new AutoShooterSpeed(shooter);
+    autoShootMediumCommand = new AutoShooterAngle(shooterAngle, 22250, 2);
+    autoShootFarCommand = new AutoShooterAngle(shooterAngle, 24750, 2);
 
     // Initialize Shooter Angle Commands
     angleUpCommand = new RunAngleUp(shooterAngle);
@@ -199,6 +202,14 @@ public class RobotContainer {
 
     // Initialize Climber Commands
     climberCommand = new RunClimber(pneumatic);
+
+    // Register Named Commands
+    NamedCommands.registerCommand("TakeInNote", takeInNoteCommand);
+    NamedCommands.registerCommand("ShootNote", speakerShooterCommand);
+    NamedCommands.registerCommand("AngleMedium", autoShootMediumCommand);
+    NamedCommands.registerCommand("AngleFar", autoShootFarCommand);
+
+
 
     // Initialize Xbox Buttons
     changeSpeedButton = new JoystickButton(xbox, xboxYButton);
@@ -275,7 +286,7 @@ public class RobotContainer {
     changeModeButton.onTrue(changeModeCommand);
     intakeButton.onTrue(takeInNoteCommand);
     speakerShootButton.onTrue(speakerShooterCommand);
-    autoAngleShootButton.onTrue(autoShooterAngleCommand);
+    autoAngleShootButton.onTrue(autoShootMediumCommand);
     ampShootButton.onTrue(ampShooterCommand);
     ampAngleButton.onTrue(autoShooterAmpPosCommand);
     climberButton.onTrue(climberCommand);
@@ -481,7 +492,7 @@ public class RobotContainer {
 
     //PathPlannerPath testPath = PathPlannerPath.fromPathFile("TestPath");
       //return AutoBuilder.followPath(testPath);
-    return new PathPlannerAuto("Center4Note");
+    return new PathPlannerAuto("Right3Note");
 
     /*switch (autoDecision) {
 

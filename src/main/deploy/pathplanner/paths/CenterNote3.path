@@ -35,20 +35,26 @@
       "rotateFast": false
     }
   ],
-  "constraintZones": [
+  "constraintZones": [],
+  "eventMarkers": [
     {
-      "name": "New Constraints Zone",
-      "minWaypointRelativePos": 0.5,
-      "maxWaypointRelativePos": 1.0,
-      "constraints": {
-        "maxVelocity": 1.5,
-        "maxAcceleration": 4.0,
-        "maxAngularVelocity": 540.0,
-        "maxAngularAcceleration": 720.0
+      "name": "TakeInNote",
+      "waypointRelativePos": 0.6,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "TakeInNote"
+              }
+            }
+          ]
+        }
       }
     }
   ],
-  "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 2.5,
     "maxAcceleration": 4.0,

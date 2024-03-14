@@ -12,9 +12,40 @@
     "data": {
       "commands": [
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "CenterNote2"
+            "name": "ShootNote"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "CenterNote2"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "TakeInNote"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "AngleMedium"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ShootNote"
           }
         }
       ]

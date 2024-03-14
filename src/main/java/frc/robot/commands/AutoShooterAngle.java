@@ -19,7 +19,7 @@ public class AutoShooterAngle extends Command {
 
   private ShooterAngle shootAngle;
   
-  private double targetAngle;
+  private double targetEncoder;
   private Timer timer;
   private double startTime;
   private double stopTime;
@@ -27,11 +27,11 @@ public class AutoShooterAngle extends Command {
   private PIDController wpiPIDController;
  
   /** Creates a new AutoShooterPos. */
-  public AutoShooterAngle(ShooterAngle shoot, double angle, double endTime) {
+  public AutoShooterAngle(ShooterAngle shoot, double encoder, double endTime) {
 
     // Set local variables
     shootAngle = shoot;
-    targetAngle = angle;
+    targetEncoder = encoder;
     stopTime = endTime;
     addRequirements(shootAngle);
 
@@ -56,10 +56,10 @@ public class AutoShooterAngle extends Command {
   @Override
   public void execute() {
 
+    double currentEncoder = shootAngle.getIntegratedValue();
     
-
     // Determine new motor speed from PID controller
-    double pidOutput = wpiPIDController.calculate(CurrentShooterAngle, targetAngle);
+    double pidOutput = -wpiPIDController.calculate(currentEncoder, targetEncoder);
     if(pidOutput >1)
     {
       pidOutput = 1;
@@ -69,26 +69,48 @@ public class AutoShooterAngle extends Command {
     }
 
     // Run angle motor at new speed (as long as we aren't at bounds)
-    if (Math.abs(CurrentShooterAngle - ShooterTargetAngle) > ShooterAngleTolerance) {
+    if (Math.abs(currentEncoder - ShooterTargetEncoder) > ShooterAngleTolerance) {
 
       double angleSpeed = AngleMotorSpeed * pidOutput;
 
-      if (pidOutput > 0 && shootAngle.getTopSwitch() == false) {
+      if (pidOutput > 0) {
 
-        shootAngle.runPivot(AngleMotorMinSpeed + angleSpeed);
+        if (shootAngle.getTopSwitch() == false) {
+
+          shootAngle.runPivot(AngleMotorMinSpeed + angleSpeed);
+          SmartDashboard.putNumber("Angle Input", AngleMotorMinSpeed + angleSpeed);
+
+        } else {
+
+          shootAngle.runPivot(0);
+
+        }
 
       }
-      else if (pidOutput < 0 && shootAngle.getBottomSwitch() == false) {
+      else if (pidOutput < 0) {
 
-        shootAngle.runPivot(-AngleMotorMinSpeed + angleSpeed);
+        if (shootAngle.getBottomSwitch() == false) {
+
+          shootAngle.runPivot(-AngleMotorMinSpeed + angleSpeed);
+          SmartDashboard.putNumber("Angle Input", -AngleMotorMinSpeed + angleSpeed);
+
+        } else {
+
+          shootAngle.runPivot(0);
+
+        }
 
       }
+
+      readyToShoot = false;
 
     } else {
 
       shootAngle.runPivot(0.0);
+      readyToShoot = true;
 
     }
+
   }
 
 
@@ -111,7 +133,7 @@ public class AutoShooterAngle extends Command {
 
     if (killAuto) {
       thereYet = true;
-    } else if (Math.abs(CurrentShooterAngle - ShooterTargetAngle) < ShooterAngleTolerance){
+    } else if (Math.abs(shootAngle.getIntegratedValue() - ShooterTargetEncoder) < ShooterAngleTolerance){
       thereYet = true;
     } else if (stopTime <= time - startTime){
       thereYet = true;
