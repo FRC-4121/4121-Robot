@@ -56,7 +56,7 @@ public class AutoShooterAngle extends Command {
   @Override
   public void execute() {
 
-    double currentEncoder = shootAngle.getIntegratedValue();
+    /*double currentEncoder = shootAngle.getIntegratedValue();
     
     // Determine new motor speed from PID controller
     double pidOutput = -wpiPIDController.calculate(currentEncoder, targetEncoder);
@@ -109,7 +109,19 @@ public class AutoShooterAngle extends Command {
       shootAngle.runPivot(0.0);
       readyToShoot = true;
 
-    }
+    }*/
+    double angleSpeed = -0.2;
+
+    if (shootAngle.getBottomSwitch() == false) {
+
+          shootAngle.runPivot(-AngleMotorMinSpeed + angleSpeed);
+          SmartDashboard.putNumber("Angle Input", -AngleMotorMinSpeed + angleSpeed);
+
+        } else {
+
+          shootAngle.runPivot(0);
+
+        }
 
   }
 
@@ -133,7 +145,7 @@ public class AutoShooterAngle extends Command {
 
     if (killAuto) {
       thereYet = true;
-    } else if (Math.abs(shootAngle.getIntegratedValue() - ShooterTargetEncoder) < ShooterAngleTolerance){
+    } else if (shootAngle.getBottomSwitch() == true){
       thereYet = true;
     } else if (stopTime <= time - startTime){
       thereYet = true;

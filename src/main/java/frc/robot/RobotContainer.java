@@ -185,11 +185,11 @@ public class RobotContainer {
 
     // Initialize Shooter Commands
     ampShooterCommand = new RunShooterAmp(shooter,processor,intake,5);
-    speakerShooterCommand = new RunShooterSpeaker(shooter, processor,intake,1.5);
+    speakerShooterCommand = new RunShooterSpeaker(shooter, processor,intake,1.0);
     trapShooterCommand = new RunShooterTrap(shooter, processor,intake,1.5);
     shooterSpeedCommand = new AutoShooterSpeed(shooter);
-    autoShootMediumCommand = new AutoShooterAngle(shooterAngle, 22250, 2);
-    autoShootFarCommand = new AutoShooterAngle(shooterAngle, 24750, 2);
+    autoShootMediumCommand = new AutoShooterAngle(shooterAngle, 22500, 2);
+    autoShootFarCommand = new AutoShooterAngle(shooterAngle, 27500, 2);
 
     // Initialize Shooter Angle Commands
     angleUpCommand = new RunAngleUp(shooterAngle);
@@ -311,7 +311,7 @@ public class RobotContainer {
  
     } else {
       
-      ledColor = 0.55; //Default Pattern 
+      ledColor = 0.93; //Default Pattern 
 
     }
 
@@ -492,7 +492,7 @@ public class RobotContainer {
 
     //PathPlannerPath testPath = PathPlannerPath.fromPathFile("TestPath");
       //return AutoBuilder.followPath(testPath);
-    return new PathPlannerAuto("Right3Note");
+    return new PathPlannerAuto("Center4Note");
 
     /*switch (autoDecision) {
 

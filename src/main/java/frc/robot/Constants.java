@@ -155,8 +155,8 @@ public final class Constants {
 
     public static final class Swerve {
         public static final HolonomicPathFollowerConfig pathFollowerConfig = new HolonomicPathFollowerConfig(
-            new PIDConstants(2.8, 0, 0.18), // Translation constants 
-            new PIDConstants(1.6, 0, 0.16), // Rotation constants 
+            new PIDConstants(2.3, 0, 0.18), // Translation constants Was 2.6
+            new PIDConstants(4.0, 0, 0.16), // Rotation constants Was 1.6
             MaxLinearSpeed, 
             0.414, // Drive base radius (distance from center to furthest module) 
             new ReplanningConfig()
@@ -178,8 +178,8 @@ public final class Constants {
         public static final int BottomShooterID = 14;
 
         // General constants
-        public static final double TopShootSpeakerSpeed = -0.9;
-        public static final double BottomShootSpeakerSpeed = -0.9;
+        public static final double TopShootSpeakerSpeed = -1.0;
+        public static final double BottomShootSpeakerSpeed = -1.0;
         public static final double TopShootAmpSpeed = -0.08;//0.08 optimal
         public static final double BottomShootAmpSpeed = -0.3;//0.3 optimal
         public static final double TopShooterTrapSpeed = -0.45;
@@ -240,7 +240,7 @@ public final class Constants {
         public static Boolean PauseAutoPosition = false;
 
         //Shooter Angle Encoder
-        public static double MaxEncoderPos = 26500;
+        public static double MaxEncoderPos = 27300;
 
         /*
          * Processor System Constants

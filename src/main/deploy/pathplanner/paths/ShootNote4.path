@@ -16,22 +16,22 @@
     },
     {
       "anchor": {
-        "x": 4.136331239852207,
-        "y": 5.141057243598081
+        "x": 4.604764701683469,
+        "y": 5.023948878140267
       },
       "prevControl": {
-        "x": 4.62818637477503,
-        "y": 4.543804579763224
+        "x": 5.096619836606292,
+        "y": 4.42669621430541
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "CenterNote3"
+      "linkedName": "CenterShooting"
     }
   ],
   "rotationTargets": [
     {
       "waypointRelativePos": 0.3,
-      "rotationDegrees": 0.0,
+      "rotationDegrees": -2.8600000000000136,
       "rotateFast": false
     }
   ],
@@ -56,14 +56,14 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 2.5,
+    "maxVelocity": 3.0,
     "maxAcceleration": 4.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -2.862405226111835,
+    "rotation": -2.8600000000000136,
     "rotateFast": false
   },
   "reversed": false,

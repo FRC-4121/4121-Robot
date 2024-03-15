@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.37,
-      "y": 5.59
+      "x": 0.73,
+      "y": 6.7
     },
-    "rotation": 0
+    "rotation": 59.74
   },
   "command": {
     "type": "sequential",
@@ -20,13 +20,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "CenterNote2"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "CenterShootNote2"
+            "pathName": "RightNote2"
           }
         },
         {
@@ -38,13 +32,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "CenterNote4"
+            "pathName": "RightNote3"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "ShootNote4"
+            "pathName": "RightShootNote3"
           }
         },
         {
@@ -56,13 +50,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "CenterNote3"
+            "pathName": "RightNote4"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "ShootNote3"
+            "pathName": "RightShootNote4"
           }
         },
         {
