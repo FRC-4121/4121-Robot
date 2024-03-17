@@ -1,0 +1,70 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 0.7284778050297884,
+        "y": 6.698598504187022
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 1.7186065141361067,
+        "y": 6.541783083566167
+      },
+      "isLocked": false,
+      "linkedName": "AmpNote1Shoot"
+    },
+    {
+      "anchor": {
+        "x": 2.894982565999367,
+        "y": 6.979658581285779
+      },
+      "prevControl": {
+        "x": 2.3303569684062455,
+        "y": 6.591117797620211
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "AmpNote2Pickup"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "eventMarkers": [
+    {
+      "name": "TakeInNote",
+      "waypointRelativePos": 0.5,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "TakeInNote"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 1.5,
+    "maxAcceleration": 4.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 32.57405713457243,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": null,
+  "previewStartingState": {
+    "rotation": 53.0,
+    "velocity": 0
+  },
+  "useDefaultConstraints": false
+}

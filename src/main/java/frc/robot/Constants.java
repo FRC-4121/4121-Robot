@@ -155,8 +155,8 @@ public final class Constants {
 
     public static final class Swerve {
         public static final HolonomicPathFollowerConfig pathFollowerConfig = new HolonomicPathFollowerConfig(
-            new PIDConstants(2.3, 0, 0.18), // Translation constants Was 2.6
-            new PIDConstants(4.0, 0, 0.16), // Rotation constants Was 1.6
+            new PIDConstants(2.3, 0.1, 0.18), // Translation constants Was 2.6
+            new PIDConstants(3.2, 0, 0.18), // Rotation constants Was 1.6
             MaxLinearSpeed, 
             0.414, // Drive base radius (distance from center to furthest module) 
             new ReplanningConfig()
@@ -182,12 +182,12 @@ public final class Constants {
         public static final double BottomShootSpeakerSpeed = -1.0;
         public static final double TopShootAmpSpeed = -0.08;//0.08 optimal
         public static final double BottomShootAmpSpeed = -0.3;//0.3 optimal
-        public static final double TopShooterTrapSpeed = -0.45;
-        public static final double BottomShooterTrapSpeed = -0.45;
+        public static final double TopShooterTrapSpeed = -0.65;
+        public static final double BottomShooterTrapSpeed = -0.65;
         public static final double TopShootIdleSpeed = -0.1;
         public static final double BottomShootIdleSpeed = 0.1;
         public static String ShooterMode = "IDLE";
-        public static final double shooterDelay = 0.5;
+        public static final double shooterDelay = 0.25;
 
         /*
          * Shooter Angle System Constants 
@@ -197,9 +197,9 @@ public final class Constants {
         public static final int kPivotMotorID = 15;
 
         // PID values
-        public static final double kShooterAngleKP = 0.5;//0.00009
-        public static final double kShooterAngleKI = 0.1;//0.0000002
-        public static final double kShooterAngleKD = 0.025;//0.000025 
+        public static final double kShooterAngleKP = 0.00009;//0.00009
+        public static final double kShooterAngleKI = 0.0;//0.0000002
+        public static final double kShooterAngleKD = 0.000002;//0.000025 
         public static final double kShooterAngleFF = 0;
         public static final double kShooterAngleMinOutput = -1;
         public static final double kShooterAngleMaxOutput = 1;
@@ -212,7 +212,7 @@ public final class Constants {
         // Angle Motor Configuration
         public static final IdleMode kAngleMotorIdleMode = IdleMode.kBrake;
         public static final int kAngleMotorCurrentLimit = 20;
-        public static final double AngleMotorSpeed = 0.35;
+        public static final double AngleMotorSpeed = 0.15;
         public static final double ManualAngleMotorSpeed = 0.25;
         public static final double AngleMotorMinSpeed = 0.1;
   
@@ -223,6 +223,10 @@ public final class Constants {
         public static final double LowSpeakerAngle = 32;
         public static final double MaxSpeakerAngle = 55;
         public static final double MinSpeakerAngle = 32;
+        public static final double HighSpeakerEncoder = 0;
+        public static final double LowSpeakerEncoder = 27700;
+        public static final double MaxSpeakerEncoder = 27300;
+        public static final double MinSpeakerEncoder = 0;
         public static final double MinAutoDistance = 70;
         public static final double MaxAutoDistance = 190;
         public static final double IdleAngle = 53;//37 for 2nd shot

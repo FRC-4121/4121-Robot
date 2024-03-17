@@ -4,26 +4,27 @@
 
 package frc.robot.subsystems;
 
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
+import java.util.Optional;
 
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
+import frc.robot.Constants;
 import static frc.robot.Constants.*;
 import static frc.robot.Constants.DriveConstants.*;
-import static frc.robot.Constants.MechanismConstants.*;
 import static frc.robot.Constants.ControlConstants.*;
-import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.math.filter.MedianFilter;
 import edu.wpi.first.math.kinematics.*;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.math.controller.*;
-import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.util.PathPlannerLogging;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import com.kauailabs.navx.frc.AHRS;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+import com.pathplanner.lib.util.PathPlannerLogging;
 
 public class SwerveDriveWPI extends SubsystemBase {
   
@@ -147,6 +148,9 @@ public class SwerveDriveWPI extends SubsystemBase {
 
     // Set up custom logging to add the current path to a field 2d widget
     PathPlannerLogging.setLogActivePathCallback((poses) -> field.getObject("path").setPoses(poses));
+
+    // Set up an auto path rotation override
+
 
     SmartDashboard.putData("Field", field);
 
@@ -865,6 +869,14 @@ public class SwerveDriveWPI extends SubsystemBase {
 
   }
 
+  /**
+   * 
+   * Convert a WPI angle (+/-180) to a gyro angle (0-360)
+   * 
+   * @param angle  The WPI angle to convert
+   * @return  A gyro angle
+   * 
+   */
   public double fromWPIAngle(double angle) {
     if (angle > 0) {
       angle = (180 - angle) + 180;
@@ -874,6 +886,14 @@ public class SwerveDriveWPI extends SubsystemBase {
     return angle;
   }
 
+  /**
+   * 
+   * Convert a gvyro angle (0-360) into a WPI angle (+/-180)
+   * 
+   * @param angle  The gyro angle to convert
+   * @return  A WPI based angle
+   * 
+   */
   public double toWPIAngle(double angle) {
     if (angle > 180) {
       angle = -(angle - 360);
@@ -881,6 +901,20 @@ public class SwerveDriveWPI extends SubsystemBase {
       angle = -angle;
     }
     return angle;
+  }
+
+  /**
+   * 
+   * Determines an optional path target rotation override based on seeing 
+   * the speaker AprilTag
+   * 
+   * @return a new Rotation2d
+   * 
+   */
+  public Optional<Rotation2d> getTargetRotationOverride() {
+
+    return Optional.empty();
+
   }
 
 }

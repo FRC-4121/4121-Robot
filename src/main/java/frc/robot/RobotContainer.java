@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.*;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.cscore.VideoSink;
 import edu.wpi.first.cscore.VideoSource;
@@ -65,6 +66,7 @@ public class RobotContainer {
   private final ChangeDriveMode changeModeCommand;
 
   // Declare Auto Commands
+  //private final SendableChooser<Command> autoChooser;
   private final AutoDrive autoDriveCommand;
   private final AutoPickupNote autoPickupNoteCommand;
   private final AutoShooterAmpPos autoShooterAmpPosCommand;
@@ -91,6 +93,7 @@ public class RobotContainer {
   private final AutoShooterSpeed shooterSpeedCommand;
   private final AutoShooterAngle autoShootMediumCommand;
   private final AutoShooterAngle autoShootFarCommand;
+  private final AutoShooterBottom autoShootBottomCommand;
 
   // Declare Shooter Angle Commands
   private final RunAngleUp angleUpCommand;
@@ -112,12 +115,13 @@ public class RobotContainer {
   private final Trigger intakeButton;
   private final Trigger speakerShootButton;
   private final Trigger ampShootButton;
-  private final Trigger autoAngleShootButton;
+  //private final Trigger autoAngleShootButton;
   private final Trigger climberButton;
   private final Trigger runAngleDownButton;
   private final Trigger runAngleUpButton;
   private final Trigger manualIntakeButton;
   private final Trigger processorBackButton;
+  private final Trigger shuttleButton;
   
   // Declare Launchpad (OI) Buttons/Switches
   private final Trigger killAutoButton;
@@ -154,8 +158,6 @@ public class RobotContainer {
     table = new NetworkTableQuerier();
     led = new LED();
     photoSensor = new PhotoElecSensor();
-
-    
   
     // Initialize Driving Commands
     //private final DriveWithJoysticks driveCommand = new DriveWithJoysticks(swervedrive, xbox, table);
@@ -184,12 +186,13 @@ public class RobotContainer {
     ledCommand = new LEDCommand(led);
 
     // Initialize Shooter Commands
-    ampShooterCommand = new RunShooterAmp(shooter,processor,intake,5);
-    speakerShooterCommand = new RunShooterSpeaker(shooter, processor,intake,1.0);
-    trapShooterCommand = new RunShooterTrap(shooter, processor,intake,1.5);
+    ampShooterCommand = new RunShooterAmp(shooter,processor,intake,0.7);
+    speakerShooterCommand = new RunShooterSpeaker(shooter, processor,intake,0.7);
+    trapShooterCommand = new RunShooterTrap(shooter, processor,intake,1.0);
     shooterSpeedCommand = new AutoShooterSpeed(shooter);
-    autoShootMediumCommand = new AutoShooterAngle(shooterAngle, 22500, 2);
+    autoShootMediumCommand = new AutoShooterAngle(shooterAngle, 23500, 2);
     autoShootFarCommand = new AutoShooterAngle(shooterAngle, 27500, 2);
+    autoShootBottomCommand = new AutoShooterBottom(shooterAngle, 2.0);
 
     // Initialize Shooter Angle Commands
     angleUpCommand = new RunAngleUp(shooterAngle);
@@ -208,8 +211,12 @@ public class RobotContainer {
     NamedCommands.registerCommand("ShootNote", speakerShooterCommand);
     NamedCommands.registerCommand("AngleMedium", autoShootMediumCommand);
     NamedCommands.registerCommand("AngleFar", autoShootFarCommand);
+    NamedCommands.registerCommand("AngleBottom", autoShootBottomCommand);
+    NamedCommands.registerCommand("ShootAmp", ampShooterCommand);
 
-
+    // Create an auto command chooser
+    //autoChooser = AutoBuilder.buildAutoChooser();
+    //SmartDashboard.putData("Auto Mode", autoChooser);
 
     // Initialize Xbox Buttons
     changeSpeedButton = new JoystickButton(xbox, xboxYButton);
@@ -222,8 +229,9 @@ public class RobotContainer {
     runAngleUpButton = new JoystickButton(secondaryXbox,xboxRightBumber);
     processorBackButton = new JoystickButton(secondaryXbox,xboxAButton);
     manualIntakeButton = new JoystickButton(xbox,xboxLeftBumber);
-    autoAngleShootButton = new JoystickButton(secondaryXbox,xboxBButton);
+    //autoAngleShootButton = new JoystickButton(secondaryXbox,xboxBButton);
     parkButton = new JoystickButton(xbox,xboxRightBumber);
+    shuttleButton = new JoystickButton(secondaryXbox, xboxBButton);
     
     // Initialize Launchpad (OI) Buttons/Switches
     killAutoButton = new JoystickButton(launchpad,LaunchPadButton1);
@@ -286,7 +294,7 @@ public class RobotContainer {
     changeModeButton.onTrue(changeModeCommand);
     intakeButton.onTrue(takeInNoteCommand);
     speakerShootButton.onTrue(speakerShooterCommand);
-    autoAngleShootButton.onTrue(autoShootMediumCommand);
+    shuttleButton.onTrue(trapShooterCommand);
     ampShootButton.onTrue(ampShooterCommand);
     ampAngleButton.onTrue(autoShooterAmpPosCommand);
     climberButton.onTrue(climberCommand);
@@ -351,10 +359,11 @@ public class RobotContainer {
    */
   public void getAutoPosition() 
   {
+    double position = (double)SmartDashboard.getNumber("Auto Position", 1);
 
-    if (leftButton.getAsBoolean() == true) {
+    if ((leftButton.getAsBoolean() == true) || position == 0) {
       autoPosition = "Left"; 
-    } else if(rightButton.getAsBoolean() == true) {
+    } else if((rightButton.getAsBoolean() == true) || position == 2) {
       autoPosition = "Right";
     } else {
       autoPosition = "Center"; 
@@ -405,6 +414,7 @@ public class RobotContainer {
    * 
    */
   public void getAngleToTargetSelection()
+
   {
     if (changeAutoAngleButton.getAsBoolean() == false)
     {
@@ -470,6 +480,9 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
 
+    //return (Command)autoChooser.getSelected();
+
+    
     String position = "Center";
     if (!blueAlliance) {
       if (autoPosition == "Left") {
@@ -492,7 +505,8 @@ public class RobotContainer {
 
     //PathPlannerPath testPath = PathPlannerPath.fromPathFile("TestPath");
       //return AutoBuilder.followPath(testPath);
-    return new PathPlannerAuto("Center4Note");
+    return new PathPlannerAuto("Amp3NoteAmp");
+
 
     /*switch (autoDecision) {
 

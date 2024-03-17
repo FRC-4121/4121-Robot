@@ -3,43 +3,37 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 8.164859011601047,
-        "y": 4.098792791023527
+        "x": 0.787031987758696,
+        "y": 4.379852868122284
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.682161663895367,
-        "y": 4.051949444840401
+        "x": 1.1734895937694858,
+        "y": 2.084528905149108
       },
       "isLocked": false,
-      "linkedName": "CenterNote4"
+      "linkedName": "LeftNote2Shot"
     },
     {
       "anchor": {
-        "x": 4.604764701683469,
-        "y": 5.023948878140267
+        "x": 8.609870800340744,
+        "y": 0.772915212021579
       },
       "prevControl": {
-        "x": 5.096619836606292,
-        "y": 4.42669621430541
+        "x": 6.970353683931332,
+        "y": 0.7377827023842334
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "CenterShooting"
+      "linkedName": "LeftNote3Pickup"
     }
   ],
-  "rotationTargets": [
-    {
-      "waypointRelativePos": 0.3,
-      "rotationDegrees": -2.8600000000000136,
-      "rotateFast": false
-    }
-  ],
+  "rotationTargets": [],
   "constraintZones": [],
   "eventMarkers": [
     {
-      "name": "AngleFar",
-      "waypointRelativePos": 0.45,
+      "name": "New Event Marker",
+      "waypointRelativePos": 0.75,
       "command": {
         "type": "parallel",
         "data": {
@@ -47,7 +41,7 @@
             {
               "type": "named",
               "data": {
-                "name": "AngleFar"
+                "name": "TakeInNote"
               }
             }
           ]
@@ -63,13 +57,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -2.8600000000000136,
+    "rotation": 0,
     "rotateFast": false
   },
   "reversed": false,
   "folder": null,
   "previewStartingState": {
-    "rotation": 0,
+    "rotation": -53.0,
     "velocity": 0
   },
   "useDefaultConstraints": true

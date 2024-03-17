@@ -3,37 +3,49 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.4896821805055864,
-        "y": 5.594556573728532
+        "x": 2.531946633080141,
+        "y": 4.087081954477746
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.550789412563132,
-        "y": 5.070792224323394
+        "x": 2.0283806616115356,
+        "y": 3.9465519159283673
       },
       "isLocked": false,
-      "linkedName": "CenterNote2Shoot"
+      "linkedName": "LeftNote2Pickup"
     },
     {
       "anchor": {
-        "x": 8.164859011601047,
-        "y": 4.098792791023527
+        "x": 0.787031987758696,
+        "y": 4.379852868122284
       },
       "prevControl": {
-        "x": 6.94693201083977,
-        "y": 4.309587848847595
+        "x": 1.1032245744947966,
+        "y": 4.122214464115092
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "LeftNote2Shot"
     }
   ],
   "rotationTargets": [],
-  "constraintZones": [],
+  "constraintZones": [
+    {
+      "name": "New Constraints Zone",
+      "minWaypointRelativePos": 0.8,
+      "maxWaypointRelativePos": 1.0,
+      "constraints": {
+        "maxVelocity": 1.0,
+        "maxAcceleration": 4.0,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0
+      }
+    }
+  ],
   "eventMarkers": [
     {
-      "name": "TakeInNote",
-      "waypointRelativePos": 0.35,
+      "name": "New Event Marker",
+      "waypointRelativePos": 0,
       "command": {
         "type": "parallel",
         "data": {
@@ -50,21 +62,21 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 3.0,
+    "maxVelocity": 1.5,
     "maxAcceleration": 4.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0.0,
+    "rotation": -53.0,
     "rotateFast": false
   },
   "reversed": false,
   "folder": null,
   "previewStartingState": {
-    "rotation": 0.0,
+    "rotation": 0,
     "velocity": 0
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }

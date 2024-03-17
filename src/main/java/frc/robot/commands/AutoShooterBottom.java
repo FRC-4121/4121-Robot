@@ -13,11 +13,10 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 
-public class AutoShooterAngle extends Command {
+public class AutoShooterBottom extends Command {
 
   private ShooterAngle shootAngle;
   
-  private double targetEncoder;
   private Timer timer;
   private double startTime;
   private double stopTime;
@@ -25,11 +24,10 @@ public class AutoShooterAngle extends Command {
   private PIDController wpiPIDController;
  
   /** Creates a new AutoShooterPos. */
-  public AutoShooterAngle(ShooterAngle shoot, double encoder, double endTime) {
+  public AutoShooterBottom(ShooterAngle shoot, double endTime) {
 
     // Set local variables
     shootAngle = shoot;
-    targetEncoder = encoder;
     stopTime = endTime;
     addRequirements(shootAngle);
 
@@ -54,40 +52,9 @@ public class AutoShooterAngle extends Command {
   @Override
   public void execute() {
 
-    double currentEncoder = shootAngle.getIntegratedValue();
-    
-    // Determine new motor speed from PID controller
-    double pidOutput = -wpiPIDController.calculate(currentEncoder, targetEncoder);
-    if(pidOutput >1)
-    {
-      pidOutput = 1;
-    } else if (pidOutput < -1)
-    {
-      pidOutput = -1;
-    }
+    double angleSpeed = -0.2;
 
-    // Run angle motor at new speed (as long as we aren't at bounds)
-    if (Math.abs(currentEncoder - ShooterTargetEncoder) > ShooterAngleTolerance) {
-
-      double angleSpeed = AngleMotorSpeed * pidOutput;
-
-      if (pidOutput > 0) {
-
-        if (shootAngle.getTopSwitch() == false) {
-
-          shootAngle.runPivot(AngleMotorMinSpeed + angleSpeed);
-          SmartDashboard.putNumber("Angle Input", AngleMotorMinSpeed + angleSpeed);
-
-        } else {
-
-          shootAngle.runPivot(0);
-
-        }
-
-      }
-      else if (pidOutput < 0) {
-
-        if (shootAngle.getBottomSwitch() == false) {
+    if (shootAngle.getBottomSwitch() == false) {
 
           shootAngle.runPivot(-AngleMotorMinSpeed + angleSpeed);
           SmartDashboard.putNumber("Angle Input", -AngleMotorMinSpeed + angleSpeed);
@@ -97,17 +64,6 @@ public class AutoShooterAngle extends Command {
           shootAngle.runPivot(0);
 
         }
-
-      }
-
-      readyToShoot = false;
-
-    } else {
-
-      shootAngle.runPivot(0.0);
-      readyToShoot = true;
-
-    }
 
   }
 
@@ -129,20 +85,11 @@ public class AutoShooterAngle extends Command {
     // Get the current time
     double time = timer.get();  
 
-    if (Math.abs(shootAngle.getIntegratedValue() - ShooterTargetEncoder) < ShooterAngleTolerance) {
-
+    if (killAuto) {
       thereYet = true;
-
     } else if (shootAngle.getBottomSwitch() == true){
-
       thereYet = true;
-
     } else if (stopTime <= time - startTime){
-
-      thereYet = true;
-
-    } else if (killAuto) {
-
       thereYet = true;
     }
 

@@ -20,31 +20,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "RightNote2"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "ShootNote"
+            "pathName": "AmpNote2Pickup"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "RightNote3"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "RightShootNote3"
+            "pathName": "AmpNote2Amp"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "ShootNote"
+            "name": "ShootAmp"
           }
         }
       ]

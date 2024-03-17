@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.7284778050297884,
-        "y": 6.698598504187022
+        "x": 1.4896821805055864,
+        "y": 5.55
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.7238989114212167,
-        "y": 5.995948311440133
+        "x": 3.5439909341357163,
+        "y": 4.903870576971923
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "CenterNote2Shoot"
     },
     {
       "anchor": {
-        "x": 2.894982565999367,
-        "y": 6.979658581285779
+        "x": 8.164859011601047,
+        "y": 4.098792791023527
       },
       "prevControl": {
-        "x": 2.3328624118018553,
-        "y": 6.394116753996703
+        "x": 6.800082061702586,
+        "y": 3.917176295891054
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "RightNote2"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
@@ -33,7 +33,7 @@
   "eventMarkers": [
     {
       "name": "TakeInNote",
-      "waypointRelativePos": 0.5,
+      "waypointRelativePos": 0.35,
       "command": {
         "type": "parallel",
         "data": {
@@ -43,12 +43,6 @@
               "data": {
                 "name": "TakeInNote"
               }
-            },
-            {
-              "type": "named",
-              "data": {
-                "name": "AngleMedium"
-              }
             }
           ]
         }
@@ -56,20 +50,20 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 1.5,
+    "maxVelocity": 3.5,
     "maxAcceleration": 4.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 32.57405713457243,
+    "rotation": 0.0,
     "rotateFast": false
   },
   "reversed": false,
   "folder": null,
   "previewStartingState": {
-    "rotation": 59.743562836470794,
+    "rotation": 0.0,
     "velocity": 0
   },
   "useDefaultConstraints": false

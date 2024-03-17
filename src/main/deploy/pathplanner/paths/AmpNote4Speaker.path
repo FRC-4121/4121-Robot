@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.37,
-        "y": 5.594556573728532
+        "x": 8.223413194329954,
+        "y": 5.831996599799192
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.37,
-        "y": 5.594556573728532
+        "x": 7.075751212843366,
+        "y": 6.534646792546081
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "AmpNote4Pickup"
     },
     {
       "anchor": {
-        "x": 2.7310308543584263,
-        "y": 5.594556573728532
+        "x": 4.124620403306426,
+        "y": 6.593200975274989
       },
       "prevControl": {
-        "x": 2.9184042390909304,
-        "y": 5.5578124165136735
+        "x": 3.1246204033064258,
+        "y": 6.593200975274989
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "CenterNote2Pickup"
+      "linkedName": "AmpNote3Shoot"
     }
   ],
   "rotationTargets": [],
@@ -33,37 +33,30 @@
   "eventMarkers": [
     {
       "name": "New Event Marker",
-      "waypointRelativePos": 0.1,
+      "waypointRelativePos": 0,
       "command": {
         "type": "parallel",
         "data": {
-          "commands": [
-            {
-              "type": "named",
-              "data": {
-                "name": "TakeInNote"
-              }
-            }
-          ]
+          "commands": []
         }
       }
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 1.5,
+    "maxVelocity": 3.5,
     "maxAcceleration": 4.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0.0,
+    "rotation": 14.36,
     "rotateFast": false
   },
   "reversed": false,
   "folder": null,
   "previewStartingState": {
-    "rotation": 0,
+    "rotation": -25.139999999999986,
     "velocity": 0
   },
   "useDefaultConstraints": false

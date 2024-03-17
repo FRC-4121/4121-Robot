@@ -20,7 +20,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "CenterNote2"
+            "pathName": "CenterNote2Pickup"
           }
         },
         {
@@ -32,13 +32,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "CenterNote3"
+            "pathName": "CenterNote4Pickup"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "ShootNote3"
+            "pathName": "CenterNote4Speaker"
           }
         },
         {

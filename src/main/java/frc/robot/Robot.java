@@ -51,6 +51,10 @@ public class Robot extends TimedRobot {
     // Put auto program notes to shoot on the dashboard
     SmartDashboard.putNumber("Auto Notes", 2);
 
+    // Put auto position on the dashboard
+    SmartDashboard.putNumber("Auto Position", 1);
+
+
     // Set the shooter speed to idle
     MechanismConstants.ShooterMode = "IDLE";
 

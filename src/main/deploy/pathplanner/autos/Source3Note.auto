@@ -3,9 +3,9 @@
   "startingPose": {
     "position": {
       "x": 0.73,
-      "y": 6.7
+      "y": 4.39
     },
-    "rotation": 59.74
+    "rotation": -53.0
   },
   "command": {
     "type": "sequential",
@@ -20,7 +20,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "RightNote2"
+            "pathName": "SourceNote2Pickup"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "SourceNote2Speaker"
           }
         },
         {
@@ -32,31 +38,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "RightNote3"
+            "pathName": "SourceNote3Pickup"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "RightShootNote3"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "ShootNote"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "RightNote4"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "RightShootNote4"
+            "pathName": "SourceNote3Speaker"
           }
         },
         {

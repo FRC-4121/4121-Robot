@@ -8,11 +8,11 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.120041509697854,
-        "y": 7.647176264395325
+        "x": 5.546980324729882,
+        "y": 6.531916140755359
       },
       "isLocked": false,
-      "linkedName": "RightNote4"
+      "linkedName": "AmpNote3Shoot"
     },
     {
       "anchor": {
@@ -20,12 +20,12 @@
         "y": 5.831996599799192
       },
       "prevControl": {
-        "x": 7.965774790322761,
-        "y": 7.658887100941107
+        "x": 6.898751489810673,
+        "y": 6.3641781129716115
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "RightNote5"
+      "linkedName": "AmpNote4Pickup"
     }
   ],
   "rotationTargets": [
@@ -35,7 +35,19 @@
       "rotateFast": false
     }
   ],
-  "constraintZones": [],
+  "constraintZones": [
+    {
+      "name": "New Constraints Zone",
+      "minWaypointRelativePos": 0.85,
+      "maxWaypointRelativePos": 1.0,
+      "constraints": {
+        "maxVelocity": 2.0,
+        "maxAcceleration": 4.0,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0
+      }
+    }
+  ],
   "eventMarkers": [
     {
       "name": "New Event Marker",
@@ -56,21 +68,21 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 3.0,
+    "maxVelocity": 3.5,
     "maxAcceleration": 4.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -49.57392125990099,
+    "rotation": -25.143730417975053,
     "rotateFast": false
   },
   "reversed": false,
   "folder": null,
   "previewStartingState": {
-    "rotation": 0,
+    "rotation": 14.36,
     "velocity": 0
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }

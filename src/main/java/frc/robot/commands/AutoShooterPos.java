@@ -208,7 +208,7 @@ public class AutoShooterPos extends Command {
     //double targetEncoder = getTargetEncoder(tagDistance);
     double pidOutput = -wpiPIDController.calculate(currentEncoder, ShooterTargetEncoder);
 
-    //SmartDashboard.putNumber("Target Encoder", targetEncoder);
+    SmartDashboard.putNumber("Target Encoder", ShooterTargetEncoder);
 
     // Limit PID putput
     if(pidOutput > 1)
@@ -328,13 +328,13 @@ public class AutoShooterPos extends Command {
    *  */ 
   public double getTargetEncoder(double distance) {
 
-    double calcEncoder = ((MaxEncoderPos - 0)/(MaxAutoDistance - MinAutoDistance)) * (distance - MinAutoDistance);
+    double calcEncoder = ((LowSpeakerEncoder - HighSpeakerEncoder)/(MaxAutoDistance - MinAutoDistance)) * (distance - MinAutoDistance);
     if(calcEncoder > MaxEncoderPos){
       calcEncoder = MaxEncoderPos;
     } else if(calcEncoder < 0){
       calcEncoder = 0;
     }
-    SmartDashboard.putNumber("Target Encoder:",calcEncoder);
+    //SmartDashboard.putNumber("Target Encoder:",calcEncoder);
     return calcEncoder;
 
   }
