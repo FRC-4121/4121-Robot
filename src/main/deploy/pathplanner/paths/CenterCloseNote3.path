@@ -8,32 +8,32 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.5439909341357163,
-        "y": 4.903870576971923
+        "x": 1.571658036326057,
+        "y": 6.347273407813577
       },
       "isLocked": false,
       "linkedName": "CenterNote2Shoot"
     },
     {
       "anchor": {
-        "x": 8.164859011601047,
-        "y": 4.098792791023527
+        "x": 2.5553683061717036,
+        "y": 6.9328152351026535
       },
       "prevControl": {
-        "x": 6.800082061702586,
-        "y": 3.917176295891054
+        "x": 1.5553683061717036,
+        "y": 6.9328152351026535
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "CenterCloseNote3Pickup"
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
   "eventMarkers": [
     {
-      "name": "TakeInNote",
-      "waypointRelativePos": 0.35,
+      "name": "New Event Marker",
+      "waypointRelativePos": 0,
       "command": {
         "type": "sequential",
         "data": {
@@ -50,20 +50,20 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 3.5,
+    "maxVelocity": 1.5,
     "maxAcceleration": 4.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0.0,
+    "rotation": 0,
     "rotateFast": false
   },
   "reversed": false,
   "folder": null,
   "previewStartingState": {
-    "rotation": 0.0,
+    "rotation": 0,
     "velocity": 0
   },
   "useDefaultConstraints": false

@@ -66,7 +66,7 @@ public class RobotContainer {
   private final ChangeDriveMode changeModeCommand;
 
   // Declare Auto Commands
-  //private final SendableChooser<Command> autoChooser;
+  private final SendableChooser<Command> autoChooser;
   private final AutoDrive autoDriveCommand;
   private final AutoPickupNote autoPickupNoteCommand;
   private final AutoShooterAmpPos autoShooterAmpPosCommand;
@@ -187,7 +187,7 @@ public class RobotContainer {
 
     // Initialize Shooter Commands
     ampShooterCommand = new RunShooterAmp(shooter,processor,intake,0.7);
-    speakerShooterCommand = new RunShooterSpeaker(shooter, processor,intake,0.7);
+    speakerShooterCommand = new RunShooterSpeaker(shooter, processor,intake,0.75);
     trapShooterCommand = new RunShooterTrap(shooter, processor,intake,1.0);
     shooterSpeedCommand = new AutoShooterSpeed(shooter);
     autoShootMediumCommand = new AutoShooterAngle(shooterAngle, 23500, 2);
@@ -215,8 +215,8 @@ public class RobotContainer {
     NamedCommands.registerCommand("ShootAmp", ampShooterCommand);
 
     // Create an auto command chooser
-    //autoChooser = AutoBuilder.buildAutoChooser();
-    //SmartDashboard.putData("Auto Mode", autoChooser);
+    autoChooser = AutoBuilder.buildAutoChooser();
+    SmartDashboard.putData("Auto Mode", autoChooser);
 
     // Initialize Xbox Buttons
     changeSpeedButton = new JoystickButton(xbox, xboxYButton);
@@ -480,9 +480,9 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
 
-    //return (Command)autoChooser.getSelected();
+    return (Command)autoChooser.getSelected();
 
-    
+    /*
     String position = "Center";
     if (!blueAlliance) {
       if (autoPosition == "Left") {
@@ -505,8 +505,8 @@ public class RobotContainer {
 
     //PathPlannerPath testPath = PathPlannerPath.fromPathFile("TestPath");
       //return AutoBuilder.followPath(testPath);
-    return new PathPlannerAuto("Amp3NoteAmp");
-
+    return new PathPlannerAuto("CenterClose4Note");
+    */
 
     /*switch (autoDecision) {
 
@@ -517,7 +517,7 @@ public class RobotContainer {
       case "Left2":
         autoCommand = auto2NoteLeftCommand;
         break;
-
+ 
       case "Left3":
         autoCommand = auto2NoteLeftCommand;
         break;

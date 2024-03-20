@@ -3,52 +3,34 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.37,
-        "y": 5.55
+        "x": 2.5553683061717036,
+        "y": 6.9328152351026535
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.37,
-        "y": 5.55
+        "x": 2.2977299021645106,
+        "y": 6.312140898176232
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "CenterCloseNote3Pickup"
     },
     {
       "anchor": {
-        "x": 2.7310308543584263,
-        "y": 5.55
+        "x": 1.3491521419562087,
+        "y": 5.527514849608872
       },
       "prevControl": {
-        "x": 2.0540825697036027,
-        "y": 5.540133057189191
+        "x": 1.841007276879032,
+        "y": 5.879776468682752
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "CenterNote2Pickup"
+      "linkedName": "CenterCloseNote3Shot"
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
-  "eventMarkers": [
-    {
-      "name": "New Event Marker",
-      "waypointRelativePos": 0.1,
-      "command": {
-        "type": "sequential",
-        "data": {
-          "commands": [
-            {
-              "type": "named",
-              "data": {
-                "name": "TakeInNote"
-              }
-            }
-          ]
-        }
-      }
-    }
-  ],
+  "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 1.5,
     "maxAcceleration": 4.0,
@@ -57,7 +39,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0.0,
+    "rotation": 0,
     "rotateFast": false
   },
   "reversed": false,

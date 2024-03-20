@@ -53,7 +53,7 @@
       "name": "AngleFar",
       "waypointRelativePos": 0.45,
       "command": {
-        "type": "parallel",
+        "type": "sequential",
         "data": {
           "commands": [
             {

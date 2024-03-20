@@ -20,8 +20,8 @@
         "y": 6.593200975274989
       },
       "prevControl": {
-        "x": 3.1246204033064258,
-        "y": 6.593200975274989
+        "x": 5.32990758289209,
+        "y": 6.768722768214768
       },
       "nextControl": null,
       "isLocked": false,
@@ -30,18 +30,7 @@
   ],
   "rotationTargets": [],
   "constraintZones": [],
-  "eventMarkers": [
-    {
-      "name": "New Event Marker",
-      "waypointRelativePos": 0,
-      "command": {
-        "type": "parallel",
-        "data": {
-          "commands": []
-        }
-      }
-    }
-  ],
+  "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 3.5,
     "maxAcceleration": 4.0,

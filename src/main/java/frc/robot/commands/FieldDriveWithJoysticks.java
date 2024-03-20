@@ -11,11 +11,7 @@ import edu.wpi.first.math.filter.SlewRateLimiter;
 import frc.robot.ExtraClasses.NetworkTableQuerier;
 import static frc.robot.Constants.MechanismConstants.*;
 import static frc.robot.Constants.ControlConstants.*;
-import static frc.robot.Constants.DriveConstants.AutoAngleToTarget;
-import static frc.robot.Constants.DriveConstants.kDAutoAlign;
-import static frc.robot.Constants.DriveConstants.kFFAutoAlign;
-import static frc.robot.Constants.DriveConstants.kIAutoAlign;
-import static frc.robot.Constants.DriveConstants.kPAutoAlign;
+import static frc.robot.Constants.DriveConstants.*;
 import static frc.robot.Constants.*;
 import edu.wpi.first.math.filter.MedianFilter;
 import edu.wpi.first.math.controller.*;
@@ -139,7 +135,7 @@ public class FieldDriveWithJoysticks extends Command {
             tagDistance = distFilter.calculate(table.getTagInfo("CAM2", centerTag, "distance"));
             tagOffset = offsetFilter.calculate(table.getTagInfo("CAM2", centerTag, "offset"));
 
-            if (tagDistance > MinAutoDistance && tagDistance < MaxAutoDistance) {
+            if (tagDistance > MinAutoAlignDistance && tagDistance < MaxAutoAlignDistance) {
 
               System.out.println("Tag Offset: " + tagOffset);
 

@@ -53,7 +53,7 @@
       "name": "TakeInNote",
       "waypointRelativePos": 0.6,
       "command": {
-        "type": "parallel",
+        "type": "sequential",
         "data": {
           "commands": [
             {

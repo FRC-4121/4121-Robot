@@ -89,10 +89,12 @@ public final class Constants {
         public static final double kP_DriveAngle = 0.01;
         public static final double kI_DriveAngle = 0.0;
         public static final double kD_DriveAngle = 0.0;
-        public static final double kPAutoAlign = 0.002;
+        public static final double kPAutoAlign = 0.0005;
         public static final double kIAutoAlign = 0.0;
-        public static final double kDAutoAlign = 0.001;
-        public static final double kFFAutoAlign = 0.12;
+        public static final double kDAutoAlign = 0.00007;
+        public static final double kFFAutoAlign = 0.05;
+        public static final double MinAutoAlignDistance = 80;
+        public static final double MaxAutoAlignDistance = 300;
 
         public static boolean AutoAngleToTarget = false;
 
@@ -198,8 +200,8 @@ public final class Constants {
 
         // PID values
         public static final double kShooterAngleKP = 0.00009;//0.00009
-        public static final double kShooterAngleKI = 0.0;//0.0000002
-        public static final double kShooterAngleKD = 0.000002;//0.000025 
+        public static final double kShooterAngleKI = 0.000001;//0.0000002
+        public static final double kShooterAngleKD = 0.000007;//0.000025 
         public static final double kShooterAngleFF = 0;
         public static final double kShooterAngleMinOutput = -1;
         public static final double kShooterAngleMaxOutput = 1;
@@ -228,7 +230,7 @@ public final class Constants {
         public static final double MaxSpeakerEncoder = 27300;
         public static final double MinSpeakerEncoder = 0;
         public static final double MinAutoDistance = 70;
-        public static final double MaxAutoDistance = 190;
+        public static final double MaxAutoDistance = 195;
         public static final double IdleAngle = 53;//37 for 2nd shot
         public static final double IdleEncoder = 1000;
 

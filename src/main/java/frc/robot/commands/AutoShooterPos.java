@@ -328,13 +328,7 @@ public class AutoShooterPos extends Command {
    *  */ 
   public double getTargetEncoder(double distance) {
 
-    double calcEncoder = ((LowSpeakerEncoder - HighSpeakerEncoder)/(MaxAutoDistance - MinAutoDistance)) * (distance - MinAutoDistance);
-    if(calcEncoder > MaxEncoderPos){
-      calcEncoder = MaxEncoderPos;
-    } else if(calcEncoder < 0){
-      calcEncoder = 0;
-    }
-    //SmartDashboard.putNumber("Target Encoder:",calcEncoder);
+    double calcEncoder = -1.5585 * distance * distance + 618.65 * distance - 35584;
     return calcEncoder;
 
   }
