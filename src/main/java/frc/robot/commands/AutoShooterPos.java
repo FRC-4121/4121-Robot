@@ -186,19 +186,19 @@ public class AutoShooterPos extends Command {
 
       } else {
 
-        ShooterTargetAngle = IdleAngle;
-        //ShooterTargetAngle = LastShooterAngle;
+        //ShooterTargetAngle = IdleAngle;
+        ShooterTargetAngle = LastShooterAngle;
         LastShooterAngle = ShooterTargetAngle;
-        ShooterTargetEncoder = IdleEncoder;
+        ShooterTargetEncoder = LastShooterEncoder;
         LastShooterEncoder = ShooterTargetEncoder;
       }
 
     } else {
 
-      ShooterTargetAngle = IdleAngle;
-      //ShooterTargetAngle = LastShooterAngle;
+      //ShooterTargetAngle = IdleAngle;
+      ShooterTargetAngle = LastShooterAngle;
       LastShooterAngle = ShooterTargetAngle;
-      ShooterTargetEncoder = IdleEncoder;
+      ShooterTargetEncoder = LastShooterEncoder;
       LastShooterEncoder = ShooterTargetEncoder;
 
     }

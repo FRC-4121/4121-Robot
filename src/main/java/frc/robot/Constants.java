@@ -199,9 +199,9 @@ public final class Constants {
         public static final int kPivotMotorID = 15;
 
         // PID values
-        public static final double kShooterAngleKP = 0.00009;//0.00009
+        public static final double kShooterAngleKP = 0.000085;//0.00009
         public static final double kShooterAngleKI = 0.000001;//0.0000002
-        public static final double kShooterAngleKD = 0.000007;//0.000025 
+        public static final double kShooterAngleKD = 0.000009;//0.000025 
         public static final double kShooterAngleFF = 0;
         public static final double kShooterAngleMinOutput = -1;
         public static final double kShooterAngleMaxOutput = 1;

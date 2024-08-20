@@ -8,11 +8,59 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.5439909341357163,
-        "y": 4.903870576971923
+        "x": 2.0752240077946618,
+        "y": 5.468960666879964
       },
       "isLocked": false,
       "linkedName": "CenterNote2Shoot"
+    },
+    {
+      "anchor": {
+        "x": 3.0472234410945274,
+        "y": 5.187900589781208
+      },
+      "prevControl": {
+        "x": 2.6373441619921745,
+        "y": 5.3752739745137115
+      },
+      "nextControl": {
+        "x": 3.647076701534551,
+        "y": 4.913681956437197
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 4.780427249870191,
+        "y": 4.50867207012588
+      },
+      "prevControl": {
+        "x": 4.222652579567329,
+        "y": 4.6163127959738
+      },
+      "nextControl": {
+        "x": 5.447944932979738,
+        "y": 4.379852868122284
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 6.326257673913349,
+        "y": 4.239322829572906
+      },
+      "prevControl": {
+        "x": 5.670450827349585,
+        "y": 4.309587848847595
+      },
+      "nextControl": {
+        "x": 6.975205949471948,
+        "y": 4.1697926571916275
+      },
+      "isLocked": false,
+      "linkedName": null
     },
     {
       "anchor": {
@@ -20,20 +68,32 @@
         "y": 4.098792791023527
       },
       "prevControl": {
-        "x": 6.800082061702586,
-        "y": 3.917176295891054
+        "x": 6.677582770286794,
+        "y": 4.180768646843998
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "CenterNote4"
     }
   ],
   "rotationTargets": [],
-  "constraintZones": [],
+  "constraintZones": [
+    {
+      "name": "New Constraints Zone",
+      "minWaypointRelativePos": 3.6,
+      "maxWaypointRelativePos": 4.0,
+      "constraints": {
+        "maxVelocity": 1.5,
+        "maxAcceleration": 4.0,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0
+      }
+    }
+  ],
   "eventMarkers": [
     {
       "name": "TakeInNote",
-      "waypointRelativePos": 0.35,
+      "waypointRelativePos": 3.3,
       "command": {
         "type": "sequential",
         "data": {
@@ -42,6 +102,23 @@
               "type": "named",
               "data": {
                 "name": "TakeInNote"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "New Event Marker",
+      "waypointRelativePos": 0,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "AngleBottom"
               }
             }
           ]

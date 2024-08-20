@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.3491521419562087,
-        "y": 5.527514849608872
+        "x": 1.3140196323188638,
+        "y": 5.550936522700434
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.4428388343224607,
-        "y": 4.767246996833509
+        "x": 1.4077063246851158,
+        "y": 4.790668669925071
       },
       "isLocked": false,
       "linkedName": "CenterCloseNote3Shot"
     },
     {
       "anchor": {
-        "x": 2.625633325446393,
-        "y": 4.11050362756931
+        "x": 2.705300795216977,
+        "y": 4.124382094918037
       },
       "prevControl": {
-        "x": 1.618501382509183,
-        "y": 4.075371117931965
+        "x": 1.6981688522797669,
+        "y": 4.089249585280692
       },
       "nextControl": null,
       "isLocked": false,
@@ -33,7 +33,7 @@
   "eventMarkers": [
     {
       "name": "New Event Marker",
-      "waypointRelativePos": 0,
+      "waypointRelativePos": 0.3,
       "command": {
         "type": "sequential",
         "data": {

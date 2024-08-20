@@ -115,7 +115,7 @@ public class RobotContainer {
   private final Trigger intakeButton;
   private final Trigger speakerShootButton;
   private final Trigger ampShootButton;
-  //private final Trigger autoAngleShootButton;
+  private final Trigger autoPickupNoteButton;
   private final Trigger climberButton;
   private final Trigger runAngleDownButton;
   private final Trigger runAngleUpButton;
@@ -167,7 +167,7 @@ public class RobotContainer {
 
     // Initialize Auto Commands
     autoDriveCommand = new AutoDrive(swervedrivewpi, 0.1, 110.0, 0.0, 0.0, 0.02, 10.0);
-    autoPickupNoteCommand = new AutoPickupNote(swervedrivewpi,table,0, 10);
+    autoPickupNoteCommand = new AutoPickupNote(swervedrivewpi,table,0, 2);
     autoShooterAmpPosCommand = new AutoShooterAmpPos(shooterAngle,shooter,processor,intake,5.0);
     autoShooterPosCommand = new AutoShooterPos(shooterAngle, table);
     autoShooterAngleCommand = new AutoShooterAngle(shooterAngle,37,5);
@@ -229,7 +229,7 @@ public class RobotContainer {
     runAngleUpButton = new JoystickButton(secondaryXbox,xboxRightBumber);
     processorBackButton = new JoystickButton(secondaryXbox,xboxAButton);
     manualIntakeButton = new JoystickButton(xbox,xboxLeftBumber);
-    //autoAngleShootButton = new JoystickButton(secondaryXbox,xboxBButton);
+    autoPickupNoteButton = new JoystickButton(secondaryXbox,xboxBButton);
     parkButton = new JoystickButton(xbox,xboxRightBumber);
     shuttleButton = new JoystickButton(secondaryXbox, xboxBButton);
     
@@ -301,6 +301,7 @@ public class RobotContainer {
     runAngleDownButton.whileTrue(angleDownCommand);
     runAngleUpButton.whileTrue(angleUpCommand);
     manualIntakeButton.whileTrue(intakeCommand);
+    autoPickupNoteButton.onTrue(autoPickupNoteCommand);
 
   }
 
