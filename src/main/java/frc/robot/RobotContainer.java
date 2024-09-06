@@ -115,13 +115,13 @@ public class RobotContainer {
   private final Trigger intakeButton;
   private final Trigger speakerShootButton;
   private final Trigger ampShootButton;
-  private final Trigger autoPickupNoteButton;
+  // private final Trigger autoPickupNoteButton;
   private final Trigger climberButton;
   private final Trigger runAngleDownButton;
   private final Trigger runAngleUpButton;
   private final Trigger manualIntakeButton;
-  private final Trigger processorBackButton;
-  private final Trigger shuttleButton;
+  // private final Trigger processorBackButton;
+  // private final Trigger shuttleButton;
   
   // Declare Launchpad (OI) Buttons/Switches
   private final Trigger killAutoButton;
@@ -219,6 +219,7 @@ public class RobotContainer {
     SmartDashboard.putData("Auto Mode", autoChooser);
 
     // Initialize Xbox Buttons
+  
     changeSpeedButton = new JoystickButton(xbox, xboxYButton);
     changeModeButton = new JoystickButton(xbox, xboxXButton);
     intakeButton = new JoystickButton(xbox, xboxAButton);
@@ -227,11 +228,11 @@ public class RobotContainer {
     climberButton = new JoystickButton(xbox, xboxBButton);
     runAngleDownButton = new JoystickButton(secondaryXbox,xboxLeftBumber);
     runAngleUpButton = new JoystickButton(secondaryXbox,xboxRightBumber);
-    processorBackButton = new JoystickButton(secondaryXbox,xboxAButton);
+    // processorBackButton = new JoystickButton(secondaryXbox,xboxAButton);
     manualIntakeButton = new JoystickButton(xbox,xboxLeftBumber);
-    autoPickupNoteButton = new JoystickButton(secondaryXbox,xboxBButton);
+    // autoPickupNoteButton = new JoystickButton(secondaryXbox,xboxBButton);
     parkButton = new JoystickButton(xbox,xboxRightBumber);
-    shuttleButton = new JoystickButton(secondaryXbox, xboxBButton);
+    // shuttleButton = new JoystickButton(secondaryXbox, xboxBButton);
     
     // Initialize Launchpad (OI) Buttons/Switches
     killAutoButton = new JoystickButton(launchpad,LaunchPadButton1);
@@ -294,14 +295,14 @@ public class RobotContainer {
     changeModeButton.onTrue(changeModeCommand);
     intakeButton.onTrue(takeInNoteCommand);
     speakerShootButton.onTrue(speakerShooterCommand);
-    shuttleButton.onTrue(trapShooterCommand);
+    // shuttleButton.onTrue(trapShooterCommand);
     ampShootButton.onTrue(ampShooterCommand);
     ampAngleButton.onTrue(autoShooterAmpPosCommand);
     climberButton.onTrue(climberCommand);
     runAngleDownButton.whileTrue(angleDownCommand);
     runAngleUpButton.whileTrue(angleUpCommand);
     manualIntakeButton.whileTrue(intakeCommand);
-    autoPickupNoteButton.onTrue(autoPickupNoteCommand);
+    // autoPickupNoteButton.onTrue(autoPickupNoteCommand);
 
   }
 
