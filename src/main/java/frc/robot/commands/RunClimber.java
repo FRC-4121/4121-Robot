@@ -4,6 +4,7 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Pneumatics;
 import static frc.robot.Constants.MechanismConstants.*;
@@ -30,9 +31,11 @@ public class RunClimber extends Command {
 
     //If the climber is extended, retract the climber, else extent the climber
     if (ClimberExtended) {
+      SmartDashboard.putBoolean("extended", false);
       pneumatic.retractClimber();
       ClimberExtended = false;
     } else {
+      SmartDashboard.putBoolean("extended", true);
       pneumatic.extendClimber();
       ClimberExtended = true;
     }
