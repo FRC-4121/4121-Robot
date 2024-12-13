@@ -51,9 +51,7 @@ public final class Constants {
         public static final int kLeftBackCoder = 12;
 
         // Swerve drive calculation constants
-        public static final double kTalonFXPPR = 2048;
-        public static final double kWheelDiameter = 0.1016;  //meters (4 in)
-        public static final double kDriveGearRatio = 8.14;        
+        public static final double kTalonFXPPR = 2048;      
         public static final double DRIVETRAIN_TRACKWIDTH_METERS = 0.546;
         public static final double DRIVETRAIN_WHEELBASE_METERS = 0.546;
         public static final double DRIVETRAIN_TRACKWIDTH_INCH = 21.50;
@@ -66,14 +64,6 @@ public final class Constants {
         public static final double autoRightGyroCorrection = -53;
 
         // Swerve drive PID constants
-        public static final double drivePIDkPs[] = { 0.0, 0.0, 0.0, 0.0 };
-        public static final double drivePIDkIs[] = { 0.0, 0.0, 0.0, 0.0 };
-        public static final double drivePIDkDs[] = { 0.0, 0.0, 0.0, 0.0 };
-        public static final double drivePIDkFs[] = { 0.0454, 0.0459, 0.0458, 0.046 };
-        public static final double anglePIDkPs[] = { 3.25, 3.25, 3.25, 3.25 };
-        public static final double anglePIDkIs[] = { 2.25, 2.25, 2.25, 2.25 };
-        public static final double anglePIDkDs[] = { 0.04, 0.04, 0.04, 0.04 };
-        public static double angleLimiters[] = { 1.0, 1.0, 1.0, 1.0 };
         public static final double kAnglePIDkp = 10.0;
         public static final double kAnglePIDkd = 0.1;
         public static final double kAnglePIDki = 0.0;
