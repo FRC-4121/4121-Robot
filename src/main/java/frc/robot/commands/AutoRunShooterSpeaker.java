@@ -12,6 +12,13 @@ import static frc.robot.Constants.MechanismConstants.*;
 
 import edu.wpi.first.wpilibj.Timer;
 
+/**
+ * 
+ * @deprecated I didn't quite migrate this correctly so it may break
+ * 
+ */
+
+@Deprecated
 public class AutoRunShooterSpeaker extends Command {
   
   
@@ -53,10 +60,10 @@ public class AutoRunShooterSpeaker extends Command {
   @Override
   public void execute() {
 
-    if ((timer.get() - startTime > 0.5) && Math.abs(CurrentShooterAngle - IdleAngle) > ShooterAngleTolerance) {
+    // if ((timer.get() - startTime > 0.5) && Math.abs(CurrentShooterAngle - IdleAngle) > ShooterAngleTolerance) {
 
-      canShoot = true;
-    } 
+    //   canShoot = true;
+    // } 
 
     shooter.runShooterAuto(TopShootSpeakerSpeed,BottomShootSpeakerSpeed);
 

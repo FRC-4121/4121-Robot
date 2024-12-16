@@ -50,7 +50,7 @@ public class AutoShooterAmpPos extends Command {
       shooter.runShooterAuto(TopShootAmpSpeed, BottomShootAmpSpeed);
 
       // Check to see if we are at the amp angle
-      if ((Math.abs(CurrentShooterAngle - AmpAngle) < ShooterAngleTolerance) && shooterAngle.getTopSwitch() == false) {
+      if ((Math.abs(shooterAngle.getCurrentAngle() - AmpAngle) < ShooterAngleTolerance) && shooterAngle.getTopSwitch() == false) {
         shooterAngle.runPivot(AngleMotorSpeed);
       } else {
         shooterAngle.runPivot(0);
