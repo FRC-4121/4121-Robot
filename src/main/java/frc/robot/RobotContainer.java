@@ -595,7 +595,7 @@ public class RobotContainer {
     SmartDashboard.putBoolean("Top Shooter", shooterAngle.getTopSwitch());
     SmartDashboard.putBoolean("Bottom Shooter", shooterAngle.getBottomSwitch());
     SmartDashboard.putNumber("Shooter Encoder", shooterAngle.getIntegratedValue());
-    SmartDashboard.putNumber("Shooter Angle", CurrentShooterAngle);
+    SmartDashboard.putNumber("Shooter Angle", shooterAngle.getCurrentAngle());
     SmartDashboard.putNumber("Last Angle", LastShooterAngle);
     SmartDashboard.putBoolean("Can Shoot", readyToShoot);
 

@@ -46,7 +46,7 @@ public class AutoShootCommand extends Command {
 
     if((elapsedTime >= delayTime) && noteOnBoard)
     {
-     shooter.runShooter(1.0);
+     shooter.runShooterSpeaker(1.0);
      processor.runProcessor(1.0);  
     }
 
@@ -55,7 +55,7 @@ public class AutoShootCommand extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    shooter.runShooter(0);
+    shooter.runShooterSpeaker(0);
     processor.runProcessor(0); 
   }
 

@@ -4,69 +4,110 @@
 
 package frc.robot.subsystems;
 
+import frc.robot.Constants;
+
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-//import com.revrobotics.CANSparkMax;
-//import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-import static frc.robot.Constants.MechanismConstants.*;
-import static frc.robot.Constants.*;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.DigitalInput;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.math.filter.MedianFilter;
-import com.ctre.phoenix.motorcontrol.FeedbackDevice;
-import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.DemandType;
+
+import com.ctre.phoenix6.StatusCode;
+import com.ctre.phoenix6.configs.FeedbackConfigs;
+import com.ctre.phoenix6.configs.MotorOutputConfigs;
+import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.controls.PositionVoltage;
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
+import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 
 public class ShooterAngle extends SubsystemBase {
-  
-  //Motors
-  //private CANSparkMax pivotMotor;
-  private WPI_TalonFX pivotMotor;
 
-  //Duty Cycle Encoder (for use w/ Rev Through Bore Encoder)
+  // Motors
+  // private CANSparkMax pivotMotor;
+  private TalonFX pivotMotor;
+
+  // Duty Cycle Encoder (for use w/ Rev Through Bore Encoder)
   public final DutyCycleEncoder encoder;
 
-  //Limit switches to know when we have rotated all the way down or all the way up
+  // Limit switches to know when we have rotated all the way down or all the way
+  // up
   private DigitalInput TopSwitch = new DigitalInput(0);
   private DigitalInput BottomSwitch = new DigitalInput(9);
 
-  //Median Filter
-  private MedianFilter angle_filter; 
+  // Median Filter
+  private MedianFilter angle_filter;
+
+  private double currentAngle = 55;
+  private double maxEncoderPos = 27300;
+  // private double currentEncoder = 0;
+
+  private static final int pivotMotorId = 15;
+  public static final int angleEncoderId = 2;
+  public static final double distancePerRotation = 4.0;
+  private static final double configTimeout = 0.02;
+  private static final double kP = 0.000085;
+  private static final double kI = 0.000001;
+  private static final double kD = 0.000009;
+  
+  public static final double maxSpeakerAngle = 55;
+  public static final double minSpeakerAngle = 32;
 
   /** Creates a new ShooterAngle. */
   public ShooterAngle() {
 
     // Create a new Spark MAX controller for shooter angle
-    //pivotMotor = new CANSparkMax(kPivotMotorID,MotorType.kBrushless);
-    pivotMotor = new WPI_TalonFX(kPivotMotorID);
-    pivotMotor.setNeutralMode(NeutralMode.Brake);
-
-    // Configure motor encoder
-    pivotMotor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor,0,20);
-
-    // Configure PID constants for motor control
-    pivotMotor.config_kP(0, kShooterAngleKP, kTimeoutMsAngle);
-    pivotMotor.config_kI(0, kShooterAngleKI, kTimeoutMsAngle);
-    pivotMotor.config_kD(0, kShooterAngleKD, kTimeoutMsAngle);
+    // pivotMotor = new CANSparkMax(kPivotMotorID,MotorType.kBrushless);
+    pivotMotor = new TalonFX(pivotMotorId);
+    var configs = pivotMotor.getConfigurator();
+    {
+      StatusCode code = configs
+          .apply(new FeedbackConfigs().withFeedbackSensorSource(FeedbackSensorSourceValue.RotorSensor), configTimeout);
+      if (code != StatusCode.OK) {
+        DriverStation.reportError(String.format("Configuring feedback for angle motor failed with code: %s", code),
+            false);
+      }
+    }
+    {
+      StatusCode code = configs.apply(
+          new MotorOutputConfigs()
+              .withInverted(InvertedValue.Clockwise_Positive) // Clockwise positive for this motor.
+              .withNeutralMode(NeutralModeValue.Brake), // When we aren't writing a value to the motor, we want to
+                                                        // brake.
+          configTimeout);
+      if (code != StatusCode.OK) {
+        DriverStation.reportError(String.format("Configuring output levels for angle motor failed with code: %s", code),
+            false);
+      }
+    }
+    {
+      StatusCode code = configs.apply(
+          new Slot0Configs()
+              .withKP(kP)
+              .withKI(kI)
+              .withKD(kD),
+          configTimeout);
+      if (code != StatusCode.OK) {
+        DriverStation.reportError(String.format("Configuring PID for angle motor failed with code: %s", code),
+            false);
+      }
+    }
 
     // Factory reset so we can get the Spark MAX to a know state before
-    // configuring.  Useful if we swap out a controller.
-    //pivotMotor.restoreFactoryDefaults();
+    // configuring. Useful if we swap out a controller.
+    // pivotMotor.restoreFactoryDefaults();
 
     // Set brake mode and current limit
-    //pivotMotor.setIdleMode(kAngleMotorIdleMode);
-    //pivotMotor.setSmartCurrentLimit(kAngleMotorCurrentLimit);
+    // pivotMotor.setIdleMode(kAngleMotorIdleMode);
+    // pivotMotor.setSmartCurrentLimit(kAngleMotorCurrentLimit);
 
-    //If something goes wrong, save configuration
-    //pivotMotor.burnFlash();
-
-    //Create new Duty Cycle Encoder
-    encoder = new DutyCycleEncoder(kAngleEncoderID);
-    encoder.setDistancePerRotation(kDistancePerRotation);
+    // Create new Duty Cycle Encoder
+    encoder = new DutyCycleEncoder(angleEncoderId);
+    // encoder.setDistancePerRotation(distancePerRotation);
     encoder.setDistancePerRotation(100.0);
 
-    angle_filter = new MedianFilter(FILTER_WINDOW_SIZE);
+    angle_filter = new MedianFilter(Constants.FILTER_WINDOW_SIZE);
 
   }
 
@@ -74,34 +115,27 @@ public class ShooterAngle extends SubsystemBase {
    * 
    * Run the angle motor at a given speed
    * 
-   * @param speed  Angle motor speed
+   * @param speed Angle motor speed
    * 
    */
-  public void runPivot(double speed){
-    
-    if(CurrentShooterAngle >= 50)
-    {
-      pivotMotor.set(speed*0.5);
-    } else{
-    pivotMotor.set(speed);
-    }
+  public void runPivot(double speed) {
+    if (currentAngle >= 50)
+      pivotMotor.set(speed * 0.5);
+    else
+      pivotMotor.set(speed);
 
-    if(TopSwitch.get() == true)
-    {
-      if(speed > 0){
+    if (TopSwitch.get() == true) {
+      if (speed > 0)
         pivotMotor.set(0);
-      }
-      pivotMotor.setSelectedSensorPosition(0);
-    } else if(BottomSwitch.get() == true)
-    {
+      pivotMotor.setPosition(0);
+    } else if (BottomSwitch.get() == true) {
       if (speed < 0) {
         pivotMotor.set(0);
       }
-      MaxEncoderPos = getIntegratedValue();
+      maxEncoderPos = getIntegratedValue();
     }
 
-    CurrentShooterAngle = getCurrentAngle();
-
+    currentAngle = getCurrentAngle();
   }
 
   /**
@@ -109,17 +143,15 @@ public class ShooterAngle extends SubsystemBase {
    * Run the shooter to a specified angle
    * The motor controller PID controls the position
    * 
-   * @param angle  Target angle
+   * @param angle Target angle
    * 
    */
   public void runPivotToAngle(double angle) {
-
     double targetPosition = -getEncoderForAngle(angle);
-    pivotMotor.set(ControlMode.Position, targetPosition, DemandType.ArbitraryFeedForward, AngleMotorMinSpeed);
+    pivotMotor.setControl(new PositionVoltage(targetPosition));
 
-    CurrentShooterAngle = getCurrentAngle();
-    CurrentShooterEncoder = getIntegratedValue();
-
+    currentAngle = getCurrentAngle();
+    // currentEncoder = getIntegratedValue();
   }
 
   /**
@@ -128,10 +160,8 @@ public class ShooterAngle extends SubsystemBase {
    * Switch = True will set encoder to zero and angle to max
    * 
    */
-  public Boolean getTopSwitch(){
-
+  public boolean getTopSwitch() {
     return TopSwitch.get();
-
   }
 
   /**
@@ -140,10 +170,8 @@ public class ShooterAngle extends SubsystemBase {
    * Switch = True will set encoder to max and angle to min
    * 
    */
-  public Boolean getBottomSwitch(){
-
+  public boolean getBottomSwitch() {
     return BottomSwitch.get();
-
   }
 
   /**
@@ -152,9 +180,7 @@ public class ShooterAngle extends SubsystemBase {
    * 
    */
   public double getEncoderValue() {
-
     return Math.abs(encoder.get());
-
   }
 
   /**
@@ -162,10 +188,8 @@ public class ShooterAngle extends SubsystemBase {
    * Read the absolute encoder position
    * 
    */
-  public double getAbsoluteEncoderPosition(){
-
+  public double getAbsoluteEncoderPosition() {
     return encoder.getAbsolutePosition();
-
   }
 
   /**
@@ -173,9 +197,7 @@ public class ShooterAngle extends SubsystemBase {
    * Read the integrated encoder absolute distance and average it
    */
   public double getEncoderDistance() {
-
     return angle_filter.calculate(Math.abs(encoder.getDistance()));
-
   }
 
   /**
@@ -184,9 +206,7 @@ public class ShooterAngle extends SubsystemBase {
    * 
    */
   public double getIntegratedValue() {
-
-    return (int)Math.round(angle_filter.calculate(Math.abs(pivotMotor.getSelectedSensorPosition())));
-
+    return (int) Math.round(angle_filter.calculate(Math.abs(pivotMotor.getPosition().refresh().getValue())));
   }
 
   /**
@@ -195,9 +215,7 @@ public class ShooterAngle extends SubsystemBase {
    * 
    */
   public void zeroEncoder() {
-
-    pivotMotor.setSelectedSensorPosition(0);
-
+    pivotMotor.setPosition(0, configTimeout);
   }
 
   /**
@@ -206,22 +224,18 @@ public class ShooterAngle extends SubsystemBase {
    * 
    */
   public double getCurrentAngle() {
-
-    return getIntegratedValue() * ((MinSpeakerAngle-MaxSpeakerAngle)/MaxEncoderPos) + MaxSpeakerAngle;
-
+    return getIntegratedValue() * ((minSpeakerAngle - maxSpeakerAngle) / maxEncoderPos) + maxSpeakerAngle;
   }
 
   /**
    * 
    * Calculates the encoder value for a given angle
    * 
-   * @param angle  Angle to calculate encoder position for
+   * @param angle Angle to calculate encoder position for
    * 
    */
   public double getEncoderForAngle(double angle) {
-
-    return Math.round(MaxEncoderPos * (angle - MaxSpeakerAngle) / (MinSpeakerAngle - MaxSpeakerAngle));
-
+    return Math.round(maxEncoderPos * (angle - maxSpeakerAngle) / (minSpeakerAngle - maxSpeakerAngle));
   }
 
   @Override

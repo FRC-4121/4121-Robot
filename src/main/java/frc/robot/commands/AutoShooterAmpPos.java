@@ -65,7 +65,7 @@ public class AutoShooterAmpPos extends Command {
   @Override
   public void end(boolean interrupted) {
 
-    shooter.runShooter(0);
+    shooter.runShooterSpeaker(0);
     processor.runProcessor(0.0);
     intake.runIntake(0);
 

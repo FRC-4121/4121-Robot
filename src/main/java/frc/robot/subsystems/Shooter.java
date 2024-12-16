@@ -3,52 +3,45 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot.subsystems;
-
-import edu.wpi.first.math.filter.MedianFilter;
-
-
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
-import static frc.robot.Constants.MechanismConstants.*;
+import com.ctre.phoenix6.hardware.TalonFX;
 
 
 public class Shooter extends SubsystemBase {
 
    //attributes; variables
-  private WPI_TalonFX shooterMotorTop;
-  private WPI_TalonFX shooterMotorBottom;
+  private TalonFX shooterMotorTop;
+  private TalonFX shooterMotorBottom;
 
-   /** Creates a new Shooter. */
+  private static final int topShooterId = 13;
+  private static final int bottomShooterId = 14;
+
+  /**
+   * Create a new shooter
+   */
   public Shooter() {
-
-    shooterMotorTop = new WPI_TalonFX(TopShooterID);
-    shooterMotorBottom = new WPI_TalonFX(BottomShooterID);
+    shooterMotorTop = new TalonFX(topShooterId);
+    shooterMotorBottom = new TalonFX(bottomShooterId);
 
   }
 
   // Run the shooter motors from an auto command
   public void runShooterAuto(double topSpeed, double bottomSpeed) {
-
     shooterMotorTop.set(topSpeed);
     shooterMotorBottom.set(bottomSpeed);
-
   }
 
   // Run the shooter motors at speaker scoring speeds
   // NOTE: 65% power is the max speed
-  public void runShooter(double speed){
-  
+  public void runShooterSpeaker(double speed){
     shooterMotorTop.set(-0.65*speed);
     shooterMotorBottom.set(0.65*speed);
-
   } 
  
   // Run the shooter motors at Amp scoring speeds
   public void runShooterAmp(double speed){
-
-    shooterMotorTop.set(-0.22*speed);
-    shooterMotorBottom.set(0.04*speed);
-
+    shooterMotorTop.set(-0.22 * speed);
+    shooterMotorBottom.set(0.04 * speed);
   }
 
   @Override

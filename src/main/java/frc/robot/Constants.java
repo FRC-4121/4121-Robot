@@ -197,10 +197,6 @@ public final class Constants {
         public static final double kShooterAngleMaxOutput = 1;
         public static final int kTimeoutMsAngle = 20;
 
-        // Encoder Values
-        public static final int kAngleEncoderID = 2;
-        public static final double kDistancePerRotation = 4.0;
-
         // Angle Motor Configuration
         public static final IdleMode kAngleMotorIdleMode = IdleMode.kBrake;
         public static final int kAngleMotorCurrentLimit = 20;
@@ -209,7 +205,7 @@ public final class Constants {
         public static final double AngleMotorMinSpeed = 0.1;
   
         //Angles and distances for certain shots
-        public static final double AmpAngle = 60;//degrees, needs to be confirmed
+        public static final double AmpAngle = 60; //degrees, needs to be confirmed
         public static final double AmpEncoder = 0;
         public static final double HighSpeakerAngle = 48;
         public static final double LowSpeakerAngle = 32;
@@ -225,8 +221,6 @@ public final class Constants {
         public static final double IdleEncoder = 1000;
 
         //Shooter Angles
-        public static double CurrentShooterAngle = 55;
-        public static double CurrentShooterEncoder = 0;
         public static final double ShooterAngleTolerance = 500.0;
         public static double ShooterTargetAngle = 40;
         public static double ShooterTargetEncoder = 12000;
@@ -234,9 +228,6 @@ public final class Constants {
         public static double LastShooterEncoder = 12000;
         public static Boolean AutoShooterPositioning = true;
         public static Boolean PauseAutoPosition = false;
-
-        //Shooter Angle Encoder
-        public static double MaxEncoderPos = 27300;
 
         /*
          * Processor System Constants
