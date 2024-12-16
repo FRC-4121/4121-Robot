@@ -5,20 +5,20 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+import com.ctre.phoenix6.hardware.TalonFX;
 import static frc.robot.Constants.MechanismConstants.*;
 
 
 public class Intake extends SubsystemBase {
 
   //create intake motor
-  private WPI_TalonFX intakeMotor;
+  private TalonFX intakeMotor;
 
 
   /** Creates a new intake. */
   public Intake() {
 
-    intakeMotor = new WPI_TalonFX(IntakeMotorID);
+    intakeMotor = new TalonFX(IntakeMotorID);
 
   }
 

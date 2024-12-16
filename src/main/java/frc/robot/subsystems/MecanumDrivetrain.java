@@ -8,14 +8,11 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.wpilibj.drive.MecanumDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import static frc.robot.Constants.*;
 import static frc.robot.Constants.DriveConstants.*;
 import edu.wpi.first.math.geometry.Rotation2d;
-import frc.robot.Robot;
 
 public class MecanumDrivetrain extends SubsystemBase {
   
@@ -27,7 +24,7 @@ public class MecanumDrivetrain extends SubsystemBase {
   private MecanumDrive mecanumDrive;
 
   //Define local variables
-  private double gyroAngle;
+  // private double gyroAngle;
   private double speedX, speedY, speedZ;
 
 
@@ -49,11 +46,6 @@ public class MecanumDrivetrain extends SubsystemBase {
     // Initialize mecanum drive
     mecanumDrive = new MecanumDrive(frontLeftMotor, frontRightMotor, backLeftMotor, backRightMotor);
 
-   
-  }
-  
-  public void drive(double leftJoyX, double leftJoyY, double rightJoyX, boolean useGyro)
-  {
     frontLeftMotor.setNeutralMode(NeutralMode.Brake);
     frontRightMotor.setNeutralMode(NeutralMode.Brake);
     backLeftMotor.setNeutralMode(NeutralMode.Brake);
@@ -62,7 +54,9 @@ public class MecanumDrivetrain extends SubsystemBase {
     //Set properties of drive
     mecanumDrive.setSafetyEnabled(false);	
     mecanumDrive.setMaxOutput(0.95);
-    
+  }
+  
+  public void drive(double leftJoyX, double leftJoyY, double rightJoyX, boolean useGyro) {
     //Get joystick values and scale
     speedX = -leftJoyY * MecanumSpeedLimiter;
     speedY = leftJoyX * MecanumSpeedLimiter;
