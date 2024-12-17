@@ -5,8 +5,8 @@
 package frc.robot.commands;
 
 import frc.robot.subsystems.ShooterAngle;
-import static frc.robot.Constants.*;
-import static frc.robot.Constants.MechanismConstants.*;
+import frc.robot.Constants;
+import frc.robot.Constants.MechanismConstants;
 import edu.wpi.first.math.controller.*;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -31,7 +31,7 @@ public class AutoShooterAngle extends AutoCommand {
   public void initialize() {
     super.initialize();
     // Create PID controller
-    wpiPIDController = new PIDController(kShooterAngleKP, kShooterAngleKI, kShooterAngleKD);
+    wpiPIDController = new PIDController(MechanismConstants.kShooterAngleKP, MechanismConstants.kShooterAngleKI, MechanismConstants.kShooterAngleKD);
     wpiPIDController.setTolerance(1.0, 5);
   }
 
@@ -42,63 +42,41 @@ public class AutoShooterAngle extends AutoCommand {
 
     // Determine new motor speed from PID controller
     double pidOutput = -wpiPIDController.calculate(currentEncoder, targetEncoder);
-    if (pidOutput > 1) {
+    if (pidOutput > 1)
       pidOutput = 1;
-    } else if (pidOutput < -1) {
+    else if (pidOutput < -1)
       pidOutput = -1;
-    }
 
     // Run angle motor at new speed (as long as we aren't at bounds)
-    if (Math.abs(currentEncoder - ShooterTargetEncoder) > ShooterAngleTolerance) {
-
-      double angleSpeed = AngleMotorSpeed * pidOutput;
-
+    if (Math.abs(currentEncoder - MechanismConstants.ShooterTargetEncoder) > MechanismConstants.ShooterAngleTolerance) {
+      double angleSpeed = MechanismConstants.AngleMotorSpeed * pidOutput;
       if (pidOutput > 0) {
-
         if (shootAngle.getTopSwitch() == false) {
-
-          shootAngle.runPivot(AngleMotorMinSpeed + angleSpeed);
-          SmartDashboard.putNumber("Angle Input", AngleMotorMinSpeed + angleSpeed);
-
+          shootAngle.runPivot(MechanismConstants.AngleMotorMinSpeed + angleSpeed);
+          SmartDashboard.putNumber("Angle Input", MechanismConstants.AngleMotorMinSpeed + angleSpeed);
         } else {
-
           shootAngle.runPivot(0);
-
         }
-
       } else if (pidOutput < 0) {
-
         if (shootAngle.getBottomSwitch() == false) {
-
-          shootAngle.runPivot(-AngleMotorMinSpeed + angleSpeed);
-          SmartDashboard.putNumber("Angle Input", -AngleMotorMinSpeed + angleSpeed);
-
+          shootAngle.runPivot(-MechanismConstants.AngleMotorMinSpeed + angleSpeed);
+          SmartDashboard.putNumber("Angle Input", -MechanismConstants.AngleMotorMinSpeed + angleSpeed);
         } else {
-
           shootAngle.runPivot(0);
-
         }
-
       }
-
-      readyToShoot = false;
-
+      Constants.readyToShoot = false;
     } else {
-
       shootAngle.runPivot(0.0);
-      readyToShoot = true;
-
+      Constants.readyToShoot = true;
     }
-
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-
     // Stop the shooter angle motor
     shootAngle.runPivot(0);
-
   }
 
   // Returns true when the command should end.
@@ -106,7 +84,7 @@ public class AutoShooterAngle extends AutoCommand {
   public boolean isFinished() {
     if (super.isFinished())
       return true;
-    return (Math.abs(shootAngle.getIntegratedValue() - ShooterTargetEncoder) < ShooterAngleTolerance)
+    return (Math.abs(shootAngle.getIntegratedValue() - MechanismConstants.ShooterTargetEncoder) < MechanismConstants.ShooterAngleTolerance)
         || shootAngle.getBottomSwitch();
   }
 }

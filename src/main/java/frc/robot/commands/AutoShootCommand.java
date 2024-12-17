@@ -5,7 +5,7 @@
 package frc.robot.commands;
 
 import frc.robot.subsystems.*;
-import static frc.robot.Constants.*;
+import frc.robot.Constants;
 
 public class AutoShootCommand extends AutoCommand {
   private Shooter shooter;
@@ -25,7 +25,7 @@ public class AutoShootCommand extends AutoCommand {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (noteOnBoard && currentTime() > delayTime && !super.isFinished()) {
+    if (Constants.noteOnBoard && currentTime() > delayTime && !super.isFinished()) {
       shooter.runShooterSpeaker(1.0);
       processor.runProcessor(1.0);
     }
@@ -41,6 +41,6 @@ public class AutoShootCommand extends AutoCommand {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return super.isFinished() || !noteOnBoard;
+    return super.isFinished() || !Constants.noteOnBoard;
   }
 }

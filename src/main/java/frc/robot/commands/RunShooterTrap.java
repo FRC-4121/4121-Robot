@@ -4,65 +4,47 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Processor;
 import frc.robot.subsystems.Intake;
 
-import static frc.robot.Constants.MechanismConstants.*;
-import static frc.robot.Constants.MechanismConstants.BottomShootSpeakerSpeed;
-import static frc.robot.Constants.MechanismConstants.TopShootSpeakerSpeed;
+import frc.robot.Constants.MechanismConstants;
 import static frc.robot.Constants.MechanismConstants.shooterDelay;
 
-import edu.wpi.first.wpilibj.Timer;
 
-public class RunShooterTrap extends Command {
-  
+public class RunShooterTrap extends TimeoutCommand {
+
   private Shooter shooter;
   private Processor processor;
   private Intake intake;
-  private Timer timer;
-  private double startTime;
-  private double stopTime;
   private boolean canShoot;
-  
+
   /** Creates a new RunShooterSpeaker. */
   public RunShooterTrap(Shooter shoot, Processor process, Intake in, double endTime) {
+    super(endTime);
+    shooter = shoot;
+    processor = process;
+    intake = in;
 
-      shooter = shoot;
-      processor = process;
-      stopTime = endTime;
-      intake = in;
-
-      addRequirements(shooter, processor);
-
+    addRequirements(shooter, processor);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-
-    // Initialize a new timer and get current time
-    timer = new Timer();
-    timer.start();
-    startTime = timer.get();
-
-    // Initialize local variables
+    super.initialize();
     canShoot = false;
-
-    PauseAutoPosition = true;
-
+    MechanismConstants.PauseAutoPosition = true;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
 
-    if (timer.get() - startTime > shooterDelay) {
+    if (currentTime() > shooterDelay)
       canShoot = true;
-    }
 
-    shooter.runShooterAuto(TopShooterTrapSpeed, BottomShooterTrapSpeed);
+    shooter.runShooterAuto(MechanismConstants.TopShooterTrapSpeed, MechanismConstants.BottomShooterTrapSpeed);
 
     if (canShoot) {
       processor.runProcessor(0.5);
@@ -75,33 +57,11 @@ public class RunShooterTrap extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-
     // Stop all motors
     shooter.runShooterAuto(0.0, 0.0);
     processor.runProcessor(0.0);
     intake.runIntake(0);
 
-    PauseAutoPosition = false;
-    
-  }
-
-  // Returns true when the command should end.
-  @Override
-  public boolean isFinished() {
-
-    // Initialize return flag
-    boolean thereYet = false;
-
-    // Get the current time
-    double time = timer.get();
-
-    if (stopTime <= time - startTime) {
-      thereYet = true;
-    }
-
-    // Return flag
-    return thereYet;
-
+    MechanismConstants.PauseAutoPosition = false;
   }
 }
-

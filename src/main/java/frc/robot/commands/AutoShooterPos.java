@@ -5,8 +5,8 @@
 package frc.robot.commands;
 
 import frc.robot.subsystems.ShooterAngle;
-import static frc.robot.Constants.*;
-import static frc.robot.Constants.MechanismConstants.*;
+import frc.robot.Constants;
+import frc.robot.Constants.MechanismConstants;
 import frc.robot.ExtraClasses.NetworkTableQuerier;
 import edu.wpi.first.math.controller.*;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -23,6 +23,8 @@ public class AutoShooterPos extends AutoCommand {
   private int tagID;
   private double tagDistance;
   private boolean isMyTag;
+  private double lastShooterAngle = 40;
+  private double lastShooterEncoder = 12000;
 
   private PIDController wpiPIDController;
 
@@ -54,14 +56,15 @@ public class AutoShooterPos extends AutoCommand {
     isMyTag = false;
 
     // Create PID controller
-    wpiPIDController = new PIDController(kShooterAngleKP, kShooterAngleKI, kShooterAngleKD);
+    wpiPIDController = new PIDController(MechanismConstants.kShooterAngleKP, MechanismConstants.kShooterAngleKI,
+        MechanismConstants.kShooterAngleKD);
     wpiPIDController.setTolerance(1.0, 5);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (AutoShooterPositioning) {
+    if (MechanismConstants.AutoShooterPositioning) {
 
       System.out.println("Started Auto Shooter Angle");
 
@@ -78,13 +81,13 @@ public class AutoShooterPos extends AutoCommand {
       if (tagsFound > 0) {
         // Find the closest tag
         for (int i = 0; i < tagsFound; i++) {
-          if (blueAlliance) {
-            if (ntable.getTagInfo("CAM2", i, "id") == BlueSpeakerCenterID) {
+          if (Constants.blueAlliance) {
+            if (ntable.getTagInfo("CAM2", i, "id") == MechanismConstants.BlueSpeakerCenterID) {
               closestTag = i;
               isMyTag = true;
             }
           } else {
-            if (ntable.getTagInfo("CAM2", i, "id") == RedSpeakerCenterID) {
+            if (ntable.getTagInfo("CAM2", i, "id") == MechanismConstants.RedSpeakerCenterID) {
               closestTag = i;
               isMyTag = true;
             }
@@ -97,81 +100,81 @@ public class AutoShooterPos extends AutoCommand {
           tagID = (int) ntable.getTagInfo("CAM2", closestTag, "id");
           tagDistance = filter.calculate(ntable.getTagInfo("CAM2", closestTag, "distance"));
 
-          if (tagDistance > MinAutoDistance && tagDistance < MaxAutoDistance) {
-            if (blueAlliance) {
+          if (tagDistance > MechanismConstants.MinAutoDistance && tagDistance < MechanismConstants.MaxAutoDistance) {
+            if (Constants.blueAlliance) {
               switch (tagID) {
-                case BlueAmpID:
-                  ShooterTargetAngle = AmpAngle;
-                  LastShooterAngle = ShooterTargetAngle;
-                  ShooterTargetEncoder = AmpEncoder;
-                  LastShooterEncoder = AmpEncoder;
+                case MechanismConstants.BlueAmpID:
+                  MechanismConstants.ShooterTargetAngle = MechanismConstants.AmpAngle;
+                  lastShooterAngle = MechanismConstants.ShooterTargetAngle;
+                  MechanismConstants.ShooterTargetEncoder = MechanismConstants.AmpEncoder;
+                  lastShooterEncoder = MechanismConstants.AmpEncoder;
                   break;
-                case BlueSpeakerCenterID:
-                  ShooterTargetAngle = getTargetAngle(tagDistance);
-                  LastShooterAngle = ShooterTargetAngle;
-                  ShooterTargetEncoder = getTargetEncoder(tagDistance);
-                  LastShooterEncoder = ShooterTargetEncoder;
+                case MechanismConstants.BlueSpeakerCenterID:
+                  MechanismConstants.ShooterTargetAngle = getTargetAngle(tagDistance);
+                  lastShooterAngle = MechanismConstants.ShooterTargetAngle;
+                  MechanismConstants.ShooterTargetEncoder = getTargetEncoder(tagDistance);
+                  lastShooterEncoder = MechanismConstants.ShooterTargetEncoder;
                   break;
-                case BlueSpeakerSideID:
-                  ShooterTargetAngle = getTargetAngle(tagDistance);
-                  LastShooterAngle = ShooterTargetAngle;
-                  ShooterTargetEncoder = getTargetEncoder(tagDistance);
-                  LastShooterEncoder = ShooterTargetEncoder;
+                case MechanismConstants.BlueSpeakerSideID:
+                  MechanismConstants.ShooterTargetAngle = getTargetAngle(tagDistance);
+                  lastShooterAngle = MechanismConstants.ShooterTargetAngle;
+                  MechanismConstants.ShooterTargetEncoder = getTargetEncoder(tagDistance);
+                  lastShooterEncoder = MechanismConstants.ShooterTargetEncoder;
                   break;
                 default:
-                  ShooterTargetAngle = LastShooterAngle;
-                  ShooterTargetEncoder = LastShooterEncoder;
+                  MechanismConstants.ShooterTargetAngle = lastShooterAngle;
+                  MechanismConstants.ShooterTargetEncoder = lastShooterEncoder;
               }
             } else {
               switch (tagID) {
-                case RedAmpID:
-                  ShooterTargetAngle = AmpAngle;
-                  LastShooterAngle = ShooterTargetAngle;
-                  ShooterTargetEncoder = AmpEncoder;
-                  LastShooterEncoder = ShooterTargetEncoder;
+                case MechanismConstants.RedAmpID:
+                  MechanismConstants.ShooterTargetAngle = MechanismConstants.AmpAngle;
+                  lastShooterAngle = MechanismConstants.ShooterTargetAngle;
+                  MechanismConstants.ShooterTargetEncoder = MechanismConstants.AmpEncoder;
+                  lastShooterEncoder = MechanismConstants.ShooterTargetEncoder;
                   break;
-                case RedSpeakerCenterID:
-                  ShooterTargetAngle = getTargetAngle(tagDistance);
-                  LastShooterAngle = ShooterTargetAngle;
-                  ShooterTargetEncoder = getTargetEncoder(tagDistance);
-                  LastShooterEncoder = ShooterTargetEncoder;
+                case MechanismConstants.RedSpeakerCenterID:
+                  MechanismConstants.ShooterTargetAngle = getTargetAngle(tagDistance);
+                  lastShooterAngle = MechanismConstants.ShooterTargetAngle;
+                  MechanismConstants.ShooterTargetEncoder = getTargetEncoder(tagDistance);
+                  lastShooterEncoder = MechanismConstants.ShooterTargetEncoder;
                   break;
-                case RedSpeakerSideID:
-                  ShooterTargetAngle = getTargetAngle(tagDistance);
-                  LastShooterAngle = ShooterTargetAngle;
-                  ShooterTargetEncoder = getTargetEncoder(tagDistance);
-                  LastShooterEncoder = ShooterTargetEncoder;
+                case MechanismConstants.RedSpeakerSideID:
+                  MechanismConstants.ShooterTargetAngle = getTargetAngle(tagDistance);
+                  lastShooterAngle = MechanismConstants.ShooterTargetAngle;
+                  MechanismConstants.ShooterTargetEncoder = getTargetEncoder(tagDistance);
+                  lastShooterEncoder = MechanismConstants.ShooterTargetEncoder;
                   break;
                 default:
-                  ShooterTargetAngle = LastShooterAngle;
-                  ShooterTargetEncoder = LastShooterEncoder;
+                  MechanismConstants.ShooterTargetAngle = lastShooterAngle;
+                  MechanismConstants.ShooterTargetEncoder = lastShooterEncoder;
               }
             }
           } else {
-            ShooterTargetAngle = LastShooterAngle;
-            ShooterTargetEncoder = LastShooterEncoder;
+            MechanismConstants.ShooterTargetAngle = lastShooterAngle;
+            MechanismConstants.ShooterTargetEncoder = lastShooterEncoder;
           }
         } else {
           // ShooterTargetAngle = IdleAngle;
-          ShooterTargetAngle = LastShooterAngle;
-          LastShooterAngle = ShooterTargetAngle;
-          ShooterTargetEncoder = LastShooterEncoder;
-          LastShooterEncoder = ShooterTargetEncoder;
+          MechanismConstants.ShooterTargetAngle = lastShooterAngle;
+          lastShooterAngle = MechanismConstants.ShooterTargetAngle;
+          MechanismConstants.ShooterTargetEncoder = lastShooterEncoder;
+          lastShooterEncoder = MechanismConstants.ShooterTargetEncoder;
         }
       } else {
         // ShooterTargetAngle = IdleAngle;
-        ShooterTargetAngle = LastShooterAngle;
-        LastShooterAngle = ShooterTargetAngle;
-        ShooterTargetEncoder = LastShooterEncoder;
-        LastShooterEncoder = ShooterTargetEncoder;
+        MechanismConstants.ShooterTargetAngle = lastShooterAngle;
+        lastShooterAngle = MechanismConstants.ShooterTargetAngle;
+        MechanismConstants.ShooterTargetEncoder = lastShooterEncoder;
+        lastShooterEncoder = MechanismConstants.ShooterTargetEncoder;
       }
 
       // Determine new motor speed from PID controller
       double currentEncoder = shootAngle.getIntegratedValue();
       // double targetEncoder = getTargetEncoder(tagDistance);
-      double pidOutput = -wpiPIDController.calculate(currentEncoder, ShooterTargetEncoder);
+      double pidOutput = -wpiPIDController.calculate(currentEncoder, MechanismConstants.ShooterTargetEncoder);
 
-      SmartDashboard.putNumber("Target Encoder", ShooterTargetEncoder);
+      SmartDashboard.putNumber("Target Encoder", MechanismConstants.ShooterTargetEncoder);
 
       // Limit PID putput
       if (pidOutput > 1) {
@@ -180,32 +183,33 @@ public class AutoShooterPos extends AutoCommand {
         pidOutput = -1;
       }
 
-      System.out.println("Target Angle:" + ShooterTargetAngle);
+      System.out.println("Target Angle:" + MechanismConstants.ShooterTargetAngle);
       System.out.println("PID Output:" + pidOutput);
 
-      if (PauseAutoPosition == false) {
+      if (MechanismConstants.PauseAutoPosition == false) {
         // Run angle motor at new speed (as long as we aren't at bounds)
-        if (Math.abs(currentEncoder - ShooterTargetEncoder) > ShooterAngleTolerance) {
-          double angleSpeed = AngleMotorSpeed * pidOutput;
+        if (Math
+            .abs(currentEncoder - MechanismConstants.ShooterTargetEncoder) > MechanismConstants.ShooterAngleTolerance) {
+          double angleSpeed = MechanismConstants.AngleMotorSpeed * pidOutput;
           if (pidOutput > 0) {
             if (shootAngle.getTopSwitch() == false) {
-              shootAngle.runPivot(AngleMotorMinSpeed + angleSpeed);
-              SmartDashboard.putNumber("Angle Input", AngleMotorMinSpeed + angleSpeed);
+              shootAngle.runPivot(MechanismConstants.AngleMotorMinSpeed + angleSpeed);
+              SmartDashboard.putNumber("Angle Input", MechanismConstants.AngleMotorMinSpeed + angleSpeed);
             } else {
               shootAngle.runPivot(0);
             }
           } else if (pidOutput < 0) {
             if (shootAngle.getBottomSwitch() == false) {
-              shootAngle.runPivot(-AngleMotorMinSpeed + angleSpeed);
-              SmartDashboard.putNumber("Angle Input", -AngleMotorMinSpeed + angleSpeed);
+              shootAngle.runPivot(-MechanismConstants.AngleMotorMinSpeed + angleSpeed);
+              SmartDashboard.putNumber("Angle Input", -MechanismConstants.AngleMotorMinSpeed + angleSpeed);
             } else {
               shootAngle.runPivot(0);
             }
           }
-          readyToShoot = false;
+          Constants.readyToShoot = false;
         } else {
           shootAngle.runPivot(0.0);
-          readyToShoot = true;
+          Constants.readyToShoot = true;
         }
       }
     }
@@ -222,38 +226,34 @@ public class AutoShooterPos extends AutoCommand {
   }
 
   /**
-   * 
    * Calculate the target angle given the distance from target
    * 
    * @param distance Measured distance from target
-   * 
    */
   public double getTargetAngle(double distance) {
-
-    double calcAngle = ((LowSpeakerAngle - HighSpeakerAngle) / (MaxAutoDistance - MinAutoDistance))
-        * (distance - MinAutoDistance) + HighSpeakerAngle;
-    if (calcAngle > MaxSpeakerAngle) {
-      calcAngle = MaxSpeakerAngle;
-    } else if (calcAngle < MinSpeakerAngle) {
-      calcAngle = MinSpeakerAngle;
+    double calcAngle = ((MechanismConstants.LowSpeakerAngle - MechanismConstants.HighSpeakerAngle)
+        / (MechanismConstants.MaxAutoDistance - MechanismConstants.MinAutoDistance))
+        * (distance - MechanismConstants.MinAutoDistance) + MechanismConstants.HighSpeakerAngle;
+    if (calcAngle > MechanismConstants.MaxSpeakerAngle) {
+      calcAngle = MechanismConstants.MaxSpeakerAngle;
+    } else if (calcAngle < MechanismConstants.MinSpeakerAngle) {
+      calcAngle = MechanismConstants.MinSpeakerAngle;
     }
     SmartDashboard.putNumber("Target Angle:", calcAngle);
     return calcAngle;
-
   }
 
   /**
-   * 
    * Calculate the target angle given the distance from target
    * 
    * @param distance Measured distance from target
-   * 
    */
   public double getTargetEncoder(double distance) {
-
     double calcEncoder = -1.5585 * distance * distance + 618.65 * distance - 35584;
     return calcEncoder;
-
   }
 
+  public double getLastAngle() {
+    return lastShooterAngle;
+  }
 }

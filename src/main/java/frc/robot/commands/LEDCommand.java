@@ -6,16 +6,13 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.LED;
-import static frc.robot.Constants.*;
-import static frc.robot.Constants.MechanismConstants.*;
 
 public class LEDCommand extends Command {
-  
   private LED led;
+  private boolean noteOnBoard;
   
   /** Creates a new LEDCommand. */
   public LEDCommand(LED light) {
-    
     led = light;
 
     addRequirements(led);
@@ -29,9 +26,7 @@ public class LEDCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-
-    led.setColor(ledColor);
-
+    led.setColor(noteOnBoard ? 0.65 : 0.55); // orange if note, default otherwise
   }
 
   // Called once the command ends or is interrupted.
@@ -42,5 +37,9 @@ public class LEDCommand extends Command {
   @Override
   public boolean isFinished() {
     return false;
+  }
+
+  public void setNoteOnBoard(boolean noteOnBoard) {
+    this.noteOnBoard = noteOnBoard;
   }
 }

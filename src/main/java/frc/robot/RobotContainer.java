@@ -1,12 +1,11 @@
 
 package frc.robot;
 
-import static frc.robot.Constants.*;
-import static frc.robot.Constants.MechanismConstants.*;
 import static frc.robot.Constants.ControlConstants.*;
 import static frc.robot.Constants.DriveConstants.AutoAngleToTarget;
 
 import frc.robot.subsystems.*;
+import frc.robot.Constants.MechanismConstants;
 import frc.robot.ExtraClasses.NetworkTableQuerier;
 import frc.robot.ExtraClasses.PhotoElecSensor;
 import frc.robot.commands.*;
@@ -262,81 +261,53 @@ public class RobotContainer {
   }
 
   /**
-   * 
    * Sets the LED color for the selected target object
-   * 
    */
   public void getColorSelection() {
-
-    if (noteOnBoard == true) {
-
-      ledColor = 0.65; // Orange
-
-    } else {
-
-      ledColor = 0.93; // Default Pattern
-
-    }
-
-    led.setColor(ledColor);
+    ledCommand.setNoteOnBoard(Constants.noteOnBoard);
   }
 
   /**
-   * 
    * Determine the alliance color based on OI
    * switch position
-   * 
    */
   public void getAllianceColor() {
 
-    if (redTeamButton.getAsBoolean() == true) {
-
-      blueAlliance = false;
-
-    } else if (blueTeamButton.getAsBoolean() == true) {
-
-      blueAlliance = true;
-
-    } else {
-
-      blueAlliance = true;
-
+    if (redTeamButton.getAsBoolean())
+      Constants.blueAlliance = false;
+    else if (blueTeamButton.getAsBoolean())
+      Constants.blueAlliance = true;
+    else {
+      // TODO: warn someone
+      Constants.blueAlliance = true;
     }
-
   }
 
   /**
-   * 
    * Get the starting position in auto
    * Set by a switch on the OI
-   * 
    */
   public void getAutoPosition() {
     double position = (double) SmartDashboard.getNumber("Auto Position", 1);
 
-    if ((leftButton.getAsBoolean() == true) || position == 0) {
-      autoPosition = "Left";
-    } else if ((rightButton.getAsBoolean() == true) || position == 2) {
-      autoPosition = "Right";
-    } else {
-      autoPosition = "Center";
-    }
-
+    if ((leftButton.getAsBoolean() == true) || position == 0)
+      Constants.autoPosition = "Left";
+    else if ((rightButton.getAsBoolean() == true) || position == 2)
+      Constants.autoPosition = "Right";
+    else
+      Constants.autoPosition = "Center";
   }
 
   /**
-   * 
    * Park and unpark the robot
-   * 
    */
   public void getParkSelection() {
-
     if (parkButton.getAsBoolean() == true) {
-      isParked = true;
+      Constants.isParked = true;
       SmartDashboard.putBoolean("Robot Parked", true);
       // parkCommand.execute();
     } else {
-      isParked = false;
+      Constants.isParked = false;
       SmartDashboard.putBoolean("Robot Parked", false);
     }
   }
@@ -348,11 +319,11 @@ public class RobotContainer {
    */
   public void getAngleSelection() {
     if (autoShooterPositionButton.getAsBoolean() == true) {
-      AutoShooterPositioning = true;
+      MechanismConstants.AutoShooterPositioning = true;
       SmartDashboard.putBoolean("Auto Positioning", true);
       // parkCommand.execute();
     } else {
-      AutoShooterPositioning = false;
+      MechanismConstants.AutoShooterPositioning = false;
       SmartDashboard.putBoolean("Auto Positioning", false);
     }
   }
@@ -534,17 +505,14 @@ public class RobotContainer {
     SmartDashboard.putBoolean("Bottom Shooter", shooterAngle.getBottomSwitch());
     SmartDashboard.putNumber("Shooter Encoder", shooterAngle.getIntegratedValue());
     SmartDashboard.putNumber("Shooter Angle", shooterAngle.getCurrentAngle());
-    SmartDashboard.putNumber("Last Angle", LastShooterAngle);
-    SmartDashboard.putBoolean("Can Shoot", readyToShoot);
+    SmartDashboard.putNumber("Last Angle", autoShooterPosCommand.getLastAngle());
+    SmartDashboard.putBoolean("Can Shoot", Constants.readyToShoot);
 
     // Update Photo Sensor
-    SmartDashboard.putBoolean("Note On Board", noteOnBoard);
-
-    // Update Ready to Shoot
-    SmartDashboard.putBoolean("Ready To Shoot", readyToShoot);
+    SmartDashboard.putBoolean("Note On Board", Constants.noteOnBoard);
 
     // Update Climber Position
-    SmartDashboard.putBoolean("Climb Extended", ClimberExtended);
+    SmartDashboard.putBoolean("Climb Extended", pneumatic.isExtended());
 
     // Update Gyro Position
     SmartDashboard.putNumber("Gyro Angle", swervedrivewpi.getGyroAngle());
@@ -554,8 +522,8 @@ public class RobotContainer {
     SmartDashboard.putNumber("Pressure", pneumatic.getPressure());
 
     // Update drive values
-    SmartDashboard.putBoolean("Slow Mode", isSlowMode);
-    SmartDashboard.putBoolean("Impact Detected", impactDetected);
+    SmartDashboard.putBoolean("Slow Mode", Constants.isSlowMode);
+    SmartDashboard.putBoolean("Impact Detected", Constants.impactDetected);
 
   }
 

@@ -7,7 +7,8 @@ package frc.robot.commands;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Processor;
 import frc.robot.subsystems.Intake;
-import static frc.robot.Constants.MechanismConstants.*;
+import frc.robot.Constants.MechanismConstants;
+import frc.robot.Constants.MechanismConstants.*;
 
 /**
  * 
@@ -48,7 +49,7 @@ public class AutoRunShooterSpeaker extends AutoCommand {
     // canShoot = true;
     // }
 
-    shooter.runShooterAuto(TopShootSpeakerSpeed, BottomShootSpeakerSpeed);
+    shooter.runShooterAuto(MechanismConstants.TopShootSpeakerSpeed, MechanismConstants.BottomShootSpeakerSpeed);
 
     if (canShoot) {
       processor.runProcessor(0.5);

@@ -7,11 +7,10 @@ package frc.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.MechanismConstants;
 import frc.robot.subsystems.cameras.CameraBuilder;
 
-import static frc.robot.Constants.*;
-import static frc.robot.Constants.DriveConstants.*;
-import static frc.robot.Constants.MechanismConstants.*;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
@@ -120,10 +119,10 @@ public class Robot extends TimedRobot {
     }
 
     // Check for number of notes to shoot in auto
-    autoNotes = (int) SmartDashboard.getNumber("Auto Notes", 2);
+    Constants.autoNotes = (int) SmartDashboard.getNumber("Auto Notes", 2);
 
     // Check current speed setting and update dashboard
-    if (LinearSpeed == MaxLinearSpeed) {
+    if (DriveConstants.LinearSpeed == DriveConstants.MaxLinearSpeed) {
       SmartDashboard.putBoolean("Slow Mode", false);
     } else {
       SmartDashboard.putBoolean("Slow Mode", true);
@@ -171,16 +170,16 @@ public class Robot extends TimedRobot {
     m_robotContainer.zeroRobot();
 
     // Set robot to robot oriented driving
-    isFieldOriented = true;
+    Constants.isFieldOriented = true;
 
     // Make sure that the Auto Shooter Command will run
-    AutoShooterPositioning = true;
+    MechanismConstants.AutoShooterPositioning = true;
 
     // Make sure the robot is in fast mode
-    LinearSpeed = MaxLinearSpeed;
-    RotationalSpeed = MaxRadiansPerSecond;
-    maxYawRate = FastMaxYawRate;
-    isSlowMode = false;
+    DriveConstants.LinearSpeed = DriveConstants.MaxLinearSpeed;
+    DriveConstants.RotationalSpeed = DriveConstants.MaxRadiansPerSecond;
+    DriveConstants.maxYawRate = DriveConstants.FastMaxYawRate;
+    Constants.isSlowMode = false;
   }
 
   /** This function is called periodically during autonomous. */
@@ -199,10 +198,10 @@ public class Robot extends TimedRobot {
     }
 
     // Turn on auto shooter speed control
-    runAutoSpeedControl = true;
+    Constants.runAutoSpeedControl = true;
 
     // Set robot to field oriented driving
-    isFieldOriented = true;
+    Constants.isFieldOriented = true;
   }
 
   /** This function is called periodically during operator control. */

@@ -9,8 +9,6 @@ package frc.robot;
 import frc.robot.ExtraClasses.Gains;
 import com.revrobotics.CANSparkBase.IdleMode;
 
-import static frc.robot.Constants.DriveConstants.MaxLinearSpeed;
-
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
@@ -149,7 +147,7 @@ public final class Constants {
         public static final HolonomicPathFollowerConfig pathFollowerConfig = new HolonomicPathFollowerConfig(
             new PIDConstants(2.3, 0.1, 0.18), // Translation constants Was 2.6
             new PIDConstants(3.2, 0, 0.18), // Rotation constants Was 1.6
-            MaxLinearSpeed, 
+            DriveConstants.MaxLinearSpeed, 
             0.414, // Drive base radius (distance from center to furthest module) 
             new ReplanningConfig()
           );
@@ -222,8 +220,6 @@ public final class Constants {
         public static final double ShooterAngleTolerance = 500.0;
         public static double ShooterTargetAngle = 40;
         public static double ShooterTargetEncoder = 12000;
-        public static double LastShooterAngle = 40;
-        public static double LastShooterEncoder = 12000;
         public static Boolean AutoShooterPositioning = true;
         public static Boolean PauseAutoPosition = false;
 
@@ -251,7 +247,6 @@ public final class Constants {
         public static final int ControlModuleID = 61;
 
         //Pneumatic General Constants
-        public static boolean ClimberExtended = false;
         public static double pressureSensorVoltage = 5;
 
         /**
@@ -259,7 +254,6 @@ public final class Constants {
          */
 
         // General Constants
-        public static double ledColor = 0.55; // 0.65 is orange, the default color
         public static Boolean getCone = false; // Are the led's yellow
        
         /**
@@ -350,11 +344,11 @@ public final class Constants {
     public static boolean isFieldOriented = true;
     public static boolean isSlowMode = false;
     public static String autoPosition = "Left"; 
-    public static Boolean blueAlliance = true; // true = blue, red = false
-    public static Boolean noteOnBoard = true;
-    public static Boolean readyToShoot = false;
+    public static boolean blueAlliance = true; // true = blue, red = false
+    public static boolean noteOnBoard = true;
+    public static boolean readyToShoot = false;
     public static boolean photoSensorIsNotBlocked;
-    public static Boolean impactDetected = false;
+    public static boolean impactDetected = false;
     public static int autoNotes = 1;
 
     // General variables

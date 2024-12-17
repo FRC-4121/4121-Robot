@@ -4,8 +4,8 @@
 
 package frc.robot.commands;
 
+import static frc.robot.Constants.isFieldOriented;
 import edu.wpi.first.wpilibj2.command.Command;
-import static frc.robot.Constants.*;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class ChangeDriveMode extends Command {

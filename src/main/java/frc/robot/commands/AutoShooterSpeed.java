@@ -6,7 +6,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Shooter;
-import static frc.robot.Constants.MechanismConstants.*;
+import frc.robot.Constants.MechanismConstants;
 import frc.robot.ExtraClasses.NetworkTableQuerier;
 
 public class AutoShooterSpeed extends Command {
@@ -50,13 +50,13 @@ public class AutoShooterSpeed extends Command {
     // Check current mode to determine correct shooter speeds
     switch (mode) {
       case SPEAKER: 
-        shooterMotor.runShooterAuto(TopShootSpeakerSpeed, BottomShootSpeakerSpeed);
+        shooterMotor.runShooterAuto(MechanismConstants.TopShootSpeakerSpeed, MechanismConstants.BottomShootSpeakerSpeed);
         break;
       case AMP: 
-        shooterMotor.runShooterAuto(TopShootAmpSpeed, BottomShootAmpSpeed);
+        shooterMotor.runShooterAuto(MechanismConstants.TopShootAmpSpeed, MechanismConstants.BottomShootAmpSpeed);
         break;
       case IDLE: 
-        shooterMotor.runShooterAuto(TopShootIdleSpeed, BottomShootIdleSpeed);
+        shooterMotor.runShooterAuto(MechanismConstants.TopShootIdleSpeed, MechanismConstants.BottomShootIdleSpeed);
     }
   }
 

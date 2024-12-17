@@ -4,63 +4,39 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj.Timer;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.ExtraClasses.PIDControl;
-import static frc.robot.Constants.*;
+import frc.robot.Constants;
 
-
-public class AutoTurn extends Command {
+public class AutoTurn extends AutoCommand {
 
   // Declare class variables
   double targetAngle;
-  double startTime;
-  double stopTime;
-  double angleError;
-  double angleCorrection;
-  double motorOutput;
 
   PIDControl pidControl;
-
-  private Timer timer = new Timer();
 
   private final Drivetrain drivetrain;
 
   /** Creates a new AutoTurn. */
-  public AutoTurn(Drivetrain drive) {
-    drivetrain = drive;
+  public AutoTurn(Drivetrain drivetrain, double targetAngle) {
+    super(60.0); // until we figure out what this was supposed to be
+    this.drivetrain = drivetrain;
+    this.targetAngle = targetAngle;
 
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(drivetrain);
 
     // Set up PID control
-    pidControl = new PIDControl(kP_Turn, kI_Turn, kD_Turn);
+    pidControl = new PIDControl(Constants.kP_Turn, Constants.kI_Turn, Constants.kD_Turn);
   }
-
-  
-  // Called when the command is initially scheduled.
-  @Override
-  public void initialize() {
-
-    timer.start();
-    startTime = timer.get();
-    angleError = 0;
-    angleCorrection = 0;
-
-  }
-
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-
-    angleCorrection = pidControl.run(drivetrain.getGyroAngle(), targetAngle);
-    motorOutput = angleCorrection * kAutoTurnSpeed;
+    double angleCorrection = pidControl.run(drivetrain.getGyroAngle(), targetAngle);
+    double motorOutput = angleCorrection * Constants.kAutoTurnSpeed;
     drivetrain.autoDrive(motorOutput, -motorOutput);
-
   }
-
 
   // Called once the command ends or is interrupted.
   @Override
@@ -68,36 +44,13 @@ public class AutoTurn extends Command {
     drivetrain.stopDrive();
   }
 
-
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    // Declare return flag
-    boolean thereYet = false;
-
-    // Check elapsed time
-    if (stopTime <= timer.get() - startTime) {
-
-      // Too much time has elapsed. Stop this command
-      thereYet = true;
-
-    } else {
-
-      angleError = drivetrain.getGyroAngle() - targetAngle;
-      if (Math.abs(angleError) <= kTurnAngleTolerance) {
-
-        thereYet = true;
-
-      }
-
+    if (super.isFinished()) {
+      return true;
     }
-    if (killAuto == true) {
-      thereYet = true;
-    }
-
-    // Return the flag
-    return thereYet;
-
+    double angleError = drivetrain.getGyroAngle() - targetAngle;
+    return Math.abs(angleError) <= Constants.kTurnAngleTolerance;
   }
-  
 }

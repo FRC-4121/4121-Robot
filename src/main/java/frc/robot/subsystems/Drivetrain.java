@@ -4,8 +4,10 @@
 
 package frc.robot.subsystems;
 
-import static frc.robot.Constants.*;
-import static frc.robot.Constants.DriveConstants.*;
+import frc.robot.Constants;
+import frc.robot.Constants.DriveConstants;
+import static frc.robot.Constants.currentGear;
+import static frc.robot.Constants.DIRECTION_MULTIPLIER;
 
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.controls.Follower;
@@ -40,11 +42,11 @@ public class Drivetrain extends SubsystemBase {
    */
   public Drivetrain() {
     // Init motors, speed controller groups, and drivetrain
-    leftMasterFalcon = new TalonFX(LEFT_MASTER_F);
-    leftSlaveFalcon = new TalonFX(LEFT_SLAVE_F);
+    leftMasterFalcon = new TalonFX(DriveConstants.LEFT_MASTER_F);
+    leftSlaveFalcon = new TalonFX(DriveConstants.LEFT_SLAVE_F);
 
-    rightMasterFalcon = new TalonFX(RIGHT_MASTER_F);
-    rightSlaveFalcon = new TalonFX(RIGHT_SLAVE_F);
+    rightMasterFalcon = new TalonFX(DriveConstants.RIGHT_MASTER_F);
+    rightSlaveFalcon = new TalonFX(DriveConstants.RIGHT_SLAVE_F);
 
     drivetrain = new DifferentialDrive(leftMasterFalcon, rightMasterFalcon);
 
@@ -70,8 +72,8 @@ public class Drivetrain extends SubsystemBase {
     }
 
     // Set follower mode
-    leftSlaveFalcon.setControl(new Follower(LEFT_MASTER_F, false));
-    rightSlaveFalcon.setControl(new Follower(RIGHT_MASTER_F, false));
+    leftSlaveFalcon.setControl(new Follower(DriveConstants.LEFT_MASTER_F, false));
+    rightSlaveFalcon.setControl(new Follower(DriveConstants.RIGHT_MASTER_F, false));
 
     // Config encoders
     // leftMasterFalcon.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor, kPIDLoopIdxDrive, kTimeoutMsDrive);
@@ -102,7 +104,7 @@ public class Drivetrain extends SubsystemBase {
     SmartDashboard.putNumber("Zero Encoders", 0);
     zeroEncoders();
 
-    gyro_filter = new MedianFilter(FILTER_WINDOW_SIZE);
+    gyro_filter = new MedianFilter(Constants.FILTER_WINDOW_SIZE);
   }
 
   /**
@@ -154,16 +156,16 @@ public class Drivetrain extends SubsystemBase {
     // Drive the motors
     // Direction multiplier indicates drive direction
     SmartDashboard.putNumber("Invert DRive", DIRECTION_MULTIPLIER);
-    if (DIRECTION_MULTIPLIER == 1) {
+    if (Constants.DIRECTION_MULTIPLIER == 1) {
       SmartDashboard.putNumber("Left Drive Speed", currentGear * DIRECTION_MULTIPLIER * leftJoyY);
       SmartDashboard.putNumber("Right Drive Speed", currentGear * DIRECTION_MULTIPLIER * rightJoyY);
-      drivetrain.tankDrive(currentGear * DIRECTION_MULTIPLIER * leftJoyY * kSpeedCorrection,
+      drivetrain.tankDrive(currentGear * DIRECTION_MULTIPLIER * leftJoyY * Constants.kSpeedCorrection,
           currentGear * DIRECTION_MULTIPLIER * rightJoyY);
     } else {
       SmartDashboard.putNumber("Left Drive Speed", currentGear * DIRECTION_MULTIPLIER * rightJoyY);
       SmartDashboard.putNumber("Right Drive Speed", currentGear * DIRECTION_MULTIPLIER * leftJoyY);
       drivetrain.tankDrive(currentGear * DIRECTION_MULTIPLIER * rightJoyY,
-          currentGear * DIRECTION_MULTIPLIER * leftJoyY * kSpeedCorrection);
+          currentGear * DIRECTION_MULTIPLIER * leftJoyY * Constants.kSpeedCorrection);
     }
 
     // SmartDashboard.putNumber("Left Master Voltage",
@@ -284,20 +286,15 @@ public class Drivetrain extends SubsystemBase {
   }
 
   public void changeGears() {
-
-    if (currentGear == kLowGearMultiplier) {
-      currentGear = kHighGearMultiplier;
+    if (currentGear == Constants.kLowGearMultiplier) {
+      currentGear = Constants.kHighGearMultiplier;
     } else {
-
-      currentGear = kLowGearMultiplier;
+      currentGear = Constants.kLowGearMultiplier;
     }
   }
 
   public double getGyroAngle() {
-
     double correctedGyro = gyro_filter.calculate(gyro.getAngle() % 360.0);
     return correctedGyro;
-
   }
-
 }

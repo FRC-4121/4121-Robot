@@ -4,51 +4,39 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.*;
-import static frc.robot.Constants.MechanismConstants.*;
-import edu.wpi.first.wpilibj.Timer;
-import static frc.robot.Constants.*;
+import frc.robot.Constants.MechanismConstants;
+import frc.robot.Constants;
 
-public class AutoShooterAmpPos extends Command {
+public class AutoShooterAmpPos extends AutoCommand {
   private ShooterAngle shooterAngle;
   private Shooter shooter;
   private Processor processor;
   private Intake intake;
-  private Timer timer = new Timer();
-  private double startTime;
-  private double endTime;
 
   /** Creates a new AutoShooterAmpPos. */
   public AutoShooterAmpPos(ShooterAngle shooterAngle, Shooter shooter, Processor processor, Intake intake,
       double endTime) {
+    super(endTime);
     this.shooter = shooter;
     this.shooterAngle = shooterAngle;
     this.processor = processor;
     this.intake = intake;
-    this.endTime = endTime;
 
     // Use addRequirements() here to declare subsystem dependencies.
-  }
-
-  // Called when the command is initially scheduled.
-  @Override
-  public void initialize() {
-    timer.start();
-    startTime = timer.get();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (!noteOnBoard) {
+    if (!Constants.noteOnBoard) {
       // Run the shooter at the correct Amp Speeds
-      shooter.runShooterAuto(TopShootAmpSpeed, BottomShootAmpSpeed);
+      shooter.runShooterAuto(MechanismConstants.TopShootAmpSpeed, MechanismConstants.BottomShootAmpSpeed);
 
       // Check to see if we are at the amp angle
-      if ((Math.abs(shooterAngle.getCurrentAngle() - AmpAngle) < ShooterAngleTolerance)
+      if ((Math.abs(shooterAngle.getCurrentAngle() - MechanismConstants.AmpAngle) < MechanismConstants.ShooterAngleTolerance)
           && shooterAngle.getTopSwitch() == false) {
-        shooterAngle.runPivot(AngleMotorSpeed);
+        shooterAngle.runPivot(MechanismConstants.AngleMotorSpeed);
       } else {
         shooterAngle.runPivot(0);
         processor.runProcessor(0.5);
@@ -69,6 +57,6 @@ public class AutoShooterAmpPos extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return noteOnBoard || killAuto || timer.get() >= endTime - startTime;
+    return Constants.noteOnBoard || Constants.killAuto || super.isFinished();
   }
 }

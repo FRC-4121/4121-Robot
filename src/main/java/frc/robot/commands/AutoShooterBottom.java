@@ -4,8 +4,8 @@
 
 package frc.robot.commands;
 
+import frc.robot.Constants.MechanismConstants;
 import frc.robot.subsystems.ShooterAngle;
-import static frc.robot.Constants.MechanismConstants.*;
 import edu.wpi.first.math.controller.*;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -27,7 +27,7 @@ public class AutoShooterBottom extends AutoCommand {
   public void initialize() {
     super.initialize();
     // Create PID controller
-    wpiPIDController = new PIDController(kShooterAngleKP, kShooterAngleKI, kShooterAngleKD);
+    wpiPIDController = new PIDController(MechanismConstants.kShooterAngleKP, MechanismConstants.kShooterAngleKI, MechanismConstants.kShooterAngleKD);
     wpiPIDController.setTolerance(1.0, 5);
   }
 
@@ -37,8 +37,8 @@ public class AutoShooterBottom extends AutoCommand {
     double angleSpeed = -0.2;
 
     if (shootAngle.getBottomSwitch() == false) {
-      shootAngle.runPivot(-AngleMotorMinSpeed + angleSpeed);
-      SmartDashboard.putNumber("Angle Input", -AngleMotorMinSpeed + angleSpeed);
+      shootAngle.runPivot(-MechanismConstants.AngleMotorMinSpeed + angleSpeed);
+      SmartDashboard.putNumber("Angle Input", -MechanismConstants.AngleMotorMinSpeed + angleSpeed);
     } else {
       shootAngle.runPivot(0);
     }

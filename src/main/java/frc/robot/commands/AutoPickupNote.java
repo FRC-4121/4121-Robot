@@ -7,9 +7,8 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.SwerveDriveWPI;
 import frc.robot.ExtraClasses.NetworkTableQuerier;
-import static frc.robot.Constants.*;
-import static frc.robot.Constants.DriveConstants.*;
-
+import frc.robot.Constants;
+import frc.robot.Constants.DriveConstants;
 import edu.wpi.first.math.controller.*;
 
 public class AutoPickupNote extends AutoCommand {
@@ -65,12 +64,12 @@ public class AutoPickupNote extends AutoCommand {
     xSpeedSlope = 0.02;
 
     // Create PID controller
-    wpiPIDController = new PIDController(kAutoDrivePIDkp, kAutoDrivePIDkI, kAutoDrivePIDkD);
+    wpiPIDController = new PIDController(DriveConstants.kAutoDrivePIDkp, DriveConstants.kAutoDrivePIDkI, DriveConstants.kAutoDrivePIDkD);
     wpiPIDController.setTolerance(1.0, 5);
 
     // Set slow speed
-    LinearSpeed = SlowMaxLinearSpeed;
-    RotationalSpeed = SlowRadiansPerSecond;
+    DriveConstants.LinearSpeed = DriveConstants.SlowMaxLinearSpeed;
+    DriveConstants.RotationalSpeed = DriveConstants.SlowRadiansPerSecond;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -141,13 +140,13 @@ public class AutoPickupNote extends AutoCommand {
     drive.stopDrive();
 
     // Set fast drive speed
-    LinearSpeed = MaxLinearSpeed;
-    RotationalSpeed = MaxRadiansPerSecond;
+    DriveConstants.LinearSpeed = DriveConstants.MaxLinearSpeed;
+    DriveConstants.RotationalSpeed = DriveConstants.MaxRadiansPerSecond;
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return noteOnBoard || super.isFinished();
+    return Constants.noteOnBoard || super.isFinished();
   }
 }

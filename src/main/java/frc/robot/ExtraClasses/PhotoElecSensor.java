@@ -5,29 +5,18 @@
 package frc.robot.ExtraClasses;
 
 import edu.wpi.first.wpilibj.DigitalInput;
-import static frc.robot.Constants.*;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.Constants;
 
 /** Add your docs here. */
 public class PhotoElecSensor {
-
     DigitalInput photoSensor;
-    
+
     public PhotoElecSensor() {
-
         photoSensor = new DigitalInput(5);
-
     }
 
-    //Method for if we have a ring,if it's blocked, we have a ring
+    // Method for if we have a ring,if it's blocked, we have a ring
     public void isNoteOnBoard() {
-
-        if(photoSensor.get())
-        {
-            noteOnBoard = false;//If the photosensor is blocked, a ring is on board
-        } else{
-            noteOnBoard = true;//If the photosensor is not blocked, a ring is not on board
-        }
-        
+        Constants.noteOnBoard = !photoSensor.get(); // a note is on board if the photosensor is blocked
     }
 }
