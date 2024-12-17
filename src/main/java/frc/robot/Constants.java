@@ -200,7 +200,6 @@ public final class Constants {
         public static final IdleMode kAngleMotorIdleMode = IdleMode.kBrake;
         public static final int kAngleMotorCurrentLimit = 20;
         public static final double AngleMotorSpeed = 0.15;
-        public static final double ManualAngleMotorSpeed = 0.25;
         public static final double AngleMotorMinSpeed = 0.1;
   
         //Angles and distances for certain shots

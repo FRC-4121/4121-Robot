@@ -4,47 +4,34 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Pneumatics;
-import static frc.robot.Constants.MechanismConstants.*;
+import frc.robot.subsystems.Pneumatics.ClimberDirection;
 
 public class RunClimber extends Command {
-  
-  Pneumatics pneumatic;
-  
-  /** Creates a new ExtendClimber. */
-  public RunClimber(Pneumatics pneumatics) {
-    
-    pneumatic = pneumatics;
-    
-    // Use addRequirements() here to declare subsystem dependencies.
+  Pneumatics pneumatics;
+  ClimberDirection dir;
+
+  public RunClimber(Pneumatics pneumatics, ClimberDirection dir) {
+    this.pneumatics = pneumatics;
+    this.dir = dir;
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-
-    //If the climber is extended, retract the climber, else extent the climber
-    if (ClimberExtended) {
-      SmartDashboard.putBoolean("extended", false);
-      pneumatic.retractClimber();
-      ClimberExtended = false;
-    } else {
-      SmartDashboard.putBoolean("extended", true);
-      pneumatic.extendClimber();
-      ClimberExtended = true;
-    }
-
+    pneumatics.runClimber(dir);
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+  }
 
   // Returns true when the command should end.
   @Override

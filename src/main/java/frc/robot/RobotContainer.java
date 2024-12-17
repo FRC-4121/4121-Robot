@@ -1,8 +1,6 @@
 
 package frc.robot;
 
-import java.util.List;
-
 import static frc.robot.Constants.*;
 import static frc.robot.Constants.MechanismConstants.*;
 import static frc.robot.Constants.ControlConstants.*;
@@ -12,23 +10,15 @@ import frc.robot.subsystems.*;
 import frc.robot.ExtraClasses.NetworkTableQuerier;
 import frc.robot.ExtraClasses.PhotoElecSensor;
 import frc.robot.commands.*;
+import frc.robot.commands.RunAngle.Direction;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.*;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.cameraserver.CameraServer;
-import edu.wpi.first.cscore.VideoSink;
-import edu.wpi.first.cscore.VideoSource;
 import com.pathplanner.lib.auto.NamedCommands;
-import com.pathplanner.lib.path.PathPlannerPath;
-import com.pathplanner.lib.path.GoalEndState;
-import com.pathplanner.lib.path.PathConstraints;
-import com.fasterxml.jackson.core.sym.Name;
 import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.commands.PathPlannerAuto;
 
 public class RobotContainer {
 
@@ -95,17 +85,9 @@ public class RobotContainer {
   private final AutoShooterAngle autoShootFarCommand;
   private final AutoShooterBottom autoShootBottomCommand;
 
-  // Declare Shooter Angle Commands
-  private final RunAngleUp angleUpCommand;
-  private final RunAngleDown angleDownCommand;
-
   // Declare Intake Commands
-  private final RunIntake intakeCommand;
   private final RunProcessorBack processorBackCommand;
   private final TakeInNote takeInNoteCommand;
-
-  // Declare Climber Commands
-  private final RunClimber climberCommand;
 
   // ===BUTTONS===//
 
@@ -125,14 +107,14 @@ public class RobotContainer {
 
   // Declare Launchpad (OI) Buttons/Switches
   private final Trigger killAutoButton;
-  private static JoystickButton blueTeamButton;
-  private static JoystickButton redTeamButton;
-  private static JoystickButton parkButton;
-  private static JoystickButton leftButton;
-  private static JoystickButton rightButton;
-  private static JoystickButton ampAngleButton;
-  private static JoystickButton autoShooterPositionButton;
-  private static JoystickButton changeAutoAngleButton;
+  private final JoystickButton blueTeamButton;
+  private final JoystickButton redTeamButton;
+  private final JoystickButton parkButton;
+  private final JoystickButton leftButton;
+  private final JoystickButton rightButton;
+  private final JoystickButton ampAngleButton;
+  private final JoystickButton autoShooterPositionButton;
+  private final JoystickButton changeAutoAngleButton;
 
   /**
    * 
@@ -201,17 +183,9 @@ public class RobotContainer {
     autoShootFarCommand = new AutoShooterAngle(shooterAngle, 27500, 2);
     autoShootBottomCommand = new AutoShooterBottom(shooterAngle, 2.0);
 
-    // Initialize Shooter Angle Commands
-    angleUpCommand = new RunAngleUp(shooterAngle);
-    angleDownCommand = new RunAngleDown(shooterAngle);
-
     // Initialize Intake Commands
-    intakeCommand = new RunIntake(intake, processor);
     processorBackCommand = new RunProcessorBack(processor);
     takeInNoteCommand = new TakeInNote(intake, processor, 10);
-
-    // Initialize Climber Commands
-    climberCommand = new RunClimber(pneumatic);
 
     // Register Named Commands
     NamedCommands.registerCommand("TakeInNote", takeInNoteCommand);
@@ -251,46 +225,7 @@ public class RobotContainer {
     autoShooterPositionButton = new JoystickButton(launchpad, LaunchPadSwitch7);
     changeAutoAngleButton = new JoystickButton(launchpad, 20);
 
-    // Configure default commands
-    configureDefaultCommands();
-
     // Configure the button bindings
-    configureButtonBindings();
-
-    // Make sure the positions are zero
-    zeroRobot();
-
-  }
-
-  // ===METHODS, WHERE STUFF IS CONFIGURED===///
-
-  /**
-   *
-   * Set default commands for all subsystems
-   * 
-   */
-  private void configureDefaultCommands() {
-
-    // Swerve drive default command
-    swervedrivewpi.setDefaultCommand(fieldDriveCommand);
-
-    // Shooter default command
-    // shooter.setDefaultCommand(shooterSpeedCommand);
-
-    // Shooter angle default command
-    shooterAngle.setDefaultCommand(autoShooterPosCommand);
-
-    // LED default command
-    led.setDefaultCommand(ledCommand);
-
-  }
-
-  /**
-   * 
-   * Assign commands to button actions
-   * 
-   */
-  private void configureButtonBindings() {
 
     // Auto Commands
     killAutoButton.onTrue(killAutoObject);
@@ -304,12 +239,26 @@ public class RobotContainer {
     // shuttleButton.onTrue(trapShooterCommand);
     ampShootButton.onTrue(ampShooterCommand);
     ampAngleButton.onTrue(autoShooterAmpPosCommand);
-    climberButton.onTrue(climberCommand);
-    runAngleDownButton.whileTrue(angleDownCommand);
-    runAngleUpButton.whileTrue(angleUpCommand);
-    manualIntakeButton.whileTrue(intakeCommand);
+    climberButton.onTrue(new ToggleClimber(pneumatic));
+    runAngleDownButton.whileTrue(new RunAngle(shooterAngle, Direction.DOWN));
+    runAngleUpButton.whileTrue(new RunAngle(shooterAngle, Direction.UP));
+    manualIntakeButton.whileTrue(new RunIntake(intake, processor));
     // autoPickupNoteButton.onTrue(autoPickupNoteCommand);
 
+    // Swerve drive default command
+    swervedrivewpi.setDefaultCommand(fieldDriveCommand);
+
+    // Shooter default command
+    // shooter.setDefaultCommand(shooterSpeedCommand);
+
+    // Shooter angle default command
+    shooterAngle.setDefaultCommand(autoShooterPosCommand);
+
+    // LED default command
+    led.setDefaultCommand(ledCommand);
+
+    // Make sure the positions are zero
+    zeroRobot();
   }
 
   /**

@@ -4,7 +4,6 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Processor;
 import frc.robot.subsystems.Intake;
@@ -23,7 +22,6 @@ public class AutoRunShooterSpeaker extends AutoCommand {
   private Intake intake;
   private boolean canShoot;
 
-  /** Creates a new RunShooterSpeaker. */
   public AutoRunShooterSpeaker(Shooter shoot, Processor process, Intake in, double endTime) {
     super(endTime);
 

@@ -15,20 +15,23 @@ import static frc.robot.Constants.MechanismConstants.*;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
- * The VM is configured to automatically run this class, and to call the functions corresponding to
- * each mode, as described in the TimedRobot documentation. If you change the name of this class or
- * the package after creating this project, you must also update the build.gradle file in the
+ * The VM is configured to automatically run this class, and to call the
+ * functions corresponding to
+ * each mode, as described in the TimedRobot documentation. If you change the
+ * name of this class or
+ * the package after creating this project, you must also update the
+ * build.gradle file in the
  * project.
  */
 public class Robot extends TimedRobot {
-  
+
   private Command m_autonomousCommand;
 
   private RobotContainer m_robotContainer;
 
-
   /**
-   * This function is run when the robot is first started up and should be used for any
+   * This function is run when the robot is first started up and should be used
+   * for any
    * initialization code.
    */
   @Override
@@ -37,10 +40,11 @@ public class Robot extends TimedRobot {
     new CameraBuilder(0, "Camera 0").fps(15).attachAutoCapture();
     new CameraBuilder(1, "Camera 1").fps(15).attachAutoCapture();
 
-    // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
+    // Instantiate our RobotContainer. This will perform all our button bindings,
+    // and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
-  
+
     // Put zero mechanism options on the dashboard
     SmartDashboard.putNumber("Zero Gyro", 0);
     SmartDashboard.putNumber("Zero Positions", 0);
@@ -54,46 +58,53 @@ public class Robot extends TimedRobot {
 
     // Get the alliance color
     m_robotContainer.getAllianceColor();
-   }
+  }
 
   /**
-   * This function is called every robot packet, no matter the mode. Use this for items like
-   * diagnostics that you want ran during disabled, autonomous, teleoperated and test.
+   * This function is called every robot packet, no matter the mode. Use this for
+   * items like
+   * diagnostics that you want ran during disabled, autonomous, teleoperated and
+   * test.
    *
-   * <p>This runs after the mode specific periodic functions, but before LiveWindow and
+   * <p>
+   * This runs after the mode specific periodic functions, but before LiveWindow
+   * and
    * SmartDashboard integrated updating.
    */
   @Override
   public void robotPeriodic() {
 
-    // Runs the Scheduler.  This is responsible for polling buttons, adding newly-scheduled
-    // commands, running already-scheduled commands, removing finished or interrupted commands,
-    // and running subsystem periodic() methods.  This must be called from the robot's periodic
+    // Runs the Scheduler. This is responsible for polling buttons, adding
+    // newly-scheduled
+    // commands, running already-scheduled commands, removing finished or
+    // interrupted commands,
+    // and running subsystem periodic() methods. This must be called from the
+    // robot's periodic
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
 
     // Keep checking alliance color
     m_robotContainer.getAllianceColor();
 
-    //Get auto position
+    // Get auto position
     m_robotContainer.getAutoPosition();
 
-    //Get park selection
+    // Get park selection
     m_robotContainer.getParkSelection();
 
-    //Get color selection
+    // Get color selection
     m_robotContainer.getColorSelection();
 
-    //Get shooter selection
+    // Get shooter selection
     m_robotContainer.getAngleSelection();
 
-    //Get angle to target selection
+    // Get angle to target selection
     m_robotContainer.getAngleToTargetSelection();
 
-    //Check for note on board
+    // Check for note on board
     m_robotContainer.checkForNote();
 
-    //Update Robot Status
+    // Update Robot Status
     m_robotContainer.updateRobotStatus();
 
     // Check for robot zero command and zero the robot
@@ -109,41 +120,42 @@ public class Robot extends TimedRobot {
     }
 
     // Check for number of notes to shoot in auto
-    autoNotes = (int)SmartDashboard.getNumber("Auto Notes", 2);
+    autoNotes = (int) SmartDashboard.getNumber("Auto Notes", 2);
 
     // Check current speed setting and update dashboard
-    if (LinearSpeed == MaxLinearSpeed){
+    if (LinearSpeed == MaxLinearSpeed) {
       SmartDashboard.putBoolean("Slow Mode", false);
     } else {
       SmartDashboard.putBoolean("Slow Mode", true);
     }
-
-
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
   @Override
   public void disabledInit() {
 
-    //m_robotContainer.stopPi();
-    
+    // m_robotContainer.stopPi();
+
   }
 
   @Override
   public void disabledPeriodic() {
 
-    //m_robotContainer.stopPi();
+    // m_robotContainer.stopPi();
 
   }
 
   @Override
   public void teleopExit() {
 
-    //m_robotContainer.stopPi();
-    
+    // m_robotContainer.stopPi();
+
   }
 
-  /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
+  /**
+   * This autonomous runs the autonomous command selected by your
+   * {@link RobotContainer} class.
+   */
   @Override
   public void autonomousInit() {
 
@@ -158,13 +170,13 @@ public class Robot extends TimedRobot {
     // Zero the shooter angle encoder
     m_robotContainer.zeroRobot();
 
-    //Set robot to robot oriented driving
+    // Set robot to robot oriented driving
     isFieldOriented = true;
 
-    //Make sure that the Auto Shooter Command will run
+    // Make sure that the Auto Shooter Command will run
     AutoShooterPositioning = true;
 
-    //Make sure the robot is in fast mode
+    // Make sure the robot is in fast mode
     LinearSpeed = MaxLinearSpeed;
     RotationalSpeed = MaxRadiansPerSecond;
     maxYawRate = FastMaxYawRate;
@@ -173,11 +185,11 @@ public class Robot extends TimedRobot {
 
   /** This function is called periodically during autonomous. */
   @Override
-  public void autonomousPeriodic() {}
+  public void autonomousPeriodic() {
+  }
 
   @Override
   public void teleopInit() {
-    
     // This makes sure that the autonomous stops running when
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
@@ -189,17 +201,16 @@ public class Robot extends TimedRobot {
     // Turn on auto shooter speed control
     runAutoSpeedControl = true;
 
-    //Set robot to field oriented driving
+    // Set robot to field oriented driving
     isFieldOriented = true;
-
   }
 
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
 
-    //get Arm Selection
-    //m_robotContainer.getArmSelection();
+    // get Arm Selection
+    // m_robotContainer.getArmSelection();
 
   }
 
@@ -211,5 +222,6 @@ public class Robot extends TimedRobot {
 
   /** This function is called periodically during test mode. */
   @Override
-  public void testPeriodic() {}
+  public void testPeriodic() {
+  }
 }

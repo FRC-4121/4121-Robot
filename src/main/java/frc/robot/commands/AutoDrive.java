@@ -5,7 +5,6 @@
 package frc.robot.commands;
 
 import static frc.robot.Constants.*;
-import static frc.robot.Constants.ControlConstants.*;
 import static frc.robot.Constants.DriveConstants.*;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;

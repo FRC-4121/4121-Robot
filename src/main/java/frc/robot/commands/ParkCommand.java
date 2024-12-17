@@ -5,18 +5,14 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.SwerveDrive;
+import frc.robot.subsystems.SwerveDriveWPI;
 
 public class ParkCommand extends Command {
  
-  SwerveDrive swerveDrive;
+  SwerveDriveWPI swerveDrive;
  
-  /** Creates a new parkCommand. */
-  public ParkCommand(SwerveDrive swerve) {
-  
-    swerveDrive = swerve;
-
-    // Use addRequirements() here to declare subsystem dependencies.
+  public ParkCommand(SwerveDriveWPI swerveDrive) {
+    this.swerveDrive = swerveDrive;
     addRequirements(swerveDrive);
   }
 
@@ -27,7 +23,6 @@ public class ParkCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-
     //parks the bot
     swerveDrive.parkBot();
   }
@@ -39,6 +34,6 @@ public class ParkCommand extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return false; // TODO: evaluate if this only needs to be run once?
   }
 }
