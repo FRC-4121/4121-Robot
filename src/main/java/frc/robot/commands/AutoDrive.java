@@ -30,7 +30,7 @@ public class AutoDrive extends Command {
   private double startTime;
   private double distanceTraveled;
 
-  private Boolean firstRun = true;
+  private boolean firstRun = true;
 
   private Timer timer = new Timer();
   private PIDController pidFrontAngle;

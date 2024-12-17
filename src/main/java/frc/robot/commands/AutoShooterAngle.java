@@ -4,65 +4,47 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.ShooterAngle;
 import static frc.robot.Constants.*;
 import static frc.robot.Constants.MechanismConstants.*;
 import edu.wpi.first.math.controller.*;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-
-public class AutoShooterAngle extends Command {
-
+public class AutoShooterAngle extends AutoCommand {
   private ShooterAngle shootAngle;
-  
+
   private double targetEncoder;
-  private Timer timer;
-  private double startTime;
-  private double stopTime;
 
   private PIDController wpiPIDController;
- 
+
   /** Creates a new AutoShooterPos. */
-  public AutoShooterAngle(ShooterAngle shoot, double encoder, double endTime) {
-
+  public AutoShooterAngle(ShooterAngle shootAngle, double targetEncoder, double time) {
+    super(time);
     // Set local variables
-    shootAngle = shoot;
-    targetEncoder = encoder;
-    stopTime = endTime;
+    this.shootAngle = shootAngle;
+    this.targetEncoder = targetEncoder;
     addRequirements(shootAngle);
-
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-
+    super.initialize();
     // Create PID controller
     wpiPIDController = new PIDController(kShooterAngleKP, kShooterAngleKI, kShooterAngleKD);
-    wpiPIDController.setTolerance(1.0,5);
-
-    // Initialize a new timer and get current time
-    timer = new Timer();
-    timer.start();
-    startTime = timer.get();
-
+    wpiPIDController.setTolerance(1.0, 5);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-
     double currentEncoder = shootAngle.getIntegratedValue();
-    
+
     // Determine new motor speed from PID controller
     double pidOutput = -wpiPIDController.calculate(currentEncoder, targetEncoder);
-    if(pidOutput >1)
-    {
+    if (pidOutput > 1) {
       pidOutput = 1;
-    } else if (pidOutput < -1)
-    {
+    } else if (pidOutput < -1) {
       pidOutput = -1;
     }
 
@@ -84,8 +66,7 @@ public class AutoShooterAngle extends Command {
 
         }
 
-      }
-      else if (pidOutput < 0) {
+      } else if (pidOutput < 0) {
 
         if (shootAngle.getBottomSwitch() == false) {
 
@@ -111,7 +92,6 @@ public class AutoShooterAngle extends Command {
 
   }
 
-
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
@@ -124,30 +104,9 @@ public class AutoShooterAngle extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-
-    boolean thereYet = false;
-    // Get the current time
-    double time = timer.get();  
-
-    if (Math.abs(shootAngle.getIntegratedValue() - ShooterTargetEncoder) < ShooterAngleTolerance) {
-
-      thereYet = true;
-
-    } else if (shootAngle.getBottomSwitch() == true){
-
-      thereYet = true;
-
-    } else if (stopTime <= time - startTime){
-
-      thereYet = true;
-
-    } else if (killAuto) {
-
-      thereYet = true;
-    }
-
-    return thereYet;
-
+    if (super.isFinished())
+      return true;
+    return (Math.abs(shootAngle.getIntegratedValue() - ShooterTargetEncoder) < ShooterAngleTolerance)
+        || shootAngle.getBottomSwitch();
   }
-
 }

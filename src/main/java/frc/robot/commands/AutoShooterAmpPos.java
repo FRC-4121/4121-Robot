@@ -11,7 +11,6 @@ import edu.wpi.first.wpilibj.Timer;
 import static frc.robot.Constants.*;
 
 public class AutoShooterAmpPos extends Command {
-  
   private ShooterAngle shooterAngle;
   private Shooter shooter;
   private Processor processor;
@@ -19,15 +18,15 @@ public class AutoShooterAmpPos extends Command {
   private Timer timer = new Timer();
   private double startTime;
   private double endTime;
-  
+
   /** Creates a new AutoShooterAmpPos. */
-  public AutoShooterAmpPos(ShooterAngle shootAngle, Shooter shoot, Processor process, Intake in, Double endingTime) {
-    
-    shooter = shoot;
-    shooterAngle = shootAngle;
-    processor = process;
-    intake = in;
-    endTime = endingTime;
+  public AutoShooterAmpPos(ShooterAngle shooterAngle, Shooter shooter, Processor processor, Intake intake,
+      double endTime) {
+    this.shooter = shooter;
+    this.shooterAngle = shooterAngle;
+    this.processor = processor;
+    this.intake = intake;
+    this.endTime = endTime;
 
     // Use addRequirements() here to declare subsystem dependencies.
   }
@@ -37,20 +36,18 @@ public class AutoShooterAmpPos extends Command {
   public void initialize() {
     timer.start();
     startTime = timer.get();
-
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-
     if (!noteOnBoard) {
-
       // Run the shooter at the correct Amp Speeds
       shooter.runShooterAuto(TopShootAmpSpeed, BottomShootAmpSpeed);
 
       // Check to see if we are at the amp angle
-      if ((Math.abs(shooterAngle.getCurrentAngle() - AmpAngle) < ShooterAngleTolerance) && shooterAngle.getTopSwitch() == false) {
+      if ((Math.abs(shooterAngle.getCurrentAngle() - AmpAngle) < ShooterAngleTolerance)
+          && shooterAngle.getTopSwitch() == false) {
         shooterAngle.runPivot(AngleMotorSpeed);
       } else {
         shooterAngle.runPivot(0);
@@ -64,31 +61,14 @@ public class AutoShooterAmpPos extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-
     shooter.runShooterSpeaker(0);
     processor.runProcessor(0.0);
     intake.runIntake(0);
-
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-     boolean doneYet = false;
-    
-    if(noteOnBoard)
-    {
-      doneYet = true;
-    }
-    if(timer.get() >= endTime-startTime)
-    {
-      doneYet = true;
-    }
-    if(killAuto == true )
-    {
-      doneYet = true;
-    }
-
-    return doneYet;
+    return noteOnBoard || killAuto || timer.get() >= endTime - startTime;
   }
 }

@@ -178,7 +178,6 @@ public final class Constants {
         public static final double BottomShooterTrapSpeed = -0.65;
         public static final double TopShootIdleSpeed = -0.1;
         public static final double BottomShootIdleSpeed = 0.1;
-        public static String ShooterMode = "IDLE";
         public static final double shooterDelay = 0.25;
 
         /*

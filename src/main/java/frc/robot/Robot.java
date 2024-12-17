@@ -7,7 +7,6 @@ package frc.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.Constants.MechanismConstants;
 import frc.robot.subsystems.cameras.CameraBuilder;
 
 import static frc.robot.Constants.*;
@@ -34,7 +33,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
-  
+
     new CameraBuilder(0, "Camera 0").fps(15).attachAutoCapture();
     new CameraBuilder(1, "Camera 1").fps(15).attachAutoCapture();
 
@@ -53,13 +52,8 @@ public class Robot extends TimedRobot {
     // Put auto position on the dashboard
     SmartDashboard.putNumber("Auto Position", 1);
 
-
-    // Set the shooter speed to idle
-    MechanismConstants.ShooterMode = "IDLE";
-
     // Get the alliance color
     m_robotContainer.getAllianceColor();
-
    }
 
   /**

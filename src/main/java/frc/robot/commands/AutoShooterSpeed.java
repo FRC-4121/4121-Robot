@@ -12,6 +12,7 @@ import frc.robot.ExtraClasses.NetworkTableQuerier;
 public class AutoShooterSpeed extends Command {
 
   // Declare local variables
+  private ShooterMode mode;
   private Shooter shooterMotor;
   private NetworkTableQuerier ntable;
 
@@ -22,14 +23,21 @@ public class AutoShooterSpeed extends Command {
   private double tagDistance;
   private boolean isMyTag;
 
+  /**
+   * Mode for the shooter
+   */
+  public static enum ShooterMode {
+    IDLE,
+    SPEAKER,
+    AMP,
+  }
+
   /** Creates a new AutoShooterSpeed. */
   public AutoShooterSpeed(Shooter shoot) {
-
     // Set local variables
     shooterMotor = shoot;
 
     addRequirements(shooterMotor);
-
   }
 
   // Called when the command is initially scheduled.
@@ -39,37 +47,37 @@ public class AutoShooterSpeed extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-
     // Check current mode to determine correct shooter speeds
-    switch (ShooterMode) {
-
-      case "SPEAKER": 
+    switch (mode) {
+      case SPEAKER: 
         shooterMotor.runShooterAuto(TopShootSpeakerSpeed, BottomShootSpeakerSpeed);
         break;
-      case "AMP": 
+      case AMP: 
         shooterMotor.runShooterAuto(TopShootAmpSpeed, BottomShootAmpSpeed);
         break;
-      default: 
+      case IDLE: 
         shooterMotor.runShooterAuto(TopShootIdleSpeed, BottomShootIdleSpeed);
-
     }
-
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-
     shooterMotor.runShooterAuto(0.0, 0.0);
-
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-
     // This command runs continuously
     return false;
-
   }
+
+  public ShooterMode getMode() {
+    return mode;
+  }
+
+  public void setMode(ShooterMode mode) {
+    this.mode = mode;
+  } 
 }
