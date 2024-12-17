@@ -8,15 +8,7 @@ import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Processor;
 import frc.robot.subsystems.Intake;
 import frc.robot.Constants.MechanismConstants;
-import frc.robot.Constants.MechanismConstants.*;
 
-/**
- * 
- * @deprecated I didn't quite migrate this correctly so it may break
- * 
- */
-
-@Deprecated
 public class AutoRunShooterSpeaker extends AutoCommand {
   private Shooter shooter;
   private Processor processor;

@@ -12,7 +12,6 @@ import frc.robot.Constants.DriveConstants;
 import edu.wpi.first.math.controller.*;
 
 public class AutoPickupNote extends AutoCommand {
-
   private SwerveDriveWPI drive;
   private NetworkTableQuerier table;
 
@@ -42,7 +41,6 @@ public class AutoPickupNote extends AutoCommand {
     table = ntable;
     rotSpeed = rotation;
     addRequirements(drive);
-
   }
 
   // Called when the command is initially scheduled.
@@ -97,7 +95,6 @@ public class AutoPickupNote extends AutoCommand {
 
       // Determine drive direction based on note offset
       if (Math.abs(noteOffset) > noteOffsetTolerance) {
-
         // Get PID output
         double pidOutput = wpiPIDController.calculate(noteOffset, 0);
         SmartDashboard.putNumber("PID Out", pidOutput);

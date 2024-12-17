@@ -7,14 +7,13 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Drivetrain;
 
 public class InvertDirection extends Command {
-  
-  private Drivetrain drive;
-  
-  public InvertDirection(Drivetrain drivetrain ) {
 
+  private Drivetrain drive;
+
+  public InvertDirection(Drivetrain drivetrain) {
     drive = drivetrain;
 
-    addRequirements( drive);
+    addRequirements(drive);
     // Use addRequirements() here to declare subsystem dependencies.
   }
 

@@ -13,7 +13,7 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.kinematics.*;
 import static frc.robot.Constants.DriveConstants.*;
-import frc.robot.ExtraClasses.*;
+// import frc.robot.ExtraClasses.*;
 
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.FeedbackConfigs;
@@ -36,7 +36,7 @@ public class SwerveWheel extends SubsystemBase {
   private CANcoder canCoder;
 
   // PID controllers. May be removed (needs testing).
-  private PIDControl anglePIDController;
+  // private PIDControl anglePIDController;
   private PIDController wpiPIDController;
 
   private WheelConfig config;
@@ -222,7 +222,7 @@ public class SwerveWheel extends SubsystemBase {
 
     // We have two PID controllers, we should probably figure out what they do and
     // if we need them
-    anglePIDController = new PIDControl(config.angleKP, config.angleKI, config.angleKD);
+    // anglePIDController = new PIDControl(config.angleKP, config.angleKI, config.angleKD);
     wpiPIDController = new PIDController(config.angleKP, config.angleKI, config.angleKD);
     wpiPIDController.setTolerance(1.5, 5);
 

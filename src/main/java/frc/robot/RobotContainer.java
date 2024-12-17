@@ -50,7 +50,7 @@ public class RobotContainer {
   // Declare Driving Commands
   // private final DriveWithJoysticks driveCommand = new
   // DriveWithJoysticks(swervedrive, xbox, table);
-  private final FieldDriveWithJoysticks fieldDriveCommand;
+  private final DriveWithJoysticks fieldDriveCommand;
   private final ChangeSpeedCommand changeSpeedCommand;
   private final ChangeDriveMode changeModeCommand;
 
@@ -143,7 +143,7 @@ public class RobotContainer {
     // Initialize Driving Commands
     // private final DriveWithJoysticks driveCommand = new
     // DriveWithJoysticks(swervedrive, xbox, table);
-    fieldDriveCommand = new FieldDriveWithJoysticks(swervedrivewpi, xbox, table);
+    fieldDriveCommand = new DriveWithJoysticks(swervedrivewpi, xbox, table);
     changeSpeedCommand = new ChangeSpeedCommand();
     changeModeCommand = new ChangeDriveMode();
 

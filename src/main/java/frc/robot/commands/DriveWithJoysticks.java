@@ -18,8 +18,7 @@ import edu.wpi.first.math.controller.*;
 
 import edu.wpi.first.math.MathUtil;
 
-public class FieldDriveWithJoysticks extends Command {
-
+public class DriveWithJoysticks extends Command {
   private SwerveDriveWPI swervedrive;
   private XboxController Xbox;
   private NetworkTableQuerier table;
@@ -44,7 +43,7 @@ public class FieldDriveWithJoysticks extends Command {
 
   private PIDController wpiPIDController;
 
-  public FieldDriveWithJoysticks(SwerveDriveWPI drive, XboxController xbox, NetworkTableQuerier ntable) {
+  public DriveWithJoysticks(SwerveDriveWPI drive, XboxController xbox, NetworkTableQuerier ntable) {
 
     swervedrive = drive;
     Xbox = xbox;

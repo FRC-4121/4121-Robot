@@ -29,21 +29,19 @@ public class AutoShooterAmpPos extends AutoCommand {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (!Constants.noteOnBoard) {
-      // Run the shooter at the correct Amp Speeds
-      shooter.runShooterAuto(MechanismConstants.TopShootAmpSpeed, MechanismConstants.BottomShootAmpSpeed);
+    // Run the shooter at the correct Amp Speeds
+    shooter.runShooterAuto(MechanismConstants.TopShootAmpSpeed, MechanismConstants.BottomShootAmpSpeed);
 
-      // Check to see if we are at the amp angle
-      if ((Math.abs(shooterAngle.getCurrentAngle() - MechanismConstants.AmpAngle) < MechanismConstants.ShooterAngleTolerance)
-          && shooterAngle.getTopSwitch() == false) {
-        shooterAngle.runPivot(MechanismConstants.AngleMotorSpeed);
-      } else {
-        shooterAngle.runPivot(0);
-        processor.runProcessor(0.5);
-        intake.runIntake(0.5);
-      }
+    // Check to see if we are at the amp angle
+    if ((Math
+        .abs(shooterAngle.getCurrentAngle() - MechanismConstants.AmpAngle) < MechanismConstants.ShooterAngleTolerance)
+        && shooterAngle.getTopSwitch() == false) {
+      shooterAngle.runPivot(MechanismConstants.AngleMotorSpeed);
+    } else {
+      shooterAngle.runPivot(0);
+      processor.runProcessor(0.5);
+      intake.runIntake(0.5);
     }
-
   }
 
   // Called once the command ends or is interrupted.

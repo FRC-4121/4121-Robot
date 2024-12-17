@@ -9,7 +9,6 @@ import static frc.robot.Constants.killAuto;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class KillAutoCommand extends Command {
-
   /** Creates a new KillAutoCommand. */
   public KillAutoCommand() {
     // Use addRequirements() here to declare subsystem dependencies.
@@ -39,5 +38,4 @@ public class KillAutoCommand extends Command {
   public boolean isFinished() {
     return true;
   }
-
 }

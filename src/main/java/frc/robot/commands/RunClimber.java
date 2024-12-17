@@ -9,8 +9,8 @@ import frc.robot.subsystems.Pneumatics;
 import frc.robot.subsystems.Pneumatics.ClimberDirection;
 
 public class RunClimber extends Command {
-  Pneumatics pneumatics;
-  ClimberDirection dir;
+  private Pneumatics pneumatics;
+  private ClimberDirection dir;
 
   public RunClimber(Pneumatics pneumatics, ClimberDirection dir) {
     this.pneumatics = pneumatics;

@@ -12,7 +12,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class AutoShooterAngle extends AutoCommand {
   private ShooterAngle shootAngle;
-
   private double targetEncoder;
 
   private PIDController wpiPIDController;
