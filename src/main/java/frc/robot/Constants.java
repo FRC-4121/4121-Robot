@@ -8,11 +8,6 @@
 package frc.robot;
 
 import frc.robot.ExtraClasses.Gains;
-import com.revrobotics.CANSparkBase.IdleMode;
-
-import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
-import com.pathplanner.lib.util.PIDConstants;
-import com.pathplanner.lib.util.ReplanningConfig;
 
 /**
  * The Constants class provides a dope af place for teams to hold robot-wide
@@ -113,7 +108,7 @@ public final class Constants {
     public static final double SlowRadiansPerSecond = (Math.PI / 2);// Max rotational speed during slow mode
     public static final double slowSpeed = 0.3;
     public static final double driveSpeed = 0.7;
-    public static double swerveDriveSpeedLimiter = 0.7;
+    public static final double swerveDriveSpeedLimiter = 0.7;
     public static double LinearSpeed = 3;
     public static double RotationalSpeed = Math.PI;
     public static final double autoSwerveDriveSpeedLimiter = 0.6;
@@ -144,16 +139,6 @@ public final class Constants {
 
     // Mecanum motor limits
     public static final double MecanumSpeedLimiter = 0.8; // Can Test This
-
-  }
-
-  public static final class Swerve {
-    public static final HolonomicPathFollowerConfig pathFollowerConfig = new HolonomicPathFollowerConfig(
-        new PIDConstants(2.3, 0.1, 0.18), // Translation constants Was 2.6
-        new PIDConstants(3.2, 0, 0.18), // Rotation constants Was 1.6
-        DriveConstants.MaxLinearSpeed,
-        0.414, // Drive base radius (distance from center to furthest module)
-        new ReplanningConfig());
   }
 
   /*
@@ -197,7 +182,6 @@ public final class Constants {
     public static final int kTimeoutMsAngle = 20;
 
     // Angle Motor Configuration
-    public static final IdleMode kAngleMotorIdleMode = IdleMode.kBrake;
     public static final int kAngleMotorCurrentLimit = 20;
     public static final double AngleMotorSpeed = 0.15;
     public static final double AngleMotorMinSpeed = 0.1;

@@ -6,13 +6,13 @@ package frc.robot.commands;
 
 import frc.robot.Constants.DriveConstants;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.subsystems.SwerveDriveWPI;
+import frc.robot.subsystems.SwerveDrive;
 import edu.wpi.first.math.controller.*;
 
 public class AutoDrive extends AutoCommand {
 
   /** Creates a new AutoDrive. */
-  private final SwerveDriveWPI drivetrain;
+  private final SwerveDrive drivetrain;
   private double targetDriveDistance; // inches
   private double targetAngle;
   private double targetRotation;
@@ -28,7 +28,7 @@ public class AutoDrive extends AutoCommand {
   private PIDController pidFrontAngle;
 
   // Distance is in inches, target rotation is a value from -1 to 1 or and angle?
-  public AutoDrive(SwerveDriveWPI drive, double speed, double dis, double ang, double heading, double rotation,
+  public AutoDrive(SwerveDrive drive, double speed, double dis, double ang, double heading, double rotation,
       double time) {
     super(time);
 

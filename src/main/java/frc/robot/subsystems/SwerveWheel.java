@@ -12,7 +12,13 @@ import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.kinematics.*;
-import static frc.robot.Constants.DriveConstants.*;
+
+import static frc.robot.Constants.DriveConstants.swerveDriveSpeedLimiter;
+import static frc.robot.Constants.DriveConstants.kTalonFXPPR;
+
+import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.Radians;
+import static edu.wpi.first.units.Units.RadiansPerSecond;
 // import frc.robot.ExtraClasses.*;
 
 import com.ctre.phoenix6.StatusCode;
@@ -222,7 +228,8 @@ public class SwerveWheel extends SubsystemBase {
 
     // We have two PID controllers, we should probably figure out what they do and
     // if we need them
-    // anglePIDController = new PIDControl(config.angleKP, config.angleKI, config.angleKD);
+    // anglePIDController = new PIDControl(config.angleKP, config.angleKI,
+    // config.angleKD);
     wpiPIDController = new PIDController(config.angleKP, config.angleKI, config.angleKD);
     wpiPIDController.setTolerance(1.5, 5);
 
@@ -266,7 +273,7 @@ public class SwerveWheel extends SubsystemBase {
     if (canCoder != null) { // old code that uses an external CANcoder
       // Normalize encoder to have a max value of 1 and correct for discontinuity at
       // 360 degrees (should be 0)
-      double encoderAngle = canCoder.getAbsolutePosition().getValue();
+      double encoderAngle = canCoder.getAbsolutePosition().getValue().in(Degrees);
       if (encoderAngle == 1.0) {
         encoderAngle = 0.0;
       }
@@ -318,7 +325,8 @@ public class SwerveWheel extends SubsystemBase {
     }
 
     // Set motor speeds
-    SmartDashboard.putNumber(config.name + " V actual", swerveDriveMotor.getVelocity().refresh().getValue());
+    SmartDashboard.putNumber(config.name + " V actual",
+        swerveDriveMotor.getVelocity().refresh().getValue().in(RadiansPerSecond));
   }
 
   /**
@@ -350,7 +358,7 @@ public class SwerveWheel extends SubsystemBase {
    * 
    */
   public double getDistance() {
-    double dist = (wheelDiameter * Math.PI * swerveDriveMotor.getPosition().refresh().getValue())
+    double dist = (wheelDiameter * Math.PI * swerveDriveMotor.getPosition().refresh().getValue().in(Radians))
         / (kTalonFXPPR * driveGearRatio);
     SmartDashboard.putNumber(config.name + " distance", dist);
     return dist;
@@ -364,7 +372,8 @@ public class SwerveWheel extends SubsystemBase {
    * 
    */
   public double getWheelSpeed() {
-    double rotationPerSecond = (double) swerveDriveMotor.getVelocity().refresh().getValue() / kTalonFXPPR * 10;
+    double rotationPerSecond = (double) swerveDriveMotor.getVelocity().refresh().getValue().in(RadiansPerSecond)
+        / kTalonFXPPR * 10;
     return (wheelDiameter * Math.PI * rotationPerSecond) / driveGearRatio;
   }
 
@@ -378,7 +387,8 @@ public class SwerveWheel extends SubsystemBase {
   public SwerveModuleState getState() {
     return new SwerveModuleState(
         getWheelSpeed(),
-        new Rotation2d(Math.toRadians(Utils.toWPIAngle(canCoder.getAbsolutePosition().refresh().getValue()))));
+        new Rotation2d(
+            Math.toRadians(Utils.toWPIAngle(canCoder.getAbsolutePosition().refresh().getValue().in(Degrees)))));
   }
 
   /**
@@ -391,6 +401,7 @@ public class SwerveWheel extends SubsystemBase {
   public SwerveModulePosition getPosition() {
     return new SwerveModulePosition(
         getDistance(),
-        new Rotation2d(Math.toRadians(Utils.toWPIAngle(canCoder.getAbsolutePosition().refresh().getValue()))));
+        new Rotation2d(
+            Math.toRadians(Utils.toWPIAngle(canCoder.getAbsolutePosition().refresh().getValue().in(Degrees)))));
   }
 }

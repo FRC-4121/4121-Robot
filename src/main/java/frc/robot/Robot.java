@@ -91,9 +91,6 @@ public class Robot extends TimedRobot {
     // Get park selection
     m_robotContainer.getParkSelection();
 
-    // Get color selection
-    m_robotContainer.getColorSelection();
-
     // Get shooter selection
     m_robotContainer.getAngleSelection();
 

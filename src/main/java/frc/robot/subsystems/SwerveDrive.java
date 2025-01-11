@@ -18,15 +18,14 @@ import edu.wpi.first.math.kinematics.*;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.math.controller.*;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
-import com.kauailabs.navx.frc.AHRS;
-import com.pathplanner.lib.auto.AutoBuilder;
+import com.studica.frc.AHRS;
+import com.studica.frc.AHRS.NavXComType;
 import com.pathplanner.lib.util.PathPlannerLogging;
 
-public class SwerveDriveWPI extends SubsystemBase {
+public class SwerveDrive extends SubsystemBase {
   // Swerve drive wheels
   private SwerveWheel leftFront;
   private SwerveWheel leftBack;
@@ -89,7 +88,7 @@ public class SwerveDriveWPI extends SubsystemBase {
    * Creates a new SwerveDrive
    * 
    */
-  public SwerveDriveWPI() {
+  public SwerveDrive() {
     // Initialize new swerve modules
     leftFront = new SwerveWheel(
         SwerveWheel.baseConfig.clone()
@@ -117,7 +116,7 @@ public class SwerveDriveWPI extends SubsystemBase {
         rightBackTranslation);
 
     // Initialize NavX gyro
-    gyro = new AHRS(SPI.Port.kMXP);
+    gyro = new AHRS(NavXComType.kMXP_SPI);
 
     // gyro.calibrate();
     gyro.reset();
@@ -145,28 +144,28 @@ public class SwerveDriveWPI extends SubsystemBase {
     field = new Field2d();
 
     // Configure AutoBuilder
-    AutoBuilder.configureHolonomic(
-        this::getPose,
-        this::resetPose,
-        this::getSpeeds,
-        this::driveRobotRelative,
-        Constants.Swerve.pathFollowerConfig,
-        () -> {
-          // Boolean supplier that controls when the path will be mirrored for the red
-          // alliance
-          // This will flip the path being followed to the red side of the field.
-          // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+    // AutoBuilder.configureHolonomic(
+    // this::getPose,
+    // this::resetPose,
+    // this::getSpeeds,
+    // this::driveRobotRelative,
+    // Constants.Swerve.pathFollowerConfig,
+    // () -> {
+    // // Boolean supplier that controls when the path will be mirrored for the red
+    // // alliance
+    // // This will flip the path being followed to the red side of the field.
+    // // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
 
-          /*
-           * var alliance = DriverStation.getAlliance();
-           * if (alliance.isPresent()) {
-           * return alliance.get() == DriverStation.Alliance.Red;
-           * }
-           * return false;
-           */
-          return !Constants.blueAlliance;
-        },
-        this);
+    // /*
+    // * var alliance = DriverStation.getAlliance();
+    // * if (alliance.isPresent()) {
+    // * return alliance.get() == DriverStation.Alliance.Red;
+    // * }
+    // * return false;
+    // */
+    // return !Constants.blueAlliance;
+    // },
+    // this);
 
     // Set up custom logging to add the current path to a field 2d widget
     PathPlannerLogging.setLogActivePathCallback((poses) -> field.getObject("path").setPoses(poses));
@@ -391,150 +390,11 @@ public class SwerveDriveWPI extends SubsystemBase {
     double currentJerkY = currLinearAccelY - lastLinearAccelY;
     lastLinearAccelY = currLinearAccelY;
 
-    if ((Math.abs(currentJerkX) > DriveConstants.kCollisionThresholdDeltaG) || (Math.abs(currentJerkY) > DriveConstants.kCollisionThresholdDeltaG)) {
+    if ((Math.abs(currentJerkX) > DriveConstants.kCollisionThresholdDeltaG)
+        || (Math.abs(currentJerkY) > DriveConstants.kCollisionThresholdDeltaG)) {
       Constants.impactDetected = true;
     }
   }
-
-  /**
-   * 
-   * Moves the robot by calculating the speed and angle for each
-   * swerve module based on joystick input
-   * 
-   * @param leftX  The left-right position of the left joystick. Controls slew.
-   *               This is Y direction (left +) in WPI coordinate system.
-   * @param leftY  The up-down position of the left joystick. Controls
-   *               forward/backward. This is X direction (up +) in WPI coordinate
-   *               system.
-   * @param rightX The left-right position of the right joystick. Controls
-   *               rotation.
-   * 
-   */
-  /*
-   * public void drive(double leftX, double leftY, double rightX) {
-   * 
-   * // Convert joystick positions to linear speeds in meters/second
-   * vxMetersPerSecond = -(leftY * LinearSpeed);
-   * vyMetersPerSecond = (leftX * LinearSpeed);
-   * 
-   * // Get rotational speed
-   * double omegaRadiansPerSecond = 0.0;
-   * if(Math.abs(rightX) < kJoystickTolerance){
-   * double pidOutput =
-   * wpiPIDController.calculate(Math.toRadians(getGyroYawRate()), 0.0);
-   * omegaRadiansPerSecond = RotationalSpeed * pidOutput;
-   * } else{
-   * omegaRadiansPerSecond = RotationalSpeed * rightX;
-   * }
-   * 
-   * // Create Chassis Speed based on drive mode
-   * if (isFieldOriented) {
-   * 
-   * speeds = ChassisSpeeds.fromFieldRelativeSpeeds(vxMetersPerSecond,
-   * vyMetersPerSecond, omegaRadiansPerSecond,
-   * Rotation2d.fromDegrees(getGyroAngle()));
-   * //speeds = ChassisSpeeds.fromFieldRelativeSpeeds(vxMetersPerSecond,
-   * vyMetersPerSecond, omegaRadiansPerSecond,
-   * Rotation2d.fromDegrees(getGyroYaw()));
-   * 
-   * }
-   * else {
-   * 
-   * speeds = new ChassisSpeeds(vxMetersPerSecond, vyMetersPerSecond,
-   * omegaRadiansPerSecond);
-   * 
-   * }
-   * 
-   * // Convert chassis speeds to module states
-   * SwerveModuleState[] moduleStates = kinematics.toSwerveModuleStates(speeds);
-   * 
-   * // Get calculated module angles
-   * frontLeftAngle = moduleStates[2].angle.getDegrees();
-   * frontRightAngle = moduleStates[3].angle.getDegrees();
-   * backLeftAngle = moduleStates[0].angle.getDegrees();
-   * backRightAngle = moduleStates[1].angle.getDegrees();
-   * 
-   * // Correct negative angles to be within 0 to 360
-   * if (backRightAngle < 0)
-   * {
-   * backRightAngle = 360 + backRightAngle;
-   * }
-   * if (backLeftAngle < 0)
-   * {
-   * backLeftAngle = 360 + backLeftAngle;
-   * }
-   * if (frontRightAngle < 0)
-   * {
-   * frontRightAngle = 360 + frontRightAngle;
-   * }
-   * if (frontLeftAngle < 0)
-   * {
-   * frontLeftAngle = 360 + frontLeftAngle;
-   * }
-   * 
-   * // Run the swerve modules based on current status
-   * if (Math.abs(leftX) < joystickDeadband && Math.abs(leftY) < joystickDeadband
-   * && Math.abs(rightX) < joystickDeadband) {
-   * 
-   * // Stop motors without turning wheels
-   * leftFront.stop();
-   * rightFront.stop();
-   * leftBack.stop();
-   * rightBack.stop();
-   * 
-   * }
-   * else {
-   * 
-   * if (!isParked) {
-   * 
-   * leftFront.drive(moduleStates[0].speedMetersPerSecond, frontLeftAngle);
-   * rightFront.drive(moduleStates[1].speedMetersPerSecond, frontRightAngle);
-   * leftBack.drive(moduleStates[2].speedMetersPerSecond, backLeftAngle);
-   * rightBack.drive(moduleStates[3].speedMetersPerSecond, backRightAngle);
-   * 
-   * // Put drive values on dashboard for testing/debugging
-   * SmartDashboard.putNumber("Left Front Speed",
-   * moduleStates[0].speedMetersPerSecond);
-   * SmartDashboard.putNumber("Left Front Angle",
-   * moduleStates[0].angle.getDegrees());
-   * SmartDashboard.putNumber("Corrected Left Front Angle", frontLeftAngle);
-   * SmartDashboard.putNumber("Right Front Speed",
-   * moduleStates[1].speedMetersPerSecond);
-   * SmartDashboard.putNumber("Right Front Angle",
-   * moduleStates[1].angle.getDegrees());
-   * SmartDashboard.putNumber("Corrected Right Front Angle", frontRightAngle);
-   * SmartDashboard.putNumber("Left Back Speed",
-   * moduleStates[2].speedMetersPerSecond);
-   * SmartDashboard.putNumber("Left Back Angle",
-   * moduleStates[2].angle.getDegrees());
-   * SmartDashboard.putNumber("Corrected Left Back Angle", backLeftAngle);
-   * SmartDashboard.putNumber("Right Back Speed",
-   * moduleStates[3].speedMetersPerSecond);
-   * SmartDashboard.putNumber("Right Back Angle",
-   * moduleStates[3].angle.getDegrees());
-   * SmartDashboard.putNumber("Corrected Right Back Angle", backRightAngle);
-   * 
-   * }
-   * 
-   * }
-   * 
-   * // Check for collision
-   * double currLinearAccelX = gyro.getWorldLinearAccelX();
-   * double currentJerkX = currLinearAccelX - lastLinearAccelX;
-   * lastLinearAccelX = currLinearAccelX;
-   * double currLinearAccelY = gyro.getWorldLinearAccelY();
-   * double currentJerkY = currLinearAccelY - lastLinearAccelY;
-   * lastLinearAccelY = currLinearAccelY;
-   * 
-   * if ( (Math.abs(currentJerkX) > kCollisionThresholdDeltaG ) ||
-   * (Math.abs(currentJerkY) > kCollisionThresholdDeltaG) ) {
-   * 
-   * impactDetected = true;
-   * 
-   * }
-   * 
-   * }
-   */
 
   /**
    * 

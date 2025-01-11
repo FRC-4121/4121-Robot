@@ -5,23 +5,20 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.SwerveDriveWPI;
+import frc.robot.subsystems.SwerveDrive;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import frc.robot.ExtraClasses.NetworkTableQuerier;
-import frc.robot.Constants.MechanismConstants;
 import frc.robot.Constants.ControlConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants;
-import edu.wpi.first.math.filter.MedianFilter;
 import edu.wpi.first.math.controller.*;
 
 import edu.wpi.first.math.MathUtil;
 
 public class DriveWithJoysticks extends Command {
-  private SwerveDriveWPI swervedrive;
-  private XboxController Xbox;
-  private NetworkTableQuerier table;
+  private SwerveDrive swerve;
+  private XboxController xbox;
 
   private final SlewRateLimiter xSpeedLimiter;
   private final SlewRateLimiter ySpeedLimiter;
@@ -31,40 +28,26 @@ public class DriveWithJoysticks extends Command {
   private double ySpeed;
   private double rotSpeed;
 
-  private double tagsFound;
-  private int centerTag;
-  private int tagID;
-  private double tagDistance;
-  private double tagOffset;
-  private Boolean isMyTag;
-
-  private MedianFilter distFilter;
-  private MedianFilter offsetFilter;
-
   private PIDController wpiPIDController;
 
-  public DriveWithJoysticks(SwerveDriveWPI drive, XboxController xbox, NetworkTableQuerier ntable) {
+  private boolean isFieldOriented;
 
-    swervedrive = drive;
-    Xbox = xbox;
-    table = ntable;
+  public DriveWithJoysticks(SwerveDrive swerve, XboxController xbox, NetworkTableQuerier ntable) {
+
+    this.swerve = swerve;
+    this.xbox = xbox;
 
     xSpeedLimiter = new SlewRateLimiter(2);
     ySpeedLimiter = new SlewRateLimiter(2);
     rotSpeedLimiter = new SlewRateLimiter(3);
 
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(swervedrive);
+    addRequirements(swerve);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-
-    isMyTag = false;
-    distFilter = new MedianFilter(10);
-    offsetFilter = new MedianFilter(10);
-
     // Create PID controller
     wpiPIDController = new PIDController(DriveConstants.kPAutoAlign, DriveConstants.kIAutoAlign,
         DriveConstants.kDAutoAlign);
@@ -75,16 +58,12 @@ public class DriveWithJoysticks extends Command {
   @Override
   public void execute() {
 
-    // Initialize variables
-    tagOffset = 0;
-    isMyTag = false;
-
     // Get joystick positions and convert to speeds
-    xSpeed = xSpeedLimiter.calculate(MathUtil.applyDeadband(Xbox.getLeftX(), 0.01))
+    xSpeed = xSpeedLimiter.calculate(MathUtil.applyDeadband(xbox.getLeftX(), 0.01))
         * ControlConstants.kJoystickSpeedCorr;
-    ySpeed = ySpeedLimiter.calculate(MathUtil.applyDeadband(Xbox.getLeftY(), 0.01))
+    ySpeed = ySpeedLimiter.calculate(MathUtil.applyDeadband(xbox.getLeftY(), 0.01))
         * ControlConstants.kJoystickSpeedCorr;
-    rotSpeed = -rotSpeedLimiter.calculate(MathUtil.applyDeadband(Xbox.getRightX(), 0.01))
+    rotSpeed = -rotSpeedLimiter.calculate(MathUtil.applyDeadband(xbox.getRightX(), 0.01))
         * ControlConstants.kJoystickSpeedCorr;
     System.out.println("xSpeed:" + xSpeed);
     System.out.println("ySpeed: " + ySpeed);
@@ -93,60 +72,13 @@ public class DriveWithJoysticks extends Command {
     // Check if auto align is enabled before proceeding
     if (DriveConstants.AutoAngleToTarget) {
       if (Math.abs(rotSpeed) < 0.01) {
-        // Determine if we see any AprilTags
-        tagsFound = table.getTagsFound("CAM2");
-        if (tagsFound > 1) {
-          // Determine if we see the center speaker tag
-          centerTag = -1;
-          for (int i = 0; i < tagsFound; i++) {
-            if (Constants.blueAlliance) {
-              if ((int) table.getTagInfo("Cam2", i, "id") == MechanismConstants.BlueSpeakerCenterID) {
-                centerTag = i;
-                isMyTag = true;
-              }
-            } else {
-              if ((int) table.getTagInfo("Cam2", i, "id") == MechanismConstants.RedSpeakerCenterID) {
-                centerTag = i;
-                isMyTag = true;
-              }
-            }
-          }
 
-          // If we found the center speaker tag, calculate angle correction
-          if (isMyTag) {
-            // Only find distance and offset if we know we have the right tag
-            tagDistance = distFilter.calculate(table.getTagInfo("CAM2", centerTag, "distance"));
-            tagOffset = offsetFilter.calculate(table.getTagInfo("CAM2", centerTag, "offset"));
-            if (tagDistance > DriveConstants.MinAutoAlignDistance
-                && tagDistance < DriveConstants.MaxAutoAlignDistance) {
-              System.out.println("Tag Offset: " + tagOffset);
-              rotSpeed = -wpiPIDController.calculate(tagOffset, 0);
-
-              if (rotSpeed > 0)
-                rotSpeed = DriveConstants.kFFAutoAlign + rotSpeed;
-              else if (rotSpeed < 0)
-                rotSpeed = -DriveConstants.kFFAutoAlign + rotSpeed;
-
-              if (rotSpeed > 0.4)
-                rotSpeed = 0.4;
-              else if (rotSpeed < -0.4)
-                rotSpeed = -0.4;
-
-              if (Math.abs(tagOffset) < 5.0)
-                rotSpeed = 0.0;
-
-              System.out.println("Auto Rotate");
-              System.out.println("rotSpeed: " + rotSpeed);
-
-            }
-          }
-        }
       }
     }
     if (Constants.isFieldOriented)
-      swervedrive.driveFieldRelative(xSpeed, ySpeed, rotSpeed);
+      swerve.driveFieldRelative(xSpeed, ySpeed, rotSpeed);
     else
-      swervedrive.driveRobotRelative(xSpeed, ySpeed, rotSpeed);
+      swerve.driveRobotRelative(xSpeed, ySpeed, rotSpeed);
   }
 
   // Called once the command ends or is interrupted.
@@ -161,4 +93,11 @@ public class DriveWithJoysticks extends Command {
     return false;
   }
 
+  public boolean getFieldOriented() {
+    return isFieldOriented;
+  }
+
+  public void setFieldOriented(boolean isFieldOriented) {
+    this.isFieldOriented = isFieldOriented;
+  }
 }
