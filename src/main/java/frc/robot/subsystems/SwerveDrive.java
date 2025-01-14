@@ -91,19 +91,19 @@ public class SwerveDrive extends SubsystemBase {
   public SwerveDrive() {
     // Initialize new swerve modules
     leftFront = new SwerveWheel(
-        SwerveWheel.baseConfig.clone()
+        SwerveWheel.baseConfig()
             .withName("LF")
             .withIds(leftFrontDriveId, leftFrontAngleId, leftFrontCoderId));
     leftBack = new SwerveWheel(
-        SwerveWheel.baseConfig.clone()
+        SwerveWheel.baseConfig()
             .withName("LB")
             .withIds(leftBackDriveId, leftBackAngleId, leftBackCoderId));
     rightFront = new SwerveWheel(
-        SwerveWheel.baseConfig.clone()
+        SwerveWheel.baseConfig()
             .withName("RF")
             .withIds(rightFrontDriveId, rightFrontAngleId, rightFrontCoderId));
     rightBack = new SwerveWheel(
-        SwerveWheel.baseConfig.clone()
+        SwerveWheel.baseConfig()
             .withName("RB")
             .withIds(rightBackDriveId, rightBackAngleId, rightBackCoderId));
 

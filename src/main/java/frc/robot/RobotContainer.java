@@ -47,7 +47,7 @@ public class RobotContainer {
   private final ChangeDriveMode changeModeCommand;
 
   // Declare Auto Commands
-  private final SendableChooser<Command> autoChooser;
+  // private final SendableChooser<Command> autoChooser;
 
   // Declare KillAuto Commands
   private final KillAutoCommand killAuto;
@@ -98,8 +98,8 @@ public class RobotContainer {
     killAuto = new KillAutoCommand();
 
     // Create an auto command chooser
-    autoChooser = AutoBuilder.buildAutoChooser();
-    SmartDashboard.putData("Auto Mode", autoChooser);
+    // autoChooser = AutoBuilder.buildAutoChooser();
+    // SmartDashboard.putData("Auto Mode", autoChooser);
 
     // Initialize Xbox Buttons
 
@@ -227,8 +227,8 @@ public class RobotContainer {
    * 
    */
   public Command getAutonomousCommand() {
-
-    return (Command) autoChooser.getSelected();
+    return null;
+    // return (Command) autoChooser.getSelected();
 
     /*
      * String position = "Center";

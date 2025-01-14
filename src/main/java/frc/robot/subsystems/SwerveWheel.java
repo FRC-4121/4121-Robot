@@ -127,24 +127,18 @@ public class SwerveWheel extends SubsystemBase {
       this.angleLimiter = speedLimit;
       return this;
     }
-
-    public WheelConfig clone() {
-      try {
-        return (WheelConfig) super.clone();
-      } catch (CloneNotSupportedException ex) {
-        throw new RuntimeException(ex); // this path should never be taken but Java makes me
-      }
-    }
   }
 
-  public static final WheelConfig baseConfig = new WheelConfig() {
-    {
-      angleKP = 3.25;
-      angleKI = 2.25;
-      angleKP = 0.04;
-      driveKF = 0.0454;
-    }
-  };
+  public static WheelConfig baseConfig() {
+    return new WheelConfig() {
+      {
+        angleKP = 3.25;
+        angleKI = 2.25;
+        angleKP = 0.04;
+        driveKF = 0.0454;
+      }
+    };
+  }
 
   /**
    * 
