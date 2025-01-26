@@ -5,8 +5,9 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.SwerveDrive;
+import frc.robot.subsystems.SwerveDriveWPI;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import frc.robot.ExtraClasses.NetworkTableQuerier;
 import frc.robot.Constants.ControlConstants;
@@ -17,7 +18,7 @@ import edu.wpi.first.math.controller.*;
 import edu.wpi.first.math.MathUtil;
 
 public class DriveWithJoysticks extends Command {
-  private SwerveDrive swerve;
+  private SwerveDriveWPI swerve;
   private XboxController xbox;
 
   private final SlewRateLimiter xSpeedLimiter;
@@ -32,7 +33,7 @@ public class DriveWithJoysticks extends Command {
 
   private boolean isFieldOriented;
 
-  public DriveWithJoysticks(SwerveDrive swerve, XboxController xbox, NetworkTableQuerier ntable) {
+  public DriveWithJoysticks(SwerveDriveWPI swerve, XboxController xbox, NetworkTableQuerier ntable) {
 
     this.swerve = swerve;
     this.xbox = xbox;
@@ -69,16 +70,22 @@ public class DriveWithJoysticks extends Command {
     System.out.println("ySpeed: " + ySpeed);
     System.out.println("rotSpeed: " + rotSpeed);
 
+    SmartDashboard.putNumber("X Speed", xSpeed);
+    SmartDashboard.putNumber("Y Speed", ySpeed);
+    SmartDashboard.putNumber("Rot Speed", rotSpeed);
+
     // Check if auto align is enabled before proceeding
     if (DriveConstants.AutoAngleToTarget) {
       if (Math.abs(rotSpeed) < 0.01) {
 
       }
     }
-    if (Constants.isFieldOriented)
+    if (Constants.isFieldOriented) {
       swerve.driveFieldRelative(xSpeed, ySpeed, rotSpeed);
-    else
+    } else {
       swerve.driveRobotRelative(xSpeed, ySpeed, rotSpeed);
+    }
+        
   }
 
   // Called once the command ends or is interrupted.

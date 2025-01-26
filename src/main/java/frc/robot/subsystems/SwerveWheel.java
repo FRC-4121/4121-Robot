@@ -136,6 +136,7 @@ public class SwerveWheel extends SubsystemBase {
         angleKI = 2.25;
         angleKP = 0.04;
         driveKF = 0.0454;
+        angleLimiter = 0.7;
       }
     };
   }
@@ -182,18 +183,18 @@ public class SwerveWheel extends SubsystemBase {
     }
     swerveAngleMotor = new TalonFX(config.angleId);
     var angleConfig = swerveAngleMotor.getConfigurator(); // The configurator is used for more advanced configurations
-    {
-      StatusCode code = angleConfig
-          .apply(new FeedbackConfigs().withFeedbackSensorSource(FeedbackSensorSourceValue.RotorSensor), configTimeout);
-      if (code != StatusCode.OK) {
-        DriverStation.reportError(String.format("Configuring feedback for angle motor failed with code: %s", code),
-            false);
-      }
-    }
+    // {
+    //   StatusCode code = angleConfig
+    //       .apply(new FeedbackConfigs().withFeedbackSensorSource(FeedbackSensorSourceValue.RotorSensor), configTimeout);
+    //   if (code != StatusCode.OK) {
+    //     DriverStation.reportError(String.format("Configuring feedback for angle motor failed with code: %s", code),
+    //         false);
+    //   }
+    // }
     {
       StatusCode code = angleConfig.apply(
           new MotorOutputConfigs()
-              .withInverted(InvertedValue.Clockwise_Positive) // Clockwise positive for this motor.
+              .withInverted(InvertedValue.CounterClockwise_Positive) // Clockwise positive for this motor.
               .withNeutralMode(NeutralModeValue.Brake) // When we aren't writing a value to the motor, we want to brake.
               .withDutyCycleNeutralDeadband(angleDeadband), // Values smaller than the drive deadband are rounded down
                                                             // to 0.
@@ -242,6 +243,7 @@ public class SwerveWheel extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+      double encoderAngle = canCoder.getAbsolutePosition().getValue().in(Degrees) / 360 % 1;
   }
 
   /**
@@ -267,11 +269,11 @@ public class SwerveWheel extends SubsystemBase {
     if (canCoder != null) { // old code that uses an external CANcoder
       // Normalize encoder to have a max value of 1 and correct for discontinuity at
       // 360 degrees (should be 0)
-      double encoderAngle = canCoder.getAbsolutePosition().getValue().in(Degrees);
-      if (encoderAngle == 1.0) {
-        encoderAngle = 0.0;
-      }
-
+      double encoderAngle = canCoder.getAbsolutePosition().getValue().in(Degrees) / 360 % 1;
+      // if (encoderAngle == 1.0) {
+      //   encoderAngle = 0.0;
+      // }
+      SmartDashboard.putNumber(config.name + " encoder target", target);
       SmartDashboard.putNumber(config.name + " encoder angle", encoderAngle);
 
       double dist1 = Math.abs(target - encoderAngle);
@@ -287,6 +289,8 @@ public class SwerveWheel extends SubsystemBase {
         }
         speed = -speed;
       }
+
+      SmartDashboard.putNumber(config.name + " PID target", target);
 
       // double output = anglePIDController.run(encoderAngle, target);
       double output = wpiPIDController.calculate(encoderAngle, target);
@@ -316,6 +320,7 @@ public class SwerveWheel extends SubsystemBase {
     } else { // this looks a lot simpler but is untested
       swerveAngleMotor.setControl(new PositionVoltage(angle));
       swerveDriveMotor.set(wheelVelocity);
+      throw new RuntimeException("nuh uh");
     }
 
     // Set motor speeds

@@ -8,6 +8,7 @@
 package frc.robot;
 
 import frc.robot.ExtraClasses.Gains;
+import com.pathplanner.lib.config.PIDConstants;
 
 /**
  * The Constants class provides a dope af place for teams to hold robot-wide
@@ -33,20 +34,6 @@ public final class Constants {
      * Swerve drive values
      */
 
-    // Swerve drive motors CAN IDs
-    public static final int kLeftFrontDrive = 1;
-    public static final int kLeftFrontAngle = 2;
-    public static final int kLeftFrontCoder = 3;
-    public static final int kRightFrontDrive = 4;
-    public static final int kRightFrontAngle = 5;
-    public static final int kRightFrontCoder = 6;
-    public static final int kRightBackDrive = 7;
-    public static final int kRightBackAngle = 8;
-    public static final int kRightBackCoder = 9;
-    public static final int kLeftBackDrive = 10;
-    public static final int kLeftBackAngle = 11;
-    public static final int kLeftBackCoder = 12;
-
     // Swerve drive calculation constants
     public static final double kTalonFXPPR = 2048;
     public static final double DRIVETRAIN_TRACKWIDTH_METERS = 0.546;
@@ -64,6 +51,14 @@ public final class Constants {
     public static final double kAnglePIDkp = 10.0;
     public static final double kAnglePIDkd = 0.1;
     public static final double kAnglePIDki = 0.0;
+    public static final double drivePIDkPs[] = { 0.4, 0.4, 0.4, 0.4 };
+    public static final double drivePIDkIs[] = { 0.25, 0.25, 0.25, 0.25 };
+    public static final double drivePIDkDs[] = { 0.0, 0.0, 0.0, 0.0 };
+    public static final double drivePIDkFs[] = { 1.0, 1.0, 1.0, 1.0 };
+    public static final double anglePIDkPs[] = { 3.25, 3.25, 3.25, 3.25 }; //3.25
+    public static final double anglePIDkIs[] = { 2.25, 2.25, 2.25, 2.25 }; //2.25
+    public static final double anglePIDkDs[] = { 0.04, 0.04, 0.04, 0.04 }; //0.04
+    public static double angleLimiters[] = { 1.0, 1.0, 1.0, 1.0 };    
 
     // Auto drive PID constants
     public static final double kAutoDrivePIDkp = 0.02;
@@ -109,157 +104,25 @@ public final class Constants {
     public static final double slowSpeed = 0.3;
     public static final double driveSpeed = 0.7;
     public static final double swerveDriveSpeedLimiter = 0.7;
-    public static double LinearSpeed = 3;
+    public static double LinearSpeed = 5.0;
     public static double RotationalSpeed = Math.PI;
+    public static double RotationalSpeedFast = 2 * Math.PI;
     public static final double autoSwerveDriveSpeedLimiter = 0.6;
     public static final double autoSwerveDriveAngleLimiter = 2.0;
     public static final double slowAngleSpeed = 0.5;
     public static final double angleSpeed = 1.0;
     public static final double MaxVoltsMK4 = 12.0; // max voltage of swerve module
 
-    /*
-     * West coast drive values
-     */
+    // PathPlanner constants
+    public static final PIDConstants translationConstants = new PIDConstants(5.0, 0.0, 0.0);
+    public static final PIDConstants rotationConstants = new PIDConstants(5.0, 0.0, 0.0);
 
-    // West coast drive motors CAN IDs
-    public static final int LEFT_MASTER_F = 3;
-    public static final int LEFT_SLAVE_F = 2;
-    public static final int RIGHT_MASTER_F = 1;
-    public static final int RIGHT_SLAVE_F = 4;
-
-    /**
-     * Mecanum Drive Constants
-     */
-
-    // Mecanum motor CAN IDs
-    public static final int LeftFrontMotorID = 1;
-    public static final int LeftBackMotorID = 4;
-    public static final int RightFrontMotorID = 2;
-    public static final int RightBackMotorID = 3;
-
-    // Mecanum motor limits
-    public static final double MecanumSpeedLimiter = 0.8; // Can Test This
   }
 
   /*
    * Values used for mechanisms
    */
   public static final class MechanismConstants {
-
-    /*
-     * Shooter Constants
-     */
-
-    // Motor CAN IDs
-    public static final int TopShooterID = 13;
-    public static final int BottomShooterID = 14;
-
-    // General constants
-    public static final double TopShootSpeakerSpeed = -1.0;
-    public static final double BottomShootSpeakerSpeed = -1.0;
-    public static final double TopShootAmpSpeed = -0.08;// 0.08 optimal
-    public static final double BottomShootAmpSpeed = -0.3;// 0.3 optimal
-    public static final double TopShooterTrapSpeed = -0.65;
-    public static final double BottomShooterTrapSpeed = -0.65;
-    public static final double TopShootIdleSpeed = -0.1;
-    public static final double BottomShootIdleSpeed = 0.1;
-    public static final double shooterDelay = 0.25;
-
-    /*
-     * Shooter Angle System Constants
-     */
-
-    // Angle motor CAN IDs
-    public static final int kPivotMotorID = 15;
-
-    // PID values
-    public static final double kShooterAngleKP = 0.000085;// 0.00009
-    public static final double kShooterAngleKI = 0.000001;// 0.0000002
-    public static final double kShooterAngleKD = 0.000009;// 0.000025
-    public static final double kShooterAngleFF = 0;
-    public static final double kShooterAngleMinOutput = -1;
-    public static final double kShooterAngleMaxOutput = 1;
-    public static final int kTimeoutMsAngle = 20;
-
-    // Angle Motor Configuration
-    public static final int kAngleMotorCurrentLimit = 20;
-    public static final double AngleMotorSpeed = 0.15;
-    public static final double AngleMotorMinSpeed = 0.1;
-
-    // Angles and distances for certain shots
-    public static final double AmpAngle = 60; // degrees, needs to be confirmed
-    public static final double AmpEncoder = 0;
-    public static final double HighSpeakerAngle = 48;
-    public static final double LowSpeakerAngle = 32;
-    public static final double MaxSpeakerAngle = 55;
-    public static final double MinSpeakerAngle = 32;
-    public static final double HighSpeakerEncoder = 0;
-    public static final double LowSpeakerEncoder = 27700;
-    public static final double MaxSpeakerEncoder = 27300;
-    public static final double MinSpeakerEncoder = 0;
-    public static final double MinAutoDistance = 70;
-    public static final double MaxAutoDistance = 195;
-    public static final double IdleAngle = 53;// 37 for 2nd shot
-    public static final double IdleEncoder = 1000;
-
-    // Shooter Angles
-    public static final double ShooterAngleTolerance = 500.0;
-    public static double ShooterTargetAngle = 40;
-    public static double ShooterTargetEncoder = 12000;
-    public static Boolean AutoShooterPositioning = true;
-    public static Boolean PauseAutoPosition = false;
-
-    /*
-     * Processor System Constants
-     */
-
-    // Motor CAN IDs
-    public static final int ProcessorMotorID = 16;
-
-    /*
-     * Intake System Constants
-     */
-
-    // Motor CAN IDs
-    public static final int IntakeMotorID = 21;
-
-    /**
-     * Pneumatic System Constants
-     */
-
-    // Pneumatics Controller IDs
-    public static final int ClimberOpenChannelID = 9;
-    public static final int ClimberCloseChannelID = 8;
-    public static final int ControlModuleID = 61;
-
-    // Pneumatic General Constants
-    public static double pressureSensorVoltage = 5;
-
-    /**
-     * LED String Constants
-     */
-
-    // General Constants
-    public static Boolean getCone = false; // Are the led's yellow
-
-    /**
-     * Vision System Constants
-     */
-
-    // General Constants
-    public static final int BlueSpeakerCenterID = 7;
-    public static final int BlueSpeakerSideID = 8;
-    public static final int BlueAmpID = 6;
-    public static final int RedSpeakerCenterID = 4;
-    public static final int RedSpeakerSideID = 3;
-    public static final int RedAmpID = 5;
-
-    /**
-     * LIDAR Sensor Constants
-     */
-
-    // RoboRio Port ID
-    public static final int LIDAR_PORT = 0;
 
   }
 
@@ -352,7 +215,7 @@ public final class Constants {
   public static final double kAutoTurnSpeed = 0.5;
   // public static final double kLowGearRatio = 30.0;
   // public static final double kHighGearRatio = 70.0;
-  public static final double kGearRatio = 7;
+  public static final double kGearRatio = 5.9;
   public static final double kTurnAngleTolerance = 0.001;
   public static final double kDriveDistanceTolerance = 10.0;
   public static final double AUTO_ENCODER_REVOLUTION_FACTOR = 14750.0;

@@ -17,19 +17,20 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import com.pathplanner.lib.auto.AutoBuilder;
 
+
 public class RobotContainer {
 
   // ===Controllers===//
 
   // Declare Driver Controllers
   private final XboxController xbox;
-  // private final XboxController secondaryXbox;
+  private final XboxController secondaryXbox;
   private final Joystick launchpad;
 
   // ===Subsystems===//
 
   // Declare Subsystems
-  private final SwerveDrive swerve;
+  private final SwerveDriveWPI swerve;
 
   // ===Extra Systems===//
 
@@ -77,11 +78,11 @@ public class RobotContainer {
 
     // Initialize driver controllers
     xbox = new XboxController(1);
-    // secondaryXbox = new XboxController(0);
+    secondaryXbox = new XboxController(0);
     launchpad = new Joystick(2);
 
     // Initialize Subsystems
-    swerve = new SwerveDrive();
+    swerve = new SwerveDriveWPI();
 
     // Initialize extra systems
     table = new NetworkTableQuerier();
@@ -180,22 +181,6 @@ public class RobotContainer {
 
   /**
    * 
-   * Gets the value of the Auto Shooter Angle switch
-   * 
-   */
-  public void getAngleSelection() {
-    if (autoShooterPositionButton.getAsBoolean() == true) {
-      MechanismConstants.AutoShooterPositioning = true;
-      SmartDashboard.putBoolean("Auto Positioning", true);
-      // parkCommand.execute();
-    } else {
-      MechanismConstants.AutoShooterPositioning = false;
-      SmartDashboard.putBoolean("Auto Positioning", false);
-    }
-  }
-
-  /**
-   * 
    * Get the value of the Auto Align Robot switch
    * 
    */
@@ -230,80 +215,6 @@ public class RobotContainer {
     return null;
     // return (Command) autoChooser.getSelected();
 
-    /*
-     * String position = "Center";
-     * if (!blueAlliance) {
-     * if (autoPosition == "Left") {
-     * position = "Right";
-     * }
-     * else if (autoPosition == "Right") {
-     * position = "Left";
-     * }
-     * }
-     * else
-     * {
-     * position = autoPosition;
-     * }
-     * 
-     * String autoDecision = position + Integer.toString(autoNotes);
-     * Command autoCommand = auto1NoteCenterCommand;
-     * 
-     * System.out.println("Auto Cmd: " + autoDecision);
-     * SmartDashboard.putString("Auto Cmd: ", autoDecision);
-     * 
-     * //PathPlannerPath testPath = PathPlannerPath.fromPathFile("TestPath");
-     * //return AutoBuilder.followPath(testPath);
-     * return new PathPlannerAuto("CenterClose4Note");
-     */
-
-    /*
-     * switch (autoDecision) {
-     * 
-     * case "Left1":
-     * autoCommand = auto1NoteLeftCommand;
-     * break;
-     * 
-     * case "Left2":
-     * autoCommand = auto2NoteLeftCommand;
-     * break;
-     * 
-     * case "Left3":
-     * autoCommand = auto2NoteLeftCommand;
-     * break;
-     * 
-     * case "Right1":
-     * autoCommand = auto1NoteRightCommand;
-     * break;
-     * 
-     * case "Right2":
-     * autoCommand = auto2NoteRightCommand;
-     * break;
-     * 
-     * case "Right3":
-     * autoCommand = auto2NoteRightCommand;
-     * break;
-     * 
-     * case "Center1":
-     * autoCommand = auto1NoteCenterCommand;
-     * break;
-     * 
-     * case "Center2":
-     * autoCommand = auto2NoteCenterCommand;
-     * break;
-     * 
-     * case "Center3":
-     * autoCommand = auto2NoteCenterCommand;
-     * break;
-     * 
-     * default:
-     * autoCommand = auto1NoteCenterCommand;
-     * break;
-     * 
-     * }
-     * 
-     * return autoCommand;
-     */
-
   }
 
   /**
@@ -337,6 +248,9 @@ public class RobotContainer {
    * 
    */
   public void updateRobotStatus() {
+
+    // Update drive mode
+    SmartDashboard.putBoolean("Field Oriented", Constants.isFieldOriented);
 
     // Update shooter position
     SmartDashboard.putBoolean("Can Shoot", Constants.readyToShoot);

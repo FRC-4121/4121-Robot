@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.MechanismConstants;
 import frc.robot.subsystems.cameras.CameraBuilder;
+import au.grapplerobotics.CanBridge;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -36,8 +37,8 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
 
-    new CameraBuilder(0, "Camera 0").fps(15).attachAutoCapture();
-    new CameraBuilder(1, "Camera 1").fps(15).attachAutoCapture();
+    //new CameraBuilder(0, "Camera 0").fps(15).attachAutoCapture();
+    //new CameraBuilder(1, "Camera 1").fps(15).attachAutoCapture();
 
     // Instantiate our RobotContainer. This will perform all our button bindings,
     // and put our
@@ -57,6 +58,9 @@ public class Robot extends TimedRobot {
 
     // Get the alliance color
     m_robotContainer.getAllianceColor();
+
+    // Start Grapple Robotics TCP client
+    CanBridge.runTCP();
   }
 
   /**
@@ -90,9 +94,6 @@ public class Robot extends TimedRobot {
 
     // Get park selection
     m_robotContainer.getParkSelection();
-
-    // Get shooter selection
-    m_robotContainer.getAngleSelection();
 
     // Get angle to target selection
     m_robotContainer.getAngleToTargetSelection();
@@ -168,9 +169,6 @@ public class Robot extends TimedRobot {
 
     // Set robot to robot oriented driving
     Constants.isFieldOriented = true;
-
-    // Make sure that the Auto Shooter Command will run
-    MechanismConstants.AutoShooterPositioning = true;
 
     // Make sure the robot is in fast mode
     DriveConstants.LinearSpeed = DriveConstants.MaxLinearSpeed;
