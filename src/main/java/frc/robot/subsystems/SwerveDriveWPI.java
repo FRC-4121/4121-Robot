@@ -140,7 +140,7 @@ public class SwerveDriveWPI extends SubsystemBase {
 
     // Create PID controller
     wpiPIDController = new PIDController(kAnglePIDkp, kAnglePIDki, kAnglePIDkd);
-    wpiPIDController.setTolerance(1.0, 5);
+    // wpiPIDController.setTolerance(0.1, 5);
 
     // Initialize swerve odometry object
     odometry = new SwerveDriveOdometry(kinematics, getGyroRotation2d(), getModulePositions());
@@ -246,7 +246,7 @@ public class SwerveDriveWPI extends SubsystemBase {
 
     // Convert joystick positions to linear speeds in meters/second
     vxMetersPerSecond = -(leftY * LinearSpeed);
-    vyMetersPerSecond = (leftX * LinearSpeed);
+    vyMetersPerSecond = -(leftX * LinearSpeed);
 
     // Get rotational speed
     double omegaRadiansPerSecond = 0.0;
@@ -313,14 +313,19 @@ public class SwerveDriveWPI extends SubsystemBase {
 
     // Convert joystick positions to linear speeds in meters/second
     vxMetersPerSecond = -(leftY * LinearSpeed);
-    vyMetersPerSecond = (leftX * LinearSpeed);
+    vyMetersPerSecond = -(leftX * LinearSpeed);
 
     // Get rotational speed
     double omegaRadiansPerSecond = 0.0;
     if (Math.abs(rightX) < kJoystickTolerance) {
 
-      double pidOutput = wpiPIDController.calculate(Math.toRadians(getGyroYawRate()), 0.0);
-      omegaRadiansPerSecond = RotationalSpeed * pidOutput;
+      double yawRate = getGyroYawRate();
+      double pidOutput = wpiPIDController.calculate(yawRate, 0.0);
+      if (vxMetersPerSecond >= 0.5 * LinearSpeed) {
+        omegaRadiansPerSecond = RotationalSpeed * pidOutput;
+      } else {
+        omegaRadiansPerSecond = 0.5 * RotationalSpeed * pidOutput;
+      }
 
     } else {
 
@@ -330,7 +335,11 @@ public class SwerveDriveWPI extends SubsystemBase {
         omegaRadiansPerSecond = RotationalSpeed * rightX;
       }
 
+      SmartDashboard.putBoolean("Omega Corr", false);
+
     }
+
+    SmartDashboard.putNumber("Drive Omega", omegaRadiansPerSecond);
 
     // Convert inputs to chassis speeds
     ChassisSpeeds fieldSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(vxMetersPerSecond, vyMetersPerSecond,
@@ -371,10 +380,10 @@ public class SwerveDriveWPI extends SubsystemBase {
     SwerveModuleState[] moduleStates = kinematics.toSwerveModuleStates(robotSpeeds);
 
     // Get module states
-    frontLeftState = moduleStates[2];
-    frontRightState = moduleStates[3];
-    backLeftState = moduleStates[0];
-    backRightState = moduleStates[1];
+    frontLeftState = moduleStates[0];
+    frontRightState = moduleStates[1];
+    backLeftState = moduleStates[2];
+    backRightState = moduleStates[3];
 
     // Optimize ther module states
     //frontLeftState.optimize(getGyroRotation2d());
@@ -388,31 +397,18 @@ public class SwerveDriveWPI extends SubsystemBase {
     backLeftAngle = backLeftState.angle.getDegrees();
     backRightAngle = backRightState.angle.getDegrees();
 
-    // Correct negative angles to be within 0 to 360
-    // if (backRightAngle < 0) {
-    //   backRightAngle = 360 + backRightAngle;
-    // }
-    // if (backLeftAngle < 0) {
-    //   backLeftAngle = 360 + backLeftAngle;
-    // }
-    // if (frontRightAngle < 0) {
-    //   frontRightAngle = 360 + frontRightAngle;
-    // }
-    // if (frontLeftAngle < 0) {
-    //   frontLeftAngle = 360 + frontLeftAngle;
-    // }
+    SmartDashboard.putNumber("LF WPI Ang", fromWPIAngle(frontLeftAngle));
+    SmartDashboard.putNumber("RF WPI Ang", fromWPIAngle(frontRightAngle));
+    SmartDashboard.putNumber("LB WPI Ang", fromWPIAngle(backLeftAngle));
+    SmartDashboard.putNumber("RB WPI Ang", fromWPIAngle(backRightAngle));
 
-    System.out.println("lf" + frontLeftAngle);
-    System.out.println("rf" + frontRightAngle);
-    System.out.println("lb" + backLeftAngle);
-    System.out.println("rb" + backRightAngle);
-
+    // Send new settings to swerve wheels as long as we aren't parked
     if (!isParked) {
 
-      leftFront.drive(frontLeftState.speedMetersPerSecond, frontLeftAngle);
-      rightFront.drive(frontRightState.speedMetersPerSecond, frontRightAngle);
-      leftBack.drive(backLeftState.speedMetersPerSecond, backLeftAngle);
-      rightBack.drive(backRightState.speedMetersPerSecond, backRightAngle);
+      leftFront.drive(frontLeftState.speedMetersPerSecond, fromWPIAngle(frontLeftAngle));
+      rightFront.drive(frontRightState.speedMetersPerSecond, fromWPIAngle(frontRightAngle));
+      leftBack.drive(backLeftState.speedMetersPerSecond, fromWPIAngle(backLeftAngle));
+      rightBack.drive(backRightState.speedMetersPerSecond, fromWPIAngle(backRightAngle));
 
     }
 
@@ -580,8 +576,9 @@ public class SwerveDriveWPI extends SubsystemBase {
    */
   public double getGyroYawRate() {
 
-    double yawRate = -yaw_filter.calculate(Math.toRadians(gyro.getRate()));
-    return yawRate;
+    //double yawRate = -yaw_filter.calculate(Math.toRadians(gyro.getRate()));
+    //return -Math.toRadians(gyro.getRate());
+    return -gyro.getRate();
 
   }
 
@@ -802,9 +799,9 @@ public class SwerveDriveWPI extends SubsystemBase {
    * 
    */
   public double toWPIAngle(double angle) {
-    if (angle > 180) {
+    if (angle >= 180) {
       angle = -(angle - 360);
-    } else if (angle > 0 && angle <= 180) {
+    } else if (angle > 0 && angle < 180) {
       angle = -angle;
     }
     return angle;

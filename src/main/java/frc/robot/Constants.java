@@ -48,8 +48,8 @@ public final class Constants {
     public static final double autoRightGyroCorrection = -53;
 
     // Swerve drive PID constants
-    public static final double kAnglePIDkp = 10.0;
-    public static final double kAnglePIDkd = 0.1;
+    public static final double kAnglePIDkp = 0.0145;
+    public static final double kAnglePIDkd = 0.0001;
     public static final double kAnglePIDki = 0.0;
     public static final double drivePIDkPs[] = { 0.4, 0.4, 0.4, 0.4 };
     public static final double drivePIDkIs[] = { 0.25, 0.25, 0.25, 0.25 };

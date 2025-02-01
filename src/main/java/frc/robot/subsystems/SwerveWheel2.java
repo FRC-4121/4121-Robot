@@ -191,7 +191,7 @@ public class SwerveWheel2 extends SubsystemBase {
 
     // Set angle motor output configuration
     var angleOutputConfigs = angleConfigs.MotorOutput;
-    angleOutputConfigs.Inverted = InvertedValue.Clockwise_Positive;
+    angleOutputConfigs.Inverted = InvertedValue.CounterClockwise_Positive;
     angleOutputConfigs.NeutralMode = NeutralModeValue.Brake;
     angleOutputConfigs.withDutyCycleNeutralDeadband(ANGLE_DEADBAND);
 
@@ -236,116 +236,121 @@ public class SwerveWheel2 extends SubsystemBase {
     SmartDashboard.putNumber(moduleName + " speed", speed);
     SmartDashboard.putNumber(moduleName + " angle", angle);
 
-    // Normalize target to have a max value of 1
-    double target = angle / 360.0;
-    if (target == 1.0) {
-      target = 0.0;
-    }
-    SmartDashboard.putNumber(moduleName + " raw target", target);
+    if (moduleName == "LF") {
 
-    // double target = angle;
+      // Normalize target to have a max value of 1
+      double normAngle = angle / 360.0;
+      if (normAngle == 1.0) {
+        normAngle = 0.0;
+      }
+      SmartDashboard.putNumber(moduleName + " norm angle", normAngle);
 
-    // Retrieve current CANcoder position. The CANcoder is configured for the range
-    // [-0.5,0.5) by the
-    // Phoenix Tuner X. The Phoenix 6 API returns the position in native rotation
-    // units with no
-    // discontinuity between 1 and 0.
-    double encoderAngle = canCoder.getAbsolutePosition().getValueAsDouble();
-    SmartDashboard.putNumber(moduleName + " CANcoder", encoderAngle);
+      // double normAngle = angle;
 
-    // Calculate distance to target angle
-    double dist1 = Math.abs(target - encoderAngle);
-    double dist2 = 1.0 - dist1;
-    if (dist1 > 0.25 && dist2 > 0.25) {
+      // Retrieve current CANcoder position. The CANcoder is configured for the range
+      // [-0.5,0.5) by the
+      // Phoenix Tuner X. The Phoenix 6 API returns the position in native rotation
+      // units with no
+      // discontinuity between 1 and 0.
+      double encoderAngle = canCoder.getAbsolutePosition().getValueAsDouble();
+      SmartDashboard.putNumber(moduleName + " CANcoder", encoderAngle);
 
-      target = target + 0.5;
-      if (target > 1.0) {
-        target = target - 1.0;
-      } else if (target == 1.0) {
-        target = 0.0;
+      // Calculate distance to target angle
+      double dist1 = Math.abs(normAngle - encoderAngle);
+      double dist2 = 1.0 - dist1;
+      double targetAngle = normAngle;
+      if (dist1 > 0.25 && dist2 > 0.25) {
+
+        targetAngle = normAngle + 0.5;
+        if (targetAngle > 1.0) {
+          targetAngle = targetAngle - 1.0;
+        } else if (targetAngle == 1.0) {
+          targetAngle = 0.0;
+        }
+
+        speed = -speed;
+
       }
 
-      speed = -speed;
+      SmartDashboard.putNumber(moduleName + " dist1", dist1);
+      SmartDashboard.putNumber(moduleName + " dist2", dist2);
+      SmartDashboard.putNumber(moduleName + " target", targetAngle);
+
+      // if (Math.max(encoderAngle - target, 1 - encoderAngle + target) > 0.25) {
+      // SmartDashboard.putBoolean(moduleName + " flip", true);
+      // speed = -speed;
+      // target += 0.5;
+      // if (target > 1)
+      // target -= 1;
+      // } else {
+      // SmartDashboard.putBoolean(moduleName + " flip", false);
+      // }
+
+      double error = (encoderAngle - targetAngle + 0.5) % 1 - 0.5;
+      SmartDashboard.putNumber(moduleName + " error", error);
+
+      // target = encoderAngle + error;
+
+      /*
+       * //Determine shortest rotation distance
+       * if (Math.abs(target - encoderAngle) > 0.5)
+       * {
+       * double diff = 1 - Math.abs(target - encoderAngle);
+       * target = target + diff;
+       * if (target >= 1.0) {
+       * target = target - 1.0;
+       * }
+       * encoderAngle = encoderAngle + diff;
+       * if (encoderAngle >= 1.0)
+       * {
+       * encoderAngle = encoderAngle - 1.0;
+       * }
+       * }
+       */
+
+      // Optimize angle movement to minimize rotational distance
+      double output = wpiPIDController.calculate(error, 0);
+      SmartDashboard.putNumber(moduleName + " PID output", output);
+
+      // Calculate angle speed with limiter
+      double angleSpeed = output * angleSpeedLimiter;
+
+      // Capping angleSpeed to max that the motor can take, from -1 to 1
+      if (angleSpeed > 1) {
+        angleSpeed = 1;
+      } else if (angleSpeed < -1) {
+        angleSpeed = -1;
+      }
+
+      // Before angle speed
+      SmartDashboard.putNumber(moduleName + " before angle", angleSpeed);
+
+      // putting angleSpeed and error into smart dashboard
+      SmartDashboard.putNumber(moduleName + " after angle", angleSpeed);
+
+      // Calculate wheel velocity
+      double motorVelocity = (speed / (2 * Math.PI * (WHEEL_DIAMETER / 2)) * kGearRatio);
+      double motorVelocityRPM = motorVelocity * 60;
+      SmartDashboard.putNumber(moduleName + " V target", motorVelocity);
+      SmartDashboard.putNumber(moduleName + " target RPM", motorVelocityRPM);
+
+      // Set motor speeds
+      swerveAngleOut.Output = angleSpeed;
+      swerveAngleMotor.setControl(swerveAngleOut);
+      double newSpeed = speed / LinearSpeed;
+      if (Math.abs(newSpeed) < 1.0) {
+        swerveDriveOut.Output = newSpeed;
+      } else if (newSpeed > 1.0) {
+        swerveDriveOut.Output = 1.0;
+      } else {
+        swerveDriveOut.Output = -1.0;
+      }
+      swerveDriveMotor.setControl(swerveDriveOut);
+      // swerveDriveMotor.setControl(m_request.withVelocity(motorVelocity));
+
+      SmartDashboard.putNumber(moduleName + " V actual", getDriveEncoderVelocity());
 
     }
-
-    SmartDashboard.putNumber(moduleName + " dist1", dist1);
-    SmartDashboard.putNumber(moduleName + " dist2", dist2);
-    SmartDashboard.putNumber(moduleName + " Target", target);
-
-    // if (Math.max(encoderAngle - target, 1 - encoderAngle + target) > 0.25) {
-    // SmartDashboard.putBoolean(moduleName + " flip", true);
-    // speed = -speed;
-    // target += 0.5;
-    // if (target > 1)
-    // target -= 1;
-    // } else {
-    // SmartDashboard.putBoolean(moduleName + " flip", false);
-    // }
-
-    double error = (encoderAngle - target + 0.5) % 1 - 0.5;
-    SmartDashboard.putNumber(moduleName + " error", error);
-
-    // target = encoderAngle + error;
-
-    /*
-     * //Determine shortest rotation distance
-     * if (Math.abs(target - encoderAngle) > 0.5)
-     * {
-     * double diff = 1 - Math.abs(target - encoderAngle);
-     * target = target + diff;
-     * if (target >= 1.0) {
-     * target = target - 1.0;
-     * }
-     * encoderAngle = encoderAngle + diff;
-     * if (encoderAngle >= 1.0)
-     * {
-     * encoderAngle = encoderAngle - 1.0;
-     * }
-     * }
-     */
-
-    // Optimize angle movement to minimize rotational distance
-    double output = wpiPIDController.calculate(error, 0);
-    SmartDashboard.putNumber(moduleName + " PID output", output);
-
-    // Calculate angle speed with limiter
-    double angleSpeed = output * angleSpeedLimiter;
-
-    // Capping angleSpeed to max that the motor can take, from -1 to 1
-    if (angleSpeed > 1) {
-      angleSpeed = 1;
-    } else if (angleSpeed < -1) {
-      angleSpeed = -1;
-    }
-
-    // Before angle speed
-    SmartDashboard.putNumber(moduleName + " before angle", angleSpeed);
-
-    // putting angleSpeed and error into smart dashboard
-    SmartDashboard.putNumber(moduleName + " after angle", angleSpeed);
-
-    // Calculate wheel velocity
-    double motorVelocity = (speed / (2 * Math.PI * (WHEEL_DIAMETER / 2)) * kGearRatio);
-    double motorVelocityRPM = motorVelocity * 60;
-    SmartDashboard.putNumber(moduleName + " V target", motorVelocity);
-    SmartDashboard.putNumber(moduleName + " target RPM", motorVelocityRPM);
-
-    // Set motor speeds
-    swerveAngleOut.Output = angleSpeed;
-    swerveAngleMotor.setControl(swerveAngleOut);
-    double newSpeed = speed / LinearSpeed;
-    if (Math.abs(newSpeed) < 1.0) {
-    swerveDriveOut.Output = newSpeed;
-    } else if (newSpeed > 1.0) {
-    swerveDriveOut.Output = 1.0;
-    } else {
-    swerveDriveOut.Output = -1.0;
-    }
-    swerveDriveMotor.setControl(swerveDriveOut);
-    // swerveDriveMotor.setControl(m_request.withVelocity(motorVelocity));
-
-    SmartDashboard.putNumber(moduleName + " V actual", getDriveEncoderVelocity());
 
   }
 
