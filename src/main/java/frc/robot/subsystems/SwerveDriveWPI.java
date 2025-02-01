@@ -91,13 +91,13 @@ public class SwerveDriveWPI extends SubsystemBase {
   private static final int rightFrontAngleId = 5;
   private static final int rightFrontCoderId = 6;
 
-  private static final int rightBackDriveId = 7;
-  private static final int rightBackAngleId = 8;
-  private static final int rightBackCoderId = 9;
+  private static final int rightBackDriveId = 10;
+  private static final int rightBackAngleId = 11;
+  private static final int rightBackCoderId = 12;
 
-  private static final int leftBackDriveId = 10;
-  private static final int leftBackAngleId = 11;
-  private static final int leftBackCoderId = 12;
+  private static final int leftBackDriveId = 7;
+  private static final int leftBackAngleId = 8;
+  private static final int leftBackCoderId = 9;
 
 
   /**
