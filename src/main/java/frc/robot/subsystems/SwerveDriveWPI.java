@@ -253,6 +253,7 @@ public class SwerveDriveWPI extends SubsystemBase {
     if (Math.abs(rightX) < kJoystickTolerance) {
       double pidOutput = wpiPIDController.calculate(Math.toRadians(getGyroYawRate()), 0.0);
       omegaRadiansPerSecond = RotationalSpeed * pidOutput;
+      omegaRadiansPerSecond = 0.0;
     } else {
       if (Math.abs(leftX) < joystickDeadband && Math.abs(leftY) < joystickDeadband) {
         omegaRadiansPerSecond = RotationalSpeedFast * rightX;
@@ -326,6 +327,7 @@ public class SwerveDriveWPI extends SubsystemBase {
       } else {
         omegaRadiansPerSecond = 0.5 * RotationalSpeed * pidOutput;
       }
+      omegaRadiansPerSecond = 0.0;
 
     } else {
 

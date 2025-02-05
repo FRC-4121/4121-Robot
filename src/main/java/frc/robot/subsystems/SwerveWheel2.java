@@ -89,6 +89,7 @@ public class SwerveWheel2 extends SubsystemBase {
   private final VelocityVoltage m_request = new VelocityVoltage(0).withSlot(0);
   //private final VelocityDutyCycle m_request = new VelocityDutyCycle(0).withSlot(0);
 
+
   /**
    * 
    *  Creates a new SwerveWheel
@@ -148,7 +149,6 @@ public class SwerveWheel2 extends SubsystemBase {
     // Initialize PID controller
     wpiPIDController = new PIDController(kP_AngleController, kI_AngleController, kD_AngleController);
     wpiPIDController.setTolerance(1.5,5);
-
   } 
 
   /**
@@ -271,32 +271,29 @@ public class SwerveWheel2 extends SubsystemBase {
     // double normAngle = angle;
 
     // Retrieve current CANcoder position. The CANcoder is configured for the range
-    // [-0.5,0.5) by the
+    // [0,1) by the
     // Phoenix Tuner X. The Phoenix 6 API returns the position in native rotation
     // units with no
     // discontinuity between 1 and 0.
     double encoderAngle = canCoder.getAbsolutePosition().getValueAsDouble();
 
     // Calculate distance to target angle
-    double dist1 = Math.abs(normAngle - encoderAngle);
-    double dist2 = 1.0 - dist1;
+    // double dist1 = Math.abs(normAngle - encoderAngle);
+    // double dist2 = 1.0 - dist1;
     double targetAngle = normAngle;
-    if (dist1 > 0.25 && dist2 > 0.25) {
+    // if (dist1 > 0.25 && dist2 > 0.25) {
+    // targetAngle = normAngle + 0.5;
+    // if (targetAngle > 1.0) {
+    // targetAngle = targetAngle - 1.0;
+    // } else if (targetAngle == 1.0) {
+    // targetAngle = 0.0;
+    // }
+    // speed = -speed;
+    // }
 
-      targetAngle = normAngle + 0.5;
-      if (targetAngle > 1.0) {
-        targetAngle = targetAngle - 1.0;
-      } else if (targetAngle == 1.0) {
-        targetAngle = 0.0;
-      }
-
-      speed = -speed;
-
-    }
-
-    SmartDashboard.putNumber(moduleName + " dist1", dist1);
-    SmartDashboard.putNumber(moduleName + " dist2", dist2);
-    SmartDashboard.putNumber(moduleName + " target", targetAngle);
+    // SmartDashboard.putNumber(moduleName + " dist1", dist1);
+    // SmartDashboard.putNumber(moduleName + " dist2", dist2);
+    // SmartDashboard.putNumber(moduleName + " target", targetAngle);
 
     // if (Math.max(encoderAngle - target, 1 - encoderAngle + target) > 0.25) {
     // SmartDashboard.putBoolean(moduleName + " flip", true);
@@ -309,6 +306,17 @@ public class SwerveWheel2 extends SubsystemBase {
     // }
 
     double error = (encoderAngle - targetAngle + 0.5) % 1 - 0.5;
+    if (error < -0.5)
+      error += 1.0;
+    else if (error > 0.5)
+      error -= 1.0;
+    if (error < -0.25) {
+      error += 0.5;
+      speed = -speed;
+    } else if (error > 0.25) {
+      error -= 0.5;
+      speed = -speed;
+    }
     SmartDashboard.putNumber(moduleName + " error", error);
 
     // target = encoderAngle + error;
