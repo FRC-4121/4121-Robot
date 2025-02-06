@@ -232,7 +232,7 @@ public final class Constants {
                              // motors
 
   // Filtering (for gyro)
-  public static final int FILTER_WINDOW_SIZE = 10;
+  public static final int FILTER_WINDOW_SIZE = 5;
 
   public static int DIRECTION_MULTIPLIER = 1;// Controls whether forward on joysticks is forward or backward on robot
 

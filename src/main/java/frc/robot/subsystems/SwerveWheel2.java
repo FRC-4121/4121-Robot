@@ -26,8 +26,6 @@ import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
 
 import static frc.robot.Constants.kGearRatio;
-//import static frc.robot.Constants.DriveConstants.swerveDriveSpeedLimiter;
-//import static frc.robot.Constants.DriveConstants.kTalonFXPPR;
 import static frc.robot.Constants.DriveConstants.*;
 
 import edu.wpi.first.hal.HAL;
@@ -42,6 +40,9 @@ import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Radians;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 
+/**
+ * Define a SwerveWheel object
+ */
 public class SwerveWheel2 extends SubsystemBase {
 
   // Declare constants
@@ -71,13 +72,13 @@ public class SwerveWheel2 extends SubsystemBase {
   private double kD_AngleController;
 
   // Declare Phoenix PID controller gains
-  private double phoenix_Kg;
-  private double phoenix_Ks;
-  private double phoenix_Kv;
-  private double phoenix_Ka;
-  private double phoenix_Kp;
-  private double phoenix_Ki;
-  private double phoneix_Kd;
+  private double drive_kG;
+  private double drive_kS;
+  private double drive_kV;
+  private double drive_kA;
+  private double drive_kP;
+  private double drive_kI;
+  private double drive_kD;
 
   // Declare state variables
   private int wheelID;
@@ -87,8 +88,6 @@ public class SwerveWheel2 extends SubsystemBase {
 
   // Declare velocity control variables
   private final VelocityVoltage m_request = new VelocityVoltage(0).withSlot(0);
-  //private final VelocityDutyCycle m_request = new VelocityDutyCycle(0).withSlot(0);
-
 
   /**
    * 
@@ -115,13 +114,13 @@ public class SwerveWheel2 extends SubsystemBase {
     kD_AngleController = anglePIDkDs[wheelID - 1];
 
     // Set Phoenix drive PID controller gains
-    phoenix_Kg = 0.0;
-    phoenix_Ks = 0.1;
-    phoenix_Kv = 0.1;
-    phoenix_Ka = 0.0;
-    phoenix_Kp = 0.1;
-    phoenix_Ki = 0.0;
-    phoneix_Kd = 0.0;
+    drive_kG = 0.0;
+    drive_kS = 0.1;
+    drive_kV = 0.1;
+    drive_kA = 0.0;
+    drive_kP = 0.1;
+    drive_kI = 0.0;
+    drive_kD = 0.0;
 
     // Put PID constants on SmartDashboard for testing
     SmartDashboard.putNumber(moduleName + " kP", kP_AngleController);
@@ -177,16 +176,15 @@ public class SwerveWheel2 extends SubsystemBase {
 
     // Set drive motor PID constants
     var slot0Configs = driveConfigs.Slot0;
-    slot0Configs.kG = phoenix_Kg;
-    slot0Configs.kS = phoenix_Ks;
-    slot0Configs.kV = phoenix_Kv;
-    slot0Configs.kA = phoenix_Ka;
-    slot0Configs.kP = phoenix_Kp;
-    slot0Configs.kI = phoenix_Ki;
-    slot0Configs.kD = phoneix_Kd;
+    slot0Configs.kG = drive_kG;
+    slot0Configs.kS = drive_kS;
+    slot0Configs.kV = drive_kV;
+    slot0Configs.kA = drive_kA;
+    slot0Configs.kP = drive_kP;
+    slot0Configs.kI = drive_kI;
+    slot0Configs.kD = drive_kD;
 
     // Apply drive motor configuration and initialize position to 0
-    //StatusCode status = StatusCode.StatusCodeNotInitialized;
     StatusCode driveStatus = swerveDriveMotor.getConfigurator().apply(driveConfigs, 0.050);
     if (!driveStatus.isOK()) {
       System.out.println("Could not apply drive motor configs for wheel: " + wheelID + ". Error code: " + driveStatus.toString());
@@ -205,12 +203,7 @@ public class SwerveWheel2 extends SubsystemBase {
     angleOutputConfigs.NeutralMode = NeutralModeValue.Brake;
     angleOutputConfigs.withDutyCycleNeutralDeadband(ANGLE_DEADBAND);
 
-    // Set angle motor feedback sensor
-    //var angleSensorConfig = angleConfigs.Feedback;
-    //angleSensorConfig.withFeedbackSensorSource(FeedbackSensorSourceValue.RotorSensor);
-
     // Apply angle motor configuration and initialize position to 0
-    //status = StatusCode.StatusCodeNotInitialized;
     StatusCode angleStatus = swerveAngleMotor.getConfigurator().apply(angleConfigs, 0.050);
     if (!angleStatus.isOK()) {
       System.out.println("Could not apply angle motor configs for " + moduleName + " wheel." + ". Error code: " + angleStatus.toString());
@@ -218,7 +211,6 @@ public class SwerveWheel2 extends SubsystemBase {
     } else {
       System.out.println("Successfully applied angle motor configs for wheel: " + wheelID + ". Error code: " + angleStatus.toString());
     }
-    //swerveAngleMotor.getConfigurator().setPosition(0);
 
   }
  
@@ -258,54 +250,17 @@ public class SwerveWheel2 extends SubsystemBase {
    */
   public void drive(double speed, double angle) {
 
-    SmartDashboard.putNumber(moduleName + " speed", speed);
-    SmartDashboard.putNumber(moduleName + " angle", angle);
-
     // Normalize target to have a max value of 1
     double normAngle = angle / 360.0;
     if (normAngle == 1.0) {
       normAngle = 0.0;
     }
-    SmartDashboard.putNumber(moduleName + " norm angle", normAngle);
 
-    // double normAngle = angle;
-
-    // Retrieve current CANcoder position. The CANcoder is configured for the range
-    // [0,1) by the
-    // Phoenix Tuner X. The Phoenix 6 API returns the position in native rotation
-    // units with no
-    // discontinuity between 1 and 0.
+    // Get current wheel angle
     double encoderAngle = canCoder.getAbsolutePosition().getValueAsDouble();
 
-    // Calculate distance to target angle
-    // double dist1 = Math.abs(normAngle - encoderAngle);
-    // double dist2 = 1.0 - dist1;
-    double targetAngle = normAngle;
-    // if (dist1 > 0.25 && dist2 > 0.25) {
-    // targetAngle = normAngle + 0.5;
-    // if (targetAngle > 1.0) {
-    // targetAngle = targetAngle - 1.0;
-    // } else if (targetAngle == 1.0) {
-    // targetAngle = 0.0;
-    // }
-    // speed = -speed;
-    // }
-
-    // SmartDashboard.putNumber(moduleName + " dist1", dist1);
-    // SmartDashboard.putNumber(moduleName + " dist2", dist2);
-    // SmartDashboard.putNumber(moduleName + " target", targetAngle);
-
-    // if (Math.max(encoderAngle - target, 1 - encoderAngle + target) > 0.25) {
-    // SmartDashboard.putBoolean(moduleName + " flip", true);
-    // speed = -speed;
-    // target += 0.5;
-    // if (target > 1)
-    // target -= 1;
-    // } else {
-    // SmartDashboard.putBoolean(moduleName + " flip", false);
-    // }
-
-    double error = (encoderAngle - targetAngle + 0.5) % 1 - 0.5;
+    // Optimize angle motor rotation direction and distance
+    double error = (encoderAngle - normAngle + 0.5) % 1 - 0.5;
     if (error < -0.5)
       error += 1.0;
     else if (error > 0.5)
@@ -317,32 +272,11 @@ public class SwerveWheel2 extends SubsystemBase {
       error -= 0.5;
       speed = -speed;
     }
-    SmartDashboard.putNumber(moduleName + " error", error);
 
-    // target = encoderAngle + error;
-
-    /*
-     * //Determine shortest rotation distance
-     * if (Math.abs(target - encoderAngle) > 0.5)
-     * {
-     * double diff = 1 - Math.abs(target - encoderAngle);
-     * target = target + diff;
-     * if (target >= 1.0) {
-     * target = target - 1.0;
-     * }
-     * encoderAngle = encoderAngle + diff;
-     * if (encoderAngle >= 1.0)
-     * {
-     * encoderAngle = encoderAngle - 1.0;
-     * }
-     * }
-     */
-
-    // Optimize angle movement to minimize rotational distance
+    // Calculate angle motor output demand
     double output = wpiPIDController.calculate(error, 0);
-    SmartDashboard.putNumber(moduleName + " PID output", output);
 
-    // Calculate angle speed with limiter
+    // Apply speed limiter to angle motor output demand
     double angleSpeed = output * angleSpeedLimiter;
 
     // Capping angleSpeed to max that the motor can take, from -1 to 1
@@ -352,32 +286,24 @@ public class SwerveWheel2 extends SubsystemBase {
       angleSpeed = -1;
     }
 
-    // Before angle speed
-    SmartDashboard.putNumber(moduleName + " before angle", angleSpeed);
-
-    // putting angleSpeed and error into smart dashboard
-    SmartDashboard.putNumber(moduleName + " after angle", angleSpeed);
-
     // Calculate wheel velocity
     double motorVelocity = (speed / (2 * Math.PI * (WHEEL_DIAMETER / 2)) * kGearRatio);
     double motorVelocityRPM = motorVelocity * 60;
-    SmartDashboard.putNumber(moduleName + " V target", motorVelocity);
-    SmartDashboard.putNumber(moduleName + " target RPM", motorVelocityRPM);
 
-    // Set motor speeds
+    // Set outputs for angle and drive motors
     swerveAngleOut.Output = angleSpeed;
     swerveAngleMotor.setControl(swerveAngleOut);
-    // double newSpeed = speed / LinearSpeed;
-    // if (Math.abs(newSpeed) < 1.0) {
-    // swerveDriveOut.Output = newSpeed;
-    // } else if (newSpeed > 1.0) {
-    // swerveDriveOut.Output = 1.0;
-    // } else {
-    // swerveDriveOut.Output = -1.0;
-    // }
-    // swerveDriveMotor.setControl(swerveDriveOut);
     swerveDriveMotor.setControl(m_request.withVelocity(motorVelocity));
 
+    // Send critical values to SmartDashboard for troubleshooting / tuning
+    SmartDashboard.putNumber(moduleName + " req speed", speed);
+    SmartDashboard.putNumber(moduleName + " req angle", angle);
+    SmartDashboard.putNumber(moduleName + " norm angle", normAngle);
+    SmartDashboard.putNumber(moduleName + " angle error", error);
+    SmartDashboard.putNumber(moduleName + " PID output", output);
+    SmartDashboard.putNumber(moduleName + " angle speed", angleSpeed);
+    SmartDashboard.putNumber(moduleName + " V target", motorVelocity);
+    SmartDashboard.putNumber(moduleName + " target RPM", motorVelocityRPM);
     SmartDashboard.putNumber(moduleName + " V actual", getDriveEncoderVelocity());
 
   }

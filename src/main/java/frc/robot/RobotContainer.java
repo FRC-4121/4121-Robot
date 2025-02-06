@@ -97,12 +97,14 @@ public class RobotContainer {
     // Initialize KillAuto Commands
     killAuto = new KillAutoCommand();
 
+    // Register named commands for PathPlanner
+    registerPathPlannerCommands();
+
     // Create an auto command chooser
-    // autoChooser = AutoBuilder.buildAutoChooser();
-    // SmartDashboard.putData("Auto Mode", autoChooser);
+    autoChooser = AutoBuilder.buildAutoChooser();
+    SmartDashboard.putData("Auto Mode", autoChooser);
 
     // Initialize Xbox Buttons
-
     changeSpeedButton = new JoystickButton(xbox, xboxYButton);
     changeModeButton = new JoystickButton(xbox, xboxXButton);
     parkButton = new JoystickButton(xbox, xboxRightBumber);
@@ -117,6 +119,20 @@ public class RobotContainer {
     changeAutoAngleButton = new JoystickButton(launchpad, 20);
 
     // Configure the button bindings
+    configureButtonBindings();
+
+    // Configure default subsystem commands
+    configureDefaultCommands();
+
+    // Make sure the positions are zero
+    zeroRobot();
+
+  }
+
+  /**
+   * Assign commands to buttons
+   */
+  private void configureButtonBindings() {
 
     // Auto Commands
     killAutoButton.onTrue(killAuto);
@@ -126,11 +142,23 @@ public class RobotContainer {
     changeSpeedButton.onTrue(changeSpeedCommand);
     changeModeButton.onTrue(changeModeCommand);
 
+  }
+
+  /**
+   * Set default commands for all subsystems
+   */
+  private void configureDefaultCommands() {
+
     // Swerve drive default command
     swerve.setDefaultCommand(fieldDriveCommand);
 
-    // Make sure the positions are zero
-    zeroRobot();
+  }
+
+  /**
+   * Register robot commands for PathPlanner use
+   */
+  private void registerPathPlannerCommands() {
+
   }
 
   /**
@@ -211,9 +239,7 @@ public class RobotContainer {
    * 
    */
   public Command getAutonomousCommand() {
-    return null;
-    // return (Command) autoChooser.getSelected();
-
+    return (Command) autoChooser.getSelected();
   }
 
   /**
