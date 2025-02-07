@@ -33,21 +33,21 @@ import com.pathplanner.lib.util.PathPlannerLogging;
 public class SwerveDriveWPI extends SubsystemBase {
 
   // Declare CAN IDs for swerve wheels
-  private static final int leftFrontDriveId = 1;
-  private static final int leftFrontAngleId = 2;
-  private static final int leftFrontCoderId = 3;
+  private final int leftFrontDriveId = 1;
+  private final int leftFrontAngleId = 2;
+  private final int leftFrontCoderId = 3;
 
-  private static final int rightFrontDriveId = 4;
-  private static final int rightFrontAngleId = 5;
-  private static final int rightFrontCoderId = 6;
+  private final int rightFrontDriveId = 4;
+  private final int rightFrontAngleId = 5;
+  private final int rightFrontCoderId = 6;
 
-  private static final int rightBackDriveId = 10;
-  private static final int rightBackAngleId = 11;
-  private static final int rightBackCoderId = 12;
+  private final int rightBackDriveId = 10;
+  private final int rightBackAngleId = 11;
+  private final int rightBackCoderId = 12;
 
-  private static final int leftBackDriveId = 7;
-  private static final int leftBackAngleId = 8;
-  private static final int leftBackCoderId = 9;
+  private final int leftBackDriveId = 7;
+  private final int leftBackAngleId = 8;
+  private final int leftBackCoderId = 9;
 
   // Declare swerve modules
   private SwerveWheel2 leftFront;
@@ -102,9 +102,6 @@ public class SwerveDriveWPI extends SubsystemBase {
   // Declare 2d Field
   private Field2d field;
 
-  // Declare PathPlanner variables
-  RobotConfig ppConfig;
-
   /**
    * 
    * Creates a new SwerveDrive
@@ -145,7 +142,7 @@ public class SwerveDriveWPI extends SubsystemBase {
 
     // Create PID controller
     wpiPIDController = new PIDController(kAnglePIDkp, kAnglePIDki, kAnglePIDkd);
-    // wpiPIDController.setTolerance(0.1, 5);
+    wpiPIDController.setTolerance(0.1, 5);
 
     // Initialize swerve odometry object
     odometry = new SwerveDriveOdometry(kinematics, getGyroRotation2d(), getModulePositions());
@@ -155,36 +152,36 @@ public class SwerveDriveWPI extends SubsystemBase {
 
     // Configure PathPlanner AutoBuilder
     try {
-      ppConfig = RobotConfig.fromGUISettings();
+
+      RobotConfig ppConfig = RobotConfig.fromGUISettings();
+
+      AutoBuilder.configure(
+          this::getPose,
+          this::resetPose,
+          this::getSpeeds,
+          this::driveRobotRelative,
+          new PPHolonomicDriveController(
+              translationConstants,
+              rotationConstants),
+          ppConfig,
+          () -> {
+            // Boolean supplier that controls when the path will be mirrored for the red
+            // alliance
+            // This will flip the path being followed to the red side of the field.
+            // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+
+            var alliance = DriverStation.getAlliance();
+            if (alliance.isPresent()) {
+              return alliance.get() == DriverStation.Alliance.Red;
+            }
+            return false;
+
+          },
+          this
+        );
     } catch (Exception e) {
-      e.printStackTrace();
+      DriverStation.reportError("Failed to load PathPlanner config and configure AutoBuilder", e.getStackTrace());
     }
-
-    AutoBuilder.configure(
-      this::getPose,
-      this::resetPose,
-      this::getRobotRelativeSpeeds,
-      (speeds, feedforwards) -> driveRobotRelative(speeds),
-      new PPHolonomicDriveController(
-        translationConstants,
-        rotationConstants
-      ),
-      ppConfig,
-      () -> {
-          // Boolean supplier that controls when the path will be mirrored for the red
-          // alliance
-          // This will flip the path being followed to the red side of the field.
-          // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
-
-          var alliance = DriverStation.getAlliance();
-          if (alliance.isPresent()) {
-            return alliance.get() == DriverStation.Alliance.Red;
-          }
-          return false;
-            
-        },
-        this
-    );
 
     // Set up custom logging to add the current path to a field 2d widget
     PathPlannerLogging.setLogActivePathCallback((poses) -> field.getObject("path").setPoses(poses));

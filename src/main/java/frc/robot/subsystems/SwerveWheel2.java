@@ -4,28 +4,19 @@
 
 package frc.robot.subsystems;
 
-import frc.robot.Utils;
-
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.StatusCode;
-import com.ctre.phoenix6.configs.FeedbackConfigs;
-import com.ctre.phoenix6.configs.MotorOutputConfigs;
-import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.PositionVoltage;
-import com.ctre.phoenix6.controls.StaticBrake;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.VelocityDutyCycle;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
 
-import static frc.robot.Constants.kGearRatio;
 import static frc.robot.Constants.DriveConstants.*;
 
 import edu.wpi.first.hal.HAL;
@@ -33,12 +24,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.math.controller.*;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.filter.*;
 import edu.wpi.first.math.kinematics.*;
-
-import static edu.wpi.first.units.Units.Degrees;
-import static edu.wpi.first.units.Units.Radians;
-import static edu.wpi.first.units.Units.RadiansPerSecond;
 
 /**
  * Define a SwerveWheel object
@@ -46,8 +32,6 @@ import static edu.wpi.first.units.Units.RadiansPerSecond;
 public class SwerveWheel2 extends SubsystemBase {
 
   // Declare constants
-  private final int FILTER_WINDOW_SIZE = 10;
-  private final double CONFIG_TIMEOUT = 0.01; // Timeout for each configuration, in seconds.
   private final double ANGLE_DEADBAND = 0.001; // Deadband for the angle motor. Values smaller than this are
                                                      // rounded to 0.
   private final double DRIVE_DEADBAND = 0.001; // Deadband for the drive motor. This works in the same way as the

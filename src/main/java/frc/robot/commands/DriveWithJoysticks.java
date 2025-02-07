@@ -29,8 +29,6 @@ public class DriveWithJoysticks extends Command {
   private double ySpeed;
   private double rotSpeed;
 
-  private PIDController wpiPIDController;
-
   private boolean isFieldOriented;
 
   public DriveWithJoysticks(SwerveDriveWPI swerve, XboxController xbox, NetworkTableQuerier ntable) {
@@ -49,10 +47,7 @@ public class DriveWithJoysticks extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    // Create PID controller
-    wpiPIDController = new PIDController(DriveConstants.kPAutoAlign, DriveConstants.kIAutoAlign,
-        DriveConstants.kDAutoAlign);
-    wpiPIDController.setTolerance(1.0, 5);
+
   }
 
   // Called every time the scheduler runs while the command is scheduled.

@@ -65,8 +65,12 @@ public class RobotContainer {
   private final JoystickButton parkButton;
   private final JoystickButton leftButton;
   private final JoystickButton rightButton;
-  private final JoystickButton autoShooterPositionButton;
   private final JoystickButton changeAutoAngleButton;
+
+  // ===PathPlanner=== //
+
+  // Declare PathPlanner variables
+  private final SendableChooser<Command> autoChooser;
 
   /**
    * 
@@ -115,7 +119,6 @@ public class RobotContainer {
     redTeamButton = new JoystickButton(launchpad, LaunchPadSwitch5bottom);
     rightButton = new JoystickButton(launchpad, LaunchPadSwitch6bottom);
     leftButton = new JoystickButton(launchpad, LaunchPadSwitch6top);
-    autoShooterPositionButton = new JoystickButton(launchpad, LaunchPadSwitch7);
     changeAutoAngleButton = new JoystickButton(launchpad, 20);
 
     // Configure the button bindings
@@ -123,9 +126,6 @@ public class RobotContainer {
 
     // Configure default subsystem commands
     configureDefaultCommands();
-
-    // Make sure the positions are zero
-    zeroRobot();
 
   }
 
@@ -162,6 +162,15 @@ public class RobotContainer {
   }
 
   /**
+   * 
+   * Return the correct auto command to the scheduler
+   * 
+   */
+  public Command getAutonomousCommand() {
+    return (Command) autoChooser.getSelected();
+  }
+
+  /**
    * Determine the alliance color based on OI
    * switch position
    */
@@ -175,21 +184,6 @@ public class RobotContainer {
       // TODO: warn someone
       Constants.blueAlliance = true;
     }
-  }
-
-  /**
-   * Get the starting position in auto
-   * Set by a switch on the OI
-   */
-  public void getAutoPosition() {
-    double position = (double) SmartDashboard.getNumber("Auto Position", 1);
-
-    if ((leftButton.getAsBoolean() == true) || position == 0)
-      Constants.autoPosition = "Left";
-    else if ((rightButton.getAsBoolean() == true) || position == 2)
-      Constants.autoPosition = "Right";
-    else
-      Constants.autoPosition = "Center";
   }
 
   /**
@@ -226,28 +220,10 @@ public class RobotContainer {
 
   /**
    * 
-   * Check for the presence of a note
+   * Zero the gyro position
    * 
    */
-  public void checkForNote() {
-    photoSensor.isNoteOnBoard();
-  }
-
-  /**
-   * 
-   * Return the correct auto command to the scheduler
-   * 
-   */
-  public Command getAutonomousCommand() {
-    return (Command) autoChooser.getSelected();
-  }
-
-  /**
-   * 
-   * Zero positions of all mechanisms and gyro
-   * 
-   */
-  public void zeroRobot() {
+  public void zeroGyro() {
     swerve.zeroGyro();
   }
 
