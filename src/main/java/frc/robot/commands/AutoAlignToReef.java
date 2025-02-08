@@ -5,12 +5,29 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-/* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
+import frc.robot.Constants.DriveConstants;
+import frc.robot.subsystems.SwerveDriveWPI;
+import frc.robot.ExtraClasses.*;
+
+
 public class AutoAlignToReef extends Command {
+
+  // Declare local variables
+  private SwerveDriveWPI swerveDrive;
+  private NetworkTableQuerier ntables;
+
   /** Creates a new AutoAlignToReef. */
-  public AutoAlignToReef() {
-    // Use addRequirements() here to declare subsystem dependencies.
+  public AutoAlignToReef(SwerveDriveWPI swerve, NetworkTableQuerier tables) {
+
+    // Set local variables
+    swerveDrive = swerve;
+    ntables = tables;
+
+    // Declare subsystem requirements
+    addRequirements(swerveDrive);
+
   }
 
   // Called when the command is initially scheduled.

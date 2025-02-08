@@ -13,6 +13,7 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
+import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VelocityDutyCycle;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 
@@ -47,6 +48,9 @@ public class Climber extends SubsystemBase {
   // Declare climber motor position constants
   private final int extendRotations = 1000;
   private final int retractRotations = 100;
+
+  // Declare motor output requests
+  private final PositionVoltage m_positionRequest = new PositionVoltage(0).withSlot(0);
 
   /**
    * Create a new climber object
@@ -106,12 +110,27 @@ public class Climber extends SubsystemBase {
    */
   public void ExtendClimber() {
 
+    climberMotor.setControl(m_positionRequest.withPosition(extendRotations));
+
   }
 
   /**
    * Retract the climber to climb the robot
    */
   public void RetractClimber() {
+
+    climberMotor.setControl(m_positionRequest.withPosition(retractRotations));
+    
+  }
+
+  /**
+   * Get the current draw for the climber motor
+   * 
+   * @return  Motor amps
+   */
+  public double GetMotorAmps() {
+
+    return climberMotor.getStatorCurrent().getValueAsDouble();
 
   }
 

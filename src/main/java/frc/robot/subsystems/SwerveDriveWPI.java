@@ -117,10 +117,10 @@ public class SwerveDriveWPI extends SubsystemBase {
 
     // Initialize swerve kinematics objects
     // 2025 robot chassis is 30" x 30"
-    leftFrontTranslation = new Translation2d(0.297, 0.288);// X-0.297, Y-0.288
-    leftBackTranslation = new Translation2d(-0.297, 0.288);// 0.229,0.292 for last years bot
-    rightFrontTranslation = new Translation2d(0.297, -0.288);
-    rightBackTranslation = new Translation2d(-0.297, -0.288);
+    leftFrontTranslation = new Translation2d(0.311, 0.311);// X-0.297, Y-0.288
+    leftBackTranslation = new Translation2d(-0.311, 0.311);// 0.229,0.292 for last years bot
+    rightFrontTranslation = new Translation2d(0.311, -0.311);
+    rightBackTranslation = new Translation2d(-0.311, -0.311);
     kinematics = new SwerveDriveKinematics(leftFrontTranslation, rightFrontTranslation, leftBackTranslation,
         rightBackTranslation);
 
@@ -170,11 +170,11 @@ public class SwerveDriveWPI extends SubsystemBase {
             // This will flip the path being followed to the red side of the field.
             // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
 
-            var alliance = DriverStation.getAlliance();
+/*             var alliance = DriverStation.getAlliance();
             if (alliance.isPresent()) {
               return alliance.get() == DriverStation.Alliance.Red;
             }
-            return false;
+ */            return false;
 
           },
           this
@@ -209,6 +209,9 @@ public class SwerveDriveWPI extends SubsystemBase {
 
     // Update robot odometry
     odometry.update(getGyroRotation2d(), getModulePositions());
+
+    SmartDashboard.putNumber("Pose X", odometry.getPoseMeters().getX());
+    SmartDashboard.putNumber("Pose Y", odometry.getPoseMeters().getY());
 
     SmartDashboard.putString("Pose", getPose().toString());
 
@@ -722,11 +725,15 @@ public class SwerveDriveWPI extends SubsystemBase {
   }
 
   public ChassisSpeeds getSpeeds() {
+
     return kinematics.toChassisSpeeds(getModuleStates());
+
   }
 
   public ChassisSpeeds getRobotRelativeSpeeds() {
+
     return kinematics.toChassisSpeeds(getModuleStates());
+    
   }
 
   /**
@@ -738,6 +745,7 @@ public class SwerveDriveWPI extends SubsystemBase {
   public Pose2d getPose() {
 
     return odometry.getPoseMeters();
+
 
   }
 

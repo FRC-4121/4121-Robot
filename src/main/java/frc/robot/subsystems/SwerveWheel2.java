@@ -36,8 +36,7 @@ public class SwerveWheel2 extends SubsystemBase {
                                                      // rounded to 0.
   private final double DRIVE_DEADBAND = 0.001; // Deadband for the drive motor. This works in the same way as the
                                                      // angle one.
-  private final double WHEEL_DIAMETER = 0.1016;
-  private final double DRIVE_GEAR_RATIO = 8.14;
+  private final double WHEEL_DIAMETER = 0.1016;  // diameter in meters
   private final String CANBUS_NAME = "rio";
 
   // Declare motor variables
@@ -221,6 +220,10 @@ public class SwerveWheel2 extends SubsystemBase {
     // Update status of CANCoder
     SmartDashboard.putNumber(moduleName + " CANCoder Position", canCoder.getAbsolutePosition().getValueAsDouble());
     SmartDashboard.putNumber(moduleName + " CANCoder Velocity", canCoder.getVelocity().getValueAsDouble());
+
+    // Update wheel status
+    SmartDashboard.putNumber(moduleName + " Wheel Speed", getWheelSpeed());
+    SmartDashboard.putNumber(moduleName + " Wheel Dist", getDistance());
     
   }
 
@@ -271,7 +274,7 @@ public class SwerveWheel2 extends SubsystemBase {
     }
 
     // Calculate wheel velocity
-    double motorVelocity = (speed / (2 * Math.PI * (WHEEL_DIAMETER / 2)) * kGearRatio);
+    double motorVelocity = (speed / (Math.PI * WHEEL_DIAMETER) * kGearRatio);
     double motorVelocityRPM = motorVelocity * 60;
 
     // Set outputs for angle and drive motors
@@ -302,7 +305,7 @@ public class SwerveWheel2 extends SubsystemBase {
    */
   public double getDriveEncoderPosition() {
 
-    var drivePosSignal = swerveDriveMotor.getRotorPosition();
+    var drivePosSignal = swerveDriveMotor.getPosition();
     drivePosSignal.refresh();
     return drivePosSignal.getValueAsDouble();
 
@@ -317,7 +320,7 @@ public class SwerveWheel2 extends SubsystemBase {
    */
   public double getDriveEncoderVelocity() {
 
-    var driveVelSignal = swerveDriveMotor.getRotorVelocity();
+    var driveVelSignal = swerveDriveMotor.getVelocity();
     driveVelSignal.refresh();
     return driveVelSignal.getValueAsDouble();
 
@@ -358,9 +361,7 @@ public class SwerveWheel2 extends SubsystemBase {
    */
   public double getDistance() {
 
-    SmartDashboard.putNumber(moduleName + " distance",(WHEEL_DIAMETER * Math.PI * getDriveEncoderPosition()) / (kTalonFXPPR * DRIVE_GEAR_RATIO) );
-
-    return (WHEEL_DIAMETER * Math.PI * getDriveEncoderPosition()) / (kTalonFXPPR * DRIVE_GEAR_RATIO);
+    return (WHEEL_DIAMETER * Math.PI * Math.abs(getDriveEncoderPosition())) / kGearRatio;
 
   }
 
@@ -373,8 +374,7 @@ public class SwerveWheel2 extends SubsystemBase {
    */
   public double getWheelSpeed() {
 
-    double rotationPerSecond = getDriveEncoderVelocity() / kTalonFXPPR * 10;
-    return (WHEEL_DIAMETER * Math.PI * rotationPerSecond) / DRIVE_GEAR_RATIO;
+    return (WHEEL_DIAMETER * Math.PI * getDriveEncoderVelocity()) / kGearRatio;
 
   }
 

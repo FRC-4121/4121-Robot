@@ -40,7 +40,7 @@ public final class Constants {
     public static final double autoLeftGyroCorrection = 53;
     public static final double rightGyroCorrection = 307;// Gyro correction in degrees (was 307)
     public static final double autoRightGyroCorrection = -53;
-    public static final double kGearRatio = 5.9;
+    public static final double kGearRatio = 6.75;
 
     // Swerve drive PID constants
     public static final double kAnglePIDkp = 0.0145;
