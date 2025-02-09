@@ -29,9 +29,10 @@ public class Climber extends SubsystemBase {
 
   // Declare constants
   private final double DRIVE_DEADBAND = 0.001; // Deadband for the drive motor. VAlues smaller than this will be rounded to zero
+  private final double CURRENT_LIMIT = 100; // Current limit for stopping motor to prevent damage
 
   // Declare CAN ID for motor
-  private final int climberMotorID = 15;
+  private final int climberMotorID = 17;
 
   // Declare motor variables
   private TalonFX climberMotor;
@@ -60,20 +61,25 @@ public class Climber extends SubsystemBase {
     // Create motors
     climberMotor = new TalonFX(climberMotorID, CANBUS_NAME);
 
-    // Create drive motor configuration
+    // Create climber motor configuration
     var climberConfigs = new TalonFXConfiguration();
 
-    // Set drive motor output configuration
-    var driveOutputConfigs = climberConfigs.MotorOutput;
-    driveOutputConfigs.Inverted = InvertedValue.Clockwise_Positive;
-    driveOutputConfigs.NeutralMode = NeutralModeValue.Brake;
-    driveOutputConfigs.withDutyCycleNeutralDeadband(DRIVE_DEADBAND);
+    // Set climber motor output configuration
+    var climberOutputConfigs = climberConfigs.MotorOutput;
+    climberOutputConfigs.Inverted = InvertedValue.Clockwise_Positive;
+    climberOutputConfigs.NeutralMode = NeutralModeValue.Brake;
+    climberOutputConfigs.withDutyCycleNeutralDeadband(DRIVE_DEADBAND);
 
-    // Set drive motor feedback sensor
-    var driveSensorConfig = climberConfigs.Feedback;
-    driveSensorConfig.withFeedbackSensorSource(FeedbackSensorSourceValue.RotorSensor);
+    // Set climber current limits configuration
+    var climberLimitConfig = climberConfigs.CurrentsLimits;
+    climberLimitConfig.StatorCurrentLimitEnable = true;
+    climberLimitConfig.StatorCurrentLimit = 110;
 
-    // Set drive motor PID constants
+    // Set climber motor feedback sensor
+    var climberSensorConfig = climberConfigs.Feedback;
+    climberSensorConfig.withFeedbackSensorSource(FeedbackSensorSourceValue.RotorSensor);
+
+    // Set climber motor PID constants
     var slot0Configs = climberConfigs.Slot0;
     slot0Configs.kG = drive_kG;
     slot0Configs.kS = drive_kS;
@@ -83,7 +89,7 @@ public class Climber extends SubsystemBase {
     slot0Configs.kI = drive_kI;
     slot0Configs.kD = drive_kD;
 
-    // Apply drive motor configuration and initialize position to 0
+    // Apply climber motor configuration and initialize position to 0
     StatusCode climberStatus = climberMotor.getConfigurator().apply(climberConfigs, 0.050);
     if (!climberStatus.isOK()) {
       System.out.println("Could not apply climber motor configs. Error code: " + climberStatus.toString());
@@ -103,12 +109,17 @@ public class Climber extends SubsystemBase {
     SmartDashboard.putNumber("Climber Motor Volts", climberMotor.getMotorVoltage().getValueAsDouble());
     SmartDashboard.putNumber("ClimberMotor Position", climberMotor.getPosition().getValueAsDouble());
 
+    // Checl for current limit and stop motor
+    if (climberMotor.getStatorCurrent().getValueAsDouble() > CURRENT_LIMIT) {
+      stopClimber();
+    }
+
   }
 
   /**
    * Extend the climber to prepare for climb
    */
-  public void ExtendClimber() {
+  public void extendClimber() {
 
     climberMotor.setControl(m_positionRequest.withPosition(extendRotations));
 
@@ -117,7 +128,7 @@ public class Climber extends SubsystemBase {
   /**
    * Retract the climber to climb the robot
    */
-  public void RetractClimber() {
+  public void retractClimber() {
 
     climberMotor.setControl(m_positionRequest.withPosition(retractRotations));
     
@@ -128,9 +139,21 @@ public class Climber extends SubsystemBase {
    * 
    * @return  Motor amps
    */
-  public double GetMotorAmps() {
+  public double getMotorAmps() {
 
     return climberMotor.getStatorCurrent().getValueAsDouble();
+
+  }
+
+
+  /**
+   * 
+   * Stop running the climber motor
+   * 
+   */
+  public void stopClimber() {
+
+    climberMotor.stopMotor();
 
   }
 

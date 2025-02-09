@@ -7,7 +7,6 @@ import static frc.robot.Constants.DriveConstants.AutoAngleToTarget;
 import frc.robot.subsystems.*;
 import frc.robot.Constants.MechanismConstants;
 import frc.robot.ExtraClasses.NetworkTableQuerier;
-import frc.robot.ExtraClasses.PhotoElecSensor;
 import frc.robot.commands.*;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
@@ -35,7 +34,6 @@ public class RobotContainer {
 
   // Declare Extra Systems
   private final NetworkTableQuerier table;
-  private final PhotoElecSensor photoSensor;
 
   // ===COMMANDS===//
 

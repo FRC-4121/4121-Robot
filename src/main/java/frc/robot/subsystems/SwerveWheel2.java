@@ -153,6 +153,11 @@ public class SwerveWheel2 extends SubsystemBase {
     driveOutputConfigs.NeutralMode = NeutralModeValue.Brake;
     driveOutputConfigs.withDutyCycleNeutralDeadband(DRIVE_DEADBAND);
 
+    // Set drive motor current limits
+    var driveLimitConfig = driveConfigs.CurrentsLimits;
+    driveLimitConfig.StatorCurrentLimitEnable = true;
+    driveLimitConfig.StatorCurrentLimit = 100;
+
     // Set drive motor feedback sensor
     var driveSensorConfig = driveConfigs.Feedback;
     driveSensorConfig.withFeedbackSensorSource(FeedbackSensorSourceValue.RotorSensor);
@@ -333,11 +338,7 @@ public class SwerveWheel2 extends SubsystemBase {
    */
   public void zeroEncoder() {
 
-    //Zero twice because for some reason it doesn't want to zero sometimes
-    swerveAngleOut.Output = 0.0;
-    swerveAngleMotor.setControl(swerveAngleOut);
-    swerveDriveOut.Output = 0.0;
-    swerveDriveMotor.setControl(swerveDriveOut);
+    swerveDriveMotor.getConfigurator().setPosition(0);
 
   }
 
@@ -348,8 +349,8 @@ public class SwerveWheel2 extends SubsystemBase {
    */
   public void stop() {
 
-    swerveDriveMotor.set(0);
-    swerveAngleMotor.set(0);
+    swerveDriveMotor.stopMotor();
+    swerveAngleMotor.stopMotor();
   }
 
   /**

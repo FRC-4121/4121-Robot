@@ -82,6 +82,9 @@ public final class Constants {
     public static final PIDConstants translationConstants = new PIDConstants(5.0, 0.0, 0.0);
     public static final PIDConstants rotationConstants = new PIDConstants(5.0, 0.0, 0.0);
 
+    // General drive constants
+    public static final double GyroCorrection = 180;
+
   }
 
   /*
@@ -89,6 +92,9 @@ public final class Constants {
    */
   public static final class MechanismConstants {
 
+    // Set elevator constants
+    public static final double ElevatorSpeed = 0.5;
+    
   }
 
   /*
