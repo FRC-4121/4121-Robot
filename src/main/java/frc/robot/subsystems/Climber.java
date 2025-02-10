@@ -71,7 +71,7 @@ public class Climber extends SubsystemBase {
     climberOutputConfigs.withDutyCycleNeutralDeadband(DRIVE_DEADBAND);
 
     // Set climber current limits configuration
-    var climberLimitConfig = climberConfigs.CurrentsLimits;
+    var climberLimitConfig = climberConfigs.CurrentLimits;
     climberLimitConfig.StatorCurrentLimitEnable = true;
     climberLimitConfig.StatorCurrentLimit = 110;
 

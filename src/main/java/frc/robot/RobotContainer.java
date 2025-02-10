@@ -87,7 +87,6 @@ public class RobotContainer {
 
     // Initialize extra systems
     table = new NetworkTableQuerier();
-    photoSensor = new PhotoElecSensor();
 
     // Initialize Driving Commands
     // private final DriveWithJoysticks driveCommand = new

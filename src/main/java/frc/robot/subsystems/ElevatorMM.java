@@ -4,7 +4,6 @@
 
 package frc.robot.subsystems;
 
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.InvertedValue;
@@ -12,14 +11,18 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
+import com.ctre.phoenix6.controls.Follower;
+import com.ctre.phoenix6.controls.PositionVoltage;
 
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import static frc.robot.Constants.*;
 import static frc.robot.Constants.MechanismConstants;
 
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 
@@ -33,8 +36,10 @@ public class ElevatorMM extends SubsystemBase {
   private final double CURRENT_LIMIT = 100; // Current limit to prevent motor damage
 
     // Declare motor CAN IDs
-  private int final elevatorLeadID = 13;
-  private int final elevatorFollowID = 14;
+  private final int elevatorLeadID = 13;
+  private final int elevatorFollowID = 14;
+
+  private final double elevatorSpeed = 0.5;
 
   // Declare motor variables
   private TalonFX elevatorLeadMotor;
@@ -48,18 +53,18 @@ public class ElevatorMM extends SubsystemBase {
   private double elevator_kP = 0.1;
   private double elevator_kI = 0.0;
   private double elevator_kD = 0.0;
-  
-  // Declare elevator motor position HashMap
-  private Map<String, int> elevatorPositions = new HashMap<>();
-  elevatorPositions.put("Load", 100);
-  elevatorPositions.put("Coral1", 100);
-  elevatorPositions.put("Coral2", 100);
-  elevatorPositions.put("Coral3", 100);
-  elevatorPositions.put("Coral4", 100);
-  elevatorPositions.put("Algae1", 100);
-  elevatorPositions.put("Algae2", 100);
-  elevatorPositions.put("Processor", 100);
-  elevatorPositions.put("Barge", 100);
+
+  public static final class Positions {
+    public static final double LOAD = 100;
+    public static final double CORAL1 = 100;
+    public static final double CORAL2 = 100;
+    public static final double CORAL3 = 100;
+    public static final double CORAL4 = 100;
+    public static final double ALGAE1 = 100;
+    public static final double ALGAE2 = 100;
+    public static final double PROCESSOR = 100;
+    public static final double BARGE = 100;
+  }
   
   // Declare motor output requests
   private final PositionVoltage m_positionRequest = new PositionVoltage(0).withSlot(0);
@@ -107,19 +112,19 @@ public class ElevatorMM extends SubsystemBase {
     leadSensorConfig.withFeedbackSensorSource(FeedbackSensorSourceValue.RotorSensor);
 
     // Set lead motor current limits
-    var leadLimitConfig = leadConfigs.CurrentsLimits;
+    var leadLimitConfig = leadConfigs.CurrentLimits;
     leadLimitConfig.StatorCurrentLimitEnable = true;
     leadLimitConfig.StatorCurrentLimit = 110;
 
     // Set drive motor PID constants
     var slot0Configs = leadConfigs.Slot0;
-    slot0Configs.kG = drive_kG;
-    slot0Configs.kS = drive_kS;
-    slot0Configs.kV = drive_kV;
-    slot0Configs.kA = drive_kA;
-    slot0Configs.kP = drive_kP;
-    slot0Configs.kI = drive_kI;
-    slot0Configs.kD = drive_kD;
+    slot0Configs.kG = elevator_kG;
+    slot0Configs.kS = elevator_kS;
+    slot0Configs.kV = elevator_kV;
+    slot0Configs.kA = elevator_kA;
+    slot0Configs.kP = elevator_kP;
+    slot0Configs.kI = elevator_kI;
+    slot0Configs.kD = elevator_kD;
 
     // Set MotionMagic settings
     var motionMagicConfigs = leadConfigs.MotionMagic;
@@ -147,7 +152,7 @@ public class ElevatorMM extends SubsystemBase {
     followOutputConfigs.withDutyCycleNeutralDeadband(DRIVE_DEADBAND);
 
     // Set follower motor current limits
-    var followLimitConfig = followConfigs.CurrentsLimits;
+    var followLimitConfig = followConfigs.CurrentLimits;
     followLimitConfig.StatorCurrentLimitEnable = true;
     followLimitConfig.StatorCurrentLimit = 110;
 
@@ -209,10 +214,8 @@ public class ElevatorMM extends SubsystemBase {
    * @param direction  Direction the elevator should run
    * 
    */
-  public void moveElevator(int direction) {
-
-    elevatorLeadMotor.Output = direction * ElevatorSpeed;
-
+  public void moveElevator(double direction) {
+    elevatorLeadMotor.setControl(m_dutyRequest.withOutput(direction * elevatorSpeed));
   }
 
   /**
@@ -222,10 +225,7 @@ public class ElevatorMM extends SubsystemBase {
    * @param position  The desired position of the elevator
    * 
    */
-  public void moveElevatorToPosition(String position) {
-
-    elevatorLeadMotor.setControl(m_positionRequest.withPosition(elevatorPositions.get(position)));
-
+  public void moveElevatorToPosition(double position) {
+    elevatorLeadMotor.setControl(m_positionRequest.withPosition(position));
   }
-
 }

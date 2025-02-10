@@ -154,7 +154,7 @@ public class SwerveWheel2 extends SubsystemBase {
     driveOutputConfigs.withDutyCycleNeutralDeadband(DRIVE_DEADBAND);
 
     // Set drive motor current limits
-    var driveLimitConfig = driveConfigs.CurrentsLimits;
+    var driveLimitConfig = driveConfigs.CurrentLimits;
     driveLimitConfig.StatorCurrentLimitEnable = true;
     driveLimitConfig.StatorCurrentLimit = 100;
 
