@@ -33,10 +33,10 @@ public class SwerveWheel2 extends SubsystemBase {
 
   // Declare constants
   private final double ANGLE_DEADBAND = 0.001; // Deadband for the angle motor. Values smaller than this are
-                                                     // rounded to 0.
+                                               // rounded to 0.
   private final double DRIVE_DEADBAND = 0.001; // Deadband for the drive motor. This works in the same way as the
-                                                     // angle one.
-  private final double WHEEL_DIAMETER = 0.1016;  // diameter in meters
+                                               // angle one.
+  private final double WHEEL_DIAMETER = 0.1016; // diameter in meters
   private final String CANBUS_NAME = "rio";
 
   // Declare motor variables
@@ -48,7 +48,7 @@ public class SwerveWheel2 extends SubsystemBase {
   private DutyCycleOut swerveDriveOut;
 
   // Declare controller variables
-  private PIDController wpiPIDController; 
+  private PIDController wpiPIDController;
   private double angleSpeedLimiter;
   private double kP_AngleController;
   private double kI_AngleController;
@@ -74,16 +74,16 @@ public class SwerveWheel2 extends SubsystemBase {
 
   /**
    * 
-   *  Creates a new SwerveWheel
+   * Creates a new SwerveWheel
    * 
-   * @param name  Name of this swerve module
-   * @param driveMotorID  CAN ID for the drive motor
-   * @param angleMotorID  CAN ID for the angle motor
-   * @param CANCoderID  CAN ID for the angle encoder
+   * @param name         Name of this swerve module
+   * @param driveMotorID CAN ID for the drive motor
+   * @param angleMotorID CAN ID for the angle motor
+   * @param CANCoderID   CAN ID for the angle encoder
    * 
    */
   public SwerveWheel2(String name, int driveMotorID, int angleMotorID, int CANCoderID) {
-    
+
     // Set variables
     moduleName = name;
 
@@ -130,16 +130,16 @@ public class SwerveWheel2 extends SubsystemBase {
 
     // Initialize PID controller
     wpiPIDController = new PIDController(kP_AngleController, kI_AngleController, kD_AngleController);
-    wpiPIDController.setTolerance(1.5,5);
-  } 
+    wpiPIDController.setTolerance(1.5, 5);
+  }
 
   /**
    * 
-   *  Initialize motors
+   * Initialize motors
    * 
-   * @param driveMotorID  CAN ID for the drive motor
-   * @param angleMotorID  CAN ID for the angle motor
-   * @param CANCoderID  CAN ID for the angle encoder
+   * @param driveMotorID CAN ID for the drive motor
+   * @param angleMotorID CAN ID for the angle motor
+   * @param CANCoderID   CAN ID for the angle encoder
    * 
    */
   private void InitSwerveMotors(int driveMotorID, int angleMotorID, int CANCoderID) {
@@ -175,10 +175,12 @@ public class SwerveWheel2 extends SubsystemBase {
     // Apply drive motor configuration and initialize position to 0
     StatusCode driveStatus = swerveDriveMotor.getConfigurator().apply(driveConfigs, 0.050);
     if (!driveStatus.isOK()) {
-      System.out.println("Could not apply drive motor configs for wheel: " + wheelID + ". Error code: " + driveStatus.toString());
+      System.out.println(
+          "Could not apply drive motor configs for wheel: " + wheelID + ". Error code: " + driveStatus.toString());
       DriverStation.reportError("Could not apply drive motor configs for " + moduleName + " wheel.", false);
     } else {
-      System.out.println("Successfully applied drive motor configs for wheel: " + wheelID + ". Error code: " + driveStatus.toString());
+      System.out.println(
+          "Successfully applied drive motor configs for wheel: " + wheelID + ". Error code: " + driveStatus.toString());
     }
     swerveDriveMotor.getConfigurator().setPosition(0);
 
@@ -194,14 +196,16 @@ public class SwerveWheel2 extends SubsystemBase {
     // Apply angle motor configuration and initialize position to 0
     StatusCode angleStatus = swerveAngleMotor.getConfigurator().apply(angleConfigs, 0.050);
     if (!angleStatus.isOK()) {
-      System.out.println("Could not apply angle motor configs for " + moduleName + " wheel." + ". Error code: " + angleStatus.toString());
+      System.out.println("Could not apply angle motor configs for " + moduleName + " wheel." + ". Error code: "
+          + angleStatus.toString());
       DriverStation.reportError("Could not apply angle motor configs for " + moduleName + " wheel.", false);
     } else {
-      System.out.println("Successfully applied angle motor configs for wheel: " + wheelID + ". Error code: " + angleStatus.toString());
+      System.out.println(
+          "Successfully applied angle motor configs for wheel: " + wheelID + ". Error code: " + angleStatus.toString());
     }
 
   }
- 
+
   /**
    * 
    * Periodically update swerve wheel status
@@ -209,7 +213,7 @@ public class SwerveWheel2 extends SubsystemBase {
    */
   @Override
   public void periodic() {
-    
+
     // Update status of drive motor
     SmartDashboard.putNumber(moduleName + " Drive Motor Volts", swerveDriveMotor.getMotorVoltage().getValueAsDouble());
     SmartDashboard.putNumber(moduleName + " Drive Motor Amps", swerveDriveMotor.getStatorCurrent().getValueAsDouble());
@@ -229,15 +233,15 @@ public class SwerveWheel2 extends SubsystemBase {
     // Update wheel status
     SmartDashboard.putNumber(moduleName + " Wheel Speed", getWheelSpeed());
     SmartDashboard.putNumber(moduleName + " Wheel Dist", getDistance());
-    
+
   }
 
   /**
    * 
    * Drive this wheel module at the specified speed and angle
    * 
-   * @param speed  Speed for the drive motor
-   * @param angle  Wheel angle for this module
+   * @param speed Speed for the drive motor
+   * @param angle Wheel angle for this module
    * 
    */
   public void drive(double speed, double angle) {
@@ -299,7 +303,6 @@ public class SwerveWheel2 extends SubsystemBase {
     SmartDashboard.putNumber(moduleName + " V actual", getDriveEncoderVelocity());
 
   }
-
 
   /**
    *
@@ -388,7 +391,8 @@ public class SwerveWheel2 extends SubsystemBase {
    */
   public SwerveModuleState getState() {
 
-    return new SwerveModuleState(getWheelSpeed(), new Rotation2d(Math.toRadians(toWPIAngle(canCoder.getAbsolutePosition().getValueAsDouble() * 360.0))));
+    return new SwerveModuleState(getWheelSpeed(),
+        new Rotation2d(Math.toRadians(toWPIAngle(canCoder.getAbsolutePosition().getValueAsDouble() * 360.0))));
 
   }
 
@@ -401,7 +405,8 @@ public class SwerveWheel2 extends SubsystemBase {
    */
   public SwerveModulePosition getPosition() {
 
-    return new SwerveModulePosition(getDistance(), new Rotation2d(Math.toRadians(toWPIAngle(canCoder.getAbsolutePosition().getValueAsDouble() * 360.0))));
+    return new SwerveModulePosition(getDistance(),
+        new Rotation2d(Math.toRadians(toWPIAngle(canCoder.getAbsolutePosition().getValueAsDouble() * 360.0))));
 
   }
 
@@ -438,5 +443,5 @@ public class SwerveWheel2 extends SubsystemBase {
     }
     return angle;
   }
-  
+
 }

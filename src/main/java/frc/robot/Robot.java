@@ -39,8 +39,8 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
 
-    //new CameraBuilder(0, "Camera 0").fps(15).attachAutoCapture();
-    //new CameraBuilder(1, "Camera 1").fps(15).attachAutoCapture();
+    // new CameraBuilder(0, "Camera 0").fps(15).attachAutoCapture();
+    // new CameraBuilder(1, "Camera 1").fps(15).attachAutoCapture();
 
     // Instantiate our RobotContainer. This will perform all our button bindings,
     // and put our
@@ -48,7 +48,7 @@ public class Robot extends TimedRobot {
     m_robotContainer = new RobotContainer();
 
     // Start data logging of network table data
-    //DataLogManager.start("/home/lvuser/logs");
+    // DataLogManager.start("/home/lvuser/logs");
     DataLogManager.start();
 
     // Put zero mechanism options on the dashboard
@@ -96,7 +96,7 @@ public class Robot extends TimedRobot {
     m_robotContainer.updateRobotStatus();
 
     // Check for gyro zero command and zero the gyro
-    if (SmartDashboard.getNumber("Zero Gyro", 0) ==1) {
+    if (SmartDashboard.getNumber("Zero Gyro", 0) == 1) {
       m_robotContainer.zeroGyro();
       SmartDashboard.putNumber("Zero Gyro", 0);
     }

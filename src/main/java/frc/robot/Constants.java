@@ -50,10 +50,10 @@ public final class Constants {
     public static final double drivePIDkIs[] = { 0.25, 0.25, 0.25, 0.25 };
     public static final double drivePIDkDs[] = { 0.0, 0.0, 0.0, 0.0 };
     public static final double drivePIDkFs[] = { 1.0, 1.0, 1.0, 1.0 };
-    public static final double anglePIDkPs[] = { 3.25, 3.25, 3.25, 3.25 }; //3.25
-    public static final double anglePIDkIs[] = { 2.25, 2.25, 2.25, 2.25 }; //2.25
-    public static final double anglePIDkDs[] = { 0.04, 0.04, 0.04, 0.04 }; //0.04
-    public static double angleLimiters[] = { 1.0, 1.0, 1.0, 1.0 };    
+    public static final double anglePIDkPs[] = { 3.25, 3.25, 3.25, 3.25 }; // 3.25
+    public static final double anglePIDkIs[] = { 2.25, 2.25, 2.25, 2.25 }; // 2.25
+    public static final double anglePIDkDs[] = { 0.04, 0.04, 0.04, 0.04 }; // 0.04
+    public static double angleLimiters[] = { 1.0, 1.0, 1.0, 1.0 };
 
     // Auto drive PID constants
     public static final double FastMaxYawRate = 0.2;
@@ -94,7 +94,7 @@ public final class Constants {
 
     // Set elevator constants
     public static final double ElevatorSpeed = 0.5;
-    
+
   }
 
   /*

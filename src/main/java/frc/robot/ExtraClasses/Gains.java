@@ -11,7 +11,7 @@ public class Gains {
 	public final double kF;
 	public final int kIzone;
 	public final double kPeakOutput;
-	
+
 	public Gains(double _kP, double _kI, double _kD, double _kF, int _kIzone, double _kPeakOutput) {
 		kP = _kP;
 		kI = _kI;
@@ -21,4 +21,3 @@ public class Gains {
 		kPeakOutput = _kPeakOutput;
 	}
 }
-

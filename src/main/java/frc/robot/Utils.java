@@ -1,7 +1,7 @@
 package frc.robot;
 
 /**
- * Miscellaneous utilities 
+ * Miscellaneous utilities
  */
 public final class Utils {
   /**
@@ -32,7 +32,7 @@ public final class Utils {
   public static double toWPIAngle(double angle) {
     if (angle > 180) {
       angle = -(angle - 360);
-    } else if (angle > 0 && angle <=180) {
+    } else if (angle > 0 && angle <= 180) {
       angle = -angle;
     }
     return angle;

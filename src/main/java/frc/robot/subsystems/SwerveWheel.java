@@ -184,12 +184,15 @@ public class SwerveWheel extends SubsystemBase {
     swerveAngleMotor = new TalonFX(config.angleId);
     var angleConfig = swerveAngleMotor.getConfigurator(); // The configurator is used for more advanced configurations
     // {
-    //   StatusCode code = angleConfig
-    //       .apply(new FeedbackConfigs().withFeedbackSensorSource(FeedbackSensorSourceValue.RotorSensor), configTimeout);
-    //   if (code != StatusCode.OK) {
-    //     DriverStation.reportError(String.format("Configuring feedback for angle motor failed with code: %s", code),
-    //         false);
-    //   }
+    // StatusCode code = angleConfig
+    // .apply(new
+    // FeedbackConfigs().withFeedbackSensorSource(FeedbackSensorSourceValue.RotorSensor),
+    // configTimeout);
+    // if (code != StatusCode.OK) {
+    // DriverStation.reportError(String.format("Configuring feedback for angle motor
+    // failed with code: %s", code),
+    // false);
+    // }
     // }
     {
       StatusCode code = angleConfig.apply(
@@ -243,7 +246,7 @@ public class SwerveWheel extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-      double encoderAngle = canCoder.getAbsolutePosition().getValue().in(Degrees) / 360 % 1;
+    double encoderAngle = canCoder.getAbsolutePosition().getValue().in(Degrees) / 360 % 1;
   }
 
   /**
@@ -271,7 +274,7 @@ public class SwerveWheel extends SubsystemBase {
       // 360 degrees (should be 0)
       double encoderAngle = canCoder.getAbsolutePosition().getValue().in(Degrees) / 360 % 1;
       // if (encoderAngle == 1.0) {
-      //   encoderAngle = 0.0;
+      // encoderAngle = 0.0;
       // }
       SmartDashboard.putNumber(config.name + " encoder target", target);
       SmartDashboard.putNumber(config.name + " encoder angle", encoderAngle);

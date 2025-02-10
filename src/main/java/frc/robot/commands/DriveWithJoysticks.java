@@ -80,7 +80,6 @@ public class DriveWithJoysticks extends Command {
     } else {
       swerve.driveRobotRelative(xSpeed, ySpeed, rotSpeed);
     }
-        
   }
 
   // Called once the command ends or is interrupted.

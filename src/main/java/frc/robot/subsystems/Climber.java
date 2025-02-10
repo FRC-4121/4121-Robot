@@ -28,7 +28,8 @@ import static frc.robot.Constants.*;
 public class Climber extends SubsystemBase {
 
   // Declare constants
-  private final double DRIVE_DEADBAND = 0.001; // Deadband for the drive motor. VAlues smaller than this will be rounded to zero
+  private final double DRIVE_DEADBAND = 0.001; // Deadband for the drive motor. VAlues smaller than this will be rounded
+                                               // to zero
   private final double CURRENT_LIMIT = 100; // Current limit for stopping motor to prevent damage
 
   // Declare CAN ID for motor
@@ -103,7 +104,7 @@ public class Climber extends SubsystemBase {
 
   @Override
   public void periodic() {
-    
+
     // Put motor status on the Smart Dashboard
     SmartDashboard.putNumber("Climber Motor Amps", climberMotor.getStatorCurrent().getValueAsDouble());
     SmartDashboard.putNumber("Climber Motor Volts", climberMotor.getMotorVoltage().getValueAsDouble());
@@ -131,20 +132,19 @@ public class Climber extends SubsystemBase {
   public void retractClimber() {
 
     climberMotor.setControl(m_positionRequest.withPosition(retractRotations));
-    
+
   }
 
   /**
    * Get the current draw for the climber motor
    * 
-   * @return  Motor amps
+   * @return Motor amps
    */
   public double getMotorAmps() {
 
     return climberMotor.getStatorCurrent().getValueAsDouble();
 
   }
-
 
   /**
    * 

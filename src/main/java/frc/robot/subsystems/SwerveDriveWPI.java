@@ -170,15 +170,15 @@ public class SwerveDriveWPI extends SubsystemBase {
             // This will flip the path being followed to the red side of the field.
             // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
 
-/*             var alliance = DriverStation.getAlliance();
-            if (alliance.isPresent()) {
-              return alliance.get() == DriverStation.Alliance.Red;
-            }
- */            return false;
+            /*
+             * var alliance = DriverStation.getAlliance();
+             * if (alliance.isPresent()) {
+             * return alliance.get() == DriverStation.Alliance.Red;
+             * }
+             */ return false;
 
           },
-          this
-        );
+          this);
     } catch (Exception e) {
       DriverStation.reportError("Failed to load PathPlanner config and configure AutoBuilder", e.getStackTrace());
     }
@@ -560,8 +560,8 @@ public class SwerveDriveWPI extends SubsystemBase {
    */
   public double getGyroYawRate() {
 
-    //double yawRate = -yaw_filter.calculate(Math.toRadians(gyro.getRate()));
-    //return -Math.toRadians(gyro.getRate());
+    // double yawRate = -yaw_filter.calculate(Math.toRadians(gyro.getRate()));
+    // return -Math.toRadians(gyro.getRate());
     return -gyro.getRate();
 
   }
@@ -733,7 +733,7 @@ public class SwerveDriveWPI extends SubsystemBase {
   public ChassisSpeeds getRobotRelativeSpeeds() {
 
     return kinematics.toChassisSpeeds(getModuleStates());
-    
+
   }
 
   /**
@@ -745,7 +745,6 @@ public class SwerveDriveWPI extends SubsystemBase {
   public Pose2d getPose() {
 
     return odometry.getPoseMeters();
-
 
   }
 

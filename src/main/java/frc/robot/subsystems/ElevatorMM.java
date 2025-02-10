@@ -32,10 +32,11 @@ import java.util.Map;
 public class ElevatorMM extends SubsystemBase {
 
   // Declare constants
-  private final double DRIVE_DEADBAND = 0.001; // Deadband for the drive motor. VAlues smaller than this will be rounded to zero
+  private final double DRIVE_DEADBAND = 0.001; // Deadband for the drive motor. VAlues smaller than this will be rounded
+                                               // to zero
   private final double CURRENT_LIMIT = 100; // Current limit to prevent motor damage
 
-    // Declare motor CAN IDs
+  // Declare motor CAN IDs
   private final int elevatorLeadID = 13;
   private final int elevatorFollowID = 14;
 
@@ -65,13 +66,12 @@ public class ElevatorMM extends SubsystemBase {
     public static final double PROCESSOR = 100;
     public static final double BARGE = 100;
   }
-  
+
   // Declare motor output requests
   private final PositionVoltage m_positionRequest = new PositionVoltage(0).withSlot(0);
   private final DutyCycleOut m_dutyRequest = new DutyCycleOut(0);
-  
 
-  /** 
+  /**
    * 
    * Creates a new ElevatorMM object
    * 
@@ -89,7 +89,6 @@ public class ElevatorMM extends SubsystemBase {
     elevatorFollowMotor.setControl(new Follower(elevatorLeadMotor.getDeviceID(), false));
 
   }
-
 
   /**
    * 
@@ -165,7 +164,6 @@ public class ElevatorMM extends SubsystemBase {
       System.out.println("Successfully applied follower elevator motor configs. Error code: " + leadStatus.toString());
     }
 
-
   }
 
   /**
@@ -175,7 +173,7 @@ public class ElevatorMM extends SubsystemBase {
    */
   @Override
   public void periodic() {
-    
+
     // Put critical lead motor signals on the SmartDashboard
     SmartDashboard.putNumber("Elevator Lead Amps", elevatorLeadMotor.getStatorCurrent().getValueAsDouble());
     SmartDashboard.putNumber("Elevator Lead Volts", elevatorLeadMotor.getMotorVoltage().getValueAsDouble());
@@ -191,7 +189,7 @@ public class ElevatorMM extends SubsystemBase {
     // Check motor currents and stop elevator
     if (elevatorLeadMotor.getStatorCurrent().getValueAsDouble() > CURRENT_LIMIT ||
         elevatorFollowMotor.getStatorCurrent().getValueAsDouble() > CURRENT_LIMIT) {
-          stopElevator();
+      stopElevator();
     }
 
   }
@@ -202,16 +200,14 @@ public class ElevatorMM extends SubsystemBase {
    * 
    */
   public void stopElevator() {
-
     elevatorLeadMotor.stopMotor();
-
   }
 
   /**
    * 
    * Run the elevator in response to operator input
    * 
-   * @param direction  Direction the elevator should run
+   * @param direction Direction the elevator should run
    * 
    */
   public void moveElevator(double direction) {
@@ -222,7 +218,7 @@ public class ElevatorMM extends SubsystemBase {
    * 
    * Run the elevator to a specified position
    * 
-   * @param position  The desired position of the elevator
+   * @param position The desired position of the elevator
    * 
    */
   public void moveElevatorToPosition(double position) {
