@@ -5,8 +5,9 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import static frc.robot.Constants.killAuto;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
+import frc.robot.GlobalMutable;
 
 public class KillAutoCommand extends Command {
   /** Creates a new KillAutoCommand. */
@@ -22,9 +23,9 @@ public class KillAutoCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    killAuto = !killAuto;
+    GlobalMutable.killAuto = !GlobalMutable.killAuto;
 
-    SmartDashboard.putBoolean("Kill Auto", killAuto);
+    SmartDashboard.putBoolean("Kill Auto", GlobalMutable.killAuto);
     // if kill button clicked execute
   }
 

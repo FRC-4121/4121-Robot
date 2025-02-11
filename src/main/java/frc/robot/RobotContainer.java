@@ -230,17 +230,6 @@ public class RobotContainer {
 
   /**
    * 
-   * Send a signal to stop the Pi codes
-   * 
-   */
-  public void stopPi() {
-
-    table.putControlDouble("RobotStop", 1.0);
-
-  }
-
-  /**
-   * 
    * Send updates on important values to dashboard
    * Called from RobotPeriodic
    * 

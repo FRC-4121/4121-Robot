@@ -1,6 +1,6 @@
 package frc.robot.commands;
 
-import static frc.robot.Constants.killAuto;
+import frc.robot.GlobalMutable;
 
 /**
  * This further extends commands with a timeout to check if killAuto is set
@@ -12,6 +12,6 @@ public class AutoCommand extends TimeoutCommand {
 
   @Override
   public boolean isFinished() {
-    return killAuto || super.isFinished();
+    return GlobalMutable.killAuto || super.isFinished();
   }
 }

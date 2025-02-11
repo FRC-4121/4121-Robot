@@ -170,7 +170,6 @@ public final class Constants {
   public static boolean impactDetected = false;
 
   // General variables
-  public static boolean killAuto = false;
   public static final double degreesToRads = 0.0174533;
   public static String CANBUS_NAME = "rio";
 
