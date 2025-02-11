@@ -5,29 +5,107 @@
 package frc.robot.ExtraClasses;
 
 import java.lang.Thread;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-public class NetworkTableQuerier implements Runnable {
+public class NetworkTableQuerier {
+
+  public static class TagCollection {
+    private NetworkTableEntry ids_;
+    private NetworkTableEntry distances_;
+    private NetworkTableEntry azimuths_;
+    private NetworkTableEntry elevations_;
+    private NetworkTableEntry offsets_;
+    private NetworkTableEntry rotations_;
+
+    // for when we want to hold concurrency
+    public Lock lock = new ReentrantLock();
+
+    public long[] ids;
+    public double[] distances;
+    public double[] azimuths;
+    public double[] elevations;
+    public double[] offsets;
+    public double[] rotations;
+
+    public TagCollection(NetworkTable collection) {
+      ids_ = collection.getEntry("ids");
+      distances_ = collection.getEntry("d");
+      azimuths_ = collection.getEntry("a");
+      elevations_ = collection.getEntry("e");
+      offsets_ = collection.getEntry("o");
+      rotations_ = collection.getEntry("r");
+    }
+
+    /**
+     * Refresh the values. Doesn't take into account any synchronization.
+     */
+    public void refresh() {
+      ids = ids_.getIntegerArray(ids);
+      distances = distances_.getDoubleArray(distances);
+      azimuths = azimuths_.getDoubleArray(azimuths);
+      elevations = elevations_.getDoubleArray(elevations);
+      offsets = offsets_.getDoubleArray(offsets);
+      rotations = rotations_.getDoubleArray(rotations);
+    }
+
+    /**
+     * Try to refresh, holding a lock to the container. Does nothing if the lock is held.
+     * 
+     * @return whether we successfully refreshed.
+     */
+    public boolean tryRefresh() {
+      if (lock.tryLock()) {
+        try {
+          refresh();
+          return true;
+        } catch (RuntimeException e) {
+          throw e;
+        } finally {
+          lock.unlock();
+        }
+      } else return false;
+    }
+    /**
+     * Refresh, waiting until the lock is available.
+     */
+    public void syncRefresh() {
+      lock.lock();
+      try {
+        refresh();
+      } catch (RuntimeException e) {
+        throw e;
+      } finally {
+        lock.unlock();
+      }
+    }
+  }
 
   // Create network tables
-  private static NetworkTableInstance networkTableInstance;
-  private static NetworkTable controlTable;
-  private static NetworkTable cam1Table;
-  private static NetworkTable cam2Table;
+  private NetworkTableInstance networkTableInstance;
+
+  private NetworkTable controlTable;
 
   // Create network table entries
-  private static NetworkTableEntry robotStop;
-  private static NetworkTableEntry timeString;
-  private static NetworkTableEntry zeroGyro;
-  private static NetworkTableEntry targetLock;
-  private static NetworkTableEntry colorSelection;
+  private NetworkTableEntry robotStop;
+  private NetworkTableEntry zeroGyro;
+  private NetworkTableEntry colorSelection;
 
-  // Declare class variables
   private boolean runNetworkTables;
+
+  public class Runner implements Runnable {
+    @Override
+    public void run() {
+      while (runNetworkTables) {
+        queryNetworkTables();
+      }
+    }
+  }
 
   /**
    * Class constructor
@@ -42,20 +120,13 @@ public class NetworkTableQuerier implements Runnable {
   }
 
   /**
-   * Main execution thread
-   */
-  public void run() {
-    while (runNetworkTables) {
-      queryNetworkTables();
-    }
-  }
-
-  /**
    * Start the main execution thread
    */
   public void start() {
     runNetworkTables = true;
-    Thread ntThread = new Thread(this);
+    Thread ntThread = new Thread(new Runner());
+    ntThread.setDaemon(true);
+    ntThread.setName("NT-query");
     ntThread.start();
   }
 
@@ -66,10 +137,6 @@ public class NetworkTableQuerier implements Runnable {
     runNetworkTables = false;
   }
 
-  public NetworkTable getControlTable() {
-    return controlTable;
-  }
-
   /**
    * Initialize network tables
    */
@@ -77,8 +144,6 @@ public class NetworkTableQuerier implements Runnable {
 
     networkTableInstance = NetworkTableInstance.getDefault();
     controlTable = networkTableInstance.getTable("control");
-    cam1Table = networkTableInstance.getTable("CAM1");
-    cam2Table = networkTableInstance.getTable("CAM2");
 
     robotStop = controlTable.getEntry("RobotStop");
     zeroGyro = controlTable.getEntry("ZeroGyro");
@@ -88,161 +153,22 @@ public class NetworkTableQuerier implements Runnable {
     zeroGyro.setNumber(0);
 
     queryNetworkTables();
-
   }
 
   /**
    * Get values from network tables
    */
   private void queryNetworkTables() {
-
     robotStop = controlTable.getEntry("RobotStop");
 
-    targetLock = controlTable.getEntry("TargetLock");
     colorSelection = controlTable.getEntry("BallColor");
-
-    SmartDashboard.putBoolean("TargetLock", targetLock.getBoolean(false));
-  }
-
-  /*
-   * @param entry The ID of the NetworkTables entry to return
-   * 
-   * @return the double value of the NetworkTables entry chosen; an error will be
-   * returned if entry is not a double
-   * 
-   * List of available entries:
-   * "BallDistance"
-   * "BallAngle"
-   * "BallScreenPercent"
-   * "TapeOffset"
-   * "TapeDistance"
-   */
-  public synchronized double getControlDouble(String entry) {
-
-    return controlTable.getEntry(entry).getDouble(0);
-
-  }
-
-  public synchronized void putControlDouble(String entry, double value) {
-    controlTable.getEntry(entry).setDouble(value);
-  }
-
-  public synchronized void putControlString(String entry, String value) {
-    controlTable.getEntry(entry).setString(value);
-  }
-
-  /*
-   * @param entry The ID of the NetworkTables entry to return
-   * 
-   * @return the boolean value of the NetworkTables entry chosen; an error will be
-   * returned if entry is not a boolean
-   * 
-   * List of available entries:
-   * "FoundBall"
-   * "FoundTape"
-   * "TargetLock"
-   */
-  public synchronized boolean getVisionBoolean(String camera, String entry) {
-
-    boolean camValue = false;
-
-    if (camera == "Cam1") {
-      camValue = cam1Table.getEntry(entry).getBoolean(false);
-    } else {
-      camValue = cam2Table.getEntry(entry).getBoolean(false);
-    }
-    return camValue;
-  }
-
-  public synchronized double getVisionDouble(String camera, String entry) {
-
-    double camValue = 0;
-
-    if (camera == "Cam1") {
-      camValue = cam1Table.getEntry(entry).getDouble(0);
-    } else {
-      camValue = cam2Table.getEntry(entry).getDouble(0);
-    }
-    return camValue;
-  }
-
-  public synchronized double getRingsFound(String camera) {
-
-    double camValue = 0;
-
-    if (camera == "Cam1") {
-      camValue = cam1Table.getEntry("RingsFound").getDouble(0);
-    } else {
-      camValue = cam2Table.getEntry("RingsFound").getDouble(0);
-    }
-    return camValue;
-  }
-
-  public synchronized double getRingInfo(String camera, int ring, String entry) {
-
-    double camValue = 0;
-
-    if (camera == "Cam1") {
-      camValue = cam1Table.getEntry("Rings." + ring + "." + entry).getDouble(0);
-    } else {
-      camValue = cam2Table.getEntry("Rings." + ring + "." + entry).getDouble(0);
-    }
-    return camValue;
-  }
-
-  public synchronized double getTagsFound(String camera) {
-
-    double camValue = 0;
-
-    if (camera == "CAM1") {
-      System.out.println("Getting CAM1 Tags");
-      camValue = cam1Table.getEntry("TagsFound").getDouble(0);
-    } else {
-      System.out.println("Getting CAM2 Tags");
-      camValue = cam2Table.getEntry("TagsFound").getDouble(0);
-    }
-    return camValue;
-  }
-
-  public synchronized double getTagInfo(String camera, int tag, String entry) {
-
-    double camValue = 0;
-    String infoString = "Tags." + tag + "." + entry;
-    System.out.println(infoString);
-
-    if (camera == "CAM1") {
-      camValue = cam1Table.getEntry(infoString).getDouble(0);
-    } else {
-      camValue = cam2Table.getEntry(infoString).getDouble(0);
-    }
-    return camValue;
-  }
-
-  /**
-   * Get the Target Lock flag
-   * 
-   * @return
-   */
-  public synchronized boolean getTargetLockFlag() {
-
-    return targetLock.getBoolean(false);
-
   }
 
   /**
    * Set the robot stop flag
    */
   public synchronized void robotStop() {
-
     robotStop.setNumber(1);
-  }
-
-  /**
-   * Zero the VMX gyro
-   */
-  public synchronized void zeroPiGyro() {
-
-    zeroGyro.setNumber(1);
   }
 
   public synchronized void setColor(int color) {
