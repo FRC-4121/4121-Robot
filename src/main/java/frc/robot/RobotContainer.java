@@ -14,7 +14,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.*;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import com.pathplanner.lib.auto.AutoBuilder;
+//import com.pathplanner.lib.auto.AutoBuilder;
 
 public class RobotContainer {
 
@@ -68,7 +68,7 @@ public class RobotContainer {
   // ===PathPlanner=== //
 
   // Declare PathPlanner variables
-  private final SendableChooser<Command> autoChooser;
+  //private final SendableChooser<Command> autoChooser;
 
   /**
    * 
@@ -102,8 +102,8 @@ public class RobotContainer {
     registerPathPlannerCommands();
 
     // Create an auto command chooser
-    autoChooser = AutoBuilder.buildAutoChooser();
-    SmartDashboard.putData("Auto Mode", autoChooser);
+    //autoChooser = AutoBuilder.buildAutoChooser();
+    //SmartDashboard.putData("Auto Mode", autoChooser);
 
     // Initialize Xbox Buttons
     changeSpeedButton = new JoystickButton(xbox, xboxYButton);
@@ -164,7 +164,8 @@ public class RobotContainer {
    * 
    */
   public Command getAutonomousCommand() {
-    return autoChooser.getSelected();
+    //return autoChooser.getSelected();
+    return null;
   }
 
   /**
@@ -202,9 +203,7 @@ public class RobotContainer {
    * Get the value of the Auto Align Robot switch
    * 
    */
-  public void getAngleToTargetSelection()
-
-  {
+  public void getAngleToTargetSelection() {
     if (changeAutoAngleButton.getAsBoolean() == false) {
       AutoAngleToTarget = true;
       SmartDashboard.putBoolean("Auto Positioning", true);

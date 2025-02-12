@@ -23,7 +23,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import com.studica.frc.AHRS;
 import com.studica.frc.AHRS.NavXComType;
-import com.pathplanner.lib.util.PathPlannerLogging;
+//import com.pathplanner.lib.util.PathPlannerLogging;
 
 public class SwerveDrive extends SubsystemBase {
   // Swerve drive wheels
@@ -168,8 +168,8 @@ public class SwerveDrive extends SubsystemBase {
     // this);
 
     // Set up custom logging to add the current path to a field 2d widget
-    PathPlannerLogging.setLogActivePathCallback((poses) -> field.getObject("path").setPoses(poses));
-    SmartDashboard.putData("Field", field);
+    //PathPlannerLogging.setLogActivePathCallback((poses) -> field.getObject("path").setPoses(poses));
+    //SmartDashboard.putData("Field", field);
   }
 
   /**

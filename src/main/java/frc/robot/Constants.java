@@ -7,8 +7,7 @@
 
 package frc.robot;
 
-import frc.robot.ExtraClasses.Gains;
-import com.pathplanner.lib.config.PIDConstants;
+//import com.pathplanner.lib.config.PIDConstants;
 
 /**
  * The Constants class provides a dope af place for teams to hold robot-wide
@@ -69,18 +68,18 @@ public final class Constants {
     public static final double kCollisionThresholdDeltaG = 80000;
 
     // Motor Limits
-    public static final double MaxLinearSpeed = 3.7; // Max Speed in Meters per second
+    public static final double MaxLinearSpeed = 3.7; // 3.7 Max Speed in Meters per second
     public static final double MaxRadiansPerSecond = Math.PI;
-    public static final double SlowMaxLinearSpeed = 0.75;// Max Speed during slow mode in meters per second
+    public static final double SlowMaxLinearSpeed = 0.75;// 0.75 Max Speed during slow mode in meters per second
     public static final double SlowRadiansPerSecond = (Math.PI / 2);// Max rotational speed during slow mode
     public static final double swerveDriveSpeedLimiter = 0.7;
-    public static double LinearSpeed = 5.0;
+    public static double LinearSpeed = 3.7;
     public static double RotationalSpeed = Math.PI;
     public static double RotationalSpeedFast = 2 * Math.PI;
 
     // PathPlanner constants
-    public static final PIDConstants translationConstants = new PIDConstants(5.0, 0.0, 0.0);
-    public static final PIDConstants rotationConstants = new PIDConstants(5.0, 0.0, 0.0);
+    //public static final PIDConstants translationConstants = new PIDConstants(5.0, 0.0, 0.0);
+    //public static final PIDConstants rotationConstants = new PIDConstants(5.0, 0.0, 0.0);
 
     // General drive constants
     public static final double GyroCorrection = 180;

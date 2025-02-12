@@ -22,10 +22,10 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import com.studica.frc.AHRS;
 import com.studica.frc.AHRS.NavXComType;
-import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.config.RobotConfig;
-import com.pathplanner.lib.controllers.PPHolonomicDriveController;
-import com.pathplanner.lib.util.PathPlannerLogging;
+// import com.pathplanner.lib.auto.AutoBuilder;
+// import com.pathplanner.lib.config.RobotConfig;
+// import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+// import com.pathplanner.lib.util.PathPlannerLogging;
 
 /**
  * Define a SwerveDrive object
@@ -151,43 +151,43 @@ public class SwerveDriveWPI extends SubsystemBase {
     field = new Field2d();
 
     // Configure PathPlanner AutoBuilder
-    try {
+    //try {
 
-      RobotConfig ppConfig = RobotConfig.fromGUISettings();
+    //   RobotConfig ppConfig = RobotConfig.fromGUISettings();
 
-      AutoBuilder.configure(
-          this::getPose,
-          this::resetPose,
-          this::getSpeeds,
-          this::driveRobotRelative,
-          new PPHolonomicDriveController(
-              translationConstants,
-              rotationConstants),
-          ppConfig,
-          () -> {
-            // Boolean supplier that controls when the path will be mirrored for the red
-            // alliance
-            // This will flip the path being followed to the red side of the field.
-            // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+    //   AutoBuilder.configure(
+    //       this::getPose,
+    //       this::resetPose,
+    //       this::getSpeeds,
+    //       this::driveRobotRelativePP,
+    //       new PPHolonomicDriveController(
+    //           translationConstants,
+    //           rotationConstants),
+    //       ppConfig,
+    //       () -> {
+    //         // Boolean supplier that controls when the path will be mirrored for the red
+    //         // alliance
+    //         // This will flip the path being followed to the red side of the field.
+    //         // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
 
-            /*
-             * var alliance = DriverStation.getAlliance();
-             * if (alliance.isPresent()) {
-             * return alliance.get() == DriverStation.Alliance.Red;
-             * }
-             */ return false;
+    //         /*
+    //          * var alliance = DriverStation.getAlliance();
+    //          * if (alliance.isPresent()) {
+    //          * return alliance.get() == DriverStation.Alliance.Red;
+    //          * }
+    //          */ return false;
 
-          },
-          this);
-    } catch (Exception e) {
-      DriverStation.reportError("Failed to load PathPlanner config and configure AutoBuilder", e.getStackTrace());
-    }
+    //       },
+    //       this);
+    // } catch (Exception e) {
+    //   DriverStation.reportError("Failed to load PathPlanner config and configure AutoBuilder", e.getStackTrace());
+    // }
 
-    // Set up custom logging to add the current path to a field 2d widget
-    PathPlannerLogging.setLogActivePathCallback((poses) -> field.getObject("path").setPoses(poses));
+    // // Set up custom logging to add the current path to a field 2d widget
+    // PathPlannerLogging.setLogActivePathCallback((poses) -> field.getObject("path").setPoses(poses));
 
-    // Show field data on SmartDashboard
-    SmartDashboard.putData("Field", field);
+    // // Show field data on SmartDashboard
+    // SmartDashboard.putData("Field", field);
 
   }
 
@@ -227,7 +227,7 @@ public class SwerveDriveWPI extends SubsystemBase {
    * @param robotRelativeSpeeds A set of chassis speeds
    * 
    */
-  public void driveRobotRelative(ChassisSpeeds robotRelativeSpeeds) {
+  public void driveRobotRelativePP(ChassisSpeeds robotRelativeSpeeds) {
     // ChassisSpeeds targetSpeeds = ChassisSpeeds.discretize(robotRelativeSpeeds,
     // 0.02);
 
