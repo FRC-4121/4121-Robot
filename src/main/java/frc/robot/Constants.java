@@ -25,6 +25,9 @@ import com.pathplanner.lib.config.PIDConstants;
 
 public final class Constants {
 
+  // Number of meters in an inch
+  public static final double INCHES_TO_METERS = 0.0254;
+
   /*
    * Values used for driving
    */

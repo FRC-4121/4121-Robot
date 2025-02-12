@@ -5,13 +5,12 @@
 package frc.robot.ExtraClasses;
 
 import java.lang.Thread;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
+import java.util.Optional;
+import java.util.concurrent.locks.*;
 
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class NetworkTableQuerier {
 
@@ -24,13 +23,32 @@ public class NetworkTableQuerier {
     private NetworkTableEntry rotations_;
 
     // for when we want to hold concurrency
-    public Lock lock = new ReentrantLock();
+    public ReadWriteLock lock = new ReentrantReadWriteLock();
 
+    /**
+     * Tag IDs. These are longs instead of ints because that's what goes in the network table
+     */
     public long[] ids;
+    /**
+     * Distances to the april tags. THESE ARE IN INCHES.
+     */
     public double[] distances;
+    /**
+     * Azimuth angles to the april tags, in radians.
+     */
     public double[] azimuths;
+    /**
+     * Elevation angles to the april tags, in radians.
+     */
     public double[] elevations;
+    /**
+     * Offset distances to the april tags, IN INCHES.
+     * Offset is the amount left or right the center of the image is on the plane parallel with the tag.
+     */
     public double[] offsets;
+    /**
+     * Rotations of the tags themselves.
+     */
     public double[] rotations;
 
     public TagCollection(NetworkTable collection) {
@@ -60,14 +78,13 @@ public class NetworkTableQuerier {
      * @return whether we successfully refreshed.
      */
     public boolean tryRefresh() {
-      if (lock.tryLock()) {
+      Lock write = lock.writeLock();
+      if (write.tryLock()) {
         try {
           refresh();
           return true;
-        } catch (RuntimeException e) {
-          throw e;
         } finally {
-          lock.unlock();
+          write.unlock();
         }
       } else return false;
     }
@@ -75,14 +92,26 @@ public class NetworkTableQuerier {
      * Refresh, waiting until the lock is available.
      */
     public void syncRefresh() {
-      lock.lock();
+      Lock write = lock.writeLock();
+      write.lock();
       try {
         refresh();
-      } catch (RuntimeException e) {
-        throw e;
       } finally {
-        lock.unlock();
+        write.unlock();
       }
+    }
+
+    /**
+     * Get the index of a tag in this collection.
+     * 
+     * @param id the tag ID we want
+     * @return an optional value if a tag is found
+     */
+    public Optional<Integer> tagIndex(int id) {
+      for (int i = 0; i < ids.length; ++i) {
+        if (ids[i] == id) return Optional.of(i);
+      }
+      return Optional.empty();
     }
   }
 
