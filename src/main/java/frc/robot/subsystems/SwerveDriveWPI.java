@@ -27,7 +27,27 @@ import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.util.PathPlannerLogging;
 
+/**
+ * Define a SwerveDrive object
+ */
 public class SwerveDriveWPI extends SubsystemBase {
+
+  // Declare CAN IDs for swerve wheels
+  private final int leftFrontDriveId = 1;
+  private final int leftFrontAngleId = 2;
+  private final int leftFrontCoderId = 3;
+
+  private final int rightFrontDriveId = 4;
+  private final int rightFrontAngleId = 5;
+  private final int rightFrontCoderId = 6;
+
+  private final int rightBackDriveId = 10;
+  private final int rightBackAngleId = 11;
+  private final int rightBackCoderId = 12;
+
+  private final int leftBackDriveId = 7;
+  private final int leftBackAngleId = 8;
+  private final int leftBackCoderId = 9;
 
   // Declare swerve modules
   private SwerveWheel2 leftFront;
@@ -82,24 +102,6 @@ public class SwerveDriveWPI extends SubsystemBase {
   // Declare 2d Field
   private Field2d field;
 
-  // Declare CAN IDs for swerve wheels
-  private static final int leftFrontDriveId = 1;
-  private static final int leftFrontAngleId = 2;
-  private static final int leftFrontCoderId = 3;
-
-  private static final int rightFrontDriveId = 4;
-  private static final int rightFrontAngleId = 5;
-  private static final int rightFrontCoderId = 6;
-
-  private static final int rightBackDriveId = 7;
-  private static final int rightBackAngleId = 8;
-  private static final int rightBackCoderId = 9;
-
-  private static final int leftBackDriveId = 10;
-  private static final int leftBackAngleId = 11;
-  private static final int leftBackCoderId = 12;
-
-
   /**
    * 
    * Creates a new SwerveDrive
@@ -114,10 +116,11 @@ public class SwerveDriveWPI extends SubsystemBase {
     rightBack = new SwerveWheel2("RB", rightBackDriveId, rightBackAngleId, rightBackCoderId);
 
     // Initialize swerve kinematics objects
-    leftFrontTranslation = new Translation2d(0.297, 0.288);// X-0.297, Y-0.288
-    leftBackTranslation = new Translation2d(-0.297, 0.288);// 0.229,0.292 for last years bot
-    rightFrontTranslation = new Translation2d(0.297, -0.288);
-    rightBackTranslation = new Translation2d(-0.297, -0.288);
+    // 2025 robot chassis is 30" x 30"
+    leftFrontTranslation = new Translation2d(0.311, 0.311);// X-0.297, Y-0.288
+    leftBackTranslation = new Translation2d(-0.311, 0.311);// 0.229,0.292 for last years bot
+    rightFrontTranslation = new Translation2d(0.311, -0.311);
+    rightBackTranslation = new Translation2d(-0.311, -0.311);
     kinematics = new SwerveDriveKinematics(leftFrontTranslation, rightFrontTranslation, leftBackTranslation,
         rightBackTranslation);
 
@@ -127,7 +130,6 @@ public class SwerveDriveWPI extends SubsystemBase {
     // gyro.calibrate();
     gyro.reset();
     gyro.resetDisplacement();
-    // gyro.setAngleAdjustment(270);
 
     // Initialize gyro filter
     gyro_filter = new MedianFilter(FILTER_WINDOW_SIZE);
@@ -140,7 +142,7 @@ public class SwerveDriveWPI extends SubsystemBase {
 
     // Create PID controller
     wpiPIDController = new PIDController(kAnglePIDkp, kAnglePIDki, kAnglePIDkd);
-    // wpiPIDController.setTolerance(0.1, 5);
+    wpiPIDController.setTolerance(0.1, 5);
 
     // Initialize swerve odometry object
     odometry = new SwerveDriveOdometry(kinematics, getGyroRotation2d(), getModulePositions());
@@ -149,38 +151,36 @@ public class SwerveDriveWPI extends SubsystemBase {
     field = new Field2d();
 
     // Configure PathPlanner AutoBuilder
-/*     try {
+    try {
 
       RobotConfig ppConfig = RobotConfig.fromGUISettings();
 
       AutoBuilder.configure(
-        this::getPose,
-        this::resetPose,
-        this::getRobotRelativeSpeeds,
-        (speeds, feedforwards) -> driveRobotRelative(speeds),
-        new PPHolonomicDriveController(
-          translationConstants,
-          rotationConstants
-        ),
-        ppConfig,
-        () -> {
+          this::getPose,
+          this::resetPose,
+          this::getSpeeds,
+          this::driveRobotRelative,
+          new PPHolonomicDriveController(
+              translationConstants,
+              rotationConstants),
+          ppConfig,
+          () -> {
             // Boolean supplier that controls when the path will be mirrored for the red
             // alliance
             // This will flip the path being followed to the red side of the field.
             // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
 
-            var alliance = DriverStation.getAlliance();
-            if (alliance.isPresent()) {
-             return alliance.get() == DriverStation.Alliance.Red;
-            }
-            return false;
-            
-          },
-          this
-        );
+            /*
+             * var alliance = DriverStation.getAlliance();
+             * if (alliance.isPresent()) {
+             * return alliance.get() == DriverStation.Alliance.Red;
+             * }
+             */ return false;
 
-    } catch(Exception ex) {
-      DriverStation.reportError("Failed to load PathPlanner config and configure AutoBuilder", ex.getStackTrace());
+          },
+          this);
+    } catch (Exception e) {
+      DriverStation.reportError("Failed to load PathPlanner config and configure AutoBuilder", e.getStackTrace());
     }
 
     // Set up custom logging to add the current path to a field 2d widget
@@ -188,7 +188,7 @@ public class SwerveDriveWPI extends SubsystemBase {
 
     // Show field data on SmartDashboard
     SmartDashboard.putData("Field", field);
- */
+
   }
 
   /**
@@ -209,6 +209,9 @@ public class SwerveDriveWPI extends SubsystemBase {
 
     // Update robot odometry
     odometry.update(getGyroRotation2d(), getModulePositions());
+
+    SmartDashboard.putNumber("Pose X", odometry.getPoseMeters().getX());
+    SmartDashboard.putNumber("Pose Y", odometry.getPoseMeters().getY());
 
     SmartDashboard.putString("Pose", getPose().toString());
 
@@ -253,6 +256,7 @@ public class SwerveDriveWPI extends SubsystemBase {
     if (Math.abs(rightX) < kJoystickTolerance) {
       double pidOutput = wpiPIDController.calculate(Math.toRadians(getGyroYawRate()), 0.0);
       omegaRadiansPerSecond = RotationalSpeed * pidOutput;
+      omegaRadiansPerSecond = 0.0;
     } else {
       if (Math.abs(leftX) < joystickDeadband && Math.abs(leftY) < joystickDeadband) {
         omegaRadiansPerSecond = RotationalSpeedFast * rightX;
@@ -326,6 +330,7 @@ public class SwerveDriveWPI extends SubsystemBase {
       } else {
         omegaRadiansPerSecond = 0.5 * RotationalSpeed * pidOutput;
       }
+      omegaRadiansPerSecond = 0.0;
 
     } else {
 
@@ -385,22 +390,11 @@ public class SwerveDriveWPI extends SubsystemBase {
     backLeftState = moduleStates[2];
     backRightState = moduleStates[3];
 
-    // Optimize ther module states
-    //frontLeftState.optimize(getGyroRotation2d());
-    //frontRightState.optimize(getGyroRotation2d());
-    //backLeftState.optimize(getGyroRotation2d());
-    //backRightState.optimize(getGyroRotation2d());
-
     // Get calculated module angles
     frontLeftAngle = frontLeftState.angle.getDegrees();
     frontRightAngle = frontRightState.angle.getDegrees();
     backLeftAngle = backLeftState.angle.getDegrees();
     backRightAngle = backRightState.angle.getDegrees();
-
-    SmartDashboard.putNumber("LF WPI Ang", fromWPIAngle(frontLeftAngle));
-    SmartDashboard.putNumber("RF WPI Ang", fromWPIAngle(frontRightAngle));
-    SmartDashboard.putNumber("LB WPI Ang", fromWPIAngle(backLeftAngle));
-    SmartDashboard.putNumber("RB WPI Ang", fromWPIAngle(backRightAngle));
 
     // Send new settings to swerve wheels as long as we aren't parked
     if (!isParked) {
@@ -425,6 +419,12 @@ public class SwerveDriveWPI extends SubsystemBase {
       impactDetected = true;
 
     }
+
+    // Send critical values to SmartDashboard for troubleshooting / tuning
+    SmartDashboard.putNumber("LF WPI Ang", fromWPIAngle(frontLeftAngle));
+    SmartDashboard.putNumber("RF WPI Ang", fromWPIAngle(frontRightAngle));
+    SmartDashboard.putNumber("LB WPI Ang", fromWPIAngle(backLeftAngle));
+    SmartDashboard.putNumber("RB WPI Ang", fromWPIAngle(backRightAngle));
 
   }
 
@@ -507,18 +507,10 @@ public class SwerveDriveWPI extends SubsystemBase {
    */
   public double getGyroAngle() {
 
-    double correctedGyro = gyro_filter.calculate(gyro.getAngle() % 360.0);
+    double correctedGyro = gyro_filter.calculate((gyro.getAngle() + GyroCorrection) % 360.0);
     if (correctedGyro < 0) {
       correctedGyro = 360 + correctedGyro;
     }
-
-    // Correct gyro for starting position
-    // if (autoPosition == "Left") {
-    //   return (correctedGyro + leftGyroCorrection) % 360;
-    // }
-    // if (autoPosition == "Right") {
-    //   return (correctedGyro + rightGyroCorrection) % 360;
-    // }
 
     return correctedGyro;
 
@@ -541,14 +533,6 @@ public class SwerveDriveWPI extends SubsystemBase {
     if (gyroYaw == -180.0) {
       gyroYaw = 180.0;
     }
-
-    // Correct angle for starting position
-    // if (autoPosition == "Left") {
-    //   gyroYaw = gyroYaw + leftGyroCorrection;
-    // }
-    // if (autoPosition == "Right") {
-    //   gyroYaw = gyroYaw + rightGyroCorrection;
-    // }
 
     // Return yaw angle
     return gyroYaw;
@@ -576,8 +560,8 @@ public class SwerveDriveWPI extends SubsystemBase {
    */
   public double getGyroYawRate() {
 
-    //double yawRate = -yaw_filter.calculate(Math.toRadians(gyro.getRate()));
-    //return -Math.toRadians(gyro.getRate());
+    // double yawRate = -yaw_filter.calculate(Math.toRadians(gyro.getRate()));
+    // return -Math.toRadians(gyro.getRate());
     return -gyro.getRate();
 
   }
@@ -741,11 +725,15 @@ public class SwerveDriveWPI extends SubsystemBase {
   }
 
   public ChassisSpeeds getSpeeds() {
+
     return kinematics.toChassisSpeeds(getModuleStates());
+
   }
 
   public ChassisSpeeds getRobotRelativeSpeeds() {
+
     return kinematics.toChassisSpeeds(getModuleStates());
+
   }
 
   /**

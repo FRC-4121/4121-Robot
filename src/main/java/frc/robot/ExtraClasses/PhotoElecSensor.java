@@ -9,14 +9,14 @@ import frc.robot.Constants;
 
 /** Add your docs here. */
 public class PhotoElecSensor {
-    DigitalInput photoSensor;
+  DigitalInput photoSensor;
 
-    public PhotoElecSensor() {
-        photoSensor = new DigitalInput(5);
-    }
+  public PhotoElecSensor() {
+    photoSensor = new DigitalInput(5);
+  }
 
-    // Method for if we have a ring,if it's blocked, we have a ring
-    public void isNoteOnBoard() {
-        Constants.noteOnBoard = !photoSensor.get(); // a note is on board if the photosensor is blocked
-    }
+  // Method for if we have a ring,if it's blocked, we have a ring
+  public void isNoteOnBoard() {
+    Constants.noteOnBoard = !photoSensor.get(); // a note is on board if the photosensor is blocked
+  }
 }

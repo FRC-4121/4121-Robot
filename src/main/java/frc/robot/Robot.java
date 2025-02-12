@@ -5,6 +5,7 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -38,8 +39,8 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
 
-    //new CameraBuilder(0, "Camera 0").fps(15).attachAutoCapture();
-    //new CameraBuilder(1, "Camera 1").fps(15).attachAutoCapture();
+    // new CameraBuilder(0, "Camera 0").fps(15).attachAutoCapture();
+    // new CameraBuilder(1, "Camera 1").fps(15).attachAutoCapture();
 
     // Instantiate our RobotContainer. This will perform all our button bindings,
     // and put our
@@ -47,24 +48,19 @@ public class Robot extends TimedRobot {
     m_robotContainer = new RobotContainer();
 
     // Start data logging of network table data
-    DataLogManager.start("/home/lvuser/logs");
+    // DataLogManager.start("/home/lvuser/logs");
+    DataLogManager.start();
 
     // Put zero mechanism options on the dashboard
     SmartDashboard.putNumber("Zero Gyro", 0);
-    SmartDashboard.putNumber("Zero Positions", 0);
     SmartDashboard.putNumber("Zero Encoder", 0);
-
-    // Put auto program notes to shoot on the dashboard
-    SmartDashboard.putNumber("Auto Notes", 2);
-
-    // Put auto position on the dashboard
-    SmartDashboard.putNumber("Auto Position", 1);
 
     // Get the alliance color
     m_robotContainer.getAllianceColor();
 
-    // Start Grapple Robotics TCP client
+    // Start Grapple Robotics LaserCAN TCP client
     CanBridge.runTCP();
+
   }
 
   /**
@@ -93,25 +89,16 @@ public class Robot extends TimedRobot {
     // Keep checking alliance color
     m_robotContainer.getAllianceColor();
 
-    // Get auto position
-    m_robotContainer.getAutoPosition();
-
     // Get park selection
     m_robotContainer.getParkSelection();
-
-    // Get angle to target selection
-    m_robotContainer.getAngleToTargetSelection();
-
-    // Check for note on board
-    m_robotContainer.checkForNote();
 
     // Update Robot Status
     m_robotContainer.updateRobotStatus();
 
-    // Check for robot zero command and zero the robot
-    if (SmartDashboard.getNumber("Zero Positions", 0) == 1) {
-      m_robotContainer.zeroRobot();
-      SmartDashboard.putNumber("Zero Positions", 0);
+    // Check for gyro zero command and zero the gyro
+    if (SmartDashboard.getNumber("Zero Gyro", 0) == 1) {
+      m_robotContainer.zeroGyro();
+      SmartDashboard.putNumber("Zero Gyro", 0);
     }
 
     // Check for robot zero command and zero the robot
@@ -120,15 +107,13 @@ public class Robot extends TimedRobot {
       SmartDashboard.putNumber("Zero Encoder", 0);
     }
 
-    // Check for number of notes to shoot in auto
-    Constants.autoNotes = (int) SmartDashboard.getNumber("Auto Notes", 2);
-
     // Check current speed setting and update dashboard
     if (DriveConstants.LinearSpeed == DriveConstants.MaxLinearSpeed) {
       SmartDashboard.putBoolean("Slow Mode", false);
     } else {
       SmartDashboard.putBoolean("Slow Mode", true);
     }
+
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
@@ -168,9 +153,6 @@ public class Robot extends TimedRobot {
       m_autonomousCommand.schedule();
     }
 
-    // Zero the shooter angle encoder
-    m_robotContainer.zeroRobot();
-
     // Set robot to robot oriented driving
     Constants.isFieldOriented = true;
 
@@ -195,9 +177,6 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
-
-    // Turn on auto shooter speed control
-    Constants.runAutoSpeedControl = true;
 
     // Set robot to field oriented driving
     Constants.isFieldOriented = true;

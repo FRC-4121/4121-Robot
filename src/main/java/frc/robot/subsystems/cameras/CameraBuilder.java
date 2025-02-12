@@ -1,4 +1,5 @@
 package frc.robot.subsystems.cameras;
+
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.cscore.VideoSource.ConnectionStrategy;
@@ -17,7 +18,7 @@ public class CameraBuilder {
     this.dev = dev;
     this.name = name;
   }
-  
+
   // If a name is not specified, generate a generic one.
   public CameraBuilder(int dev) {
     this.dev = dev;
@@ -50,7 +51,8 @@ public class CameraBuilder {
     return this;
   }
 
-  // Finalize construction. All of the initialization is done here, so a CameraBuilder can be dropped before this is called with no consequence.
+  // Finalize construction. All of the initialization is done here, so a
+  // CameraBuilder can be dropped before this is called with no consequence.
   public UsbCamera finish() {
     UsbCamera cam = new UsbCamera(name, dev);
     cam.setBrightness(brightness_);
@@ -60,7 +62,9 @@ public class CameraBuilder {
     return cam;
   }
 
-  // Finalize construction and attach to the camera server with CameraServer.AddCamera. When this is done, CameraServer.addCamera is called, which should(?) make it stream video.
+  // Finalize construction and attach to the camera server with
+  // CameraServer.AddCamera. When this is done, CameraServer.addCamera is called,
+  // which should(?) make it stream video.
   public UsbCamera attachToServer() {
     UsbCamera cam = new UsbCamera(name, dev);
     cam.setBrightness(brightness_);
@@ -71,7 +75,9 @@ public class CameraBuilder {
     return cam;
   }
 
-  // Finalize construction and attach to the camera server with CameraServer.startAutomaticCapture. When this is done, CameraServer.addCamera is called, which should(?) make it stream video.
+  // Finalize construction and attach to the camera server with
+  // CameraServer.startAutomaticCapture. When this is done, CameraServer.addCamera
+  // is called, which should(?) make it stream video.
   public UsbCamera attachAutoCapture() {
     UsbCamera cam = CameraServer.startAutomaticCapture(name, dev);
     cam.setBrightness(brightness_);

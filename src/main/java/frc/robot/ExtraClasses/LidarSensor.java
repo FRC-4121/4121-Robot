@@ -5,7 +5,6 @@ import edu.wpi.first.wpilibj.DigitalSource;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.math.filter.MedianFilter;
 
-
 public class LidarSensor {
 
 	// Offset for cm
@@ -44,4 +43,3 @@ public class LidarSensor {
 		SmartDashboard.putNumber("inches", inches);
 	}
 }
-

@@ -7,12 +7,26 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-import frc.robot.GlobalMutable;
+import frc.robot.Constants.DriveConstants;
+import frc.robot.subsystems.SwerveDriveWPI;
+import frc.robot.ExtraClasses.*;
 
-public class KillAutoCommand extends Command {
-  /** Creates a new KillAutoCommand. */
-  public KillAutoCommand() {
-    // Use addRequirements() here to declare subsystem dependencies.
+public class AutoAlignToReef extends Command {
+
+  // Declare local variables
+  private SwerveDriveWPI swerveDrive;
+  private NetworkTableQuerier ntables;
+
+  /** Creates a new AutoAlignToReef. */
+  public AutoAlignToReef(SwerveDriveWPI swerve, NetworkTableQuerier tables) {
+
+    // Set local variables
+    swerveDrive = swerve;
+    ntables = tables;
+
+    // Declare subsystem requirements
+    addRequirements(swerveDrive);
+
   }
 
   // Called when the command is initially scheduled.
@@ -23,10 +37,6 @@ public class KillAutoCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    GlobalMutable.killAuto = !GlobalMutable.killAuto;
-
-    SmartDashboard.putBoolean("Kill Auto", GlobalMutable.killAuto);
-    // if kill button clicked execute
   }
 
   // Called once the command ends or is interrupted.
@@ -37,6 +47,6 @@ public class KillAutoCommand extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return true;
+    return false;
   }
 }

@@ -19,7 +19,8 @@ public class CameraSwitcher extends SubsystemBase {
     this.cams = cams;
     camIdx = 0;
     switcher = CameraServer.addSwitchedCamera(name);
-    if (cams.length > 0) switcher.setSource(this.cams[0]);
+    if (cams.length > 0)
+      switcher.setSource(this.cams[0]);
   }
 
   @Override
@@ -27,7 +28,8 @@ public class CameraSwitcher extends SubsystemBase {
     // This method will be called once per scheduler run
   }
 
-  // Switch to the next camera. This loops around to the start if called on the last camera.
+  // Switch to the next camera. This loops around to the start if called on the
+  // last camera.
   // If there are no cameras, then this is a no-op
   public void switchCamera() {
     if (cams.length > 0) {
@@ -37,7 +39,8 @@ public class CameraSwitcher extends SubsystemBase {
     }
   }
 
-  // Switch the camera to the designated source. If `idx` is out of bounds, nothing happens.
+  // Switch the camera to the designated source. If `idx` is out of bounds,
+  // nothing happens.
   public void switchCamera(int idx) {
     if (idx >= 0 && idx < cams.length) {
       camIdx = idx;
