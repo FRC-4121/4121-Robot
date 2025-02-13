@@ -9,7 +9,6 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import frc.robot.subsystems.SwerveDriveWPI;
-import frc.robot.ExtraClasses.NetworkTableQuerier;
 import static frc.robot.Constants.INCHES_TO_METERS;
 
 import java.time.Duration;
