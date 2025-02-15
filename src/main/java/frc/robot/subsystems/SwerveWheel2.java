@@ -189,7 +189,7 @@ public class SwerveWheel2 extends SubsystemBase {
 
     // Set angle motor output configuration
     var angleOutputConfigs = angleConfigs.MotorOutput;
-    angleOutputConfigs.Inverted = InvertedValue.CounterClockwise_Positive;
+    angleOutputConfigs.Inverted = InvertedValue.Clockwise_Positive;  //inverted (normally counterclockwise positive)
     angleOutputConfigs.NeutralMode = NeutralModeValue.Brake;
     angleOutputConfigs.withDutyCycleNeutralDeadband(ANGLE_DEADBAND);
 
