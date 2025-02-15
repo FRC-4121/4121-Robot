@@ -365,7 +365,7 @@ public class SwerveWheel2 extends SubsystemBase {
    */
   public double getDistance() {
 
-    return (WHEEL_DIAMETER * Math.PI * Math.abs(getDriveEncoderPosition())) / kGearRatio;
+    return (WHEEL_DIAMETER * Math.PI * getDriveEncoderPosition()) / kGearRatio;
 
   }
 

@@ -7,7 +7,6 @@
 
 package frc.robot;
 
-import frc.robot.ExtraClasses.Gains;
 import com.pathplanner.lib.config.PIDConstants;
 
 /**
@@ -40,7 +39,7 @@ public final class Constants {
     public static final double autoLeftGyroCorrection = 53;
     public static final double rightGyroCorrection = 307;// Gyro correction in degrees (was 307)
     public static final double autoRightGyroCorrection = -53;
-    public static final double kGearRatio = 6.75;
+    public static final double kGearRatio = 7.15;
 
     // Swerve drive PID constants
     public static final double kAnglePIDkp = 0.0145;
@@ -69,21 +68,21 @@ public final class Constants {
     public static final double kCollisionThresholdDeltaG = 80000;
 
     // Motor Limits
-    public static final double MaxLinearSpeed = 3.7; // Max Speed in Meters per second
+    public static final double MaxLinearSpeed = 3.7; // 3.7 Max Speed in Meters per second
     public static final double MaxRadiansPerSecond = Math.PI;
-    public static final double SlowMaxLinearSpeed = 0.75;// Max Speed during slow mode in meters per second
+    public static final double SlowMaxLinearSpeed = 0.75;// 0.75 Max Speed during slow mode in meters per second
     public static final double SlowRadiansPerSecond = (Math.PI / 2);// Max rotational speed during slow mode
     public static final double swerveDriveSpeedLimiter = 0.7;
-    public static double LinearSpeed = 5.0;
+    public static double LinearSpeed = 3.7;
     public static double RotationalSpeed = Math.PI;
     public static double RotationalSpeedFast = 2 * Math.PI;
 
     // PathPlanner constants
-    public static final PIDConstants translationConstants = new PIDConstants(5.0, 0.0, 0.0);
-    public static final PIDConstants rotationConstants = new PIDConstants(5.0, 0.0, 0.0);
+    public static final PIDConstants translationConstants = new PIDConstants(4.5, 0.0, 0.0);
+    public static final PIDConstants rotationConstants = new PIDConstants(1.5, 0.0, 0.0);
 
     // General drive constants
-    public static final double GyroCorrection = 180;
+    public static final double GyroCorrection = 0;
 
   }
 

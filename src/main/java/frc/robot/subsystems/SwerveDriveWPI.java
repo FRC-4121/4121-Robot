@@ -159,7 +159,7 @@ public class SwerveDriveWPI extends SubsystemBase {
           this::getPose,
           this::resetPose,
           this::getSpeeds,
-          this::driveRobotRelative,
+          this::driveRobotRelativePP,
           new PPHolonomicDriveController(
               translationConstants,
               rotationConstants),
@@ -227,7 +227,7 @@ public class SwerveDriveWPI extends SubsystemBase {
    * @param robotRelativeSpeeds A set of chassis speeds
    * 
    */
-  public void driveRobotRelative(ChassisSpeeds robotRelativeSpeeds) {
+  public void driveRobotRelativePP(ChassisSpeeds robotRelativeSpeeds) {
     // ChassisSpeeds targetSpeeds = ChassisSpeeds.discretize(robotRelativeSpeeds,
     // 0.02);
 
