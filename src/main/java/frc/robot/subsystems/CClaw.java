@@ -6,32 +6,59 @@ package frc.robot.subsystems;
 
 
 import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
+import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.controls.PositionVoltage;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class CClaw extends SubsystemBase {
-  private TalonFX CClawMotor;
 
-  private static final Slot0Configs pidConfig = new Slot0Configs(); //TODO: assign parameters
-  private static final PositionVoltage command = new PositionVoltage(0.0);
+  private final double DRIVE_DEADBAND = 0.001;
+  private final double CURRENT_LIMIT = 100;
 
-  private static final int CClawId = -1; //TODO: assign ids
+  //Declare motor variables
+  private TalonFX rotationMotor;
+  private TalonFX intakeMotor;
 
-  private static final double ROTATION_SCALE = 1;
-  private static final double ROTATION_BASE = 0; 
+  //Declare motor output requests
+  private final PositionVoltage command = new PositionVoltage(0.0);
+
+  //Declare motor IDs
+  private final int rotationMotorID = 15; 
+  private final int intakeMotorID =  16;
 
   public CClaw() {
-    CClawMotor = new TalonFX(CClawId);
+    rotationMotor = new TalonFX(rotationMotorID);
+    intakeMotor = new TalonFX(intakeMotorID);
    
-    var config = CClawMotor.getConfigurator();
-    config.apply(pidConfig);
+    //Configure the Rotation Motor
+    var rotateConfigs = new TalonFXConfiguration();
+
+    var rotateOutputConfigs = rotateConfigs.MotorOutput;
+    rotateOutputConfigs.Inverted = InvertedValue.Clockwise_Positive;
+    rotateOutputConfigs.NeutralMode = NeutralModeValue.Brake;
+    rotateOutputConfigs.withDutyCycleNeutralDeadband(DRIVE_DEADBAND);
+
+    var rotateSensorConfig = rotateConfigs.Feedback;
+    rotateSensorConfig.withFeedbackSensorSource(FeedbackSensorSourceValue.RotorSensor);
+
+    var rotateLimitConfig = rotateConfigs.CurrentLimits;
+    rotateLimitConfig.StatorCurrentLimitEnable = true;
+    rotateLimitConfig.StatorCurrentLimit = CURRENT_LIMIT;
+
+    
+
+
 
   }
 
   public void setRotation(double rotation) {
-    CClawMotor.setControl(command.withPosition(rotation * ROTATION_SCALE + ROTATION_BASE));
+    rotationMotor.setControl(command.withPosition(rotation));
+    intakeMotor.setControl(command.withPosition(rotation));
   }
 
   @Override
