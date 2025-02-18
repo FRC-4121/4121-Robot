@@ -1,0 +1,61 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Far Left leg 1"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Far Left leg 2"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Far Left leg 3"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Far Left leg 4"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Far Left leg 5"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Far Left leg 6"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Far Left leg 7"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Far Left leg 8"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": "Far Left",
+  "choreoAuto": false
+}
