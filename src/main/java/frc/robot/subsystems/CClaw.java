@@ -22,7 +22,8 @@ import com.ctre.phoenix6.controls.PositionVoltage;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DutyCycle;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.*;
+import static frc.robot.Constants.*;
+import static frc.robot.Constants.MechanismConstants.*;
 
 public class CClaw extends SubsystemBase {
 
@@ -44,7 +45,8 @@ public class CClaw extends SubsystemBase {
 
   //Declare motor output requests
   private final PositionVoltage requestPosition = new PositionVoltage(0.0);
-  private final DutyCycleOut requestDuty = new DutyCycleOut(0.0);  
+  private final DutyCycleOut requestRotateDuty = new DutyCycleOut(0.0);  
+  private final DutyCycleOut requestIntakeDuty = new DutyCycleOut(0.0);
 
   //Declare CAN IDs
   private final int rotationMotorID = 15; 
@@ -150,6 +152,10 @@ public class CClaw extends SubsystemBase {
     rotationMotor.setControl(requestPosition.withPosition(rotation));
   }
 
+  public void rotate(double direction){
+    requestRotateDuty.Output = direction;
+    
+  }
 
   @Override
   public void periodic(){
