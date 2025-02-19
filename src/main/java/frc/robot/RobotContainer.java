@@ -29,6 +29,7 @@ public class RobotContainer {
 
   // Declare Subsystems
   private final SwerveDriveWPI swerve;
+  private final CClaw claw;
 
   // ===Extra Systems===//
 
@@ -43,6 +44,9 @@ public class RobotContainer {
   private final DriveWithJoysticks fieldDriveCommand;
   private final ChangeSpeedCommand changeSpeedCommand;
   private final ChangeDriveMode changeModeCommand;
+
+  //Declare mechanism commands
+  private final RotateCClaw rotateClawCommand;
 
   // Declare Auto Commands
   // private final SendableChooser<Command> autoChooser;
@@ -84,6 +88,8 @@ public class RobotContainer {
 
     // Initialize Subsystems
     swerve = new SwerveDriveWPI();
+    claw = new CClaw();
+
 
     // Initialize extra systems
     table = new NetworkTableQuerier();
@@ -94,6 +100,9 @@ public class RobotContainer {
     fieldDriveCommand = new DriveWithJoysticks(swerve, xbox, table);
     changeSpeedCommand = new ChangeSpeedCommand();
     changeModeCommand = new ChangeDriveMode();
+
+    //Initialize mechanism commands
+    rotateClawCommand = new RotateCClaw(claw, secondaryXbox);
 
     // Initialize KillAuto Commands
     killAuto = new KillAutoCommand();
@@ -148,6 +157,9 @@ public class RobotContainer {
 
     // Swerve drive default command
     swerve.setDefaultCommand(fieldDriveCommand);
+
+    //Claw default command
+    claw.setDefaultCommand(rotateClawCommand);
 
   }
 

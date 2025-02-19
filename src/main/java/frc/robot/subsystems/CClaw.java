@@ -5,9 +5,13 @@
 package frc.robot.subsystems;
 
 
+import static frc.robot.Constants.CANBUS_NAME;
+
 import com.ctre.phoenix6.StatusCode;
+import com.ctre.phoenix6.configs.CANrangeConfiguration;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.hardware.CANrange;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.InvertedValue;
@@ -18,6 +22,7 @@ import com.ctre.phoenix6.controls.PositionVoltage;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DutyCycle;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.*;
 
 public class CClaw extends SubsystemBase {
 
@@ -41,14 +46,33 @@ public class CClaw extends SubsystemBase {
   private final PositionVoltage requestPosition = new PositionVoltage(0.0);
   private final DutyCycleOut requestDuty = new DutyCycleOut(0.0);  
 
-  //Declare motor IDs
+  //Declare CAN IDs
   private final int rotationMotorID = 15; 
   private final int intakeMotorID =  16;
+  private final int canRangeID = 17;
 
   public CClaw() {
-    rotationMotor = new TalonFX(rotationMotorID);
-    intakeMotor = new TalonFX(intakeMotorID);
-   
+
+    //Create motors
+    rotationMotor = new TalonFX(rotationMotorID,CANBUS_NAME);
+    intakeMotor = new TalonFX(intakeMotorID,CANBUS_NAME);
+
+    configureMotors();
+
+    //Create CANrange
+    CANrange coralSensor = new CANrange(canRangeID,CANBUS_NAME);
+
+    //Configure CANrange
+    CANrangeConfiguration sensorConfigs = new CANrangeConfiguration();
+    coralSensor.getConfigurator().apply(sensorConfigs);
+
+  }
+
+  /**
+   * Configure TalonFX motors
+   */
+  private void configureMotors(){
+
     //Configure the Rotation Motor
     var rotateConfigs = new TalonFXConfiguration();
 
@@ -89,7 +113,6 @@ public class CClaw extends SubsystemBase {
 
     //Configure the Intake Motor
     var intakeConfigs = new TalonFXConfiguration();
-
     
     //set intake motor output configuration
     var intakeOutputConfigs = intakeConfigs.MotorOutput;
@@ -116,7 +139,7 @@ public class CClaw extends SubsystemBase {
     }
     intakeMotor.getConfigurator().setPosition(0);
 
-  }
+  } 
 
   /**
    * Rotate claw to position
