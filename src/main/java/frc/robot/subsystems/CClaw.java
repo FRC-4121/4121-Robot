@@ -4,7 +4,6 @@
 
 package frc.robot.subsystems;
 
-
 import static frc.robot.Constants.CANBUS_NAME;
 
 import com.ctre.phoenix6.StatusCode;
@@ -30,11 +29,11 @@ public class CClaw extends SubsystemBase {
   private final double DRIVE_DEADBAND = 0.001;
   private final double CURRENT_LIMIT = 100;
 
-  //Declare motor variables
+  // Declare motor variables
   private TalonFX rotationMotor;
   private TalonFX intakeMotor;
 
-  //Declare Phoenix PID controller gains
+  // Declare Phoenix PID controller gains
   private double rotate_kG = 0.0;
   private double rotate_kS = 0.1;
   private double rotate_kV = 0.1;
@@ -43,28 +42,28 @@ public class CClaw extends SubsystemBase {
   private double rotate_kI = 0.0;
   private double rotate_kD = 0.0;
 
-  //Declare motor output requests
+  // Declare motor output requests
   private final PositionVoltage requestPosition = new PositionVoltage(0.0);
-  private final DutyCycleOut requestRotateDuty = new DutyCycleOut(0.0);  
+  private final DutyCycleOut requestRotateDuty = new DutyCycleOut(0.0);
   private final DutyCycleOut requestIntakeDuty = new DutyCycleOut(0.0);
 
-  //Declare CAN IDs
-  private final int rotationMotorID = 15; 
-  private final int intakeMotorID =  16;
+  // Declare CAN IDs
+  private final int rotationMotorID = 15;
+  private final int intakeMotorID = 16;
   private final int canRangeID = 17;
 
   public CClaw() {
 
-    //Create motors
-    rotationMotor = new TalonFX(rotationMotorID,CANBUS_NAME);
-    intakeMotor = new TalonFX(intakeMotorID,CANBUS_NAME);
+    // Create motors
+    rotationMotor = new TalonFX(rotationMotorID, CANBUS_NAME);
+    intakeMotor = new TalonFX(intakeMotorID, CANBUS_NAME);
 
     configureMotors();
 
-    //Create CANrange
-    CANrange coralSensor = new CANrange(canRangeID,CANBUS_NAME);
+    // Create CANrange
+    CANrange coralSensor = new CANrange(canRangeID, CANBUS_NAME);
 
-    //Configure CANrange
+    // Configure CANrange
     CANrangeConfiguration sensorConfigs = new CANrangeConfiguration();
     coralSensor.getConfigurator().apply(sensorConfigs);
 
@@ -73,27 +72,27 @@ public class CClaw extends SubsystemBase {
   /**
    * Configure TalonFX motors
    */
-  private void configureMotors(){
+  private void configureMotors() {
 
-    //Configure the Rotation Motor
+    // Configure the Rotation Motor
     var rotateConfigs = new TalonFXConfiguration();
 
-    //set rotate motor output configuration
+    // set rotate motor output configuration
     var rotateOutputConfigs = rotateConfigs.MotorOutput;
     rotateOutputConfigs.Inverted = InvertedValue.Clockwise_Positive;
     rotateOutputConfigs.NeutralMode = NeutralModeValue.Brake;
     rotateOutputConfigs.withDutyCycleNeutralDeadband(DRIVE_DEADBAND);
 
-    //Set rotate motor feedback sensor
+    // Set rotate motor feedback sensor
     var rotateSensorConfig = rotateConfigs.Feedback;
     rotateSensorConfig.withFeedbackSensorSource(FeedbackSensorSourceValue.RotorSensor);
 
-    //Set rotate motor configure limits
+    // Set rotate motor configure limits
     var rotateLimitConfig = rotateConfigs.CurrentLimits;
     rotateLimitConfig.StatorCurrentLimitEnable = true;
     rotateLimitConfig.StatorCurrentLimit = CURRENT_LIMIT;
 
-    //Set rotate motor PID constants
+    // Set rotate motor PID constants
     var Slot0Configs = rotateConfigs.Slot0;
     Slot0Configs.kG = rotate_kG;
     Slot0Configs.kS = rotate_kS;
@@ -103,7 +102,7 @@ public class CClaw extends SubsystemBase {
     Slot0Configs.kI = rotate_kI;
     Slot0Configs.kD = rotate_kD;
 
-    //Apply rotate motor configuration and initialize position to 0
+    // Apply rotate motor configuration and initialize position to 0
     StatusCode rotationStatus = rotationMotor.getConfigurator().apply(rotateConfigs, 0.050);
     if (!rotationStatus.isOK()) {
       System.out.println("Could not apply rotation motor configs. Error code: " + rotationStatus.toString());
@@ -113,25 +112,25 @@ public class CClaw extends SubsystemBase {
     }
     rotationMotor.getConfigurator().setPosition(0);
 
-    //Configure the Intake Motor
+    // Configure the Intake Motor
     var intakeConfigs = new TalonFXConfiguration();
-    
-    //set intake motor output configuration
+
+    // set intake motor output configuration
     var intakeOutputConfigs = intakeConfigs.MotorOutput;
     intakeOutputConfigs.Inverted = InvertedValue.Clockwise_Positive;
     intakeOutputConfigs.NeutralMode = NeutralModeValue.Brake;
     intakeOutputConfigs.withDutyCycleNeutralDeadband(DRIVE_DEADBAND);
 
-    //Set intake motor feedback sensor
+    // Set intake motor feedback sensor
     var intakeSensorConfig = intakeConfigs.Feedback;
     intakeSensorConfig.withFeedbackSensorSource(FeedbackSensorSourceValue.RotorSensor);
 
-    //Set intake motor configure limits
+    // Set intake motor configure limits
     var intakeLimitConfig = intakeConfigs.CurrentLimits;
     intakeLimitConfig.StatorCurrentLimitEnable = true;
     intakeLimitConfig.StatorCurrentLimit = CURRENT_LIMIT;
 
-    //Apply intake motor configuration and initialize position to 0
+    // Apply intake motor configuration and initialize position to 0
     StatusCode intakeStatus = rotationMotor.getConfigurator().apply(intakeConfigs, 0.050);
     if (!intakeStatus.isOK()) {
       System.out.println("Could not apply intake motor configs. Error code: " + intakeStatus.toString());
@@ -141,24 +140,31 @@ public class CClaw extends SubsystemBase {
     }
     intakeMotor.getConfigurator().setPosition(0);
 
-  } 
+  }
 
   /**
    * Rotate claw to position
    * 
-   * @param rotation  position in encoder units
+   * @param rotation position in encoder units
    */
   public void setRotation(double rotation) {
     rotationMotor.setControl(requestPosition.withPosition(rotation));
   }
 
-  public void rotate(double direction){
-    requestRotateDuty.Output = direction;
-    
+  public void rotate(double direction) {
+    rotationMotor.setControl(requestRotateDuty.withOutput(direction));
+
+  }
+
+  /**
+   * Activate intake motor
+   */
+  public void setIntakeSpeed(double intakeSpeed) {
+    intakeMotor.setControl(requestIntakeDuty.withOutput(intakeSpeed));
   }
 
   @Override
-  public void periodic(){
+  public void periodic() {
     // This method will be called once per scheduler run
   }
 }
