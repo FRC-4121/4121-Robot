@@ -7,25 +7,31 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Path 1"
+            "pathName": "Center leg 1 (left)"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Path 2"
+            "pathName": "Center leg 2 (left)"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Path 3"
+            "pathName": "Center leg 3 (left)"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Center leg 4 (left)"
           }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": null,
+  "folder": "Center (left)",
   "choreoAuto": false
 }

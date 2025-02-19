@@ -3,61 +3,61 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.285,
-        "y": 2.874
+        "x": 7.0785,
+        "y": 0.5734999999999991
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.2705,
-        "y": 2.1424999999999996
+        "x": 6.21317651156983,
+        "y": 1.3846358145063742
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 4.1339999999999995,
-        "y": 1.792249999999999
+        "x": 6.025499999999999,
+        "y": 1.5582499999999992
       },
       "prevControl": {
-        "x": 4.38687503240508,
-        "y": 1.908870960652647
+        "x": 6.287450334456002,
+        "y": 1.2950333579459223
       },
       "nextControl": {
-        "x": 3.806129626609072,
-        "y": 1.6410426722115394
+        "x": 5.808065514862183,
+        "y": 1.7767355963768414
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 3.1395000000000004,
-        "y": 1.3827499999999997
+        "x": 5.5575,
+        "y": 2.084749999999999
       },
       "prevControl": {
-        "x": 3.381139696140295,
-        "y": 1.476415857080014
+        "x": 5.837940578631281,
+        "y": 1.7578927486443767
       },
       "nextControl": {
-        "x": 2.8989605288394524,
-        "y": 1.2895106188564927
+        "x": 5.329464209707585,
+        "y": 2.3505287684987026
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 1.4039999999999997,
-        "y": 0.95375
+        "x": 5.031000000000001,
+        "y": 2.7379999999999995
       },
       "prevControl": {
-        "x": 2.3720178284749016,
-        "y": 1.2138934000194836
+        "x": 5.248510126767766,
+        "y": 2.4502054322823037
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "FRL1 end"
     }
   ],
   "rotationTargets": [],
@@ -65,22 +65,22 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 3.5,
-    "maxAcceleration": 2.0,
-    "maxAngularVelocity": 540.0,
+    "maxVelocity": 4.5,
+    "maxAcceleration": 3.5,
+    "maxAngularVelocity": 630.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
     "unlimited": false
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 50.04245106917097
+    "rotation": 120.01836742760904
   },
   "reversed": false,
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 119.21900000000001
+    "rotation": 180.0
   },
-  "useDefaultConstraints": false
+  "useDefaultConstraints": true
 }
