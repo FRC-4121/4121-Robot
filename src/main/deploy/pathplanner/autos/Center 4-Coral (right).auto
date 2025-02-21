@@ -45,12 +45,6 @@
           "data": {
             "pathName": "Center leg 7 (right)"
           }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Center leg 8 (right)"
-          }
         }
       ]
     }
