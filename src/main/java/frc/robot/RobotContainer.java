@@ -59,6 +59,7 @@ public class RobotContainer {
   // Declare Xbox Buttons and Triggers
   private final Trigger changeSpeedButton;
   private final Trigger changeModeButton;
+  private final Trigger clawHomeButton;
 
   // Declare Launchpad (OI) Buttons/Switches
   private final Trigger killAutoButton;
@@ -68,7 +69,7 @@ public class RobotContainer {
   private final JoystickButton leftButton;
   private final JoystickButton rightButton;
   private final JoystickButton changeAutoAngleButton;
-  private final JoystickButton clawHomeButton;
+  
 
   // ===PathPlanner=== //
 
@@ -149,8 +150,8 @@ public class RobotContainer {
     // Teleop Commands
     changeSpeedButton.onTrue(changeSpeedCommand);
     changeModeButton.onTrue(changeModeCommand);
-
     clawHomeButton.onTrue(claw.autoRotate(CClaw.HOME_POSITION));
+    
   }
 
   /**

@@ -18,11 +18,16 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.PositionVoltage;
 
+import edu.wpi.first.units.TimeUnit;
+import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DutyCycle;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
+import static edu.wpi.first.units.Units.Second;
 import static frc.robot.Constants.*;
 import static frc.robot.Constants.MechanismConstants.*;
 
@@ -34,6 +39,7 @@ public class CClaw extends SubsystemBase {
   // Declare motor variables
   private TalonFX rotationMotor;
   private TalonFX intakeMotor;
+  private CANrange coralSensor;
 
   // Declare Phoenix PID controller gains
   private double rotate_kG = 0.0;
@@ -50,10 +56,15 @@ public class CClaw extends SubsystemBase {
   private final DutyCycleOut requestIntakeDuty = new DutyCycleOut(0.0);
 
   // Declare CAN IDs
-  private final int rotationMotorID = 15;
-  private final int intakeMotorID = 16;
-  private final int canRangeID = 17;
+  private static final int rotationMotorID = 15;
+  private static final int intakeMotorID = 16;
+  private static final int canRangeID = 17;
 
+  private static final Time extraInputTime = Time.ofBaseUnits(0.25, Second);
+  private static final Time outputTime = Time.ofBaseUnits(0.25, Second);
+
+  public static final double feedSpeed = 0.1;
+  public static final double scoreSpeed = 0.1;
   public static final double HOME_POSITION = 0.0; // TODO
 
   public CClaw() {
@@ -65,7 +76,7 @@ public class CClaw extends SubsystemBase {
     configureMotors();
 
     // Create CANrange
-    CANrange coralSensor = new CANrange(canRangeID, CANBUS_NAME);
+    coralSensor = new CANrange(canRangeID, CANBUS_NAME);
 
     // Configure CANrange
     CANrangeConfiguration sensorConfigs = new CANrangeConfiguration();
@@ -172,10 +183,45 @@ public class CClaw extends SubsystemBase {
     // This method will be called once per scheduler run
   }
 
+  public boolean hasCoral() {
+    return coralSensor.getIsDetected(true).getValue();
+  }
+
+  /**
+   * Command to rotate claw to home position
+   * 
+   * @param pos The target position
+   * @return a command to rotate to the given position
+   */
   public Command autoRotate(double pos) {
     return Commands.runOnce(
-      () -> setRotation(pos),
-      this
-    );
+        () -> setRotation(pos),
+        this);
   }
+
+  /**
+   * A command to stop the intake
+   * 
+   * @return a command that stops the intake
+   */
+  public Command stopIntake() {
+    return Commands.runOnce(() -> this.setIntakeSpeed(0));
+  }
+
+  /**
+   * Command to intake the coral
+   */
+  public Command intakeCoral() {
+    return Commands.runOnce(() -> this.setIntakeSpeed(feedSpeed), this).andThen(Commands.idle(this))
+        .withDeadline(Commands.idle().until(this::hasCoral).andThen(Commands.waitTime(extraInputTime)))
+        .andThen(stopIntake());
+  }
+
+  /**
+   * Command to score coral
+   */
+   public Command scoreCoral(){
+    return Commands.runOnce(() -> this.setIntakeSpeed(scoreSpeed), this).andThen(Commands.idle(this))
+    .withTimeout(outputTime).andThen(stopIntake());
+   }
 }
