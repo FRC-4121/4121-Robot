@@ -130,7 +130,7 @@ public class SwerveWheel2 extends SubsystemBase {
       laser.setRegionOfInterest(new LaserCan.RegionOfInterest(8, 8, 16, 16));
       laser.setTimingBudget(LaserCan.TimingBudget.TIMING_BUDGET_33MS);
     } catch (ConfigurationFailedException e) {
-      System.out.println(moduleName + " LaserCAN configuration failed. Error: " + e.toString());
+      System.err.println(moduleName + " LaserCAN configuration failed. Error: " + e.toString());
       DriverStation.reportError(moduleName + " LaserCAN configuration failed.", false);
     }
 
@@ -191,7 +191,7 @@ public class SwerveWheel2 extends SubsystemBase {
     // Apply drive motor configuration and initialize position to 0
     StatusCode driveStatus = swerveDriveMotor.getConfigurator().apply(driveConfigs, 0.050);
     if (!driveStatus.isOK()) {
-      System.out.println(
+      System.err.println(
           "Could not apply drive motor configs for wheel: " + wheelID + ". Error code: " + driveStatus.toString());
       DriverStation.reportError("Could not apply drive motor configs for " + moduleName + " wheel.", false);
     } else {
@@ -212,7 +212,7 @@ public class SwerveWheel2 extends SubsystemBase {
     // Apply angle motor configuration and initialize position to 0
     StatusCode angleStatus = swerveAngleMotor.getConfigurator().apply(angleConfigs, 0.050);
     if (!angleStatus.isOK()) {
-      System.out.println("Could not apply angle motor configs for " + moduleName + " wheel." + ". Error code: "
+      System.err.println("Could not apply angle motor configs for " + moduleName + " wheel." + ". Error code: "
           + angleStatus.toString());
       DriverStation.reportError("Could not apply angle motor configs for " + moduleName + " wheel.", false);
     } else {

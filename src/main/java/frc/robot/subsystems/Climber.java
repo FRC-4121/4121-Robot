@@ -93,7 +93,7 @@ public class Climber extends SubsystemBase {
     // Apply climber motor configuration and initialize position to 0
     StatusCode climberStatus = climberMotor.getConfigurator().apply(climberConfigs, 0.050);
     if (!climberStatus.isOK()) {
-      System.out.println("Could not apply climber motor configs. Error code: " + climberStatus.toString());
+      System.err.println("Could not apply climber motor configs. Error code: " + climberStatus.toString());
       DriverStation.reportError("Could not apply climber motor configs.", false);
     } else {
       System.out.println("Successfully applied drive motor configs. Error code: " + climberStatus.toString());

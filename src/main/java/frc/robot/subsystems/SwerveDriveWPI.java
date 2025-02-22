@@ -237,8 +237,6 @@ public class SwerveDriveWPI extends SubsystemBase {
     // 0.02);
 
     driveRobotAuto(robotRelativeSpeeds);
-
-    System.out.println("Robot Relative Drive");
   }
 
   /**
@@ -442,8 +440,6 @@ public class SwerveDriveWPI extends SubsystemBase {
    */
   public void driveRobotAuto(ChassisSpeeds robotSpeeds) {
 
-    System.out.println("drive robot auto");
-
     // Convert chassis speeds to module states
     SwerveModuleState[] moduleStates = kinematics.toSwerveModuleStates(robotSpeeds);
 
@@ -458,11 +454,6 @@ public class SwerveDriveWPI extends SubsystemBase {
     backLeftAngle = fromWPIAngle(backLeftAngle);
     frontRightAngle = fromWPIAngle(frontRightAngle);
     frontLeftAngle = fromWPIAngle(frontLeftAngle);
-
-    System.out.println("lf" + frontLeftAngle);
-    System.out.println("rf" + frontRightAngle);
-    System.out.println("lb" + backLeftAngle);
-    System.out.println("rb" + backRightAngle);
 
     if (!Mutables.isParked) {
 

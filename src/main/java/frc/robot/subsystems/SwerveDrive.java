@@ -205,8 +205,6 @@ public class SwerveDrive extends SubsystemBase {
     // ChassisSpeeds targetSpeeds = ChassisSpeeds.discretize(robotRelativeSpeeds,
     // 0.02);
     driveRobotAuto(robotRelativeSpeeds);
-
-    System.out.println("Robot Relative Drive");
   }
 
   /**
@@ -358,8 +356,6 @@ public class SwerveDrive extends SubsystemBase {
    */
   @Deprecated
   public void driveRobotAuto(ChassisSpeeds robotSpeeds) {
-
-    System.out.println("drive robot auto");
 
     // Convert chassis speeds to module states
     SwerveModuleState[] moduleStates = kinematics.toSwerveModuleStates(robotSpeeds);

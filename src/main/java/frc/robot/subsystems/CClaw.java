@@ -120,7 +120,7 @@ public class CClaw extends SubsystemBase {
     //Apply rotate motor configuration and initialize position to 0
     StatusCode rotationStatus = rotationMotor.getConfigurator().apply(rotateConfigs, 0.050);
     if (!rotationStatus.isOK()) {
-      System.out.println("Could not apply rotation motor configs. Error code: " + rotationStatus.toString());
+      System.err.println("Could not apply rotation motor configs. Error code: " + rotationStatus.toString());
       DriverStation.reportError("Could not apply rotation motor configs.", false);
     } else {
       System.out.println("Successfully applied rotation motor configs. Error code: " + rotationStatus.toString());
