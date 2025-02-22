@@ -4,8 +4,6 @@
 
 package frc.robot.subsystems;
 
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.InvertedValue;
@@ -19,6 +17,8 @@ import com.ctre.phoenix6.controls.VelocityVoltage;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import frc.robot.Constants.GeneralConstants;
 
@@ -157,4 +157,30 @@ public class Climber extends SubsystemBase {
 
   }
 
+  public class Climb extends Command {
+    enum State {
+      Default,
+      Extended,
+      Retracted
+    }
+
+    State state = State.Default;
+
+    @Override
+    public void execute() {
+      switch (state) {
+        case Default:
+          extendClimber();
+          state = State.Extended;
+          break;
+        case Extended:
+          retractClimber();
+          state = State.Retracted;
+          break;
+        case Retracted:
+          System.err.println("Told to climb while already in the retracted position");
+          break;
+      }
+    }
+  }
 }
