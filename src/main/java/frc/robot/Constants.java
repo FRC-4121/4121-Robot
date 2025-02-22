@@ -123,6 +123,8 @@ public final class Constants {
     public static final int xboxLeftJoystickButton = 9;
     public static final int xboxRightJoystickButton = 10;
 
+    public static final double triggerThreshold = 0.3;
+
     /**
      * Operator Interface Constants
      */
