@@ -20,6 +20,8 @@ import com.ctre.phoenix6.controls.PositionVoltage;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DutyCycle;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import static frc.robot.Constants.*;
 import static frc.robot.Constants.MechanismConstants.*;
@@ -51,6 +53,8 @@ public class CClaw extends SubsystemBase {
   private final int rotationMotorID = 15;
   private final int intakeMotorID = 16;
   private final int canRangeID = 17;
+
+  public static final double HOME_POSITION = 0.0; // TODO
 
   public CClaw() {
 
@@ -166,5 +170,12 @@ public class CClaw extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+  }
+
+  public Command autoRotate(double pos) {
+    return Commands.runOnce(
+      () -> setRotation(pos),
+      this
+    );
   }
 }

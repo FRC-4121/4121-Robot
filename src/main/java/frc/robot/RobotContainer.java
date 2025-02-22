@@ -68,6 +68,7 @@ public class RobotContainer {
   private final JoystickButton leftButton;
   private final JoystickButton rightButton;
   private final JoystickButton changeAutoAngleButton;
+  private final JoystickButton clawHomeButton;
 
   // ===PathPlanner=== //
 
@@ -117,7 +118,8 @@ public class RobotContainer {
     // Initialize Xbox Buttons
     changeSpeedButton = new JoystickButton(xbox, xboxYButton);
     changeModeButton = new JoystickButton(xbox, xboxXButton);
-    parkButton = new JoystickButton(xbox, xboxRightBumber);
+    parkButton = new JoystickButton(xbox, xboxRightBumper);
+    clawHomeButton = new JoystickButton(secondaryXbox, xboxRightBumper);
 
     // Initialize Launchpad (OI) Buttons/Switches
     killAutoButton = new JoystickButton(launchpad, LaunchPadButton1);
@@ -148,6 +150,7 @@ public class RobotContainer {
     changeSpeedButton.onTrue(changeSpeedCommand);
     changeModeButton.onTrue(changeModeCommand);
 
+    clawHomeButton.onTrue(claw.autoRotate(CClaw.HOME_POSITION));
   }
 
   /**

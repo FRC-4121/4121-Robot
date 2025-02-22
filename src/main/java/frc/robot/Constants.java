@@ -116,8 +116,8 @@ public final class Constants {
     public static final int xboxBButton = 2;
     public static final int xboxXButton = 3;
     public static final int xboxYButton = 4;
-    public static final int xboxLeftBumber = 5;
-    public static final int xboxRightBumber = 6;
+    public static final int xboxLeftBumper = 5;
+    public static final int xboxRightBumper = 6;
     public static final int xboxBackButton = 7;// this button is in the middle of the xbox controller
     public static final int xboxStartButton = 8;// this button is in the middle of the xbox controller
     public static final int xboxLeftJoystickButton = 9;
