@@ -157,10 +157,24 @@ public class Climber extends SubsystemBase {
 
   }
 
+  /**
+   * Command to climb with the climber
+   * 
+   * Needs to be called twice: the first time is to extend it, and the second is to retract
+   */
   public class Climb extends Command {
     enum State {
+      /**
+       * The initial state, we haven't started climbing
+       */
       Default,
+      /**
+       * The climber is extended and ready to climb
+       */
       Extended,
+      /**
+       * We have climbed
+       */
       Retracted
     }
 
@@ -179,8 +193,14 @@ public class Climber extends SubsystemBase {
           break;
         case Retracted:
           System.err.println("Told to climb while already in the retracted position");
+          DriverStation.reportWarning("Told to climb while already in the retracted position", false);
           break;
       }
+    }
+
+    @Override
+    public boolean isFinished() {
+      return true;
     }
   }
 }
