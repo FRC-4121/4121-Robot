@@ -8,7 +8,8 @@ import java.util.Optional;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-import frc.robot.Constants;
+import frc.robot.Constants.GeneralConstants;
+import frc.robot.Constants.Mutables;
 import frc.robot.Utils;
 
 import frc.robot.Constants.DriveConstants;
@@ -124,8 +125,8 @@ public class SwerveDrive extends SubsystemBase {
     // gyro.setAngleAdjustment(270);
 
     // Initialize gyro filter
-    gyro_filter = new MedianFilter(Constants.FILTER_WINDOW_SIZE);
-    yaw_filter = new MedianFilter(Constants.FILTER_WINDOW_SIZE);
+    gyro_filter = new MedianFilter(GeneralConstants.FILTER_WINDOW_SIZE);
+    yaw_filter = new MedianFilter(GeneralConstants.FILTER_WINDOW_SIZE);
 
     // Initialize misc variables
     joystickDeadband = 0.05;
@@ -242,7 +243,7 @@ public class SwerveDrive extends SubsystemBase {
       rightFront.stop();
       leftBack.stop();
       rightBack.stop();
-    } else if (!Constants.isParked)
+    } else if (!Mutables.isParked)
       driveRobot(relativeSpeeds);
   }
 
@@ -295,7 +296,7 @@ public class SwerveDrive extends SubsystemBase {
       rightFront.stop();
       leftBack.stop();
       rightBack.stop();
-    } else if (!Constants.isParked) {
+    } else if (!Mutables.isParked) {
       driveRobot(fieldSpeeds);
     }
   }
@@ -327,7 +328,7 @@ public class SwerveDrive extends SubsystemBase {
     if (frontLeftAngle < 0)
       frontLeftAngle += 360;
 
-    if (!Constants.isParked) {
+    if (!Mutables.isParked) {
       leftFront.drive(moduleStates[0].speedMetersPerSecond, frontLeftAngle);
       rightFront.drive(moduleStates[1].speedMetersPerSecond, frontRightAngle);
       leftBack.drive(moduleStates[2].speedMetersPerSecond, backLeftAngle);
@@ -344,7 +345,7 @@ public class SwerveDrive extends SubsystemBase {
 
     if ((Math.abs(currentJerkX) > DriveConstants.kCollisionThresholdDeltaG)
         || (Math.abs(currentJerkY) > DriveConstants.kCollisionThresholdDeltaG)) {
-      Constants.impactDetected = true; // this never gets set to false?
+      Mutables.impactDetected = true; // this never gets set to false?
     }
   }
 
@@ -375,7 +376,7 @@ public class SwerveDrive extends SubsystemBase {
     frontRightAngle = Utils.fromWPIAngle(frontRightAngle);
     frontLeftAngle = Utils.fromWPIAngle(frontLeftAngle);
 
-    if (!Constants.isParked) {
+    if (!Mutables.isParked) {
       leftFront.drive(moduleStates[0].speedMetersPerSecond, frontLeftAngle);
       rightFront.drive(moduleStates[1].speedMetersPerSecond, frontRightAngle);
       leftBack.drive(moduleStates[2].speedMetersPerSecond, backLeftAngle);
@@ -392,7 +393,7 @@ public class SwerveDrive extends SubsystemBase {
 
     if ((Math.abs(currentJerkX) > DriveConstants.kCollisionThresholdDeltaG)
         || (Math.abs(currentJerkY) > DriveConstants.kCollisionThresholdDeltaG)) {
-      Constants.impactDetected = true;
+      Mutables.impactDetected = true;
     }
   }
 
@@ -421,9 +422,9 @@ public class SwerveDrive extends SubsystemBase {
       correctedGyro += 360;
 
     // Correct gyro for starting position
-    if (Constants.autoPosition == "Left")
+    if (Mutables.autoPosition == "Left")
       return (correctedGyro + DriveConstants.leftGyroCorrection) % 360;
-    if (Constants.autoPosition == "Right")
+    if (Mutables.autoPosition == "Right")
       return (correctedGyro + DriveConstants.rightGyroCorrection) % 360;
 
     return correctedGyro;
@@ -446,9 +447,9 @@ public class SwerveDrive extends SubsystemBase {
       gyroYaw = 180.0;
 
     // Correct angle for starting position
-    if (Constants.autoPosition == "Left")
+    if (Mutables.autoPosition == "Left")
       gyroYaw += DriveConstants.leftGyroCorrection;
-    if (Constants.autoPosition == "Right")
+    if (Mutables.autoPosition == "Right")
       gyroYaw += DriveConstants.rightGyroCorrection;
 
     // Return yaw angle

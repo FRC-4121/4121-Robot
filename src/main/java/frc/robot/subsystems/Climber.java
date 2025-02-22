@@ -20,7 +20,7 @@ import com.ctre.phoenix6.controls.VelocityVoltage;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-import static frc.robot.Constants.*;
+import frc.robot.Constants.GeneralConstants;
 
 /**
  * Define a climber object
@@ -33,7 +33,7 @@ public class Climber extends SubsystemBase {
   private final double CURRENT_LIMIT = 100; // Current limit for stopping motor to prevent damage
 
   // Declare CAN ID for motor
-  private final int climberMotorID = 17;
+  private final int climberMotorID = 21;
 
   // Declare motor variables
   private TalonFX climberMotor;
@@ -60,7 +60,7 @@ public class Climber extends SubsystemBase {
   public Climber() {
 
     // Create motors
-    climberMotor = new TalonFX(climberMotorID, CANBUS_NAME);
+    climberMotor = new TalonFX(climberMotorID, GeneralConstants.CANBUS_NAME);
 
     // Create climber motor configuration
     var climberConfigs = new TalonFXConfiguration();

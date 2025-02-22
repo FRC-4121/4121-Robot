@@ -4,7 +4,7 @@
 
 package frc.robot.commands;
 
-import static frc.robot.Constants.isFieldOriented;
+import frc.robot.Constants.Mutables;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -24,11 +24,11 @@ public class ChangeDriveMode extends Command {
   @Override
   public void execute() {
 
-    if (isFieldOriented) {
-      isFieldOriented = false;
+    if (Mutables.isFieldOriented) {
+      Mutables.isFieldOriented = false;
       SmartDashboard.putBoolean("Field Oriented", false);
     } else {
-      isFieldOriented = true;
+      Mutables.isFieldOriented = true;
       SmartDashboard.putBoolean("Field Oriented", true);
     }
   }

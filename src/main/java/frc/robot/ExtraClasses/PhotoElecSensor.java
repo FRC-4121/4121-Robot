@@ -17,6 +17,6 @@ public class PhotoElecSensor {
 
   // Method for if we have a ring,if it's blocked, we have a ring
   public void isNoteOnBoard() {
-    Constants.noteOnBoard = !photoSensor.get(); // a note is on board if the photosensor is blocked
+    //Constants.noteOnBoard = !photoSensor.get(); // a note is on board if the photosensor is blocked
   }
 }

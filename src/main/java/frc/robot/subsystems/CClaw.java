@@ -5,7 +5,7 @@
 package frc.robot.subsystems;
 
 
-import static frc.robot.Constants.CANBUS_NAME;
+import frc.robot.Constants.GeneralConstants;
 
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.CANrangeConfiguration;
@@ -25,10 +25,19 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import static frc.robot.Constants.*;
 import static frc.robot.Constants.MechanismConstants.*;
 
+/**
+ * Define a claw (end effector) subsystem
+ */
 public class CClaw extends SubsystemBase {
 
+  // Declare motor constants
   private final double DRIVE_DEADBAND = 0.001;
   private final double CURRENT_LIMIT = 100;
+
+  //Declare CAN IDs
+  private final int rotationMotorID = 19; 
+  private final int intakeMotorID =  20;
+  private final int canRangeID = 24;
 
   //Declare motor variables
   private TalonFX rotationMotor;
@@ -48,21 +57,26 @@ public class CClaw extends SubsystemBase {
   private final DutyCycleOut requestRotateDuty = new DutyCycleOut(0.0);  
   private final DutyCycleOut requestIntakeDuty = new DutyCycleOut(0.0);
 
-  //Declare CAN IDs
-  private final int rotationMotorID = 15; 
-  private final int intakeMotorID =  16;
-  private final int canRangeID = 17;
+  // Create a claw position class
+  private static final class ClawPositions {
+    public static final double Load = 100;
+    public static final double Home = 100;
+    public static final double Algae = 100;
+  }
 
+  /**
+   * Create a claw (end effector) subsystem
+   */
   public CClaw() {
 
     //Create motors
-    rotationMotor = new TalonFX(rotationMotorID,CANBUS_NAME);
-    intakeMotor = new TalonFX(intakeMotorID,CANBUS_NAME);
+    rotationMotor = new TalonFX(rotationMotorID,GeneralConstants.CANBUS_NAME);
+    intakeMotor = new TalonFX(intakeMotorID,GeneralConstants.CANBUS_NAME);
 
     configureMotors();
 
     //Create CANrange
-    CANrange coralSensor = new CANrange(canRangeID,CANBUS_NAME);
+    CANrange coralSensor = new CANrange(canRangeID,GeneralConstants.CANBUS_NAME);
 
     //Configure CANrange
     CANrangeConfiguration sensorConfigs = new CANrangeConfiguration();

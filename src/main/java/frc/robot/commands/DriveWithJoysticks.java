@@ -12,7 +12,7 @@ import edu.wpi.first.math.filter.SlewRateLimiter;
 import frc.robot.ExtraClasses.NetworkTableQuerier;
 import frc.robot.Constants.ControlConstants;
 import frc.robot.Constants.DriveConstants;
-import frc.robot.Constants;
+import frc.robot.Constants.Mutables;
 import edu.wpi.first.math.controller.*;
 
 import edu.wpi.first.math.MathUtil;
@@ -75,7 +75,7 @@ public class DriveWithJoysticks extends Command {
 
       }
     }
-    if (Constants.isFieldOriented) {
+    if (Mutables.isFieldOriented) {
       swerve.driveFieldRelative(xSpeed, ySpeed, rotSpeed);
     } else {
       swerve.driveRobotRelative(xSpeed, ySpeed, rotSpeed);

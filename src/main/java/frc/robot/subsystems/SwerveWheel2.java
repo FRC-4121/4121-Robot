@@ -5,7 +5,14 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.hal.HAL;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.math.controller.*;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.*;
 
+import frc.robot.Constants.DriveConstants;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.InvertedValue;
@@ -17,14 +24,8 @@ import com.ctre.phoenix6.controls.VelocityDutyCycle;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
 
-import static frc.robot.Constants.DriveConstants.*;
-
-import edu.wpi.first.hal.HAL;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.math.controller.*;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.kinematics.*;
+import au.grapplerobotics.LaserCan;
+import au.grapplerobotics.ConfigurationFailedException;
 
 /**
  * Define a SwerveWheel object
@@ -54,6 +55,9 @@ public class SwerveWheel2 extends SubsystemBase {
   private double kI_AngleController;
   private double kD_AngleController;
 
+  // Declare sensor variables
+  private LaserCan laser;
+
   // Declare Phoenix PID controller gains
   private double drive_kG;
   private double drive_kS;
@@ -80,9 +84,10 @@ public class SwerveWheel2 extends SubsystemBase {
    * @param driveMotorID CAN ID for the drive motor
    * @param angleMotorID CAN ID for the angle motor
    * @param CANCoderID   CAN ID for the angle encoder
+   * @param laserCANID   CAN ID for the laser range finder
    * 
    */
-  public SwerveWheel2(String name, int driveMotorID, int angleMotorID, int CANCoderID) {
+  public SwerveWheel2(String name, int driveMotorID, int angleMotorID, int CANCoderID, int laserCANID) {
 
     // Set variables
     moduleName = name;
@@ -91,10 +96,10 @@ public class SwerveWheel2 extends SubsystemBase {
     wheelID = CANCoderID / 3;
 
     // Set WPI angle controller gains
-    angleSpeedLimiter = angleLimiters[wheelID - 1];
-    kP_AngleController = anglePIDkPs[wheelID - 1];
-    kI_AngleController = anglePIDkIs[wheelID - 1];
-    kD_AngleController = anglePIDkDs[wheelID - 1];
+    angleSpeedLimiter = DriveConstants.angleLimiters[wheelID - 1];
+    kP_AngleController = DriveConstants.anglePIDkPs[wheelID - 1];
+    kI_AngleController = DriveConstants.anglePIDkIs[wheelID - 1];
+    kD_AngleController = DriveConstants.anglePIDkDs[wheelID - 1];
 
     // Set Phoenix drive PID controller gains
     drive_kG = 0.0;
@@ -117,6 +122,17 @@ public class SwerveWheel2 extends SubsystemBase {
     // Create CAN encoder
     assert HAL.initialize(500, 0);
     canCoder = new CANcoder(CANCoderID);
+
+    // Create and configure laser range finder
+    laser = new LaserCan(laserCANID);
+    try {
+      laser.setRangingMode(LaserCan.RangingMode.SHORT);
+      laser.setRegionOfInterest(new LaserCan.RegionOfInterest(8, 8, 16, 16));
+      laser.setTimingBudget(LaserCan.TimingBudget.TIMING_BUDGET_33MS);
+    } catch (ConfigurationFailedException e) {
+      System.out.println(moduleName + " LaserCAN configuration failed. Error: " + e.toString());
+      DriverStation.reportError(moduleName + " LaserCAN configuration failed.", false);
+    }
 
     // Initialize the swerve motors
     InitSwerveMotors(driveMotorID, angleMotorID, CANCoderID);
@@ -234,6 +250,9 @@ public class SwerveWheel2 extends SubsystemBase {
     SmartDashboard.putNumber(moduleName + " Wheel Speed", getWheelSpeed());
     SmartDashboard.putNumber(moduleName + " Wheel Dist", getDistance());
 
+    // Update the laser distance
+    SmartDashboard.putNumber(moduleName + " Laser Distance", getLaserDistance());
+
   }
 
   /**
@@ -283,7 +302,7 @@ public class SwerveWheel2 extends SubsystemBase {
     }
 
     // Calculate wheel velocity
-    double motorVelocity = (speed / (Math.PI * WHEEL_DIAMETER) * kGearRatio);
+    double motorVelocity = (speed / (Math.PI * WHEEL_DIAMETER) * DriveConstants.kGearRatio);
     double motorVelocityRPM = motorVelocity * 60;
 
     // Set outputs for angle and drive motors
@@ -365,7 +384,7 @@ public class SwerveWheel2 extends SubsystemBase {
    */
   public double getDistance() {
 
-    return (WHEEL_DIAMETER * Math.PI * getDriveEncoderPosition()) / kGearRatio;
+    return (WHEEL_DIAMETER * Math.PI * getDriveEncoderPosition()) / DriveConstants.kGearRatio;
 
   }
 
@@ -378,7 +397,7 @@ public class SwerveWheel2 extends SubsystemBase {
    */
   public double getWheelSpeed() {
 
-    return (WHEEL_DIAMETER * Math.PI * getDriveEncoderVelocity()) / kGearRatio;
+    return (WHEEL_DIAMETER * Math.PI * getDriveEncoderVelocity()) / DriveConstants.kGearRatio;
 
   }
 
@@ -408,6 +427,21 @@ public class SwerveWheel2 extends SubsystemBase {
     return new SwerveModulePosition(getDistance(),
         new Rotation2d(Math.toRadians(toWPIAngle(canCoder.getAbsolutePosition().getValueAsDouble() * 360.0))));
 
+  }
+
+  /**
+   * 
+   * Get the current distance measurement from the LaserCAN
+   * 
+   * @return  Distance in meters (returns -1 if measurement error)
+   */
+  public double getLaserDistance() {
+    LaserCan.Measurement distance = laser.getMeasurement();
+    if (distance != null && distance.status == LaserCan.LASERCAN_STATUS_VALID_MEASUREMENT) {
+      return distance.distance_mm / 1000.0;
+    } else {
+      return -1.0;
+    }
   }
 
   /**

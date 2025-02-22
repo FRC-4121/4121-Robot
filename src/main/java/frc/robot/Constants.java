@@ -159,23 +159,30 @@ public final class Constants {
   /**
    * General Robot Constants
    */
+  public static final class GeneralConstants {
 
-  // General Crescendo Constants
-  public static boolean isParked = false;
-  public static boolean isFieldOriented = true;
-  public static boolean isSlowMode = false;
-  public static String autoPosition = "Left";
-  public static boolean blueAlliance = true; // true = blue, red = false
-  public static boolean noteOnBoard = true;
-  public static boolean readyToShoot = false;
-  public static boolean photoSensorIsNotBlocked;
-  public static boolean impactDetected = false;
+    // General variables
+    public static final double degreesToRads = 0.0174533;
+    public static final String CANBUS_NAME = "rio";
 
-  // General variables
-  public static final double degreesToRads = 0.0174533;
-  public static String CANBUS_NAME = "rio";
+    // Filtering (for gyro)
+    public static final int FILTER_WINDOW_SIZE = 5;
 
-  // Filtering (for gyro)
-  public static final int FILTER_WINDOW_SIZE = 5;
+  }
+
+  /**
+   * Mutable variables
+   */
+  public static final class Mutables {
+    
+    public static boolean isParked = false;
+    public static boolean isFieldOriented = true;
+    public static boolean isSlowMode = false;
+    public static String autoPosition = "Left";
+    public static boolean blueAlliance = true; // true = blue, red = false
+    public static boolean photoSensorIsNotBlocked;
+    public static boolean impactDetected = false;
+
+  }
 
 }
