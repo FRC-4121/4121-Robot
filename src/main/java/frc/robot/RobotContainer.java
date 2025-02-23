@@ -31,6 +31,7 @@ public class RobotContainer {
   // Declare Subsystems
   private final SwerveDriveWPI swerve;
   private final CClaw claw;
+  private final Climber climber;
 
   // ===Extra Systems===//
 
@@ -60,6 +61,7 @@ public class RobotContainer {
   // Declare Xbox Buttons and Triggers
   private final Trigger changeSpeedButton;
   private final Trigger changeModeButton;
+  private final Trigger climbButton;
 
   // Declare Launchpad (OI) Buttons/Switches
   private final Trigger killAutoButton;
@@ -90,7 +92,7 @@ public class RobotContainer {
     // Initialize Subsystems
     swerve = new SwerveDriveWPI();
     claw = new CClaw();
-
+    climber = new Climber();
 
     // Initialize extra systems
     table = new NetworkTableQuerier();
@@ -118,6 +120,7 @@ public class RobotContainer {
     // Initialize Xbox Buttons
     changeSpeedButton = new JoystickButton(xbox, xboxYButton);
     changeModeButton = new JoystickButton(xbox, xboxXButton);
+    climbButton = new Trigger(() -> xbox.getRightTriggerAxis() > triggerThreshold);
     parkButton = new JoystickButton(xbox, xboxRightBumber);
 
     // Initialize Launchpad (OI) Buttons/Switches
@@ -148,7 +151,7 @@ public class RobotContainer {
     // Teleop Commands
     changeSpeedButton.onTrue(changeSpeedCommand);
     changeModeButton.onTrue(changeModeCommand);
-
+    climbButton.onTrue(climber.new Climb());
   }
 
   /**
