@@ -11,23 +11,23 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import static frc.robot.Constants.MechanismConstants.*;
 
-public class RotateCClaw extends Command {
+public class ManualElevator extends Command {
 
-  private CClaw myCClaw;
+  private ElevatorMM elevatorMM;
   private XboxController myXbox;
 
   private final SlewRateLimiter ySpeedLimiter;
   private double ySpeed;
 
   /** Creates a new RotateCClaw. */
-  public RotateCClaw(CClaw claw, XboxController xbox) {
+  public ManualElevator(ElevatorMM elevator, XboxController xbox) {
 
-    myCClaw = claw;
+    elevatorMM = elevator;
     myXbox = xbox;
 
     ySpeedLimiter = new SlewRateLimiter(2);
     
-    addRequirements(myCClaw);
+    addRequirements(elevator);
 
   }
 
@@ -42,7 +42,7 @@ public class RotateCClaw extends Command {
     ySpeed = ySpeedLimiter.calculate(MathUtil.applyDeadband(-myXbox.getLeftY(), 0.01))
         * RotateSpeed;
 
-    myCClaw.rotate(ySpeed);
+    elevatorMM.moveElevator(ySpeed);
     
   }
 
@@ -56,3 +56,4 @@ public class RotateCClaw extends Command {
     return false;
   }
 }
+

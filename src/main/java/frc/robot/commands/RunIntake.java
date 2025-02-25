@@ -6,28 +6,19 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.*;
-import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.filter.SlewRateLimiter;
-import static frc.robot.Constants.MechanismConstants.*;
 
-public class RotateCClaw extends Command {
+public class RunIntake extends Command {
 
-  private CClaw myCClaw;
-  private XboxController myXbox;
+  private CClaw myIntake;
+  private double value;
 
-  private final SlewRateLimiter ySpeedLimiter;
-  private double ySpeed;
+  /** Creates a new RunIntake. */
+  public RunIntake(CClaw intake, double value) {
 
-  /** Creates a new RotateCClaw. */
-  public RotateCClaw(CClaw claw, XboxController xbox) {
-
-    myCClaw = claw;
-    myXbox = xbox;
-
-    ySpeedLimiter = new SlewRateLimiter(2);
+    myIntake = intake;
+    this.value = value;
     
-    addRequirements(myCClaw);
+    addRequirements(myIntake);
 
   }
 
@@ -39,10 +30,7 @@ public class RotateCClaw extends Command {
   @Override
   public void execute() {
 
-    ySpeed = ySpeedLimiter.calculate(MathUtil.applyDeadband(-myXbox.getLeftY(), 0.01))
-        * RotateSpeed;
-
-    myCClaw.rotate(ySpeed);
+    myIntake.setIntakeSpeed(value);
     
   }
 

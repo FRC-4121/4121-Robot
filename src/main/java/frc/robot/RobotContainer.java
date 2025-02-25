@@ -60,6 +60,7 @@ public class RobotContainer {
   // Declare Xbox Buttons and Triggers
   private final Trigger changeSpeedButton;
   private final Trigger changeModeButton;
+  private final Trigger clawHomeButton;
   private final Trigger climbButton;
 
   // Declare Launchpad (OI) Buttons/Switches
@@ -70,6 +71,7 @@ public class RobotContainer {
   private final JoystickButton leftButton;
   private final JoystickButton rightButton;
   private final JoystickButton changeAutoAngleButton;
+  
 
   // ===PathPlanner=== //
 
@@ -121,11 +123,12 @@ public class RobotContainer {
     // Initialize Xbox Buttons
     changeSpeedButton = new JoystickButton(xbox, xboxYButton);
     changeModeButton = new JoystickButton(xbox, xboxXButton);
+    clawHomeButton = new JoystickButton(secondaryXbox, xboxRightBumper);
     climbButton = new Trigger(() -> xbox.getRightTriggerAxis() > triggerThreshold);
-    parkButton = new JoystickButton(xbox, xboxRightBumber);
 
     // Initialize Launchpad (OI) Buttons/Switches
     killAutoButton = new JoystickButton(launchpad, LaunchPadButton1);
+    parkButton = new JoystickButton(launchpad, LaunchPadButton3);
     blueTeamButton = new JoystickButton(launchpad, LaunchPadSwitch5top);
     redTeamButton = new JoystickButton(launchpad, LaunchPadSwitch5bottom);
     rightButton = new JoystickButton(launchpad, LaunchPadSwitch6bottom);
@@ -152,6 +155,8 @@ public class RobotContainer {
     // Teleop Commands
     changeSpeedButton.onTrue(changeSpeedCommand);
     changeModeButton.onTrue(changeModeCommand);
+    clawHomeButton.onTrue(claw.autoRotate(CClaw.ClawPositions.Home));
+    
     climbButton.onTrue(climber.new Climb());
   }
 

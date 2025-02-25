@@ -10,7 +10,6 @@ import frc.robot.Constants.Mutables;
 
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.CANrangeConfiguration;
-import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.CANrange;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -20,12 +19,14 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.PositionVoltage;
 
+import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DutyCycle;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import static frc.robot.Constants.*;
-import static frc.robot.Constants.MechanismConstants.*;
+
+import static edu.wpi.first.units.Units.Second;
 
 /**
  * Define a claw (end effector) subsystem
@@ -44,8 +45,9 @@ public class CClaw extends SubsystemBase {
   //Declare motor variables
   private TalonFX rotationMotor;
   private TalonFX intakeMotor;
+  private CANrange coralSensor;
 
-  //Declare Phoenix PID controller gains
+  // Declare Phoenix PID controller gains
   private double rotate_kG = 0.0;
   private double rotate_kS = 0.1;
   private double rotate_kV = 0.1;
@@ -54,13 +56,19 @@ public class CClaw extends SubsystemBase {
   private double rotate_kI = 0.0;
   private double rotate_kD = 0.0;
 
-  //Declare motor output requests
+  // Declare motor output requests
   private final PositionVoltage requestPosition = new PositionVoltage(0.0);
-  private final DutyCycleOut requestRotateDuty = new DutyCycleOut(0.0);  
+  private final DutyCycleOut requestRotateDuty = new DutyCycleOut(0.0);
   private final DutyCycleOut requestIntakeDuty = new DutyCycleOut(0.0);
 
+  private static final Time extraInputTime = Time.ofBaseUnits(0.25, Second);
+  private static final Time outputTime = Time.ofBaseUnits(0.25, Second);
+
+  public static final double feedSpeed = 0.1;
+  public static final double scoreSpeed = 0.1;
+
   // Create a claw position class
-  private static final class ClawPositions {
+  public static final class ClawPositions {
     public static final double Load = 100;
     public static final double Home = 100;
     public static final double Algae = 100;
@@ -75,16 +83,16 @@ public class CClaw extends SubsystemBase {
   public CClaw() {
 
     //Create motors
-    rotationMotor = new TalonFX(rotationMotorID,GeneralConstants.CANBUS_NAME);
-    intakeMotor = new TalonFX(intakeMotorID,GeneralConstants.CANBUS_NAME);
+    rotationMotor = new TalonFX(rotationMotorID, GeneralConstants.CANBUS_NAME);
+    intakeMotor = new TalonFX(intakeMotorID, GeneralConstants.CANBUS_NAME);
 
     // Configure the motors
     configureMotors();
 
-    //Create CANrange
-    CANrange coralSensor = new CANrange(canRangeID,GeneralConstants.CANBUS_NAME);
+    // Create CANrange
+    coralSensor = new CANrange(canRangeID, GeneralConstants.CANBUS_NAME);
 
-    //Configure CANrange
+    // Configure CANrange
     CANrangeConfiguration sensorConfigs = new CANrangeConfiguration();
     coralSensor.getConfigurator().apply(sensorConfigs);
 
@@ -116,27 +124,27 @@ public class CClaw extends SubsystemBase {
   /**
    * Configure TalonFX motors
    */
-  private void configureMotors(){
+  private void configureMotors() {
 
-    //Configure the Rotation Motor
+    // Configure the Rotation Motor
     var rotateConfigs = new TalonFXConfiguration();
 
-    //set rotate motor output configuration
+    // set rotate motor output configuration
     var rotateOutputConfigs = rotateConfigs.MotorOutput;
     rotateOutputConfigs.Inverted = InvertedValue.Clockwise_Positive;
     rotateOutputConfigs.NeutralMode = NeutralModeValue.Brake;
     rotateOutputConfigs.withDutyCycleNeutralDeadband(DRIVE_DEADBAND);
 
-    //Set rotate motor feedback sensor
+    // Set rotate motor feedback sensor
     var rotateSensorConfig = rotateConfigs.Feedback;
     rotateSensorConfig.withFeedbackSensorSource(FeedbackSensorSourceValue.RotorSensor);
 
-    //Set rotate motor configure limits
+    // Set rotate motor configure limits
     var rotateLimitConfig = rotateConfigs.CurrentLimits;
     rotateLimitConfig.StatorCurrentLimitEnable = true;
     rotateLimitConfig.StatorCurrentLimit = CURRENT_LIMIT;
 
-    //Set rotate motor PID constants
+    // Set rotate motor PID constants
     var Slot0Configs = rotateConfigs.Slot0;
     Slot0Configs.kG = rotate_kG;
     Slot0Configs.kS = rotate_kS;
@@ -146,7 +154,7 @@ public class CClaw extends SubsystemBase {
     Slot0Configs.kI = rotate_kI;
     Slot0Configs.kD = rotate_kD;
 
-    //Apply rotate motor configuration and initialize position to 0
+    // Apply rotate motor configuration and initialize position to 0
     StatusCode rotationStatus = rotationMotor.getConfigurator().apply(rotateConfigs, 0.050);
     if (!rotationStatus.isOK()) {
       System.err.println("Could not apply rotation motor configs. Error code: " + rotationStatus.toString());
@@ -156,25 +164,25 @@ public class CClaw extends SubsystemBase {
     }
     rotationMotor.getConfigurator().setPosition(0);
 
-    //Configure the Intake Motor
+    // Configure the Intake Motor
     var intakeConfigs = new TalonFXConfiguration();
-    
-    //set intake motor output configuration
+
+    // set intake motor output configuration
     var intakeOutputConfigs = intakeConfigs.MotorOutput;
     intakeOutputConfigs.Inverted = InvertedValue.Clockwise_Positive;
     intakeOutputConfigs.NeutralMode = NeutralModeValue.Brake;
     intakeOutputConfigs.withDutyCycleNeutralDeadband(DRIVE_DEADBAND);
 
-    //Set intake motor feedback sensor
+    // Set intake motor feedback sensor
     var intakeSensorConfig = intakeConfigs.Feedback;
     intakeSensorConfig.withFeedbackSensorSource(FeedbackSensorSourceValue.RotorSensor);
 
-    //Set intake motor configure limits
+    // Set intake motor configure limits
     var intakeLimitConfig = intakeConfigs.CurrentLimits;
     intakeLimitConfig.StatorCurrentLimitEnable = true;
     intakeLimitConfig.StatorCurrentLimit = CURRENT_LIMIT;
 
-    //Apply intake motor configuration and initialize position to 0
+    // Apply intake motor configuration and initialize position to 0
     StatusCode intakeStatus = rotationMotor.getConfigurator().apply(intakeConfigs, 0.050);
     if (!intakeStatus.isOK()) {
       System.out.println("Could not apply intake motor configs. Error code: " + intakeStatus.toString());
@@ -184,13 +192,13 @@ public class CClaw extends SubsystemBase {
     }
     intakeMotor.getConfigurator().setPosition(0);
 
-  } 
+  }
 
   /**
    * 
    * Rotate claw to position
    * 
-   * @param rotation  position in encoder units
+   * @param rotation position in encoder units
    * 
    */
   public void setRotation(double position) {
@@ -198,16 +206,63 @@ public class CClaw extends SubsystemBase {
     rotationMotor.setControl(requestPosition.withPosition(position));
 
   }
-
+  
   /**
    * 
    * Hold the claw rotation at the current position
    * 
    */
   public void holdPosition() {
-
     rotationMotor.setControl(requestPosition.withPosition(currentPosition));
+  }
 
+  /**
+   * Activate intake motor
+   */
+  public void setIntakeSpeed(double intakeSpeed) {
+    intakeMotor.setControl(requestIntakeDuty.withOutput(intakeSpeed));
+  }
+
+  public boolean hasCoral() {
+    return coralSensor.getIsDetected(true).getValue();
+  }
+
+  /**
+   * Command to rotate claw to home position
+   * 
+   * @param pos The target position
+   * @return a command to rotate to the given position
+   */
+  public Command autoRotate(double pos) {
+    return Commands.runOnce(
+        () -> setRotation(pos),
+        this);
+  }
+
+  /**
+   * A command to stop the intake
+   * 
+   * @return a command that stops the intake
+   */
+  public Command stopIntake() {
+    return Commands.runOnce(() -> this.setIntakeSpeed(0));
+  }
+
+  /**
+   * Command to intake the coral
+   */
+  public Command intakeCoral() {
+    return Commands.runOnce(() -> this.setIntakeSpeed(feedSpeed), this).andThen(Commands.idle(this))
+        .withDeadline(Commands.idle().until(this::hasCoral).andThen(Commands.waitTime(extraInputTime)))
+        .andThen(stopIntake());
+  }
+
+  /**
+   * Command to score coral
+   */
+  public Command scoreCoral(){
+    return Commands.runOnce(() -> this.setIntakeSpeed(scoreSpeed), this).andThen(Commands.idle(this))
+    .withTimeout(outputTime).andThen(stopIntake());
   }
 
   /**
