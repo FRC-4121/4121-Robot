@@ -39,7 +39,7 @@ public final class Constants {
     public static final double autoLeftGyroCorrection = 53;
     public static final double rightGyroCorrection = 307;// Gyro correction in degrees (was 307)
     public static final double autoRightGyroCorrection = -53;
-    public static final double kGearRatio = 9.3; //7.15 for new chassis
+    public static final double kGearRatio = 7.15; //7.15 for new chassis, 9.3 for old chassis
 
     // Swerve drive PID constants
     public static final double kAnglePIDkp = 0.0145;
