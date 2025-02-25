@@ -4,7 +4,9 @@
 
 package frc.robot.subsystems;
 
-import static frc.robot.Constants.CANBUS_NAME;
+
+import frc.robot.Constants.GeneralConstants;
+import frc.robot.Constants.Mutables;
 
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.CANrangeConfiguration;
@@ -21,16 +23,26 @@ import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import static edu.wpi.first.units.Units.Second;
 
+/**
+ * Define a claw (end effector) subsystem
+ */
 public class CClaw extends SubsystemBase {
 
+  // Declare motor constants
   private final double DRIVE_DEADBAND = 0.001;
   private final double CURRENT_LIMIT = 100;
 
-  // Declare motor variables
+  //Declare CAN IDs
+  private final int rotationMotorID = 19; 
+  private final int intakeMotorID =  20;
+  private final int canRangeID = 24;
+
+  //Declare motor variables
   private TalonFX rotationMotor;
   private TalonFX intakeMotor;
   private CANrange coralSensor;
@@ -49,32 +61,63 @@ public class CClaw extends SubsystemBase {
   private final DutyCycleOut requestRotateDuty = new DutyCycleOut(0.0);
   private final DutyCycleOut requestIntakeDuty = new DutyCycleOut(0.0);
 
-  // Declare CAN IDs
-  private static final int rotationMotorID = 15;
-  private static final int intakeMotorID = 16;
-  private static final int canRangeID = 17;
-
   private static final Time extraInputTime = Time.ofBaseUnits(0.25, Second);
   private static final Time outputTime = Time.ofBaseUnits(0.25, Second);
 
   public static final double feedSpeed = 0.1;
   public static final double scoreSpeed = 0.1;
-  public static final double HOME_POSITION = 0.0; // TODO
 
+  // Create a claw position class
+  public static final class ClawPositions {
+    public static final double Load = 100;
+    public static final double Home = 100;
+    public static final double Algae = 100;
+  }
+
+  // Declare general variables
+  private double currentPosition;
+
+  /**
+   * Create a claw (end effector) subsystem
+   */
   public CClaw() {
 
-    // Create motors
-    rotationMotor = new TalonFX(rotationMotorID, CANBUS_NAME);
-    intakeMotor = new TalonFX(intakeMotorID, CANBUS_NAME);
+    //Create motors
+    rotationMotor = new TalonFX(rotationMotorID, GeneralConstants.CANBUS_NAME);
+    intakeMotor = new TalonFX(intakeMotorID, GeneralConstants.CANBUS_NAME);
 
+    // Configure the motors
     configureMotors();
 
     // Create CANrange
-    coralSensor = new CANrange(canRangeID, CANBUS_NAME);
+    coralSensor = new CANrange(canRangeID, GeneralConstants.CANBUS_NAME);
 
     // Configure CANrange
     CANrangeConfiguration sensorConfigs = new CANrangeConfiguration();
     coralSensor.getConfigurator().apply(sensorConfigs);
+
+    // Initialize variables
+    currentPosition = ClawPositions.Home;
+
+  }
+
+  @Override
+  public void periodic(){
+
+    // Set current position and claw clear flag
+    currentPosition = getClawPosition();
+    if (currentPosition >= ClawPositions.Home) {
+      Mutables.isClawClear = true;
+    } else {
+      Mutables.isClawClear = false;
+    }
+
+    // Update dashboard values
+    SmartDashboard.putBoolean("Claw Clear", Mutables.isClawClear);
+    SmartDashboard.putNumber("Claw Rotate Amps", rotationMotor.getStatorCurrent().getValueAsDouble());
+    SmartDashboard.putNumber("Claw Rotate Volts", rotationMotor.getMotorVoltage().getValueAsDouble());
+    SmartDashboard.putNumber("Claw Rotate Pos", rotationMotor.getPosition().getValueAsDouble());
+    SmartDashboard.putNumber("Claw Rotate Vel", rotationMotor.getVelocity().getValueAsDouble());
 
   }
 
@@ -114,7 +157,7 @@ public class CClaw extends SubsystemBase {
     // Apply rotate motor configuration and initialize position to 0
     StatusCode rotationStatus = rotationMotor.getConfigurator().apply(rotateConfigs, 0.050);
     if (!rotationStatus.isOK()) {
-      System.out.println("Could not apply rotation motor configs. Error code: " + rotationStatus.toString());
+      System.err.println("Could not apply rotation motor configs. Error code: " + rotationStatus.toString());
       DriverStation.reportError("Could not apply rotation motor configs.", false);
     } else {
       System.out.println("Successfully applied rotation motor configs. Error code: " + rotationStatus.toString());
@@ -152,17 +195,25 @@ public class CClaw extends SubsystemBase {
   }
 
   /**
+   * 
    * Rotate claw to position
    * 
    * @param rotation position in encoder units
+   * 
    */
-  public void setRotation(double rotation) {
-    rotationMotor.setControl(requestPosition.withPosition(rotation));
+  public void setRotation(double position) {
+
+    rotationMotor.setControl(requestPosition.withPosition(position));
+
   }
-
-  public void rotate(double direction) {
-    rotationMotor.setControl(requestRotateDuty.withOutput(direction));
-
+  
+  /**
+   * 
+   * Hold the claw rotation at the current position
+   * 
+   */
+  public void holdPosition() {
+    rotationMotor.setControl(requestPosition.withPosition(currentPosition));
   }
 
   /**
@@ -170,11 +221,6 @@ public class CClaw extends SubsystemBase {
    */
   public void setIntakeSpeed(double intakeSpeed) {
     intakeMotor.setControl(requestIntakeDuty.withOutput(intakeSpeed));
-  }
-
-  @Override
-  public void periodic() {
-    // This method will be called once per scheduler run
   }
 
   public boolean hasCoral() {
@@ -214,8 +260,45 @@ public class CClaw extends SubsystemBase {
   /**
    * Command to score coral
    */
-   public Command scoreCoral(){
+  public Command scoreCoral(){
     return Commands.runOnce(() -> this.setIntakeSpeed(scoreSpeed), this).andThen(Commands.idle(this))
     .withTimeout(outputTime).andThen(stopIntake());
-   }
+  }
+
+  /**
+   * 
+   * Rotate claw in response to gamepad joystick
+   * Keep claw between home and algae positions
+   * 
+   * @param direction  Direction and speed to rotate
+   * 
+   */
+  public void rotate(double direction){
+
+    if (getClawPosition() >= ClawPositions.Home && getClawPosition() <= ClawPositions.Algae) {
+      requestRotateDuty.Output = direction;
+      rotationMotor.setControl(requestRotateDuty);
+    } else if (getClawPosition() < ClawPositions.Home) {
+      rotationMotor.setControl(requestPosition.withPosition(ClawPositions.Home));
+    } else {
+      rotationMotor.setControl(requestPosition.withPosition(ClawPositions.Algae));
+    }
+
+  }
+
+  /**
+   * 
+   * Get the current position of the claw in encoder units
+   * 
+   * @return  Current claw rotation as a double
+   * 
+   */
+  public double getClawPosition() {
+
+    var clawPosSignal = rotationMotor.getPosition();
+    clawPosSignal.refresh();
+    return clawPosSignal.getValueAsDouble();
+
+  }
+
 }

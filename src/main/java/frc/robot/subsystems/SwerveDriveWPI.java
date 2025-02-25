@@ -8,7 +8,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import java.util.Optional;
 
-import static frc.robot.Constants.*;
+import frc.robot.Constants.GeneralConstants;
+import frc.robot.Constants.Mutables;
 import static frc.robot.Constants.DriveConstants.*;
 import static frc.robot.Constants.ControlConstants.*;
 import edu.wpi.first.math.filter.MedianFilter;
@@ -36,18 +37,22 @@ public class SwerveDriveWPI extends SubsystemBase {
   private final int leftFrontDriveId = 1;
   private final int leftFrontAngleId = 2;
   private final int leftFrontCoderId = 3;
+  private final int leftFrontLaserId = 13;
 
   private final int rightFrontDriveId = 4;
   private final int rightFrontAngleId = 5;
   private final int rightFrontCoderId = 6;
-
-  private final int rightBackDriveId = 10;
-  private final int rightBackAngleId = 11;
-  private final int rightBackCoderId = 12;
+  private final int rightFrontLaserId = 14;
 
   private final int leftBackDriveId = 7;
   private final int leftBackAngleId = 8;
   private final int leftBackCoderId = 9;
+  private final int leftBackLaserId = 15;
+
+  private final int rightBackDriveId = 10;
+  private final int rightBackAngleId = 11;
+  private final int rightBackCoderId = 12;
+  private final int rightBackLaserId = 16;
 
   // Declare swerve modules
   private SwerveWheel2 leftFront;
@@ -110,10 +115,10 @@ public class SwerveDriveWPI extends SubsystemBase {
   public SwerveDriveWPI() {
 
     // Initialize new swerve modules
-    leftFront = new SwerveWheel2("LF", leftFrontDriveId, leftFrontAngleId, leftFrontCoderId);
-    leftBack = new SwerveWheel2("LB", leftBackDriveId, leftBackAngleId, leftBackCoderId);
-    rightFront = new SwerveWheel2("RF", rightFrontDriveId, rightFrontAngleId, rightFrontCoderId);
-    rightBack = new SwerveWheel2("RB", rightBackDriveId, rightBackAngleId, rightBackCoderId);
+    leftFront = new SwerveWheel2("LF", leftFrontDriveId, leftFrontAngleId, leftFrontCoderId, leftFrontLaserId);
+    leftBack = new SwerveWheel2("LB", leftBackDriveId, leftBackAngleId, leftBackCoderId, leftBackLaserId);
+    rightFront = new SwerveWheel2("RF", rightFrontDriveId, rightFrontAngleId, rightFrontCoderId, rightFrontLaserId);
+    rightBack = new SwerveWheel2("RB", rightBackDriveId, rightBackAngleId, rightBackCoderId, rightBackLaserId);
 
     // Initialize swerve kinematics objects
     // 2025 robot chassis is 30" x 30"
@@ -132,8 +137,8 @@ public class SwerveDriveWPI extends SubsystemBase {
     gyro.resetDisplacement();
 
     // Initialize gyro filter
-    gyro_filter = new MedianFilter(FILTER_WINDOW_SIZE);
-    yaw_filter = new MedianFilter(FILTER_WINDOW_SIZE);
+    gyro_filter = new MedianFilter(GeneralConstants.FILTER_WINDOW_SIZE);
+    yaw_filter = new MedianFilter(GeneralConstants.FILTER_WINDOW_SIZE);
 
     // Initialize misc variables
     joystickDeadband = 0.05;
@@ -232,8 +237,6 @@ public class SwerveDriveWPI extends SubsystemBase {
     // 0.02);
 
     driveRobotAuto(robotRelativeSpeeds);
-
-    System.out.println("Robot Relative Drive");
   }
 
   /**
@@ -280,7 +283,7 @@ public class SwerveDriveWPI extends SubsystemBase {
 
     } else {
 
-      if (!isParked) {
+      if (!Mutables.isParked) {
 
         driveRobot(relativeSpeeds);
 
@@ -362,7 +365,7 @@ public class SwerveDriveWPI extends SubsystemBase {
 
     } else {
 
-      if (!isParked) {
+      if (!Mutables.isParked) {
 
         driveRobot(fieldSpeeds);
 
@@ -397,7 +400,7 @@ public class SwerveDriveWPI extends SubsystemBase {
     backRightAngle = backRightState.angle.getDegrees();
 
     // Send new settings to swerve wheels as long as we aren't parked
-    if (!isParked) {
+    if (!Mutables.isParked) {
 
       leftFront.drive(frontLeftState.speedMetersPerSecond, fromWPIAngle(frontLeftAngle));
       rightFront.drive(frontRightState.speedMetersPerSecond, fromWPIAngle(frontRightAngle));
@@ -416,7 +419,7 @@ public class SwerveDriveWPI extends SubsystemBase {
 
     if ((Math.abs(currentJerkX) > kCollisionThresholdDeltaG) || (Math.abs(currentJerkY) > kCollisionThresholdDeltaG)) {
 
-      impactDetected = true;
+      Mutables.impactDetected = true;
 
     }
 
@@ -437,8 +440,6 @@ public class SwerveDriveWPI extends SubsystemBase {
    */
   public void driveRobotAuto(ChassisSpeeds robotSpeeds) {
 
-    System.out.println("drive robot auto");
-
     // Convert chassis speeds to module states
     SwerveModuleState[] moduleStates = kinematics.toSwerveModuleStates(robotSpeeds);
 
@@ -454,12 +455,7 @@ public class SwerveDriveWPI extends SubsystemBase {
     frontRightAngle = fromWPIAngle(frontRightAngle);
     frontLeftAngle = fromWPIAngle(frontLeftAngle);
 
-    System.out.println("lf" + frontLeftAngle);
-    System.out.println("rf" + frontRightAngle);
-    System.out.println("lb" + backLeftAngle);
-    System.out.println("rb" + backRightAngle);
-
-    if (!isParked) {
+    if (!Mutables.isParked) {
 
       leftFront.drive(moduleStates[0].speedMetersPerSecond, frontLeftAngle);
       rightFront.drive(moduleStates[1].speedMetersPerSecond, frontRightAngle);
@@ -478,7 +474,7 @@ public class SwerveDriveWPI extends SubsystemBase {
 
     if ((Math.abs(currentJerkX) > kCollisionThresholdDeltaG) || (Math.abs(currentJerkY) > kCollisionThresholdDeltaG)) {
 
-      impactDetected = true;
+      Mutables.impactDetected = true;
 
     }
 

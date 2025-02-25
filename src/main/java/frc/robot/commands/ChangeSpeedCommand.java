@@ -4,7 +4,7 @@
 
 package frc.robot.commands;
 
-import static frc.robot.Constants.isSlowMode;
+import static frc.robot.Constants.Mutables;
 import frc.robot.Constants.DriveConstants;
 
 import edu.wpi.first.wpilibj2.command.Command;
@@ -26,18 +26,18 @@ public class ChangeSpeedCommand extends Command {
   public void execute() {
 
     // Slow Mode for WPI Swerve Drive
-    if (!isSlowMode) {
+    if (!Mutables.isSlowMode) {
       DriveConstants.LinearSpeed = DriveConstants.SlowMaxLinearSpeed;
       DriveConstants.RotationalSpeed = DriveConstants.SlowRadiansPerSecond;
       DriveConstants.maxYawRate = DriveConstants.SlowMaxYawRate;
-      isSlowMode = true;
+      Mutables.isSlowMode = true;
       SmartDashboard.putBoolean("Slow Mode", true);
       System.out.println("Slow Mode");
     } else {
       DriveConstants.LinearSpeed = DriveConstants.MaxLinearSpeed;
       DriveConstants.RotationalSpeed = DriveConstants.MaxRadiansPerSecond;
       DriveConstants.maxYawRate = DriveConstants.FastMaxYawRate;
-      isSlowMode = false;
+      Mutables.isSlowMode = false;
       SmartDashboard.putBoolean("Slow Mode", false);
       System.out.println("Fast Mode");
     }
