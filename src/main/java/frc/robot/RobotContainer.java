@@ -30,6 +30,7 @@ public class RobotContainer {
 
   // Declare Subsystems
   private final SwerveDriveWPI swerve;
+  private final ElevatorMM elevator;
   private final CClaw claw;
   private final Climber climber;
 
@@ -48,10 +49,8 @@ public class RobotContainer {
   private final ChangeDriveMode changeModeCommand;
 
   //Declare mechanism commands
+  private final MoveElevator moveElevatorCommand;
   private final RotateCClaw rotateClawCommand;
-
-  // Declare Auto Commands
-  // private final SendableChooser<Command> autoChooser;
 
   // Declare KillAuto Commands
   private final KillAutoCommand killAuto;
@@ -91,6 +90,7 @@ public class RobotContainer {
 
     // Initialize Subsystems
     swerve = new SwerveDriveWPI();
+    elevator = new ElevatorMM();
     claw = new CClaw();
     climber = new Climber();
 
@@ -105,6 +105,7 @@ public class RobotContainer {
     changeModeCommand = new ChangeDriveMode();
 
     //Initialize mechanism commands
+    moveElevatorCommand = new MoveElevator(elevator, secondaryXbox);
     rotateClawCommand = new RotateCClaw(claw, secondaryXbox);
 
     // Initialize KillAuto Commands
@@ -159,10 +160,8 @@ public class RobotContainer {
    */
   private void configureDefaultCommands() {
 
-    // Swerve drive default command
     swerve.setDefaultCommand(fieldDriveCommand);
-
-    //Claw default command
+    elevator.setDefaultCommand(moveElevatorCommand);
     claw.setDefaultCommand(rotateClawCommand);
 
   }

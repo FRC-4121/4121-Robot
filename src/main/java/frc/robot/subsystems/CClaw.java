@@ -6,6 +6,7 @@ package frc.robot.subsystems;
 
 
 import frc.robot.Constants.GeneralConstants;
+import frc.robot.Constants.Mutables;
 
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.CANrangeConfiguration;
@@ -21,6 +22,7 @@ import com.ctre.phoenix6.controls.PositionVoltage;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DutyCycle;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import static frc.robot.Constants.*;
 import static frc.robot.Constants.MechanismConstants.*;
@@ -64,6 +66,9 @@ public class CClaw extends SubsystemBase {
     public static final double Algae = 100;
   }
 
+  // Declare general variables
+  private double currentPosition;
+
   /**
    * Create a claw (end effector) subsystem
    */
@@ -73,6 +78,7 @@ public class CClaw extends SubsystemBase {
     rotationMotor = new TalonFX(rotationMotorID,GeneralConstants.CANBUS_NAME);
     intakeMotor = new TalonFX(intakeMotorID,GeneralConstants.CANBUS_NAME);
 
+    // Configure the motors
     configureMotors();
 
     //Create CANrange
@@ -81,6 +87,29 @@ public class CClaw extends SubsystemBase {
     //Configure CANrange
     CANrangeConfiguration sensorConfigs = new CANrangeConfiguration();
     coralSensor.getConfigurator().apply(sensorConfigs);
+
+    // Initialize variables
+    currentPosition = ClawPositions.Home;
+
+  }
+
+  @Override
+  public void periodic(){
+
+    // Set current position and claw clear flag
+    currentPosition = getClawPosition();
+    if (currentPosition >= ClawPositions.Home) {
+      Mutables.isClawClear = true;
+    } else {
+      Mutables.isClawClear = false;
+    }
+
+    // Update dashboard values
+    SmartDashboard.putBoolean("Claw Clear", Mutables.isClawClear);
+    SmartDashboard.putNumber("Claw Rotate Amps", rotationMotor.getStatorCurrent().getValueAsDouble());
+    SmartDashboard.putNumber("Claw Rotate Volts", rotationMotor.getMotorVoltage().getValueAsDouble());
+    SmartDashboard.putNumber("Claw Rotate Pos", rotationMotor.getPosition().getValueAsDouble());
+    SmartDashboard.putNumber("Claw Rotate Vel", rotationMotor.getVelocity().getValueAsDouble());
 
   }
 
@@ -158,21 +187,63 @@ public class CClaw extends SubsystemBase {
   } 
 
   /**
+   * 
    * Rotate claw to position
    * 
    * @param rotation  position in encoder units
+   * 
    */
-  public void setRotation(double rotation) {
-    rotationMotor.setControl(requestPosition.withPosition(rotation));
+  public void setRotation(double position) {
+
+    rotationMotor.setControl(requestPosition.withPosition(position));
+
   }
 
+  /**
+   * 
+   * Hold the claw rotation at the current position
+   * 
+   */
+  public void holdPosition() {
+
+    rotationMotor.setControl(requestPosition.withPosition(currentPosition));
+
+  }
+
+  /**
+   * 
+   * Rotate claw in response to gamepad joystick
+   * Keep claw between home and algae positions
+   * 
+   * @param direction  Direction and speed to rotate
+   * 
+   */
   public void rotate(double direction){
-    requestRotateDuty.Output = direction;
-    
+
+    if (getClawPosition() >= ClawPositions.Home && getClawPosition() <= ClawPositions.Algae) {
+      requestRotateDuty.Output = direction;
+      rotationMotor.setControl(requestRotateDuty);
+    } else if (getClawPosition() < ClawPositions.Home) {
+      rotationMotor.setControl(requestPosition.withPosition(ClawPositions.Home));
+    } else {
+      rotationMotor.setControl(requestPosition.withPosition(ClawPositions.Algae));
+    }
+
   }
 
-  @Override
-  public void periodic(){
-    // This method will be called once per scheduler run
+  /**
+   * 
+   * Get the current position of the claw in encoder units
+   * 
+   * @return  Current claw rotation as a double
+   * 
+   */
+  public double getClawPosition() {
+
+    var clawPosSignal = rotationMotor.getPosition();
+    clawPosSignal.refresh();
+    return clawPosSignal.getValueAsDouble();
+
   }
+
 }

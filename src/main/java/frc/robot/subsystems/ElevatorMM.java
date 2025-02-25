@@ -21,8 +21,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.GeneralConstants;
 import static frc.robot.Constants.MechanismConstants;
 
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * 
@@ -39,8 +37,6 @@ public class ElevatorMM extends SubsystemBase {
   // Declare motor CAN IDs
   private final int elevatorLeadID = 17;
   private final int elevatorFollowID = 18;
-
-  private final double elevatorSpeed = 0.5;
 
   // Declare motor variables
   private TalonFX elevatorLeadMotor;
@@ -207,11 +203,11 @@ public class ElevatorMM extends SubsystemBase {
    * 
    * Run the elevator in response to operator input
    * 
-   * @param direction Direction the elevator should run
+   * @param direction Direction and speed the elevator should run
    * 
    */
   public void moveElevator(double direction) {
-    elevatorLeadMotor.setControl(m_dutyRequest.withOutput(direction * elevatorSpeed));
+    elevatorLeadMotor.setControl(m_dutyRequest.withOutput(direction));
   }
 
   /**
@@ -223,5 +219,15 @@ public class ElevatorMM extends SubsystemBase {
    */
   public void moveElevatorToPosition(double position) {
     elevatorLeadMotor.setControl(m_positionRequest.withPosition(position));
+  }
+
+  /**
+   * 
+   * Gets the current elevator position
+   * 
+   * @return  Current position in enoder units
+   */
+  public double getPosition() {
+    return elevatorLeadMotor.getPosition().getValueAsDouble();
   }
 }
