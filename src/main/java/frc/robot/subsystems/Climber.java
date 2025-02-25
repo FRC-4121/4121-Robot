@@ -4,8 +4,6 @@
 
 package frc.robot.subsystems;
 
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.InvertedValue;
@@ -19,8 +17,10 @@ import com.ctre.phoenix6.controls.VelocityVoltage;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-import static frc.robot.Constants.*;
+import frc.robot.Constants.GeneralConstants;
 
 /**
  * Define a climber object
@@ -33,7 +33,7 @@ public class Climber extends SubsystemBase {
   private final double CURRENT_LIMIT = 100; // Current limit for stopping motor to prevent damage
 
   // Declare CAN ID for motor
-  private final int climberMotorID = 17;
+  private final int climberMotorID = 21;
 
   // Declare motor variables
   private TalonFX climberMotor;
@@ -60,7 +60,7 @@ public class Climber extends SubsystemBase {
   public Climber() {
 
     // Create motors
-    climberMotor = new TalonFX(climberMotorID, CANBUS_NAME);
+    climberMotor = new TalonFX(climberMotorID, GeneralConstants.CANBUS_NAME);
 
     // Create climber motor configuration
     var climberConfigs = new TalonFXConfiguration();
@@ -93,7 +93,7 @@ public class Climber extends SubsystemBase {
     // Apply climber motor configuration and initialize position to 0
     StatusCode climberStatus = climberMotor.getConfigurator().apply(climberConfigs, 0.050);
     if (!climberStatus.isOK()) {
-      System.out.println("Could not apply climber motor configs. Error code: " + climberStatus.toString());
+      System.err.println("Could not apply climber motor configs. Error code: " + climberStatus.toString());
       DriverStation.reportError("Could not apply climber motor configs.", false);
     } else {
       System.out.println("Successfully applied drive motor configs. Error code: " + climberStatus.toString());
@@ -157,4 +157,50 @@ public class Climber extends SubsystemBase {
 
   }
 
+  /**
+   * Command to climb with the climber
+   * 
+   * Needs to be called twice: the first time is to extend it, and the second is to retract
+   */
+  public class Climb extends Command {
+    enum State {
+      /**
+       * The initial state, we haven't started climbing
+       */
+      Default,
+      /**
+       * The climber is extended and ready to climb
+       */
+      Extended,
+      /**
+       * We have climbed
+       */
+      Retracted
+    }
+
+    State state = State.Default;
+
+    @Override
+    public void execute() {
+      switch (state) {
+        case Default:
+          extendClimber();
+          state = State.Extended;
+          break;
+        case Extended:
+          retractClimber();
+          state = State.Retracted;
+          break;
+        case Retracted:
+          System.err.println("Told to climb while already in the retracted position");
+          DriverStation.reportWarning("Told to climb while already in the retracted position", false);
+          break;
+      }
+    }
+
+    @Override
+    public boolean isFinished() {
+      return true;
+    }
+  }
 }

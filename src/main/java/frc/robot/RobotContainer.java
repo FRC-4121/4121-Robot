@@ -5,6 +5,7 @@ import static frc.robot.Constants.ControlConstants.*;
 import static frc.robot.Constants.DriveConstants.AutoAngleToTarget;
 
 import frc.robot.subsystems.*;
+import frc.robot.Constants.Mutables;
 import frc.robot.Constants.MechanismConstants;
 import frc.robot.ExtraClasses.NetworkTableQuerier;
 import frc.robot.commands.*;
@@ -29,6 +30,9 @@ public class RobotContainer {
 
   // Declare Subsystems
   private final SwerveDriveWPI swerve;
+  private final ElevatorMM elevator;
+  private final CClaw claw;
+  private final Climber climber;
 
   // ===Extra Systems===//
 
@@ -44,8 +48,9 @@ public class RobotContainer {
   private final ChangeSpeedCommand changeSpeedCommand;
   private final ChangeDriveMode changeModeCommand;
 
-  // Declare Auto Commands
-  // private final SendableChooser<Command> autoChooser;
+  //Declare mechanism commands
+  private final MoveElevator moveElevatorCommand;
+  private final RotateCClaw rotateClawCommand;
 
   // Declare KillAuto Commands
   private final KillAutoCommand killAuto;
@@ -55,6 +60,7 @@ public class RobotContainer {
   // Declare Xbox Buttons and Triggers
   private final Trigger changeSpeedButton;
   private final Trigger changeModeButton;
+  private final Trigger climbButton;
 
   // Declare Launchpad (OI) Buttons/Switches
   private final Trigger killAutoButton;
@@ -84,6 +90,9 @@ public class RobotContainer {
 
     // Initialize Subsystems
     swerve = new SwerveDriveWPI();
+    elevator = new ElevatorMM();
+    claw = new CClaw();
+    climber = new Climber();
 
     // Initialize extra systems
     table = new NetworkTableQuerier();
@@ -94,6 +103,10 @@ public class RobotContainer {
     fieldDriveCommand = new DriveWithJoysticks(swerve, xbox, table);
     changeSpeedCommand = new ChangeSpeedCommand();
     changeModeCommand = new ChangeDriveMode();
+
+    //Initialize mechanism commands
+    moveElevatorCommand = new MoveElevator(elevator, secondaryXbox);
+    rotateClawCommand = new RotateCClaw(claw, secondaryXbox);
 
     // Initialize KillAuto Commands
     killAuto = new KillAutoCommand();
@@ -108,6 +121,7 @@ public class RobotContainer {
     // Initialize Xbox Buttons
     changeSpeedButton = new JoystickButton(xbox, xboxYButton);
     changeModeButton = new JoystickButton(xbox, xboxXButton);
+    climbButton = new Trigger(() -> xbox.getRightTriggerAxis() > triggerThreshold);
     parkButton = new JoystickButton(xbox, xboxRightBumber);
 
     // Initialize Launchpad (OI) Buttons/Switches
@@ -138,7 +152,7 @@ public class RobotContainer {
     // Teleop Commands
     changeSpeedButton.onTrue(changeSpeedCommand);
     changeModeButton.onTrue(changeModeCommand);
-
+    climbButton.onTrue(climber.new Climb());
   }
 
   /**
@@ -146,8 +160,9 @@ public class RobotContainer {
    */
   private void configureDefaultCommands() {
 
-    // Swerve drive default command
     swerve.setDefaultCommand(fieldDriveCommand);
+    elevator.setDefaultCommand(moveElevatorCommand);
+    claw.setDefaultCommand(rotateClawCommand);
 
   }
 
@@ -174,12 +189,12 @@ public class RobotContainer {
   public void getAllianceColor() {
 
     if (redTeamButton.getAsBoolean())
-      Constants.blueAlliance = false;
+      Mutables.blueAlliance = false;
     else if (blueTeamButton.getAsBoolean())
-      Constants.blueAlliance = true;
+      Mutables.blueAlliance = true;
     else {
       // TODO: warn someone
-      Constants.blueAlliance = true;
+      Mutables.blueAlliance = true;
     }
   }
 
@@ -188,11 +203,11 @@ public class RobotContainer {
    */
   public void getParkSelection() {
     if (parkButton.getAsBoolean() == true) {
-      Constants.isParked = true;
+      Mutables.isParked = true;
       SmartDashboard.putBoolean("Robot Parked", true);
       // parkCommand.execute();
     } else {
-      Constants.isParked = false;
+      Mutables.isParked = false;
       SmartDashboard.putBoolean("Robot Parked", false);
     }
   }
@@ -237,21 +252,15 @@ public class RobotContainer {
   public void updateRobotStatus() {
 
     // Update drive mode
-    SmartDashboard.putBoolean("Field Oriented", Constants.isFieldOriented);
-
-    // Update shooter position
-    SmartDashboard.putBoolean("Can Shoot", Constants.readyToShoot);
-
-    // Update Photo Sensor
-    SmartDashboard.putBoolean("Note On Board", Constants.noteOnBoard);
+    SmartDashboard.putBoolean("Field Oriented", Mutables.isFieldOriented);
 
     // Update Gyro Position
     SmartDashboard.putNumber("Gyro Angle", swerve.getGyroAngle());
     SmartDashboard.putNumber("Gyro Yaw", swerve.getGyroYaw());
 
     // Update drive values
-    SmartDashboard.putBoolean("Slow Mode", Constants.isSlowMode);
-    SmartDashboard.putBoolean("Impact Detected", Constants.impactDetected);
+    SmartDashboard.putBoolean("Slow Mode", Mutables.isSlowMode);
+    SmartDashboard.putBoolean("Impact Detected", Mutables.impactDetected);
 
   }
 

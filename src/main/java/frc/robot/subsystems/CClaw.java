@@ -5,9 +5,14 @@
 package frc.robot.subsystems;
 
 
+import frc.robot.Constants.GeneralConstants;
+import frc.robot.Constants.Mutables;
+
 import com.ctre.phoenix6.StatusCode;
+import com.ctre.phoenix6.configs.CANrangeConfiguration;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.hardware.CANrange;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.InvertedValue;
@@ -17,12 +22,24 @@ import com.ctre.phoenix6.controls.PositionVoltage;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DutyCycle;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import static frc.robot.Constants.*;
+import static frc.robot.Constants.MechanismConstants.*;
 
+/**
+ * Define a claw (end effector) subsystem
+ */
 public class CClaw extends SubsystemBase {
 
+  // Declare motor constants
   private final double DRIVE_DEADBAND = 0.001;
   private final double CURRENT_LIMIT = 100;
+
+  //Declare CAN IDs
+  private final int rotationMotorID = 19; 
+  private final int intakeMotorID =  20;
+  private final int canRangeID = 24;
 
   //Declare motor variables
   private TalonFX rotationMotor;
@@ -39,16 +56,68 @@ public class CClaw extends SubsystemBase {
 
   //Declare motor output requests
   private final PositionVoltage requestPosition = new PositionVoltage(0.0);
-  private final DutyCycleOut requestDuty = new DutyCycleOut(0.0);  
+  private final DutyCycleOut requestRotateDuty = new DutyCycleOut(0.0);  
+  private final DutyCycleOut requestIntakeDuty = new DutyCycleOut(0.0);
 
-  //Declare motor IDs
-  private final int rotationMotorID = 15; 
-  private final int intakeMotorID =  16;
+  // Create a claw position class
+  private static final class ClawPositions {
+    public static final double Load = 100;
+    public static final double Home = 100;
+    public static final double Algae = 100;
+  }
 
+  // Declare general variables
+  private double currentPosition;
+
+  /**
+   * Create a claw (end effector) subsystem
+   */
   public CClaw() {
-    rotationMotor = new TalonFX(rotationMotorID);
-    intakeMotor = new TalonFX(intakeMotorID);
-   
+
+    //Create motors
+    rotationMotor = new TalonFX(rotationMotorID,GeneralConstants.CANBUS_NAME);
+    intakeMotor = new TalonFX(intakeMotorID,GeneralConstants.CANBUS_NAME);
+
+    // Configure the motors
+    configureMotors();
+
+    //Create CANrange
+    CANrange coralSensor = new CANrange(canRangeID,GeneralConstants.CANBUS_NAME);
+
+    //Configure CANrange
+    CANrangeConfiguration sensorConfigs = new CANrangeConfiguration();
+    coralSensor.getConfigurator().apply(sensorConfigs);
+
+    // Initialize variables
+    currentPosition = ClawPositions.Home;
+
+  }
+
+  @Override
+  public void periodic(){
+
+    // Set current position and claw clear flag
+    currentPosition = getClawPosition();
+    if (currentPosition >= ClawPositions.Home) {
+      Mutables.isClawClear = true;
+    } else {
+      Mutables.isClawClear = false;
+    }
+
+    // Update dashboard values
+    SmartDashboard.putBoolean("Claw Clear", Mutables.isClawClear);
+    SmartDashboard.putNumber("Claw Rotate Amps", rotationMotor.getStatorCurrent().getValueAsDouble());
+    SmartDashboard.putNumber("Claw Rotate Volts", rotationMotor.getMotorVoltage().getValueAsDouble());
+    SmartDashboard.putNumber("Claw Rotate Pos", rotationMotor.getPosition().getValueAsDouble());
+    SmartDashboard.putNumber("Claw Rotate Vel", rotationMotor.getVelocity().getValueAsDouble());
+
+  }
+
+  /**
+   * Configure TalonFX motors
+   */
+  private void configureMotors(){
+
     //Configure the Rotation Motor
     var rotateConfigs = new TalonFXConfiguration();
 
@@ -80,7 +149,7 @@ public class CClaw extends SubsystemBase {
     //Apply rotate motor configuration and initialize position to 0
     StatusCode rotationStatus = rotationMotor.getConfigurator().apply(rotateConfigs, 0.050);
     if (!rotationStatus.isOK()) {
-      System.out.println("Could not apply rotation motor configs. Error code: " + rotationStatus.toString());
+      System.err.println("Could not apply rotation motor configs. Error code: " + rotationStatus.toString());
       DriverStation.reportError("Could not apply rotation motor configs.", false);
     } else {
       System.out.println("Successfully applied rotation motor configs. Error code: " + rotationStatus.toString());
@@ -89,7 +158,6 @@ public class CClaw extends SubsystemBase {
 
     //Configure the Intake Motor
     var intakeConfigs = new TalonFXConfiguration();
-
     
     //set intake motor output configuration
     var intakeOutputConfigs = intakeConfigs.MotorOutput;
@@ -116,20 +184,66 @@ public class CClaw extends SubsystemBase {
     }
     intakeMotor.getConfigurator().setPosition(0);
 
-  }
+  } 
 
   /**
+   * 
    * Rotate claw to position
    * 
    * @param rotation  position in encoder units
+   * 
    */
-  public void setRotation(double rotation) {
-    rotationMotor.setControl(requestPosition.withPosition(rotation));
+  public void setRotation(double position) {
+
+    rotationMotor.setControl(requestPosition.withPosition(position));
+
   }
 
+  /**
+   * 
+   * Hold the claw rotation at the current position
+   * 
+   */
+  public void holdPosition() {
 
-  @Override
-  public void periodic(){
-    // This method will be called once per scheduler run
+    rotationMotor.setControl(requestPosition.withPosition(currentPosition));
+
   }
+
+  /**
+   * 
+   * Rotate claw in response to gamepad joystick
+   * Keep claw between home and algae positions
+   * 
+   * @param direction  Direction and speed to rotate
+   * 
+   */
+  public void rotate(double direction){
+
+    if (getClawPosition() >= ClawPositions.Home && getClawPosition() <= ClawPositions.Algae) {
+      requestRotateDuty.Output = direction;
+      rotationMotor.setControl(requestRotateDuty);
+    } else if (getClawPosition() < ClawPositions.Home) {
+      rotationMotor.setControl(requestPosition.withPosition(ClawPositions.Home));
+    } else {
+      rotationMotor.setControl(requestPosition.withPosition(ClawPositions.Algae));
+    }
+
+  }
+
+  /**
+   * 
+   * Get the current position of the claw in encoder units
+   * 
+   * @return  Current claw rotation as a double
+   * 
+   */
+  public double getClawPosition() {
+
+    var clawPosSignal = rotationMotor.getPosition();
+    clawPosSignal.refresh();
+    return clawPosSignal.getValueAsDouble();
+
+  }
+
 }

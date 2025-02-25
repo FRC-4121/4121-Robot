@@ -18,11 +18,9 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-import static frc.robot.Constants.*;
+import frc.robot.Constants.GeneralConstants;
 import static frc.robot.Constants.MechanismConstants;
 
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * 
@@ -37,10 +35,8 @@ public class ElevatorMM extends SubsystemBase {
   private final double CURRENT_LIMIT = 100; // Current limit to prevent motor damage
 
   // Declare motor CAN IDs
-  private final int elevatorLeadID = 13;
-  private final int elevatorFollowID = 14;
-
-  private final double elevatorSpeed = 0.5;
+  private final int elevatorLeadID = 17;
+  private final int elevatorFollowID = 18;
 
   // Declare motor variables
   private TalonFX elevatorLeadMotor;
@@ -55,7 +51,7 @@ public class ElevatorMM extends SubsystemBase {
   private double elevator_kI = 0.0;
   private double elevator_kD = 0.0;
 
-  public static final class Positions {
+  public static final class ElevatorPositions {
     public static final double LOAD = 100;
     public static final double CORAL1 = 100;
     public static final double CORAL2 = 100;
@@ -79,8 +75,8 @@ public class ElevatorMM extends SubsystemBase {
   public ElevatorMM() {
 
     // Create motors
-    elevatorLeadMotor = new TalonFX(elevatorLeadID, CANBUS_NAME);
-    elevatorFollowMotor = new TalonFX(elevatorFollowID, CANBUS_NAME);
+    elevatorLeadMotor = new TalonFX(elevatorLeadID, GeneralConstants.CANBUS_NAME);
+    elevatorFollowMotor = new TalonFX(elevatorFollowID, GeneralConstants.CANBUS_NAME);
 
     // Configure motors
     InitializeMotors();
@@ -207,11 +203,11 @@ public class ElevatorMM extends SubsystemBase {
    * 
    * Run the elevator in response to operator input
    * 
-   * @param direction Direction the elevator should run
+   * @param direction Direction and speed the elevator should run
    * 
    */
   public void moveElevator(double direction) {
-    elevatorLeadMotor.setControl(m_dutyRequest.withOutput(direction * elevatorSpeed));
+    elevatorLeadMotor.setControl(m_dutyRequest.withOutput(direction));
   }
 
   /**
@@ -223,5 +219,15 @@ public class ElevatorMM extends SubsystemBase {
    */
   public void moveElevatorToPosition(double position) {
     elevatorLeadMotor.setControl(m_positionRequest.withPosition(position));
+  }
+
+  /**
+   * 
+   * Gets the current elevator position
+   * 
+   * @return  Current position in enoder units
+   */
+  public double getPosition() {
+    return elevatorLeadMotor.getPosition().getValueAsDouble();
   }
 }

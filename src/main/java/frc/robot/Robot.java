@@ -9,6 +9,7 @@ import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.Constants.Mutables;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.MechanismConstants;
 import frc.robot.subsystems.cameras.CameraBuilder;
@@ -154,13 +155,13 @@ public class Robot extends TimedRobot {
     }
 
     // Set robot to robot oriented driving
-    Constants.isFieldOriented = true;
+    Mutables.isFieldOriented = true;
 
     // Make sure the robot is in fast mode
     DriveConstants.LinearSpeed = DriveConstants.MaxLinearSpeed;
     DriveConstants.RotationalSpeed = DriveConstants.MaxRadiansPerSecond;
     DriveConstants.maxYawRate = DriveConstants.FastMaxYawRate;
-    Constants.isSlowMode = false;
+    Mutables.isSlowMode = false;
   }
 
   /** This function is called periodically during autonomous. */
@@ -179,7 +180,7 @@ public class Robot extends TimedRobot {
     }
 
     // Set robot to field oriented driving
-    Constants.isFieldOriented = true;
+    Mutables.isFieldOriented = true;
   }
 
   /** This function is called periodically during operator control. */

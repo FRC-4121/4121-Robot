@@ -12,7 +12,7 @@ import edu.wpi.first.math.filter.SlewRateLimiter;
 import frc.robot.ExtraClasses.NetworkTableQuerier;
 import frc.robot.Constants.ControlConstants;
 import frc.robot.Constants.DriveConstants;
-import frc.robot.Constants;
+import frc.robot.Constants.Mutables;
 import edu.wpi.first.math.controller.*;
 
 import edu.wpi.first.math.MathUtil;
@@ -61,9 +61,6 @@ public class DriveWithJoysticks extends Command {
         * ControlConstants.kJoystickSpeedCorr;
     rotSpeed = -rotSpeedLimiter.calculate(MathUtil.applyDeadband(xbox.getRightX(), 0.01))
         * ControlConstants.kJoystickSpeedCorr;
-    System.out.println("xSpeed:" + xSpeed);
-    System.out.println("ySpeed: " + ySpeed);
-    System.out.println("rotSpeed: " + rotSpeed);
 
     SmartDashboard.putNumber("X Speed", xSpeed);
     SmartDashboard.putNumber("Y Speed", ySpeed);
@@ -75,7 +72,7 @@ public class DriveWithJoysticks extends Command {
 
       }
     }
-    if (Constants.isFieldOriented) {
+    if (Mutables.isFieldOriented) {
       swerve.driveFieldRelative(xSpeed, ySpeed, rotSpeed);
     } else {
       swerve.driveRobotRelative(xSpeed, ySpeed, rotSpeed);
