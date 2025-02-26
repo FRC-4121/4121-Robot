@@ -103,9 +103,9 @@ public class Robot extends TimedRobot {
     }
 
     // Check for robot zero command and zero the robot
-    if (SmartDashboard.getNumber("Zero Encoder", 0) == 1) {
-      m_robotContainer.zeroDriveEncoder();
-      SmartDashboard.putNumber("Zero Encoder", 0);
+    if (SmartDashboard.getNumber("Zero Robot", 0) == 1) {
+      m_robotContainer.zeroRobot();
+      SmartDashboard.putNumber("Zero Robot", 0);
     }
 
     // Check current speed setting and update dashboard

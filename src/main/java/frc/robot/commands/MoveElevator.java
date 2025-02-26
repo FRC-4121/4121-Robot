@@ -54,6 +54,12 @@ public class MoveElevator extends Command {
     
     SmartDashboard.putNumber("Elevator Speed", elevatorSpeed);
 
+    if (elevatorSpeed == 0) {
+      elevator.setPositionHold(true);
+    } else {
+      elevator.setPositionHold(false);
+    }
+
     elevator.moveElevator(elevatorSpeed);
 
   }

@@ -223,6 +223,11 @@ public class CClaw extends SubsystemBase {
     intakeMotor.setControl(requestIntakeDuty.withOutput(intakeSpeed));
   }
 
+  /**
+   * Determine if we have coral onboard
+   * 
+   * @return  Flag indicating presence of coral
+   */
   public boolean hasCoral() {
     return coralSensor.getIsDetected(true).getValue();
   }

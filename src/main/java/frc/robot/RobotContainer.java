@@ -62,6 +62,10 @@ public class RobotContainer {
   private final Trigger changeModeButton;
   private final Trigger clawHomeButton;
   private final Trigger climbButton;
+  private final Trigger elevatorCoral1Button;
+  private final Trigger elevatorCoral2Button;
+  private final Trigger elevatorCoral3Button;
+  private final Trigger elevatorCoral4Button;
 
   // Declare Launchpad (OI) Buttons/Switches
   private final Trigger killAutoButton;
@@ -125,6 +129,10 @@ public class RobotContainer {
     changeModeButton = new JoystickButton(xbox, xboxXButton);
     clawHomeButton = new JoystickButton(secondaryXbox, xboxRightBumper);
     climbButton = new Trigger(() -> xbox.getRightTriggerAxis() > triggerThreshold);
+    elevatorCoral1Button = new JoystickButton(secondaryXbox, xboxAButton);
+    elevatorCoral2Button = new JoystickButton(secondaryXbox, xboxBButton);
+    elevatorCoral3Button = new JoystickButton(secondaryXbox, xboxXButton);
+    elevatorCoral4Button = new JoystickButton(secondaryXbox, xboxYButton);
 
     // Initialize Launchpad (OI) Buttons/Switches
     killAutoButton = new JoystickButton(launchpad, LaunchPadButton1);
@@ -156,6 +164,10 @@ public class RobotContainer {
     changeSpeedButton.onTrue(changeSpeedCommand);
     changeModeButton.onTrue(changeModeCommand);
     clawHomeButton.onTrue(claw.autoRotate(CClaw.ClawPositions.Home));
+    elevatorCoral1Button.onTrue(elevator.positionElevator(ElevatorMM.ElevatorPositions.CORAL1));
+    elevatorCoral2Button.onTrue(elevator.positionElevator(ElevatorMM.ElevatorPositions.CORAL2));
+    elevatorCoral3Button.onTrue(elevator.positionElevator(ElevatorMM.ElevatorPositions.CORAL3));
+    elevatorCoral4Button.onTrue(elevator.positionElevator(ElevatorMM.ElevatorPositions.CORAL4));
     
     climbButton.onTrue(climber.new Climb());
   }
@@ -237,15 +249,22 @@ public class RobotContainer {
 
   /**
    * 
-   * Zero the gyro position
+   * Zero all robot sensors
+   * 
+   */
+  public void zeroRobot() {
+    swerve.zeroGyro();
+    swerve.zeroEncoders();
+    elevator.zeroPosition();
+  }
+
+  /**
+   * 
+   * Zero the robot gyro
    * 
    */
   public void zeroGyro() {
     swerve.zeroGyro();
-  }
-
-  public void zeroDriveEncoder() {
-    swerve.zeroEncoders();
   }
 
   /**

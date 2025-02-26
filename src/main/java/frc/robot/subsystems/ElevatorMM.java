@@ -15,6 +15,8 @@ import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.PositionVoltage;
 
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -51,8 +53,9 @@ public class ElevatorMM extends SubsystemBase {
   private double elevator_kI = 0.0;
   private double elevator_kD = 0.0;
 
+  // Declare elevator positions
   public static final class ElevatorPositions {
-    public static final double LOAD = 100;
+    public static final double LOAD = 0;
     public static final double CORAL1 = 100;
     public static final double CORAL2 = 100;
     public static final double CORAL3 = 100;
@@ -66,6 +69,10 @@ public class ElevatorMM extends SubsystemBase {
   // Declare motor output requests
   private final PositionVoltage m_positionRequest = new PositionVoltage(0).withSlot(0);
   private final DutyCycleOut m_dutyRequest = new DutyCycleOut(0);
+
+  // Declare other variables
+  private double currentPosition;
+  private Boolean holdPosition;
 
   /**
    * 
@@ -82,7 +89,11 @@ public class ElevatorMM extends SubsystemBase {
     InitializeMotors();
 
     // Set follower to follow lead motor
-    elevatorFollowMotor.setControl(new Follower(elevatorLeadMotor.getDeviceID(), false));
+    elevatorFollowMotor.setControl(new Follower(elevatorLeadMotor.getDeviceID(), true));
+
+    // Initialize variables
+    currentPosition = ElevatorPositions.LOAD;
+    holdPosition = false;
 
   }
 
@@ -142,7 +153,7 @@ public class ElevatorMM extends SubsystemBase {
 
     // Set follower motor output configuration
     var followOutputConfigs = followConfigs.MotorOutput;
-    followOutputConfigs.Inverted = InvertedValue.CounterClockwise_Positive;
+    followOutputConfigs.Inverted = InvertedValue.Clockwise_Positive;
     followOutputConfigs.NeutralMode = NeutralModeValue.Brake;
     followOutputConfigs.withDutyCycleNeutralDeadband(DRIVE_DEADBAND);
 
@@ -169,6 +180,14 @@ public class ElevatorMM extends SubsystemBase {
    */
   @Override
   public void periodic() {
+
+    // Set current position
+    currentPosition = getPosition();
+
+    // Hold position of the elevator if requested
+    if (holdPosition && currentPosition != ElevatorPositions.LOAD) {
+      moveElevatorToPosition(currentPosition);
+    }
 
     // Put critical lead motor signals on the SmartDashboard
     SmartDashboard.putNumber("Elevator Lead Amps", elevatorLeadMotor.getStatorCurrent().getValueAsDouble());
@@ -218,6 +237,7 @@ public class ElevatorMM extends SubsystemBase {
    * 
    */
   public void moveElevatorToPosition(double position) {
+    holdPosition = false;
     elevatorLeadMotor.setControl(m_positionRequest.withPosition(position));
   }
 
@@ -229,5 +249,35 @@ public class ElevatorMM extends SubsystemBase {
    */
   public double getPosition() {
     return elevatorLeadMotor.getPosition().getValueAsDouble();
+  }
+
+  /**
+   * 
+   * Zero the position encoder
+   * 
+   */
+  public void zeroPosition() {
+    elevatorLeadMotor.getConfigurator().setPosition(0);
+  }
+
+  /**
+   * 
+   * Set the position hold flag
+   * 
+   */
+  public void setPositionHold(Boolean hold) {
+    holdPosition = hold;
+  }
+
+  /**
+   * 
+   * Move elevator to position command
+   * 
+   * @param position  Desired elevator position
+   * @return  The move elevator command
+   * 
+   */
+  public Command positionElevator(double position){
+    return Commands.runOnce(() -> this.moveElevatorToPosition(position));
   }
 }
