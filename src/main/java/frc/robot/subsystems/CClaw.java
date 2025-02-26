@@ -4,7 +4,6 @@
 
 package frc.robot.subsystems;
 
-
 import frc.robot.Constants.GeneralConstants;
 import frc.robot.Constants.Mutables;
 
@@ -37,12 +36,12 @@ public class CClaw extends SubsystemBase {
   private final double DRIVE_DEADBAND = 0.001;
   private final double CURRENT_LIMIT = 100;
 
-  //Declare CAN IDs
-  private final int rotationMotorID = 19; 
-  private final int intakeMotorID =  20;
+  // Declare CAN IDs
+  private final int rotationMotorID = 19;
+  private final int intakeMotorID = 20;
   private final int canRangeID = 24;
 
-  //Declare motor variables
+  // Declare motor variables
   private TalonFX rotationMotor;
   private TalonFX intakeMotor;
   private CANrange coralSensor;
@@ -82,7 +81,7 @@ public class CClaw extends SubsystemBase {
    */
   public CClaw() {
 
-    //Create motors
+    // Create motors
     rotationMotor = new TalonFX(rotationMotorID, GeneralConstants.CANBUS_NAME);
     intakeMotor = new TalonFX(intakeMotorID, GeneralConstants.CANBUS_NAME);
 
@@ -102,7 +101,7 @@ public class CClaw extends SubsystemBase {
   }
 
   @Override
-  public void periodic(){
+  public void periodic() {
 
     // Set current position and claw clear flag
     currentPosition = getClawPosition();
@@ -206,7 +205,7 @@ public class CClaw extends SubsystemBase {
     rotationMotor.setControl(requestPosition.withPosition(position));
 
   }
-  
+
   /**
    * 
    * Hold the claw rotation at the current position
@@ -226,7 +225,7 @@ public class CClaw extends SubsystemBase {
   /**
    * Determine if we have coral onboard
    * 
-   * @return  Flag indicating presence of coral
+   * @return Flag indicating presence of coral
    */
   public boolean hasCoral() {
     return coralSensor.getIsDetected(true).getValue();
@@ -265,9 +264,9 @@ public class CClaw extends SubsystemBase {
   /**
    * Command to score coral
    */
-  public Command scoreCoral(){
+  public Command scoreCoral() {
     return Commands.runOnce(() -> this.setIntakeSpeed(scoreSpeed), this).andThen(Commands.idle(this))
-    .withTimeout(outputTime).andThen(stopIntake());
+        .withTimeout(outputTime).andThen(stopIntake());
   }
 
   /**
@@ -275,10 +274,10 @@ public class CClaw extends SubsystemBase {
    * Rotate claw in response to gamepad joystick
    * Keep claw between home and algae positions
    * 
-   * @param direction  Direction and speed to rotate
+   * @param direction Direction and speed to rotate
    * 
    */
-  public void rotate(double direction){
+  public void rotate(double direction) {
 
     if (getClawPosition() >= ClawPositions.Home && getClawPosition() <= ClawPositions.Algae) {
       requestRotateDuty.Output = direction;
@@ -295,7 +294,7 @@ public class CClaw extends SubsystemBase {
    * 
    * Get the current position of the claw in encoder units
    * 
-   * @return  Current claw rotation as a double
+   * @return Current claw rotation as a double
    * 
    */
   public double getClawPosition() {

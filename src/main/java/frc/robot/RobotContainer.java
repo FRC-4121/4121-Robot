@@ -12,6 +12,7 @@ import frc.robot.commands.*;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.*;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -48,7 +49,7 @@ public class RobotContainer {
   private final ChangeSpeedCommand changeSpeedCommand;
   private final ChangeDriveMode changeModeCommand;
 
-  //Declare mechanism commands
+  // Declare mechanism commands
   private final MoveElevator moveElevatorCommand;
   private final RotateCClaw rotateClawCommand;
 
@@ -75,7 +76,6 @@ public class RobotContainer {
   private final JoystickButton leftButton;
   private final JoystickButton rightButton;
   private final JoystickButton changeAutoAngleButton;
-  
 
   // ===PathPlanner=== //
 
@@ -110,7 +110,7 @@ public class RobotContainer {
     changeSpeedCommand = new ChangeSpeedCommand();
     changeModeCommand = new ChangeDriveMode();
 
-    //Initialize mechanism commands
+    // Initialize mechanism commands
     moveElevatorCommand = new MoveElevator(elevator, secondaryXbox);
     rotateClawCommand = new RotateCClaw(claw, secondaryXbox);
 
@@ -164,11 +164,19 @@ public class RobotContainer {
     changeSpeedButton.onTrue(changeSpeedCommand);
     changeModeButton.onTrue(changeModeCommand);
     clawHomeButton.onTrue(claw.autoRotate(CClaw.ClawPositions.Home));
-    elevatorCoral1Button.onTrue(elevator.positionElevator(ElevatorMM.ElevatorPositions.CORAL1));
+    elevatorCoral1Button.onTrue(
+        Commands.either(
+            elevator.positionElevator(ElevatorMM.ElevatorPositions.CORAL1),
+            elevator.positionElevator(ElevatorMM.ElevatorPositions.ALGAE1),
+            () -> claw.hasCoral()));
     elevatorCoral2Button.onTrue(elevator.positionElevator(ElevatorMM.ElevatorPositions.CORAL2));
     elevatorCoral3Button.onTrue(elevator.positionElevator(ElevatorMM.ElevatorPositions.CORAL3));
-    elevatorCoral4Button.onTrue(elevator.positionElevator(ElevatorMM.ElevatorPositions.CORAL4));
-    
+    elevatorCoral4Button.onTrue(
+        Commands.either(
+            elevator.positionElevator(ElevatorMM.ElevatorPositions.CORAL4),
+            elevator.positionElevator(ElevatorMM.ElevatorPositions.ALGAE2),
+            () -> claw.hasCoral()));
+
     climbButton.onTrue(climber.new Climb());
   }
 
