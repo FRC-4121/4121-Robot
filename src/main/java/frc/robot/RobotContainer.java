@@ -2,11 +2,9 @@
 package frc.robot;
 
 import static frc.robot.Constants.ControlConstants.*;
-import static frc.robot.Constants.DriveConstants.AutoAngleToTarget;
 
 import frc.robot.subsystems.*;
 import frc.robot.Constants.Mutables;
-import frc.robot.Constants.MechanismConstants;
 import frc.robot.ExtraClasses.NetworkTableQuerier;
 import frc.robot.commands.*;
 import edu.wpi.first.wpilibj.Joystick;
@@ -67,15 +65,16 @@ public class RobotContainer {
   private final Trigger elevatorCoral2Button;
   private final Trigger elevatorCoral3Button;
   private final Trigger elevatorCoral4Button;
+  private final Trigger coralScoreButton;
+  private final Trigger coralIntakeButton;
+  private final Trigger algaeIntakeButton;
+  private final Trigger returnHomeButton;
 
   // Declare Launchpad (OI) Buttons/Switches
   private final Trigger killAutoButton;
   private final JoystickButton blueTeamButton;
   private final JoystickButton redTeamButton;
   private final JoystickButton parkButton;
-  private final JoystickButton leftButton;
-  private final JoystickButton rightButton;
-  private final JoystickButton changeAutoAngleButton;
 
   // ===PathPlanner=== //
 
@@ -133,15 +132,16 @@ public class RobotContainer {
     elevatorCoral2Button = new JoystickButton(secondaryXbox, xboxBButton);
     elevatorCoral3Button = new JoystickButton(secondaryXbox, xboxXButton);
     elevatorCoral4Button = new JoystickButton(secondaryXbox, xboxYButton);
+    coralScoreButton = new JoystickButton(secondaryXbox, xboxRightBumper);
+    coralIntakeButton = new JoystickButton(secondaryXbox, xboxLeftBumper);
+    algaeIntakeButton = new Trigger(() -> secondaryXbox.getLeftTriggerAxis() > triggerThreshold);
+    returnHomeButton = new Trigger(() -> secondaryXbox.getRightTriggerAxis() > triggerThreshold);
 
     // Initialize Launchpad (OI) Buttons/Switches
     killAutoButton = new JoystickButton(launchpad, LaunchPadButton1);
     parkButton = new JoystickButton(launchpad, LaunchPadButton3);
     blueTeamButton = new JoystickButton(launchpad, LaunchPadSwitch5top);
     redTeamButton = new JoystickButton(launchpad, LaunchPadSwitch5bottom);
-    rightButton = new JoystickButton(launchpad, LaunchPadSwitch6bottom);
-    leftButton = new JoystickButton(launchpad, LaunchPadSwitch6top);
-    changeAutoAngleButton = new JoystickButton(launchpad, 20);
 
     // Configure the button bindings
     configureButtonBindings();
@@ -176,8 +176,15 @@ public class RobotContainer {
             elevator.positionElevator(ElevatorMM.ElevatorPositions.CORAL4),
             elevator.positionElevator(ElevatorMM.ElevatorPositions.ALGAE2),
             () -> claw.hasCoral()));
-
+    coralIntakeButton.onTrue(claw.intakeCoral());
+    coralScoreButton.onTrue(
+      Commands.either(
+        claw.scoreCoral(),
+        claw.algaeDeposit(),
+        () -> claw.hasCoral()));
+    algaeIntakeButton.onTrue(claw.algaeIntake());
     climbButton.onTrue(climber.new Climb());
+    returnHomeButton.onTrue(claw.returnHome());
   }
 
   /**
@@ -234,24 +241,6 @@ public class RobotContainer {
     } else {
       Mutables.isParked = false;
       SmartDashboard.putBoolean("Robot Parked", false);
-    }
-  }
-
-  /**
-   * 
-   * Get the value of the Auto Align Robot switch
-   * 
-   */
-  public void getAngleToTargetSelection()
-
-  {
-    if (changeAutoAngleButton.getAsBoolean() == false) {
-      AutoAngleToTarget = true;
-      SmartDashboard.putBoolean("Auto Positioning", true);
-      // parkCommand.execute();
-    } else {
-      AutoAngleToTarget = false;
-      SmartDashboard.putBoolean("Auto Positioning", false);
     }
   }
 

@@ -65,6 +65,8 @@ public class CClaw extends SubsystemBase {
 
   public static final double feedSpeed = 0.1;
   public static final double scoreSpeed = 0.1;
+  public static final double algaeFeedSpeed = 0.1;
+  public static final double algaeDepositSpeed = 0.1;
 
   // Create a claw position class
   public static final class ClawPositions {
@@ -117,6 +119,11 @@ public class CClaw extends SubsystemBase {
     SmartDashboard.putNumber("Claw Rotate Volts", rotationMotor.getMotorVoltage().getValueAsDouble());
     SmartDashboard.putNumber("Claw Rotate Pos", rotationMotor.getPosition().getValueAsDouble());
     SmartDashboard.putNumber("Claw Rotate Vel", rotationMotor.getVelocity().getValueAsDouble());
+
+    // Check motor currents and stop elevator
+    if (rotationMotor.getStatorCurrent().getValueAsDouble() > CURRENT_LIMIT) {
+      stopRotation();
+    }
 
   }
 
@@ -201,9 +208,16 @@ public class CClaw extends SubsystemBase {
    * 
    */
   public void setRotation(double position) {
-
     rotationMotor.setControl(requestPosition.withPosition(position));
+  }
 
+  /**
+   * 
+   * Stop the rotation motor
+   * 
+   */
+  public void stopRotation() {
+    rotationMotor.stopMotor();
   }
 
   /**
@@ -304,5 +318,19 @@ public class CClaw extends SubsystemBase {
     return clawPosSignal.getValueAsDouble();
 
   }
+  
+  public Command algaeIntake(){
+    return Commands.runOnce(() -> this.setIntakeSpeed(algaeFeedSpeed), this).andThen(Commands.idle(this))
+        .withDeadline(Commands.idle().until(this::hasCoral).andThen(Commands.waitTime(extraInputTime)))
+        .andThen(stopIntake());
+  }
 
+  public Command algaeDeposit(){
+    return Commands.runOnce(() -> this.setIntakeSpeed(algaeDepositSpeed), this).andThen(Commands.idle(this))
+    .withTimeout(outputTime).andThen(stopIntake());
+  }
+
+  public Command returnHome(){
+    return Commands.runOnce(() -> rotationMotor.setControl(requestPosition.withPosition(ClawPositions.Home)));
+  }
 }
