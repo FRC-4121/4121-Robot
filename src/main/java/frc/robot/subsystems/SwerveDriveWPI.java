@@ -642,11 +642,22 @@ public class SwerveDriveWPI extends SubsystemBase {
    * 
    */
   public void parkBot() {
-
     leftFront.drive(0, 135);
     rightFront.drive(0, 225);
     leftBack.drive(0, 45);
     rightBack.drive(0, 315);
+  }
+
+  /**
+   * 
+   * Set the wheel angles to the desired starting position
+   * 
+   */
+  public void homeDriveWheels() {
+    leftFront.drive(0, 0);
+    rightFront.drive(0, 0);
+    leftBack.drive(0, 0);
+    rightBack.drive(0, 0);
   }
 
   /**
