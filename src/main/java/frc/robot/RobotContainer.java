@@ -48,6 +48,7 @@ public class RobotContainer {
   private final DriveWithJoysticks fieldDriveCommand;
   private final ChangeSpeedCommand changeSpeedCommand;
   private final ChangeDriveMode changeModeCommand;
+  private final ResetRobot resetRobot;
 
   // Declare mechanism commands
   private final MoveElevator moveElevatorCommand;
@@ -77,6 +78,7 @@ public class RobotContainer {
   private final JoystickButton blueTeamButton;
   private final JoystickButton redTeamButton;
   private final JoystickButton parkButton;
+  private final JoystickButton resetRobotButton;
 
   // ===PathPlanner=== //
 
@@ -111,6 +113,7 @@ public class RobotContainer {
     fieldDriveCommand = new DriveWithJoysticks(swerve, xbox, table);
     changeSpeedCommand = new ChangeSpeedCommand();
     changeModeCommand = new ChangeDriveMode();
+    resetRobot = new ResetRobot(claw, elevator, swerve, climber);
 
     // Initialize mechanism commands
     moveElevatorCommand = new MoveElevator(elevator, secondaryXbox);
@@ -145,6 +148,7 @@ public class RobotContainer {
     parkButton = new JoystickButton(launchpad, LaunchPadButton3);
     blueTeamButton = new JoystickButton(launchpad, LaunchPadSwitch5top);
     redTeamButton = new JoystickButton(launchpad, LaunchPadSwitch5bottom);
+    resetRobotButton = new JoystickButton(launchpad, LaunchPadSwitch1top);
 
     // Configure the button bindings
     configureButtonBindings();
@@ -188,6 +192,7 @@ public class RobotContainer {
     algaeIntakeButton.onTrue(claw.algaeIntake());
     climbButton.onTrue(climber.new Climb());
     returnHomeButton.onTrue(claw.returnHome());
+    resetRobotButton.onTrue(resetRobot);
   }
 
   /**
