@@ -10,15 +10,13 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.PositionVoltage;
-import com.ctre.phoenix6.controls.VelocityDutyCycle;
-import com.ctre.phoenix6.controls.VelocityVoltage;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj.Servo;
 
 import frc.robot.Constants.GeneralConstants;
 
@@ -35,8 +33,16 @@ public class Climber extends SubsystemBase {
   // Declare CAN ID for motor
   private final int climberMotorID = 21;
 
-  // Declare motor variables
+  //Declare PWM ID for servos
+  private final int servo1ID = 1;
+  private final int servo2ID = 2;
+
+  // Declare Kracken motor variables
   private TalonFX climberMotor;
+
+  // Declare servo motor variables
+  private Servo servo1;
+  private Servo servo2;
 
   // Declare Phoenix PID controller gains
   private double drive_kG = 0.0;
@@ -50,6 +56,7 @@ public class Climber extends SubsystemBase {
   // Declare climber motor position constants
   private final int extendRotations = 1000;
   private final int retractRotations = 100;
+  private final int homeRotations = 500;
 
   // Declare motor output requests
   private final PositionVoltage m_positionRequest = new PositionVoltage(0).withSlot(0);
@@ -100,6 +107,10 @@ public class Climber extends SubsystemBase {
     }
     climberMotor.getConfigurator().setPosition(0);
 
+    // Create servos
+    servo1 = new Servo(servo1ID);
+    servo2 = new Servo(servo2ID);
+
   }
 
   @Override
@@ -121,18 +132,22 @@ public class Climber extends SubsystemBase {
    * Extend the climber to prepare for climb
    */
   public void extendClimber() {
-
     climberMotor.setControl(m_positionRequest.withPosition(extendRotations));
-
   }
 
   /**
    * Retract the climber to climb the robot
    */
   public void retractClimber() {
-
     climberMotor.setControl(m_positionRequest.withPosition(retractRotations));
+  }
 
+  /**
+   * Return climber to its home (starting) position
+   */
+  public void homeClimber() {
+    climberMotor.setControl(m_positionRequest.withPosition(homeRotations));
+    moveServos(0);
   }
 
   /**
@@ -141,9 +156,7 @@ public class Climber extends SubsystemBase {
    * @return Motor amps
    */
   public double getMotorAmps() {
-
     return climberMotor.getStatorCurrent().getValueAsDouble();
-
   }
 
   /**
@@ -152,9 +165,19 @@ public class Climber extends SubsystemBase {
    * 
    */
   public void stopClimber() {
-
     climberMotor.stopMotor();
+  }
 
+  /**
+   * 
+   * Move the servos on the ramp trap door
+   * 
+   * @param position  The new servo position
+   * 
+   */
+  public void moveServos(double position) {
+    servo1.set(position);
+    servo2.set(position);
   }
 
   /**
@@ -163,6 +186,7 @@ public class Climber extends SubsystemBase {
    * Needs to be called twice: the first time is to extend it, and the second is to retract
    */
   public class Climb extends Command {
+
     enum State {
       /**
        * The initial state, we haven't started climbing
@@ -184,6 +208,7 @@ public class Climber extends SubsystemBase {
     public void execute() {
       switch (state) {
         case Default:
+          moveServos(0.2);
           extendClimber();
           state = State.Extended;
           break;
