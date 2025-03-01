@@ -185,6 +185,7 @@ public final class Constants {
     public static boolean photoSensorIsNotBlocked;
     public static boolean impactDetected = false;
     public static boolean isClawClear = false;
+    public static boolean isCoralOnBoard = false;
 
   }
 
