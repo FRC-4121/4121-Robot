@@ -5,6 +5,7 @@ import static frc.robot.Constants.ControlConstants.*;
 
 import frc.robot.subsystems.*;
 import frc.robot.Constants.Mutables;
+import frc.robot.ExtraClasses.AcousticSensor;
 import frc.robot.ExtraClasses.NetworkTableQuerier;
 import frc.robot.commands.*;
 import edu.wpi.first.wpilibj.Joystick;
@@ -37,6 +38,7 @@ public class RobotContainer {
 
   // Declare Extra Systems
   private final NetworkTableQuerier table;
+  private final AcousticSensor coralSensor;
 
   // ===COMMANDS===//
 
@@ -101,6 +103,7 @@ public class RobotContainer {
 
     // Initialize extra systems
     table = new NetworkTableQuerier();
+    coralSensor = new AcousticSensor();
 
     // Initialize Driving Commands
     // private final DriveWithJoysticks driveCommand = new
