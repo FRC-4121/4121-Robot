@@ -109,7 +109,7 @@ public class ElevatorMM extends SubsystemBase {
 
     // Set lead motor output configuration
     var leadOutputConfigs = leadConfigs.MotorOutput;
-    leadOutputConfigs.Inverted = InvertedValue.Clockwise_Positive;
+    leadOutputConfigs.Inverted = InvertedValue.CounterClockwise_Positive;
     leadOutputConfigs.NeutralMode = NeutralModeValue.Brake;
     leadOutputConfigs.withDutyCycleNeutralDeadband(DRIVE_DEADBAND);
 
@@ -153,7 +153,7 @@ public class ElevatorMM extends SubsystemBase {
 
     // Set follower motor output configuration
     var followOutputConfigs = followConfigs.MotorOutput;
-    followOutputConfigs.Inverted = InvertedValue.Clockwise_Positive;
+    followOutputConfigs.Inverted = InvertedValue.CounterClockwise_Positive;
     followOutputConfigs.NeutralMode = NeutralModeValue.Brake;
     followOutputConfigs.withDutyCycleNeutralDeadband(DRIVE_DEADBAND);
 
