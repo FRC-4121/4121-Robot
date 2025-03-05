@@ -95,7 +95,7 @@ public final class Constants {
     public static final double ElevatorSpeed = 0.5;
 
     //Set CClaw constants
-    public static final double RotateSpeed = 0.5;
+    public static final double RotateSpeed = 0.2;
 
   }
 

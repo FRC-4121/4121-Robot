@@ -39,7 +39,7 @@ public class RotateCClaw extends Command {
   @Override
   public void execute() {
 
-    ySpeed = ySpeedLimiter.calculate(MathUtil.applyDeadband(-myXbox.getLeftY(), 0.01))
+    ySpeed = -ySpeedLimiter.calculate(MathUtil.applyDeadband(myXbox.getLeftY(), 0.01))
         * RotateSpeed;
 
     myCClaw.rotate(ySpeed);

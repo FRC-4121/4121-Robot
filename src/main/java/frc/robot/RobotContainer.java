@@ -141,7 +141,8 @@ public class RobotContainer {
     coralScoreButton = new JoystickButton(secondaryXbox, xboxRightBumper);
     coralIntakeButton = new JoystickButton(secondaryXbox, xboxLeftBumper);
     algaeIntakeButton = new Trigger(() -> secondaryXbox.getLeftTriggerAxis() > triggerThreshold);
-    returnHomeButton = new Trigger(() -> secondaryXbox.getRightTriggerAxis() > triggerThreshold);
+    //returnHomeButton = new Trigger(() -> secondaryXbox.getRightTriggerAxis() > triggerThreshold);
+    returnHomeButton = new JoystickButton(xbox, xboxAButton);
 
     // Initialize Launchpad (OI) Buttons/Switches
     killAutoButton = new JoystickButton(launchpad, LaunchPadButton1);
@@ -261,6 +262,7 @@ public class RobotContainer {
     swerve.zeroGyro();
     swerve.zeroEncoders();
     elevator.zeroPosition();
+    claw.zeroIntake();
   }
 
   /**

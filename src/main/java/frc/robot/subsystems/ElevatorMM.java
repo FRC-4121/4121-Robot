@@ -34,7 +34,7 @@ public class ElevatorMM extends SubsystemBase {
   // Declare constants
   private final double DRIVE_DEADBAND = 0.001; // Deadband for the drive motor. VAlues smaller than this will be rounded
                                                // to zero
-  private final double CURRENT_LIMIT = 100; // Current limit to prevent motor damage
+  private final double CURRENT_LIMIT = 65; // Current limit to prevent motor damage
 
   // Declare motor CAN IDs
   private final int elevatorLeadID = 17;
@@ -89,7 +89,7 @@ public class ElevatorMM extends SubsystemBase {
     InitializeMotors();
 
     // Set follower to follow lead motor
-    elevatorFollowMotor.setControl(new Follower(elevatorLeadMotor.getDeviceID(), true));
+    elevatorFollowMotor.setControl(new Follower(elevatorLeadMotor.getDeviceID(), false));
 
     // Initialize variables
     currentPosition = ElevatorPositions.LOAD;
@@ -109,7 +109,7 @@ public class ElevatorMM extends SubsystemBase {
 
     // Set lead motor output configuration
     var leadOutputConfigs = leadConfigs.MotorOutput;
-    leadOutputConfigs.Inverted = InvertedValue.CounterClockwise_Positive;
+    leadOutputConfigs.Inverted = InvertedValue.Clockwise_Positive;
     leadOutputConfigs.NeutralMode = NeutralModeValue.Brake;
     leadOutputConfigs.withDutyCycleNeutralDeadband(DRIVE_DEADBAND);
 

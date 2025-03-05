@@ -34,7 +34,7 @@ public class CClaw extends SubsystemBase {
 
   // Declare motor constants
   private final double DRIVE_DEADBAND = 0.001;
-  private final double CURRENT_LIMIT = 100;
+  private final double CURRENT_LIMIT = 65;
 
   // Declare CAN IDs
   private final int rotationMotorID = 19;
@@ -47,11 +47,11 @@ public class CClaw extends SubsystemBase {
   private CANrange coralSensor;
 
   // Declare Phoenix PID controller gains
-  private double rotate_kG = 0.0;
+  private double rotate_kG = 0.2;
   private double rotate_kS = 0.1;
   private double rotate_kV = 0.1;
   private double rotate_kA = 0.0;
-  private double rotate_kP = 0.1;
+  private double rotate_kP = 1.0;
   private double rotate_kI = 0.0;
   private double rotate_kD = 0.0;
 
@@ -60,19 +60,20 @@ public class CClaw extends SubsystemBase {
   private final DutyCycleOut requestRotateDuty = new DutyCycleOut(0.0);
   private final DutyCycleOut requestIntakeDuty = new DutyCycleOut(0.0);
 
-  private static final Time extraInputTime = Time.ofBaseUnits(0.25, Second);
+  private static final Time extraInputTime = Time.ofBaseUnits(0.01, Second);
+  private static final Time algaeIntakeTime = Time.ofBaseUnits(1.5, Second);
   private static final Time outputTime = Time.ofBaseUnits(0.25, Second);
 
-  public static final double feedSpeed = 0.1;
-  public static final double scoreSpeed = 0.1;
-  public static final double algaeFeedSpeed = 0.1;
+  public static final double feedSpeed = 0.17;
+  public static final double scoreSpeed = 0.3;
+  public static final double algaeFeedSpeed = 0.2;
   public static final double algaeDepositSpeed = 0.1;
 
   // Create a claw position class
   public static final class ClawPositions {
-    public static final double Load = 100;
-    public static final double Home = 100;
-    public static final double Algae = 100;
+    public static final double Load = 17.1;
+    public static final double Home = 13.9;
+    public static final double Algae = 0.1;
   }
 
   // Declare general variables
@@ -117,8 +118,9 @@ public class CClaw extends SubsystemBase {
     SmartDashboard.putBoolean("Claw Clear", Mutables.isClawClear);
     SmartDashboard.putNumber("Claw Rotate Amps", rotationMotor.getStatorCurrent().getValueAsDouble());
     SmartDashboard.putNumber("Claw Rotate Volts", rotationMotor.getMotorVoltage().getValueAsDouble());
-    SmartDashboard.putNumber("Claw Rotate Pos", rotationMotor.getPosition().getValueAsDouble());
+    SmartDashboard.putNumber("Claw Rotate Pos", rotationMotor.getRotorPosition().getValueAsDouble());
     SmartDashboard.putNumber("Claw Rotate Vel", rotationMotor.getVelocity().getValueAsDouble());
+    SmartDashboard.putBoolean("Has Coral", hasCoral());
 
     // Check motor currents and stop elevator
     if (rotationMotor.getStatorCurrent().getValueAsDouble() > CURRENT_LIMIT) {
@@ -168,7 +170,6 @@ public class CClaw extends SubsystemBase {
     } else {
       System.out.println("Successfully applied rotation motor configs. Error code: " + rotationStatus.toString());
     }
-    rotationMotor.getConfigurator().setPosition(0);
 
     // Configure the Intake Motor
     var intakeConfigs = new TalonFXConfiguration();
@@ -198,6 +199,15 @@ public class CClaw extends SubsystemBase {
     }
     intakeMotor.getConfigurator().setPosition(0);
 
+  }
+
+  /**
+   * 
+   * Zero the position sensor for the rotation motor
+   * 
+   */
+  public void zeroIntake() {
+    rotationMotor.getConfigurator().setPosition(0);
   }
 
   /**
@@ -270,7 +280,7 @@ public class CClaw extends SubsystemBase {
    * Command to intake the coral
    */
   public Command intakeCoral() {
-    return Commands.runOnce(() -> this.setIntakeSpeed(feedSpeed), this).andThen(Commands.idle(this))
+    return Commands.runOnce(() -> this.setIntakeSpeed(-feedSpeed), this).andThen(Commands.idle(this))
         .withDeadline(Commands.idle().until(this::hasCoral).andThen(Commands.waitTime(extraInputTime)))
         .andThen(stopIntake());
   }
@@ -279,7 +289,7 @@ public class CClaw extends SubsystemBase {
    * Command to score coral
    */
   public Command scoreCoral() {
-    return Commands.runOnce(() -> this.setIntakeSpeed(scoreSpeed), this).andThen(Commands.idle(this))
+    return Commands.runOnce(() -> this.setIntakeSpeed(-scoreSpeed), this).andThen(Commands.idle(this))
         .withTimeout(outputTime).andThen(stopIntake());
   }
 
@@ -293,14 +303,17 @@ public class CClaw extends SubsystemBase {
    */
   public void rotate(double direction) {
 
-    if (getClawPosition() >= ClawPositions.Home && getClawPosition() <= ClawPositions.Algae) {
-      requestRotateDuty.Output = direction;
-      rotationMotor.setControl(requestRotateDuty);
-    } else if (getClawPosition() < ClawPositions.Home) {
-      rotationMotor.setControl(requestPosition.withPosition(ClawPositions.Home));
-    } else {
-      rotationMotor.setControl(requestPosition.withPosition(ClawPositions.Algae));
-    }
+    requestRotateDuty.Output = direction;
+    rotationMotor.setControl(requestRotateDuty);
+
+    // if (getClawPosition() >= ClawPositions.Home && getClawPosition() <= ClawPositions.Algae) {
+    //   requestRotateDuty.Output = direction;
+    //   rotationMotor.setControl(requestRotateDuty);
+    // } else if (getClawPosition() < ClawPositions.Home) {
+    //   rotationMotor.setControl(requestPosition.withPosition(ClawPositions.Home));
+    // } else {
+    //   rotationMotor.setControl(requestPosition.withPosition(ClawPositions.Algae));
+    // }
 
   }
 
@@ -313,7 +326,7 @@ public class CClaw extends SubsystemBase {
    */
   public double getClawPosition() {
 
-    var clawPosSignal = rotationMotor.getPosition();
+    var clawPosSignal = rotationMotor.getRotorPosition();
     clawPosSignal.refresh();
     return clawPosSignal.getValueAsDouble();
 
@@ -321,8 +334,7 @@ public class CClaw extends SubsystemBase {
   
   public Command algaeIntake(){
     return Commands.runOnce(() -> this.setIntakeSpeed(algaeFeedSpeed), this).andThen(Commands.idle(this))
-        .withDeadline(Commands.idle().until(this::hasCoral).andThen(Commands.waitTime(extraInputTime)))
-        .andThen(stopIntake());
+    .withTimeout(algaeIntakeTime).andThen(stopIntake());
   }
 
   public Command algaeDeposit(){
