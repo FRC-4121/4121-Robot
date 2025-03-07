@@ -32,7 +32,7 @@ public class Climber extends SubsystemBase {
   private final double CURRENT_LIMIT = 100; // Current limit for stopping motor to prevent damage
 
   // Declare CAN ID for motor
-  private final int climberMotorID = 21;
+  private final int climberMotorID = 25;
 
   //Declare PWM ID for servos
   private final int servo1ID = 1;
