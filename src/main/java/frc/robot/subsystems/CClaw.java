@@ -320,6 +320,16 @@ public class CClaw extends SubsystemBase {
 
   /**
    * 
+   * Set the motor control to zero
+   * 
+   */
+  public void killMotor() {
+    holdPosition = false;
+    rotationMotor.setControl(requestRotateDuty.withOutput(0));
+  } 
+
+  /**
+   * 
    * Get the current position of the claw in encoder units
    * 
    * @return Current claw rotation as a double

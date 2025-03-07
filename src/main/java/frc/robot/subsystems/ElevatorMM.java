@@ -277,8 +277,18 @@ public class ElevatorMM extends SubsystemBase {
    * Set the position hold flag
    * 
    */
-  public void setPositionHold(Boolean hold) {
+  public void setPositionHold(boolean hold) {
     holdPosition = hold;
+  }
+
+  /**
+   * 
+   * Set the motor control to zero
+   * 
+   */
+  public void killMotor() {
+    holdPosition = false;
+    elevatorLeadMotor.setControl(dutyRequest.withOutput(0));
   }
 
   /**

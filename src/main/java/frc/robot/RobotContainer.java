@@ -199,6 +199,8 @@ public class RobotContainer {
     returnHomeButton.onTrue(claw.returnHome());
     resetRobotButton.onTrue(resetRobot);
     resetEncodersButton.onTrue(Commands.runOnce(() -> {
+      claw.killMotor();
+      elevator.killMotor();
       claw.zeroIntake();
       elevator.zeroPosition();
     }, claw, elevator));
@@ -301,6 +303,16 @@ public class RobotContainer {
     SmartDashboard.putBoolean("Slow Mode", Mutables.isSlowMode);
     SmartDashboard.putBoolean("Impact Detected", Mutables.impactDetected);
 
+  }
+
+  /**
+   * 
+   * Clear any position requests on the motor
+   * 
+   */
+  public void clearMotorRequests() {
+    claw.killMotor();
+    elevator.killMotor();
   }
 
 }

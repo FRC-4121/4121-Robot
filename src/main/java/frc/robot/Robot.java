@@ -135,6 +135,8 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopExit() {
 
+    m_robotContainer.clearMotorRequests();
+
     // m_robotContainer.stopPi();
 
   }
