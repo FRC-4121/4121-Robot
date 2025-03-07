@@ -76,9 +76,15 @@ public class CClaw extends SubsystemBase {
     public static final double Algae = -18;
   }
 
-  // Declare general variables
+  // The current position, in motor rotations
   private double currentPosition;
+  // If this is true, then we want to take the current position and set it as a PID request
   private boolean holdPosition;
+  // Disable the rotation safety check
+  private boolean noSafety;
+
+  private static final double minRotation = ClawPositions.Algae;
+  private static final double maxRotation = ClawPositions.Home;
 
   /**
    * Create a claw (end effector) subsystem
@@ -109,10 +115,13 @@ public class CClaw extends SubsystemBase {
 
     // Set current position and claw clear flag
     currentPosition = getClawPosition();
-    if (currentPosition >= ClawPositions.Home) {
+    if (currentPosition < ClawPositions.Home) {
       Mutables.isClawClear = true;
     } else {
       Mutables.isClawClear = false;
+      if (!noSafety) {
+        setRotation(ClawPositions.Home);
+      }
     }
 
     // Update dashboard values
@@ -224,7 +233,6 @@ public class CClaw extends SubsystemBase {
    * 
    */
   public void setRotation(double position) {
-    System.out.println("Set rotation to " + position);
     SmartDashboard.putBoolean("Claw Hold", false);
     holdPosition = false;
     rotationMotor.setControl(requestPosition.withPosition(position));
@@ -310,9 +318,9 @@ public class CClaw extends SubsystemBase {
         holdPosition = false;
       }
     } else {
-      System.out.println("Moving with " + direction);
       SmartDashboard.putBoolean("Claw Hold", false);
       holdPosition = true;
+      if (!noSafety && ((currentPosition < minRotation && direction < 0) || (currentPosition > maxRotation && direction > 0))) return;
       requestRotateDuty.Output = direction;
       rotationMotor.setControl(requestRotateDuty);
     }
@@ -326,7 +334,7 @@ public class CClaw extends SubsystemBase {
   public void killMotor() {
     holdPosition = false;
     rotationMotor.setControl(requestRotateDuty.withOutput(0));
-  } 
+  }
 
   /**
    * 
@@ -355,5 +363,23 @@ public class CClaw extends SubsystemBase {
 
   public Command returnHome(){
     return Commands.runOnce(() -> setRotation(ClawPositions.Home));
+  }
+
+  /**
+   * 
+   * A command that disables the safety check to keep the motor clear of the home range.
+   * 
+   * This is implemented as a command so it automatically re-enables it when it's done.
+   * 
+   */
+  public class WithoutSafety extends Command {
+    @Override
+    public void initialize() {
+      noSafety = true;
+    }
+    @Override
+    public void end(boolean interrupted) {
+      noSafety = false;
+    }
   }
 }

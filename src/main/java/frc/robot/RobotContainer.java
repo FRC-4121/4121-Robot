@@ -81,6 +81,7 @@ public class RobotContainer {
   private final Trigger redTeamButton;
   private final Trigger parkButton;
   private final Trigger resetRobotButton;
+  private final Trigger safetyOverrideButton;
 
   // ===PathPlanner=== //
 
@@ -144,7 +145,6 @@ public class RobotContainer {
     coralIntakeButton = new JoystickButton(secondaryXbox, xboxLeftBumper);
     algaeIntakeButton = new Trigger(() -> secondaryXbox.getLeftTriggerAxis() > triggerThreshold);
     elevatorHomeButton = new Trigger(() -> secondaryXbox.getRightTriggerAxis() > triggerThreshold);
-    resetEncodersButton = new JoystickButton(launchpad, LaunchPadSwitch2top);
     returnHomeButton = new JoystickButton(xbox, xboxAButton);
 
     // Initialize Launchpad (OI) Buttons/Switches
@@ -153,6 +153,8 @@ public class RobotContainer {
     blueTeamButton = new JoystickButton(launchpad, LaunchPadSwitch5top);
     redTeamButton = new JoystickButton(launchpad, LaunchPadSwitch5bottom);
     resetRobotButton = new JoystickButton(launchpad, LaunchPadSwitch1top);
+    resetEncodersButton = new JoystickButton(launchpad, LaunchPadSwitch2top);
+    safetyOverrideButton = new JoystickButton(launchpad, LaunchPadSwitch2bottom);
 
     // Configure the button bindings
     configureButtonBindings();
@@ -204,6 +206,7 @@ public class RobotContainer {
       claw.zeroIntake();
       elevator.zeroPosition();
     }, claw, elevator));
+    safetyOverrideButton.whileTrue(claw.new WithoutSafety());
   }
 
   /**
