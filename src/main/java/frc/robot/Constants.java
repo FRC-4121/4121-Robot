@@ -92,7 +92,7 @@ public final class Constants {
   public static final class MechanismConstants {
 
     // Set elevator constants
-    public static final double ElevatorSpeed = 0.5;
+    public static final double ElevatorSpeed = 0.75;
 
     //Set CClaw constants
     public static final double RotateSpeed = 0.2;

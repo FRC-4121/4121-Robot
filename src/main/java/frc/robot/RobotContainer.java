@@ -64,6 +64,7 @@ public class RobotContainer {
   private final Trigger changeModeButton;
   private final Trigger clawHomeButton;
   private final Trigger climbButton;
+  private final Trigger elevatorHomeButton;
   private final Trigger elevatorCoral1Button;
   private final Trigger elevatorCoral2Button;
   private final Trigger elevatorCoral3Button;
@@ -75,10 +76,11 @@ public class RobotContainer {
 
   // Declare Launchpad (OI) Buttons/Switches
   private final Trigger killAutoButton;
-  private final JoystickButton blueTeamButton;
-  private final JoystickButton redTeamButton;
-  private final JoystickButton parkButton;
-  private final JoystickButton resetRobotButton;
+  private final Trigger resetEncodersButton;
+  private final Trigger blueTeamButton;
+  private final Trigger redTeamButton;
+  private final Trigger parkButton;
+  private final Trigger resetRobotButton;
 
   // ===PathPlanner=== //
 
@@ -141,7 +143,8 @@ public class RobotContainer {
     coralScoreButton = new JoystickButton(secondaryXbox, xboxRightBumper);
     coralIntakeButton = new JoystickButton(secondaryXbox, xboxLeftBumper);
     algaeIntakeButton = new Trigger(() -> secondaryXbox.getLeftTriggerAxis() > triggerThreshold);
-    //returnHomeButton = new Trigger(() -> secondaryXbox.getRightTriggerAxis() > triggerThreshold);
+    elevatorHomeButton = new Trigger(() -> secondaryXbox.getRightTriggerAxis() > triggerThreshold);
+    resetEncodersButton = new JoystickButton(launchpad, LaunchPadSwitch2top);
     returnHomeButton = new JoystickButton(xbox, xboxAButton);
 
     // Initialize Launchpad (OI) Buttons/Switches
@@ -172,6 +175,7 @@ public class RobotContainer {
     changeSpeedButton.onTrue(changeSpeedCommand);
     changeModeButton.onTrue(changeModeCommand);
     clawHomeButton.onTrue(claw.autoRotate(CClaw.ClawPositions.Home));
+    elevatorHomeButton.onTrue(elevator.positionElevator(ElevatorMM.ElevatorPositions.LOAD));
     elevatorCoral1Button.onTrue(
         Commands.either(
             elevator.positionElevator(ElevatorMM.ElevatorPositions.CORAL1),
@@ -194,6 +198,10 @@ public class RobotContainer {
     climbButton.onTrue(climber.new Climb());
     returnHomeButton.onTrue(claw.returnHome());
     resetRobotButton.onTrue(resetRobot);
+    resetEncodersButton.onTrue(Commands.runOnce(() -> {
+      claw.zeroIntake();
+      elevator.zeroPosition();
+    }, claw, elevator));
   }
 
   /**

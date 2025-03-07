@@ -45,34 +45,34 @@ public class ElevatorMM extends SubsystemBase {
   private TalonFX elevatorFollowMotor;
 
   // Declare Phoenix PID controller gains
-  private double elevator_kG = 0.0;
-  private double elevator_kS = 0.1;
+  private double elevator_kG = 1.0;
+  private double elevator_kS = 0.25;
   private double elevator_kV = 0.1;
   private double elevator_kA = 0.0;
-  private double elevator_kP = 0.1;
+  private double elevator_kP = 1.0;
   private double elevator_kI = 0.0;
   private double elevator_kD = 0.0;
 
   // Declare elevator positions
   public static final class ElevatorPositions {
-    public static final double LOAD = 0;
-    public static final double CORAL1 = 100;
-    public static final double CORAL2 = 100;
-    public static final double CORAL3 = 100;
-    public static final double CORAL4 = 100;
-    public static final double ALGAE1 = 100;
-    public static final double ALGAE2 = 100;
-    public static final double PROCESSOR = 100;
-    public static final double BARGE = 100;
+    public static final double LOAD = 2;
+    public static final double CORAL1 = 10;
+    public static final double CORAL2 = 10;
+    public static final double CORAL3 = 57;
+    public static final double CORAL4 = 120;
+    public static final double ALGAE1 = 10;
+    public static final double ALGAE2 = 10;
+    public static final double PROCESSOR = 10;
+    public static final double BARGE = 10;
   }
 
   // Declare motor output requests
-  private final PositionVoltage m_positionRequest = new PositionVoltage(0).withSlot(0);
-  private final DutyCycleOut m_dutyRequest = new DutyCycleOut(0);
+  private final PositionVoltage positionRequest = new PositionVoltage(0).withSlot(0);
+  private final DutyCycleOut dutyRequest = new DutyCycleOut(0);
 
   // Declare other variables
   private double currentPosition;
-  private Boolean holdPosition;
+  private boolean holdPosition;
 
   /**
    * 
@@ -185,9 +185,9 @@ public class ElevatorMM extends SubsystemBase {
     currentPosition = getPosition();
 
     // Hold position of the elevator if requested
-    if (holdPosition && currentPosition != ElevatorPositions.LOAD) {
-      moveElevatorToPosition(currentPosition);
-    }
+    // if (holdPosition && currentPosition != ElevatorPositions.LOAD) {
+    //   moveElevatorToPosition(currentPosition);
+    // }
 
     // Put critical lead motor signals on the SmartDashboard
     SmartDashboard.putNumber("Elevator Lead Amps", elevatorLeadMotor.getStatorCurrent().getValueAsDouble());
@@ -226,7 +226,18 @@ public class ElevatorMM extends SubsystemBase {
    * 
    */
   public void moveElevator(double direction) {
-    elevatorLeadMotor.setControl(m_dutyRequest.withOutput(direction));
+    if (Math.abs(direction) < 0.0001) {
+      if (holdPosition) {
+        SmartDashboard.putNumber("Elevator H Pos", currentPosition);
+        SmartDashboard.putBoolean("Elevator Hold", true);
+        elevatorLeadMotor.setControl(positionRequest.withPosition(currentPosition));
+        holdPosition = false;
+      }
+    } else {
+      SmartDashboard.putBoolean("Elevator Hold", false);
+      holdPosition = true;
+      elevatorLeadMotor.setControl(dutyRequest.withOutput(direction));
+    }
   }
 
   /**
@@ -237,8 +248,9 @@ public class ElevatorMM extends SubsystemBase {
    * 
    */
   public void moveElevatorToPosition(double position) {
+    SmartDashboard.putBoolean("Elevator Hold", false);
     holdPosition = false;
-    elevatorLeadMotor.setControl(m_positionRequest.withPosition(position));
+    elevatorLeadMotor.setControl(positionRequest.withPosition(position));
   }
 
   /**

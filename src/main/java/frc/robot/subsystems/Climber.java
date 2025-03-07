@@ -11,6 +11,7 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.PositionVoltage;
+import com.ctre.phoenix6.controls.DutyCycleOut;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -60,6 +61,7 @@ public class Climber extends SubsystemBase {
 
   // Declare motor output requests
   private final PositionVoltage m_positionRequest = new PositionVoltage(0).withSlot(0);
+  private final DutyCycleOut m_dutyRequest = new DutyCycleOut(0);
 
   /**
    * Create a new climber object

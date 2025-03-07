@@ -56,28 +56,29 @@ public class CClaw extends SubsystemBase {
   private double rotate_kD = 0.0;
 
   // Declare motor output requests
-  private final PositionVoltage requestPosition = new PositionVoltage(0.0);
+  private final PositionVoltage requestPosition = new PositionVoltage(0.0).withSlot(0);
   private final DutyCycleOut requestRotateDuty = new DutyCycleOut(0.0);
   private final DutyCycleOut requestIntakeDuty = new DutyCycleOut(0.0);
 
-  private static final Time extraInputTime = Time.ofBaseUnits(0.01, Second);
+  private static final Time extraInputTime = Time.ofBaseUnits(0.1, Second);
   private static final Time algaeIntakeTime = Time.ofBaseUnits(1.5, Second);
   private static final Time outputTime = Time.ofBaseUnits(0.25, Second);
 
-  public static final double feedSpeed = 0.17;
-  public static final double scoreSpeed = 0.3;
+  public static final double feedSpeed = 0.2;
+  public static final double scoreSpeed = 0.25;
   public static final double algaeFeedSpeed = 0.2;
   public static final double algaeDepositSpeed = 0.1;
 
   // Create a claw position class
   public static final class ClawPositions {
-    public static final double Load = 17.1;
-    public static final double Home = 13.9;
-    public static final double Algae = 0.1;
+    public static final double Load = 0;
+    public static final double Home = -2.5;
+    public static final double Algae = -18;
   }
 
   // Declare general variables
   private double currentPosition;
+  private boolean holdPosition;
 
   /**
    * Create a claw (end effector) subsystem
@@ -152,6 +153,11 @@ public class CClaw extends SubsystemBase {
     rotateLimitConfig.StatorCurrentLimitEnable = true;
     rotateLimitConfig.StatorCurrentLimit = CURRENT_LIMIT;
 
+    var motionMagicConfigs = rotateConfigs.MotionMagic;
+    motionMagicConfigs.MotionMagicCruiseVelocity = 80;
+    motionMagicConfigs.MotionMagicAcceleration = 160;
+    motionMagicConfigs.MotionMagicJerk = 1600;
+
     // Set rotate motor PID constants
     var Slot0Configs = rotateConfigs.Slot0;
     Slot0Configs.kG = rotate_kG;
@@ -176,7 +182,7 @@ public class CClaw extends SubsystemBase {
 
     // set intake motor output configuration
     var intakeOutputConfigs = intakeConfigs.MotorOutput;
-    intakeOutputConfigs.Inverted = InvertedValue.Clockwise_Positive;
+    intakeOutputConfigs.Inverted = InvertedValue.CounterClockwise_Positive;
     intakeOutputConfigs.NeutralMode = NeutralModeValue.Brake;
     intakeOutputConfigs.withDutyCycleNeutralDeadband(DRIVE_DEADBAND);
 
@@ -190,7 +196,7 @@ public class CClaw extends SubsystemBase {
     intakeLimitConfig.StatorCurrentLimit = CURRENT_LIMIT;
 
     // Apply intake motor configuration and initialize position to 0
-    StatusCode intakeStatus = rotationMotor.getConfigurator().apply(intakeConfigs, 0.050);
+    StatusCode intakeStatus = intakeMotor.getConfigurator().apply(intakeConfigs, 0.050);
     if (!intakeStatus.isOK()) {
       System.out.println("Could not apply intake motor configs. Error code: " + intakeStatus.toString());
       DriverStation.reportError("Could not apply intake motor configs.", false);
@@ -218,6 +224,9 @@ public class CClaw extends SubsystemBase {
    * 
    */
   public void setRotation(double position) {
+    System.out.println("Set rotation to " + position);
+    SmartDashboard.putBoolean("Claw Hold", false);
+    holdPosition = false;
     rotationMotor.setControl(requestPosition.withPosition(position));
   }
 
@@ -228,15 +237,6 @@ public class CClaw extends SubsystemBase {
    */
   public void stopRotation() {
     rotationMotor.stopMotor();
-  }
-
-  /**
-   * 
-   * Hold the claw rotation at the current position
-   * 
-   */
-  public void holdPosition() {
-    rotationMotor.setControl(requestPosition.withPosition(currentPosition));
   }
 
   /**
@@ -302,19 +302,20 @@ public class CClaw extends SubsystemBase {
    * 
    */
   public void rotate(double direction) {
-
-    requestRotateDuty.Output = direction;
-    rotationMotor.setControl(requestRotateDuty);
-
-    // if (getClawPosition() >= ClawPositions.Home && getClawPosition() <= ClawPositions.Algae) {
-    //   requestRotateDuty.Output = direction;
-    //   rotationMotor.setControl(requestRotateDuty);
-    // } else if (getClawPosition() < ClawPositions.Home) {
-    //   rotationMotor.setControl(requestPosition.withPosition(ClawPositions.Home));
-    // } else {
-    //   rotationMotor.setControl(requestPosition.withPosition(ClawPositions.Algae));
-    // }
-
+    if (Math.abs(direction) < 0.0001) {
+      if (holdPosition) {
+        SmartDashboard.putNumber("Claw H Pos", currentPosition);
+        SmartDashboard.putBoolean("Claw Hold", true);
+        rotationMotor.setControl(requestPosition.withPosition(currentPosition));
+        holdPosition = false;
+      }
+    } else {
+      System.out.println("Moving with " + direction);
+      SmartDashboard.putBoolean("Claw Hold", false);
+      holdPosition = true;
+      requestRotateDuty.Output = direction;
+      rotationMotor.setControl(requestRotateDuty);
+    }
   }
 
   /**
@@ -343,6 +344,6 @@ public class CClaw extends SubsystemBase {
   }
 
   public Command returnHome(){
-    return Commands.runOnce(() -> rotationMotor.setControl(requestPosition.withPosition(ClawPositions.Home)));
+    return Commands.runOnce(() -> setRotation(ClawPositions.Home));
   }
 }
