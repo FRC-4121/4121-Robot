@@ -154,7 +154,7 @@ public class RobotContainer {
     redTeamButton = new JoystickButton(launchpad, LaunchPadSwitch5bottom);
     resetRobotButton = new JoystickButton(launchpad, LaunchPadSwitch1top);
     resetEncodersButton = new JoystickButton(launchpad, LaunchPadSwitch2top);
-    safetyOverrideButton = new JoystickButton(launchpad, LaunchPadSwitch2bottom);
+    safetyOverrideButton = new JoystickButton(launchpad, LaunchPadSwitch4);
 
     // Configure the button bindings
     configureButtonBindings();
@@ -190,23 +190,24 @@ public class RobotContainer {
             elevator.positionElevator(ElevatorMM.ElevatorPositions.CORAL4),
             elevator.positionElevator(ElevatorMM.ElevatorPositions.ALGAE2),
             () -> claw.hasCoral()));
-    coralIntakeButton.onTrue(claw.intakeCoral());
+    coralIntakeButton.onTrue(CombinedCommands.combinedLoad(claw, elevator));
     coralScoreButton.onTrue(
-      Commands.either(
-        claw.scoreCoral(),
-        claw.algaeDeposit(),
-        () -> claw.hasCoral()));
+        Commands.either(
+            claw.scoreCoral(),
+            claw.algaeDeposit(),
+            () -> claw.hasCoral()));
     algaeIntakeButton.onTrue(claw.algaeIntake());
     climbButton.onTrue(climber.new Climb());
     returnHomeButton.onTrue(claw.returnHome());
     resetRobotButton.onTrue(resetRobot);
-    resetEncodersButton.onTrue(Commands.runOnce(() -> {
+    resetEncodersButton.whileTrue(Commands.runOnce(() -> {
       claw.killMotor();
       elevator.killMotor();
       claw.zeroIntake();
       elevator.zeroPosition();
-    }, claw, elevator));
-    safetyOverrideButton.whileTrue(claw.new WithoutSafety());
+    }));
+    safetyOverrideButton.onTrue(Commands.runOnce(() -> claw.setSafety(false)));
+    safetyOverrideButton.onFalse(Commands.runOnce(() -> claw.setSafety(true)));
   }
 
   /**
@@ -316,6 +317,15 @@ public class RobotContainer {
   public void clearMotorRequests() {
     claw.killMotor();
     elevator.killMotor();
+  }
+
+  /**
+   * 
+   * Set the claw safety based on the override button
+   * 
+   */
+  public void setClawSafety() {
+    claw.setSafety(!safetyOverrideButton.getAsBoolean());
   }
 
 }

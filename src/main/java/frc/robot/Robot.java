@@ -183,6 +183,8 @@ public class Robot extends TimedRobot {
 
     // Set robot to field oriented driving
     Mutables.isFieldOriented = true;
+
+    m_robotContainer.setClawSafety();
   }
 
   /** This function is called periodically during operator control. */

@@ -60,7 +60,7 @@ public class CClaw extends SubsystemBase {
   private final DutyCycleOut requestRotateDuty = new DutyCycleOut(0.0);
   private final DutyCycleOut requestIntakeDuty = new DutyCycleOut(0.0);
 
-  private static final Time extraInputTime = Time.ofBaseUnits(0.1, Second);
+  private static final Time extraInputTime = Time.ofBaseUnits(0.05, Second);
   private static final Time algaeIntakeTime = Time.ofBaseUnits(1.5, Second);
   private static final Time outputTime = Time.ofBaseUnits(0.25, Second);
 
@@ -78,7 +78,8 @@ public class CClaw extends SubsystemBase {
 
   // The current position, in motor rotations
   private double currentPosition;
-  // If this is true, then we want to take the current position and set it as a PID request
+  // If this is true, then we want to take the current position and set it as a
+  // PID request
   private boolean holdPosition;
   // Disable the rotation safety check
   private boolean noSafety;
@@ -126,6 +127,7 @@ public class CClaw extends SubsystemBase {
 
     // Update dashboard values
     SmartDashboard.putBoolean("Claw Clear", Mutables.isClawClear);
+    SmartDashboard.putBoolean("Claw Safe", !noSafety);
     SmartDashboard.putNumber("Claw Rotate Amps", rotationMotor.getStatorCurrent().getValueAsDouble());
     SmartDashboard.putNumber("Claw Rotate Volts", rotationMotor.getMotorVoltage().getValueAsDouble());
     SmartDashboard.putNumber("Claw Rotate Pos", rotationMotor.getRotorPosition().getValueAsDouble());
@@ -255,6 +257,18 @@ public class CClaw extends SubsystemBase {
   }
 
   /**
+   * 
+   * Enable or disable range safety. It's generally better to use the
+   * `WithoutSafety` command.
+   * 
+   * @param safety true if we should check range bounds
+   * 
+   */
+  public void setSafety(boolean safety) {
+    this.noSafety = !safety;
+  }
+
+  /**
    * Determine if we have coral onboard
    * 
    * @return Flag indicating presence of coral
@@ -281,24 +295,29 @@ public class CClaw extends SubsystemBase {
    * @return a command that stops the intake
    */
   public Command stopIntake() {
-    return Commands.runOnce(() -> this.setIntakeSpeed(0));
+    return Commands.runOnce(() -> setIntakeSpeed(0));
   }
 
   /**
+   * 
    * Command to intake the coral
+   * 
    */
   public Command intakeCoral() {
-    return Commands.runOnce(() -> this.setIntakeSpeed(-feedSpeed), this).andThen(Commands.idle(this))
-        .withDeadline(Commands.idle().until(this::hasCoral).andThen(Commands.waitTime(extraInputTime)))
-        .andThen(stopIntake());
+    return Commands.runOnce(() -> setIntakeSpeed(-feedSpeed), this)
+        .andThen(Commands.idle(this)).finallyDo(_interrupt -> setIntakeSpeed(0))
+        .withDeadline(Commands.idle().until(this::hasCoral).andThen(Commands.waitTime(extraInputTime)));
   }
 
   /**
+   * 
    * Command to score coral
+   * 
    */
   public Command scoreCoral() {
-    return Commands.runOnce(() -> this.setIntakeSpeed(-scoreSpeed), this).andThen(Commands.idle(this))
-        .withTimeout(outputTime).andThen(stopIntake());
+    return Commands.runOnce(() -> setIntakeSpeed(-scoreSpeed), this).andThen(Commands.idle(this))
+        .finallyDo(_interrupt -> setIntakeSpeed(0))
+        .withTimeout(outputTime);
   }
 
   /**
@@ -320,7 +339,9 @@ public class CClaw extends SubsystemBase {
     } else {
       SmartDashboard.putBoolean("Claw Hold", false);
       holdPosition = true;
-      if (!noSafety && ((currentPosition < minRotation && direction < 0) || (currentPosition > maxRotation && direction > 0))) return;
+      if (!noSafety
+          && ((currentPosition < minRotation && direction < 0) || (currentPosition > maxRotation && direction > 0)))
+        return;
       requestRotateDuty.Output = direction;
       rotationMotor.setControl(requestRotateDuty);
     }
@@ -334,6 +355,7 @@ public class CClaw extends SubsystemBase {
   public void killMotor() {
     holdPosition = false;
     rotationMotor.setControl(requestRotateDuty.withOutput(0));
+    intakeMotor.setControl(requestIntakeDuty.withOutput(0));
   }
 
   /**
@@ -350,26 +372,30 @@ public class CClaw extends SubsystemBase {
     return clawPosSignal.getValueAsDouble();
 
   }
-  
-  public Command algaeIntake(){
-    return Commands.runOnce(() -> this.setIntakeSpeed(algaeFeedSpeed), this).andThen(Commands.idle(this))
-    .withTimeout(algaeIntakeTime).andThen(stopIntake());
+
+  public Command algaeIntake() {
+    return Commands.runOnce(() -> setIntakeSpeed(algaeFeedSpeed), this).andThen(Commands.idle(this))
+        .finallyDo(_interrupt -> setIntakeSpeed(0))
+        .withTimeout(algaeIntakeTime);
   }
 
-  public Command algaeDeposit(){
-    return Commands.runOnce(() -> this.setIntakeSpeed(algaeDepositSpeed), this).andThen(Commands.idle(this))
-    .withTimeout(outputTime).andThen(stopIntake());
+  public Command algaeDeposit() {
+    return Commands.runOnce(() -> setIntakeSpeed(algaeDepositSpeed), this).andThen(Commands.idle(this))
+        .finallyDo(_interrupt -> setIntakeSpeed(0))
+        .withTimeout(outputTime);
   }
 
-  public Command returnHome(){
+  public Command returnHome() {
     return Commands.runOnce(() -> setRotation(ClawPositions.Home));
   }
 
   /**
    * 
-   * A command that disables the safety check to keep the motor clear of the home range.
+   * A command that disables the safety check to keep the motor clear of the home
+   * range.
    * 
-   * This is implemented as a command so it automatically re-enables it when it's done.
+   * This is implemented as a command so it automatically re-enables it when it's
+   * done.
    * 
    */
   public class WithoutSafety extends Command {
@@ -377,6 +403,7 @@ public class CClaw extends SubsystemBase {
     public void initialize() {
       noSafety = true;
     }
+
     @Override
     public void end(boolean interrupted) {
       noSafety = false;

@@ -21,8 +21,9 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import frc.robot.Constants.GeneralConstants;
-import static frc.robot.Constants.MechanismConstants;
+import frc.robot.commands.TimeoutCommand;
 
+import static frc.robot.Constants.MechanismConstants;
 
 /**
  * 
@@ -55,7 +56,7 @@ public class ElevatorMM extends SubsystemBase {
 
   // Declare elevator positions
   public static final class ElevatorPositions {
-    public static final double LOAD = 2;
+    public static final double LOAD = 1;
     public static final double CORAL1 = 10;
     public static final double CORAL2 = 10;
     public static final double CORAL3 = 57;
@@ -186,7 +187,7 @@ public class ElevatorMM extends SubsystemBase {
 
     // Hold position of the elevator if requested
     // if (holdPosition && currentPosition != ElevatorPositions.LOAD) {
-    //   moveElevatorToPosition(currentPosition);
+    // moveElevatorToPosition(currentPosition);
     // }
 
     // Put critical lead motor signals on the SmartDashboard
@@ -257,7 +258,7 @@ public class ElevatorMM extends SubsystemBase {
    * 
    * Gets the current elevator position
    * 
-   * @return  Current position in enoder units
+   * @return Current position in enoder units
    */
   public double getPosition() {
     return elevatorLeadMotor.getPosition().getValueAsDouble();
@@ -295,11 +296,39 @@ public class ElevatorMM extends SubsystemBase {
    * 
    * Move elevator to position command
    * 
-   * @param position  Desired elevator position
-   * @return  The move elevator command
+   * @param position Desired elevator position
+   * @return The move elevator command
    * 
    */
-  public Command positionElevator(double position){
-    return Commands.runOnce(() -> this.moveElevatorToPosition(position));
+  public Command positionElevator(double position) {
+    return Commands.runOnce(() -> moveElevatorToPosition(position));
+  }
+
+  /**
+   * 
+   * This command tells the elevator to move to a position, but isn't finished until it actually gets there
+   * 
+   */
+  public class PositionElevatorAndWait extends TimeoutCommand {
+    private double position;
+
+    public PositionElevatorAndWait(double position) {
+      super(1.0);
+      this.position = position;
+    }
+
+    @Override
+    public void initialize() {
+      System.out.println("Moving to " + position);
+      moveElevatorToPosition(position);
+    }
+
+    @Override
+    public boolean isFinished() {
+      if (super.isFinished()) return true;
+      double err = Math.abs(currentPosition - position);
+      System.out.println(err);
+      return err < 1.5;
+    }
   }
 }
