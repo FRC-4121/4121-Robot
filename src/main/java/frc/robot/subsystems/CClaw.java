@@ -77,7 +77,8 @@ public class CClaw extends SubsystemBase {
     public static final double Home = -2.5;
     public static final double RotCutoff = -10;
     public static final double L1Score = -12;
-    public static final double Algae = -1;
+    public static final double Algae1 = -16;
+    public static final double Algae2 = -17;
   }
 
   // The current position, in motor rotations
@@ -91,7 +92,7 @@ public class CClaw extends SubsystemBase {
   private boolean safetyCheck = true;
 
   private static final double rotateSpeed = 0.5;
-  private static final double minRotation = ClawPositions.Algae - 1;
+  private static final double minRotation = ClawPositions.Algae2 - 1;
   private static final double maxRotation = ClawPositions.Home;
 
   /**

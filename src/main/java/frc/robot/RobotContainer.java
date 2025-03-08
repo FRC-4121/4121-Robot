@@ -192,7 +192,7 @@ public class RobotContainer {
     elevatorCoral1Button.onTrue(
         Commands.either(
             CombinedCommands.moveClaw(claw, elevator, ElevatorMM.ElevatorPositions.Coral1, CClaw.ClawPositions.L1Score),
-            CombinedCommands.moveClaw(claw, elevator, ElevatorMM.ElevatorPositions.Algae1, CClaw.ClawPositions.Algae),
+            CombinedCommands.moveClaw(claw, elevator, ElevatorMM.ElevatorPositions.Algae1, CClaw.ClawPositions.Algae1),
             () -> claw.hasCoral())
         );
     elevatorCoral2Button.onTrue(elevator.positionElevator(ElevatorMM.ElevatorPositions.Coral2));
@@ -200,7 +200,7 @@ public class RobotContainer {
     elevatorCoral4Button.onTrue(
         Commands.either(
             elevator.positionElevator(ElevatorMM.ElevatorPositions.Coral4),
-            CombinedCommands.moveClaw(claw, elevator, ElevatorMM.ElevatorPositions.Algae2, CClaw.ClawPositions.Algae),
+            CombinedCommands.moveClaw(claw, elevator, ElevatorMM.ElevatorPositions.Algae2, CClaw.ClawPositions.Algae2),
             () -> claw.hasCoral()));
     coralIntakeButton.onTrue(CombinedCommands.combinedLoad(claw, elevator));
     coralScoreButton.onTrue(
