@@ -54,7 +54,7 @@ public class CClaw extends SubsystemBase {
       kG = 0.2;
       kS = 0.1;
       kV = 0.1;
-      kP = 1.0;
+      kP = 0.8;
       kI = 0.8;
       kD = 0.0;
     }
@@ -69,7 +69,7 @@ public class CClaw extends SubsystemBase {
   public static final double scoreSpeed = -0.25;
   public static final double revScoreSpeed = 0.3;
   public static final double algaeFeedSpeed = 0.2;
-  public static final double algaeDepositSpeed = 0.1;
+  public static final double algaeDepositSpeed = -0.1;
 
   // Create a claw position class
   public static final class ClawPositions {
@@ -77,7 +77,7 @@ public class CClaw extends SubsystemBase {
     public static final double Home = -2.5;
     public static final double RotCutoff = -10;
     public static final double L1Score = -12;
-    public static final double Algae = -18;
+    public static final double Algae = -1;
   }
 
   // The current position, in motor rotations
@@ -90,8 +90,8 @@ public class CClaw extends SubsystemBase {
   // Check if we need to tell the motor to move
   private boolean safetyCheck = true;
 
-  private static final double rotateSpeed = 0.2;
-  private static final double minRotation = ClawPositions.Algae;
+  private static final double rotateSpeed = 0.5;
+  private static final double minRotation = ClawPositions.Algae - 1;
   private static final double maxRotation = ClawPositions.Home;
 
   /**
@@ -310,8 +310,10 @@ public class CClaw extends SubsystemBase {
       SmartDashboard.putBoolean("Claw Hold", false);
       holdPosition = true;
       if (!noSafety
-          && ((currentPosition < minRotation && direction < 0) || (currentPosition > maxRotation && direction > 0)))
+          && ((currentPosition < minRotation && direction < 0) || (currentPosition > maxRotation && direction > 0))) {
+        rotationMotor.setControl(new DutyCycleOut(0));
         return;
+      }
       safetyCheck = true;
       rotationMotor.setControl(new DutyCycleOut(direction * rotateSpeed));
     }

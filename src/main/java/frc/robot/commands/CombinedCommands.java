@@ -22,10 +22,10 @@ public class CombinedCommands {
         .withDeadline(Commands.waitSeconds(5.0)); // don't let it go for more than 5 seconds
   }
 
-  public static Command prepL1(CClaw claw, ElevatorMM elevator) {
-    return elevator.new PositionElevatorAndWait(ElevatorMM.ElevatorPositions.CORAL1)
+  public static Command moveClaw(CClaw claw, ElevatorMM elevator, double elevatorPos, double clawPos) {
+    return elevator.new PositionElevatorAndWait(elevatorPos)
         .alongWith(
-            claw.new RotateClawAndWait(CClaw.ClawPositions.L1Score))
+            claw.new RotateClawAndWait(clawPos))
         .withDeadline(Commands.waitSeconds(2.0));
   }
 }

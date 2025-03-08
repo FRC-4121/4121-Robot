@@ -503,6 +503,24 @@ public class SwerveDriveWPI extends SubsystemBase {
    */
   public double getGyroAngle() {
 
+    double correctedGyro = gyro_filter.calculate((gyro.getAngle()) % 360.0);
+    if (correctedGyro < 0) {
+      correctedGyro = 360 + correctedGyro;
+    }
+
+    return correctedGyro;
+
+  }
+
+    /**
+   * 
+   * Get a smoothed gyro angle
+   * 
+   * @return Gyro angle in degrees (0 to 360)
+   * 
+   */
+  public double getGyroAngleField() {
+
     double correctedGyro = gyro_filter.calculate((gyro.getAngle() + GyroCorrection) % 360.0);
     if (correctedGyro < 0) {
       correctedGyro = 360 + correctedGyro;

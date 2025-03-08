@@ -82,7 +82,7 @@ public final class Constants {
     public static final PIDConstants rotationConstants = new PIDConstants(1.5, 0.0, 0.0);
 
     // General drive constants
-    public static final double GyroCorrection = 0;
+    public static final double GyroCorrection = 180;
 
   }
 
