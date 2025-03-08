@@ -220,8 +220,6 @@ public class CClaw extends SubsystemBase {
 
   }
 
-  private int counter = 0;
-
   /**
    * 
    * Zero the position sensor for the rotation motor
@@ -239,7 +237,6 @@ public class CClaw extends SubsystemBase {
    * 
    */
   public void setRotation(double position) {
-    System.out.println("rotate to " + position + " cmd " + counter++);
     SmartDashboard.putBoolean("Claw Hold", false);
     holdPosition = false;
     safetyCheck = true;
@@ -301,7 +298,7 @@ public class CClaw extends SubsystemBase {
    * 
    */
   public void rotate(double direction) {
-    if (Math.abs(direction) < 0.0001) {
+    if (Math.abs(direction) < 0.01) {
       if (holdPosition) {
         SmartDashboard.putNumber("Claw H Pos", currentPosition);
         SmartDashboard.putBoolean("Claw Hold", true);
@@ -316,7 +313,6 @@ public class CClaw extends SubsystemBase {
           && ((currentPosition < minRotation && direction < 0) || (currentPosition > maxRotation && direction > 0)))
         return;
       safetyCheck = true;
-      System.out.println("rotate with " + direction + " cmd " + counter++);
       rotationMotor.setControl(new DutyCycleOut(direction * rotateSpeed));
     }
   }
