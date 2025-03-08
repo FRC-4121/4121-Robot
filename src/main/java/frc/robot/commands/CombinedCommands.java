@@ -15,7 +15,7 @@ public class CombinedCommands {
   }
 
   public static Command combinedLoad(CClaw claw, ElevatorMM elevator) {
-    return elevator.new PositionElevatorAndWait(ElevatorMM.ElevatorPositions.LOAD) // start by moving to the level
+    return elevator.new PositionElevatorAndWait(ElevatorMM.ElevatorPositions.Load) // start by moving to the level
         .andThen(
             claw.autoRotate(CClaw.ClawPositions.Load).andThen(claw.intakeCoral()) // move the the load position and intake coral
                 .deadlineFor(claw.new WithoutSafety())) // while that's going, we want to disable safety

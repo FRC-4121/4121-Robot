@@ -58,15 +58,15 @@ public class ElevatorMM extends SubsystemBase {
 
   // Declare elevator positions
   public static final class ElevatorPositions {
-    public static final double LOAD = 1;
-    public static final double CORAL1 = 1;
-    public static final double CORAL2 = 19;
-    public static final double CORAL3 = 58;
-    public static final double CORAL4 = 122;
-    public static final double ALGAE1 = 33;
-    public static final double ALGAE2 = 80;
-    public static final double PROCESSOR = 10;
-    public static final double BARGE = 10;
+    public static final double Load = 1;
+    public static final double Coral1 = 1;
+    public static final double Coral2 = 19;
+    public static final double Coral3 = 58;
+    public static final double Coral4 = 122;
+    public static final double Algae1 = 33;
+    public static final double Algae2 = 80;
+    public static final double Processor = 10;
+    public static final double Barge = 10;
   }
 
   // Declare other variables
@@ -91,7 +91,7 @@ public class ElevatorMM extends SubsystemBase {
     elevatorFollowMotor.setControl(new Follower(elevatorLeadMotor.getDeviceID(), false));
 
     // Initialize variables
-    currentPosition = ElevatorPositions.LOAD;
+    currentPosition = ElevatorPositions.Load;
     holdPosition = false;
 
   }

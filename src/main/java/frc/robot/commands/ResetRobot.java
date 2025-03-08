@@ -33,7 +33,7 @@ public class ResetRobot extends Command {
 
     swerve.homeDriveWheels();
     claw.returnHome();
-    elevator.moveElevator(ElevatorMM.ElevatorPositions.LOAD);
+    elevator.moveElevator(ElevatorMM.ElevatorPositions.Load);
     climber.homeClimber();
     
   }
