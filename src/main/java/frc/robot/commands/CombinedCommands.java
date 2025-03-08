@@ -18,7 +18,14 @@ public class CombinedCommands {
     return elevator.new PositionElevatorAndWait(ElevatorMM.ElevatorPositions.LOAD) // start by moving to the level
         .andThen(
             claw.autoRotate(CClaw.ClawPositions.Load).andThen(claw.intakeCoral()) // move the the load position and intake coral
-                .deadlineFor(claw.new WithoutSafety()))// while that's going, we want to disable safety
+                .deadlineFor(claw.new WithoutSafety())) // while that's going, we want to disable safety
         .withDeadline(Commands.waitSeconds(5.0)); // don't let it go for more than 5 seconds
+  }
+
+  public static Command prepL1(CClaw claw, ElevatorMM elevator) {
+    return elevator.new PositionElevatorAndWait(ElevatorMM.ElevatorPositions.CORAL1)
+        .alongWith(
+            claw.new RotateClawAndWait(CClaw.ClawPositions.L1Score))
+        .withDeadline(Commands.waitSeconds(2.0));
   }
 }

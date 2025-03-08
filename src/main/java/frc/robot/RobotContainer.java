@@ -72,7 +72,6 @@ public class RobotContainer {
   private final Trigger coralScoreButton;
   private final Trigger coralIntakeButton;
   private final Trigger algaeIntakeButton;
-  private final Trigger returnHomeButton;
 
   // Declare Launchpad (OI) Buttons/Switches
   private final Trigger killAutoButton;
@@ -135,7 +134,7 @@ public class RobotContainer {
     // Initialize Xbox Buttons
     changeSpeedButton = new JoystickButton(xbox, xboxYButton);
     changeModeButton = new JoystickButton(xbox, xboxXButton);
-    clawHomeButton = new JoystickButton(secondaryXbox, xboxRightBumper);
+    clawHomeButton = new JoystickButton(xbox, xboxAButton);
     climbButton = new Trigger(() -> xbox.getRightTriggerAxis() > triggerThreshold);
     elevatorCoral1Button = new JoystickButton(secondaryXbox, xboxAButton);
     elevatorCoral2Button = new JoystickButton(secondaryXbox, xboxBButton);
@@ -145,7 +144,6 @@ public class RobotContainer {
     coralIntakeButton = new JoystickButton(secondaryXbox, xboxLeftBumper);
     algaeIntakeButton = new Trigger(() -> secondaryXbox.getLeftTriggerAxis() > triggerThreshold);
     elevatorHomeButton = new Trigger(() -> secondaryXbox.getRightTriggerAxis() > triggerThreshold);
-    returnHomeButton = new JoystickButton(xbox, xboxAButton);
 
     // Initialize Launchpad (OI) Buttons/Switches
     killAutoButton = new JoystickButton(launchpad, LaunchPadButton1);
@@ -189,13 +187,14 @@ public class RobotContainer {
     // Teleop Commands
     changeSpeedButton.onTrue(changeSpeedCommand);
     changeModeButton.onTrue(changeModeCommand);
-    clawHomeButton.onTrue(claw.autoRotate(CClaw.ClawPositions.Home));
+    clawHomeButton.onTrue(claw.returnHome());
     elevatorHomeButton.onTrue(elevator.positionElevator(ElevatorMM.ElevatorPositions.LOAD));
     elevatorCoral1Button.onTrue(
         Commands.either(
-            elevator.positionElevator(ElevatorMM.ElevatorPositions.CORAL1),
+            CombinedCommands.prepL1(claw, elevator),
             elevator.positionElevator(ElevatorMM.ElevatorPositions.ALGAE1),
-            () -> claw.hasCoral()));
+            () -> claw.hasCoral())
+        );
     elevatorCoral2Button.onTrue(elevator.positionElevator(ElevatorMM.ElevatorPositions.CORAL2));
     elevatorCoral3Button.onTrue(elevator.positionElevator(ElevatorMM.ElevatorPositions.CORAL3));
     elevatorCoral4Button.onTrue(
@@ -211,7 +210,6 @@ public class RobotContainer {
             () -> claw.hasCoral()));
     algaeIntakeButton.onTrue(claw.algaeIntake());
     climbButton.onTrue(climber.new Climb());
-    returnHomeButton.onTrue(claw.returnHome());
     resetRobotButton.onTrue(resetRobot);
     resetEncodersButton.whileTrue(Commands.runOnce(() -> {
       claw.killMotor();

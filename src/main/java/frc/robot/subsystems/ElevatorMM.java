@@ -59,7 +59,7 @@ public class ElevatorMM extends SubsystemBase {
   // Declare elevator positions
   public static final class ElevatorPositions {
     public static final double LOAD = 1;
-    public static final double CORAL1 = 10;
+    public static final double CORAL1 = 1;
     public static final double CORAL2 = 19;
     public static final double CORAL3 = 58;
     public static final double CORAL4 = 122;
@@ -295,6 +295,11 @@ public class ElevatorMM extends SubsystemBase {
     return Commands.runOnce(() -> moveElevatorToPosition(position));
   }
 
+  
+  private SubsystemBase getThis() {
+    return this;
+  }
+
   /**
    * 
    * This command tells the elevator to move to a position, but isn't finished until it actually gets there
@@ -306,11 +311,11 @@ public class ElevatorMM extends SubsystemBase {
     public PositionElevatorAndWait(double position) {
       super(1.0);
       this.position = position;
+      addRequirements(getThis());
     }
 
     @Override
     public void initialize() {
-      System.out.println("Moving to " + position);
       moveElevatorToPosition(position);
     }
 
@@ -318,7 +323,6 @@ public class ElevatorMM extends SubsystemBase {
     public boolean isFinished() {
       if (super.isFinished()) return true;
       double err = Math.abs(currentPosition - position);
-      System.out.println(err);
       return err < 1.5;
     }
   }
