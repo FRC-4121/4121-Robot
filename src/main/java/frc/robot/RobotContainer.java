@@ -162,6 +162,19 @@ public class RobotContainer {
     // Configure default subsystem commands
     configureDefaultCommands();
 
+    climber.setDefaultCommand(Commands.run(() -> {
+      double trig = xbox.getLeftTriggerAxis();
+      if (trig > 0.1) {
+        climber.runClimber(trig * 0.5);
+        return;
+      }
+      trig = xbox.getRightTriggerAxis();
+      if (trig > 0.1) {
+        climber.runClimber(-trig * 0.5);
+        return;
+      }
+      climber.runClimber(0);
+    }, climber));
   }
 
   /**
@@ -202,8 +215,10 @@ public class RobotContainer {
     resetRobotButton.onTrue(resetRobot);
     resetEncodersButton.whileTrue(Commands.runOnce(() -> {
       claw.killMotor();
+      climber.killMotor();
       elevator.killMotor();
       claw.zeroIntake();
+      climber.zeroEncoder();
       elevator.zeroPosition();
     }));
     safetyOverrideButton.onTrue(Commands.runOnce(() -> claw.setSafety(false)));

@@ -55,13 +55,15 @@ public class Climber extends SubsystemBase {
   private double drive_kD = 0.0;
 
   // Declare climber motor position constants
-  private final int extendRotations = 1000;
-  private final int retractRotations = 100;
-  private final int homeRotations = 500;
+  public static final class ClimberPositions {
+    public static final int Extend = -127;
+    public static final int Retract = 172;
+    public static final int Home = 0;
+  }
 
   // Declare motor output requests
-  private final PositionVoltage m_positionRequest = new PositionVoltage(0).withSlot(0);
-  private final DutyCycleOut m_dutyRequest = new DutyCycleOut(0);
+  private final PositionVoltage positionRequest = new PositionVoltage(0).withSlot(0);
+  private final DutyCycleOut dutyRequest = new DutyCycleOut(0);
 
   /**
    * Create a new climber object
@@ -134,22 +136,26 @@ public class Climber extends SubsystemBase {
    * Extend the climber to prepare for climb
    */
   public void extendClimber() {
-    climberMotor.setControl(m_positionRequest.withPosition(extendRotations));
+    climberMotor.setControl(positionRequest.withPosition(ClimberPositions.Extend));
   }
 
   /**
    * Retract the climber to climb the robot
    */
   public void retractClimber() {
-    climberMotor.setControl(m_positionRequest.withPosition(retractRotations));
+    climberMotor.setControl(positionRequest.withPosition(ClimberPositions.Retract));
   }
 
   /**
    * Return climber to its home (starting) position
    */
   public void homeClimber() {
-    climberMotor.setControl(m_positionRequest.withPosition(homeRotations));
+    climberMotor.setControl(positionRequest.withPosition(ClimberPositions.Home));
     moveServos(0);
+  }
+
+  public void runClimber(double direction) {
+    climberMotor.setControl(dutyRequest.withOutput(direction));
   }
 
   /**
@@ -180,6 +186,14 @@ public class Climber extends SubsystemBase {
   public void moveServos(double position) {
     servo1.set(position);
     servo2.set(position);
+  }
+
+  public void killMotor() {
+    stopClimber();
+  }
+
+  public void zeroEncoder() {
+    climberMotor.setPosition(0);
   }
 
   /**
