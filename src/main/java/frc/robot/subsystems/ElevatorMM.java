@@ -9,6 +9,7 @@ import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.StatusCode;
+import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.Follower;
@@ -22,8 +23,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import frc.robot.Constants.GeneralConstants;
 import frc.robot.commands.TimeoutCommand;
-
-import static frc.robot.Constants.MechanismConstants;
 
 /**
  * 
@@ -46,30 +45,29 @@ public class ElevatorMM extends SubsystemBase {
   private TalonFX elevatorFollowMotor;
 
   // Declare Phoenix PID controller gains
-  private double elevator_kG = 1.0;
-  private double elevator_kS = 0.25;
-  private double elevator_kV = 0.1;
-  private double elevator_kA = 0.0;
-  private double elevator_kP = 1.0;
-  private double elevator_kI = 0.0;
-  private double elevator_kD = 0.0;
+  private static final Slot0Configs autoGains = new Slot0Configs() {
+    {
+      kG = 1.0;
+      kS = 0.25;
+      kV = 0.1;
+      kP = 1.0;
+      kI = 0.0;
+      kD = 0.0;
+    }
+  };
 
   // Declare elevator positions
   public static final class ElevatorPositions {
     public static final double LOAD = 1;
     public static final double CORAL1 = 10;
-    public static final double CORAL2 = 10;
-    public static final double CORAL3 = 57;
-    public static final double CORAL4 = 120;
+    public static final double CORAL2 = 19;
+    public static final double CORAL3 = 58;
+    public static final double CORAL4 = 122;
     public static final double ALGAE1 = 10;
     public static final double ALGAE2 = 10;
     public static final double PROCESSOR = 10;
     public static final double BARGE = 10;
   }
-
-  // Declare motor output requests
-  private final PositionVoltage positionRequest = new PositionVoltage(0).withSlot(0);
-  private final DutyCycleOut dutyRequest = new DutyCycleOut(0);
 
   // Declare other variables
   private double currentPosition;
@@ -124,19 +122,12 @@ public class ElevatorMM extends SubsystemBase {
     leadLimitConfig.StatorCurrentLimit = 110;
 
     // Set drive motor PID constants
-    var slot0Configs = leadConfigs.Slot0;
-    slot0Configs.kG = elevator_kG;
-    slot0Configs.kS = elevator_kS;
-    slot0Configs.kV = elevator_kV;
-    slot0Configs.kA = elevator_kA;
-    slot0Configs.kP = elevator_kP;
-    slot0Configs.kI = elevator_kI;
-    slot0Configs.kD = elevator_kD;
+    leadConfigs.Slot0 = autoGains;
 
     // Set MotionMagic settings
     var motionMagicConfigs = leadConfigs.MotionMagic;
     motionMagicConfigs.MotionMagicCruiseVelocity = 80;
-    motionMagicConfigs.MotionMagicAcceleration = 160;
+    motionMagicConfigs.MotionMagicAcceleration = 100;
     motionMagicConfigs.MotionMagicJerk = 1600;
 
     // Apply lead motor configuration and initialize position to 0
@@ -231,13 +222,13 @@ public class ElevatorMM extends SubsystemBase {
       if (holdPosition) {
         SmartDashboard.putNumber("Elevator H Pos", currentPosition);
         SmartDashboard.putBoolean("Elevator Hold", true);
-        elevatorLeadMotor.setControl(positionRequest.withPosition(currentPosition));
+        elevatorLeadMotor.setControl(new PositionVoltage(currentPosition).withSlot(0));
         holdPosition = false;
       }
     } else {
       SmartDashboard.putBoolean("Elevator Hold", false);
       holdPosition = true;
-      elevatorLeadMotor.setControl(dutyRequest.withOutput(direction));
+      elevatorLeadMotor.setControl(new DutyCycleOut(direction));
     }
   }
 
@@ -251,7 +242,7 @@ public class ElevatorMM extends SubsystemBase {
   public void moveElevatorToPosition(double position) {
     SmartDashboard.putBoolean("Elevator Hold", false);
     holdPosition = false;
-    elevatorLeadMotor.setControl(positionRequest.withPosition(position));
+    elevatorLeadMotor.setControl(new PositionVoltage(position));
   }
 
   /**
@@ -289,7 +280,7 @@ public class ElevatorMM extends SubsystemBase {
    */
   public void killMotor() {
     holdPosition = false;
-    elevatorLeadMotor.setControl(dutyRequest.withOutput(0));
+    elevatorLeadMotor.setControl(new DutyCycleOut(0));
   }
 
   /**

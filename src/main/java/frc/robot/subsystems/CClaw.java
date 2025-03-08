@@ -9,6 +9,7 @@ import frc.robot.Constants.Mutables;
 
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.CANrangeConfiguration;
+import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.CANrange;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -47,20 +48,18 @@ public class CClaw extends SubsystemBase {
   private CANrange coralSensor;
 
   // Declare Phoenix PID controller gains
-  private double rotate_kG = 0.2;
-  private double rotate_kS = 0.1;
-  private double rotate_kV = 0.1;
-  private double rotate_kA = 0.0;
-  private double rotate_kP = 1.0;
-  private double rotate_kI = 0.0;
-  private double rotate_kD = 0.0;
+  private static final Slot0Configs autoGains = new Slot0Configs() {
+    {
+      kG = 0.2;
+      kS = 0.1;
+      kV = 0.1;
+      kP = 1.0;
+      kI = 0.0;
+      kD = 0.0;
+    }
+  };
 
-  // Declare motor output requests
-  private final PositionVoltage requestPosition = new PositionVoltage(0.0).withSlot(0);
-  private final DutyCycleOut requestRotateDuty = new DutyCycleOut(0.0);
-  private final DutyCycleOut requestIntakeDuty = new DutyCycleOut(0.0);
-
-  private static final Time extraInputTime = Time.ofBaseUnits(0.05, Second);
+  private static final Time extraInputTime = Time.ofBaseUnits(0.08, Second);
   private static final Time algaeIntakeTime = Time.ofBaseUnits(1.5, Second);
   private static final Time outputTime = Time.ofBaseUnits(0.25, Second);
 
@@ -84,6 +83,7 @@ public class CClaw extends SubsystemBase {
   // Disable the rotation safety check
   private boolean noSafety;
 
+  private static final double rotateSpeed = 0.2;
   private static final double minRotation = ClawPositions.Algae;
   private static final double maxRotation = ClawPositions.Home;
 
@@ -170,14 +170,7 @@ public class CClaw extends SubsystemBase {
     motionMagicConfigs.MotionMagicJerk = 1600;
 
     // Set rotate motor PID constants
-    var Slot0Configs = rotateConfigs.Slot0;
-    Slot0Configs.kG = rotate_kG;
-    Slot0Configs.kS = rotate_kS;
-    Slot0Configs.kV = rotate_kV;
-    Slot0Configs.kA = rotate_kA;
-    Slot0Configs.kP = rotate_kP;
-    Slot0Configs.kI = rotate_kI;
-    Slot0Configs.kD = rotate_kD;
+    rotateConfigs.Slot0 = autoGains;
 
     // Apply rotate motor configuration and initialize position to 0
     StatusCode rotationStatus = rotationMotor.getConfigurator().apply(rotateConfigs, 0.050);
@@ -237,7 +230,7 @@ public class CClaw extends SubsystemBase {
   public void setRotation(double position) {
     SmartDashboard.putBoolean("Claw Hold", false);
     holdPosition = false;
-    rotationMotor.setControl(requestPosition.withPosition(position));
+    rotationMotor.setControl(new PositionVoltage(position));
   }
 
   /**
@@ -253,7 +246,7 @@ public class CClaw extends SubsystemBase {
    * Activate intake motor
    */
   public void setIntakeSpeed(double intakeSpeed) {
-    intakeMotor.setControl(requestIntakeDuty.withOutput(intakeSpeed));
+    intakeMotor.setControl(new DutyCycleOut(intakeSpeed));
   }
 
   /**
@@ -333,7 +326,7 @@ public class CClaw extends SubsystemBase {
       if (holdPosition) {
         SmartDashboard.putNumber("Claw H Pos", currentPosition);
         SmartDashboard.putBoolean("Claw Hold", true);
-        rotationMotor.setControl(requestPosition.withPosition(currentPosition));
+        rotationMotor.setControl(new PositionVoltage(currentPosition));
         holdPosition = false;
       }
     } else {
@@ -342,8 +335,7 @@ public class CClaw extends SubsystemBase {
       if (!noSafety
           && ((currentPosition < minRotation && direction < 0) || (currentPosition > maxRotation && direction > 0)))
         return;
-      requestRotateDuty.Output = direction;
-      rotationMotor.setControl(requestRotateDuty);
+      rotationMotor.setControl(new DutyCycleOut(direction * rotateSpeed));
     }
   }
 
@@ -354,8 +346,8 @@ public class CClaw extends SubsystemBase {
    */
   public void killMotor() {
     holdPosition = false;
-    rotationMotor.setControl(requestRotateDuty.withOutput(0));
-    intakeMotor.setControl(requestIntakeDuty.withOutput(0));
+    rotationMotor.setControl(new DutyCycleOut(0));
+    intakeMotor.setControl(new DutyCycleOut(0));
   }
 
   /**
