@@ -35,35 +35,35 @@ public class Climber extends SubsystemBase {
   private final int climberMotorID = 25;
 
   //Declare PWM ID for servos
-  private final int servo1ID = 1;
-  private final int servo2ID = 2;
+  private final int brakeServoID = 0;
+  private final int rampServo1ID = 1;
+  private final int rampServo2ID = 2;
 
   // Declare Kracken motor variables
   private TalonFX climberMotor;
 
   // Declare servo motor variables
-  private Servo servo1;
-  private Servo servo2;
+  private Servo brakeServo;
+  private Servo rampServo1;
+  private Servo rampServo2;
 
   // Declare Phoenix PID controller gains
   private double drive_kG = 0.0;
   private double drive_kS = 0.1;
   private double drive_kV = 0.1;
   private double drive_kA = 0.0;
-  private double drive_kP = 0.1;
+  private double drive_kP = 5.0;
   private double drive_kI = 0.0;
   private double drive_kD = 0.0;
 
+  private boolean holdPosition;
+
   // Declare climber motor position constants
   public static final class ClimberPositions {
-    public static final int Extend = -127;
-    public static final int Retract = 172;
+    public static final int Extend = -125;
+    public static final int Retract = 155;
     public static final int Home = 0;
   }
-
-  // Declare motor output requests
-  private final PositionVoltage positionRequest = new PositionVoltage(0).withSlot(0);
-  private final DutyCycleOut dutyRequest = new DutyCycleOut(0);
 
   /**
    * Create a new climber object
@@ -85,7 +85,7 @@ public class Climber extends SubsystemBase {
     // Set climber current limits configuration
     var climberLimitConfig = climberConfigs.CurrentLimits;
     climberLimitConfig.StatorCurrentLimitEnable = true;
-    climberLimitConfig.StatorCurrentLimit = 110;
+    climberLimitConfig.StatorCurrentLimit = CURRENT_LIMIT;
 
     // Set climber motor feedback sensor
     var climberSensorConfig = climberConfigs.Feedback;
@@ -112,8 +112,9 @@ public class Climber extends SubsystemBase {
     climberMotor.getConfigurator().setPosition(0);
 
     // Create servos
-    servo1 = new Servo(servo1ID);
-    servo2 = new Servo(servo2ID);
+    brakeServo = new Servo(brakeServoID);
+    rampServo1 = new Servo(rampServo1ID);
+    rampServo2 = new Servo(rampServo2ID);
 
   }
 
@@ -136,26 +137,41 @@ public class Climber extends SubsystemBase {
    * Extend the climber to prepare for climb
    */
   public void extendClimber() {
-    climberMotor.setControl(positionRequest.withPosition(ClimberPositions.Extend));
+    climberMotor.setControl(new PositionVoltage(ClimberPositions.Extend).withSlot(0));
+    holdPosition = false;
   }
 
   /**
    * Retract the climber to climb the robot
    */
   public void retractClimber() {
-    climberMotor.setControl(positionRequest.withPosition(ClimberPositions.Retract));
+    climberMotor.setControl(new PositionVoltage(ClimberPositions.Retract).withSlot(0));
+    holdPosition = false;
   }
 
   /**
    * Return climber to its home (starting) position
    */
   public void homeClimber() {
-    climberMotor.setControl(positionRequest.withPosition(ClimberPositions.Home));
+    climberMotor.setControl(new PositionVoltage(ClimberPositions.Home).withSlot(0));
+    holdPosition = false;
     moveServos(0);
   }
 
   public void runClimber(double direction) {
-    climberMotor.setControl(dutyRequest.withOutput(direction));
+    if (Math.abs(direction) < 0.0001) {
+      if (holdPosition) {
+        double currentPosition = climberMotor.getPosition().refresh().getValueAsDouble();
+        SmartDashboard.putNumber("Climber H Pos", currentPosition);
+        SmartDashboard.putBoolean("Climber Hold", true);
+        climberMotor.setControl(new PositionVoltage(currentPosition).withSlot(0));
+        holdPosition = false;
+      }
+    } else {
+      SmartDashboard.putBoolean("Climber Hold", false);
+      holdPosition = true;
+      climberMotor.setControl(new DutyCycleOut(direction));
+    }
   }
 
   /**
@@ -184,8 +200,10 @@ public class Climber extends SubsystemBase {
    * 
    */
   public void moveServos(double position) {
-    servo1.set(position);
-    servo2.set(position);
+    System.out.println("Pulling Pins");
+    brakeServo.setAngle(position);
+    rampServo1.setAngle(position);
+    rampServo2.setAngle(position);
   }
 
   public void killMotor() {
@@ -224,7 +242,8 @@ public class Climber extends SubsystemBase {
     public void execute() {
       switch (state) {
         case Default:
-          moveServos(0.2);
+          System.out.println("Extending Climber");
+          moveServos(90);
           extendClimber();
           state = State.Extended;
           break;
@@ -233,8 +252,8 @@ public class Climber extends SubsystemBase {
           state = State.Retracted;
           break;
         case Retracted:
-          System.err.println("Told to climb while already in the retracted position");
-          DriverStation.reportWarning("Told to climb while already in the retracted position", false);
+          homeClimber();
+          state = State.Default;
           break;
       }
     }

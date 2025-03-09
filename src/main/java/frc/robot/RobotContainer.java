@@ -135,7 +135,8 @@ public class RobotContainer {
     changeSpeedButton = new JoystickButton(xbox, xboxYButton);
     changeModeButton = new JoystickButton(xbox, xboxXButton);
     clawHomeButton = new JoystickButton(xbox, xboxAButton);
-    climbButton = new Trigger(() -> xbox.getRightTriggerAxis() > triggerThreshold);
+    climbButton = new JoystickButton(xbox, xboxBButton);
+    // climbButton = new Trigger(() -> xbox.getRightTriggerAxis() > triggerThreshold);
     elevatorCoral1Button = new JoystickButton(secondaryXbox, xboxAButton);
     elevatorCoral2Button = new JoystickButton(secondaryXbox, xboxBButton);
     elevatorCoral3Button = new JoystickButton(secondaryXbox, xboxXButton);
