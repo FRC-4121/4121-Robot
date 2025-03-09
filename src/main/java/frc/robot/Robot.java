@@ -40,7 +40,7 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
 
-    // new CameraBuilder(0, "Camera 0").fps(15).attachAutoCapture();
+    new CameraBuilder(0, "Front").fps(15).attachAutoCapture();
     // new CameraBuilder(1, "Camera 1").fps(15).attachAutoCapture();
 
     // Instantiate our RobotContainer. This will perform all our button bindings,
