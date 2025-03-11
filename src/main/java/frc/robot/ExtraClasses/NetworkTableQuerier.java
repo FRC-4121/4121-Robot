@@ -5,16 +5,19 @@
 package frc.robot.ExtraClasses;
 
 import java.lang.Thread;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
+import java.util.Optional;
+import java.util.concurrent.locks.*;
 
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.networktables.NetworkTableValue;
 
 public class NetworkTableQuerier {
 
+  /**
+   * A collection of tags. This should be synchronized to ensure
+   */
   public static class TagCollection {
     private NetworkTableEntry ids_;
     private NetworkTableEntry distances_;
@@ -24,15 +27,41 @@ public class NetworkTableQuerier {
     private NetworkTableEntry rotations_;
 
     // for when we want to hold concurrency
-    public Lock lock = new ReentrantLock();
+    public ReadWriteLock lock = new ReentrantReadWriteLock();
 
+    /**
+     * Tag IDs. These are longs instead of ints because that's what goes in the
+     * network table
+     */
     public long[] ids;
+    /**
+     * Distances to the april tags. THESE ARE IN INCHES.
+     */
     public double[] distances;
+    /**
+     * Azimuth angles to the april tags, in radians.
+     */
     public double[] azimuths;
+    /**
+     * Elevation angles to the april tags, in radians.
+     */
     public double[] elevations;
+    /**
+     * Offset distances to the april tags, IN INCHES.
+     * Offset is the amount left or right the center of the image is on the plane
+     * parallel with the tag.
+     */
     public double[] offsets;
+    /**
+     * Rotations of the tags themselves.
+     */
     public double[] rotations;
 
+    /**
+     * Create a querier for the collection of all seen april tags
+     * 
+     * @param collection the network table that contains the fields, like "pi/tags/april"
+     */
     public TagCollection(NetworkTable collection) {
       ids_ = collection.getEntry("ids");
       distances_ = collection.getEntry("d");
@@ -60,14 +89,13 @@ public class NetworkTableQuerier {
      * @return whether we successfully refreshed.
      */
     public boolean tryRefresh() {
-      if (lock.tryLock()) {
+      Lock write = lock.writeLock();
+      if (write.tryLock()) {
         try {
           refresh();
           return true;
-        } catch (RuntimeException e) {
-          throw e;
         } finally {
-          lock.unlock();
+          write.unlock();
         }
       } else return false;
     }
@@ -75,13 +103,120 @@ public class NetworkTableQuerier {
      * Refresh, waiting until the lock is available.
      */
     public void syncRefresh() {
-      lock.lock();
+      Lock write = lock.writeLock();
+      write.lock();
       try {
         refresh();
-      } catch (RuntimeException e) {
-        throw e;
       } finally {
-        lock.unlock();
+        write.unlock();
+      }
+    }
+
+    /**
+     * Get the index of a tag in this collection.
+     * 
+     * @param id the tag ID we want
+     * @return an optional value if a tag is found
+     */
+    public Optional<Integer> tagIndex(int id) {
+      for (int i = 0; i < ids.length; ++i) {
+        if (ids[i] == id)
+          return Optional.of(i);
+      }
+      return Optional.empty();
+    }
+  }
+
+  public static class BestTag {
+    private NetworkTable table;
+    private NetworkTableEntry found;
+    private NetworkTableEntry id;
+    private NetworkTableEntry distance;
+    private NetworkTableEntry azimuth;
+    private NetworkTableEntry elevation;
+    private NetworkTableEntry offset;
+    private NetworkTableEntry rotation;
+
+    public static record Inner(long id, double distance, double azimuth, double elevation, double offset,
+        double rotation) {
+    }
+
+    public Optional<Inner> best;
+    public long[] filter;
+
+    /**
+     * Create a querier for the best seen tag
+     * @param table the network table that contains the "filter" field and "best" subtable, like "pi/tags/april"
+     */
+    public BestTag(NetworkTable table) {
+      this.table = table;
+      found = table.getEntry("best/found");
+      id = table.getEntry("best/id");
+      distance = table.getEntry("best/d");
+      azimuth = table.getEntry("best/a");
+      elevation = table.getEntry("best/e");
+      offset = table.getEntry("best/o");
+      rotation = table.getEntry("best/r");
+    }
+
+    /**
+     * Refresh the best seen tag and update the filter
+     */
+    public void refresh() {
+      table.putValue("filter", NetworkTableValue.makeIntegerArray(filter));
+      if (found.getBoolean(false)) {
+        var val = id.getValue();
+        long tagId;
+        switch (val.getType()) {
+          case kInteger:
+            tagId = val.getInteger();
+            break;
+          case kDouble:
+            tagId = (long) val.getDouble();
+            break;
+          default:
+            best = Optional.empty();
+            return;
+        }
+        double tagDistance, tagElevation, tagAzimuth, tagOffset, tagRotation;
+        val = distance.getValue();
+        if (val.isDouble())
+          tagDistance = val.getDouble();
+        else {
+          best = Optional.empty();
+          return;
+        }
+        val = azimuth.getValue();
+        if (val.isDouble())
+          tagAzimuth = val.getDouble();
+        else {
+          best = Optional.empty();
+          return;
+        }
+        val = elevation.getValue();
+        if (val.isDouble())
+          tagElevation = val.getDouble();
+        else {
+          best = Optional.empty();
+          return;
+        }
+        val = offset.getValue();
+        if (val.isDouble())
+          tagOffset = val.getDouble();
+        else {
+          best = Optional.empty();
+          return;
+        }
+        val = rotation.getValue();
+        if (val.isDouble())
+          tagRotation = val.getDouble();
+        else {
+          best = Optional.empty();
+          return;
+        }
+        best = Optional.of(new Inner(tagId, tagDistance, tagAzimuth, tagElevation, tagOffset, tagRotation));
+      } else {
+        best = Optional.empty();
       }
     }
   }
