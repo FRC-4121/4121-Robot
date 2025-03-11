@@ -303,7 +303,7 @@ public class SwerveDriveWPI extends SubsystemBase {
   public void driveFieldRelative(ChassisSpeeds fieldRelativeSpeeds) {
     // Convert inputs to chassis speeds
     ChassisSpeeds fieldSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(fieldRelativeSpeeds,
-        Rotation2d.fromDegrees(toWPIAngle(getGyroAngle())));
+        Rotation2d.fromDegrees(toWPIAngle(getGyroAngleField())));
     driveRobot(fieldSpeeds);
   }
 
@@ -351,7 +351,7 @@ public class SwerveDriveWPI extends SubsystemBase {
 
     // Convert inputs to chassis speeds
     ChassisSpeeds fieldSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(vxMetersPerSecond, vyMetersPerSecond,
-        omegaRadiansPerSecond, Rotation2d.fromDegrees(toWPIAngle(getGyroAngle())));
+        omegaRadiansPerSecond, Rotation2d.fromDegrees(toWPIAngle(getGyroAngleField())));
 
     // Run the swerve modules based on current status
     if (Math.abs(leftX) < joystickDeadband && Math.abs(leftY) < joystickDeadband

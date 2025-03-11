@@ -18,7 +18,7 @@ public class CombinedCommands {
     return elevator.new PositionElevatorAndWait(ElevatorMM.ElevatorPositions.Load) // start by moving to the level
         .andThen(
             claw.autoRotate(CClaw.ClawPositions.Load).andThen(claw.intakeCoral()) // move the the load position and intake coral
-                .deadlineFor(claw.new WithoutSafety())) // while that's going, we want to disable safety
+                .deadlineFor(claw.new WithoutSafety().alongWith(Commands.idle(elevator)))) // while that's going, we want to disable safety
         .withDeadline(Commands.waitSeconds(5.0)); // don't let it go for more than 5 seconds
   }
 

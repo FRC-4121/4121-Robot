@@ -139,6 +139,7 @@ public class Climber extends SubsystemBase {
   public void extendClimber() {
     climberMotor.setControl(new PositionVoltage(ClimberPositions.Extend).withSlot(0));
     holdPosition = false;
+    moveServos(180);
   }
 
   /**
@@ -243,7 +244,6 @@ public class Climber extends SubsystemBase {
       switch (state) {
         case Default:
           System.out.println("Extending Climber");
-          moveServos(90);
           extendClimber();
           state = State.Extended;
           break;

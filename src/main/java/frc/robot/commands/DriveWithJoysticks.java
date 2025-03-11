@@ -13,7 +13,7 @@ import frc.robot.ExtraClasses.NetworkTableQuerier;
 import frc.robot.Constants.ControlConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.Mutables;
-import edu.wpi.first.math.controller.*;
+import static frc.robot.Constants.DriveConstants.SlowStoppedRotationMultiplier;
 
 import edu.wpi.first.math.MathUtil;
 
@@ -72,10 +72,13 @@ public class DriveWithJoysticks extends Command {
 
       }
     }
+    if (Mutables.isSlowMode && Math.abs(xSpeed) < 0.01 && Math.abs(ySpeed) < 0.01) {
+      rotSpeed *= SlowStoppedRotationMultiplier;
+    }
     if (Mutables.isFieldOriented) {
       swerve.driveFieldRelative(xSpeed, ySpeed, rotSpeed);
     } else {
-      swerve.driveRobotRelative(xSpeed, ySpeed, rotSpeed);
+      swerve.driveRobotRelative(-xSpeed, -ySpeed, rotSpeed);
     }
   }
 
