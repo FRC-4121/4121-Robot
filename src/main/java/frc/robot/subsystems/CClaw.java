@@ -66,7 +66,7 @@ public class CClaw extends SubsystemBase {
   private static final Time revOutputTime = Time.ofBaseUnits(0.5, Second);
 
   public static final double feedSpeed = -0.2;
-  public static final double scoreSpeed = -0.25;
+  public static final double scoreSpeed = -0.3;
   public static final double revScoreSpeed = 0.3;
   public static final double algaeFeedSpeed = 0.2;
   public static final double algaeDepositSpeed = -0.1;

@@ -75,7 +75,7 @@ public final class Constants {
     public static final double MaxRadiansPerSecond = Math.PI;
     public static final double SlowMaxLinearSpeed = 0.75;// 0.75 Max Speed during slow mode in meters per second
     public static final double SlowRadiansPerSecond = (Math.PI / 4);// Max rotational speed during slow mode
-    public static final double SlowStoppedRotationMultiplier = 0.25;
+    public static final double SlowStoppedRotationMultiplier = 0.3;
     public static final double swerveDriveSpeedLimiter = 0.7;
     public static double LinearSpeed = MaxLinearSpeed;
     public static double RotationalSpeedStopped = MaxRadiansPerSecond;
