@@ -57,6 +57,7 @@ public class Climber extends SubsystemBase {
   private double drive_kD = 0.0;
 
   private boolean holdPosition;
+  private double currentPosition;
 
   // Declare climber motor position constants
   public static final class ClimberPositions {
@@ -120,6 +121,7 @@ public class Climber extends SubsystemBase {
 
   @Override
   public void periodic() {
+    currentPosition = climberMotor.getPosition().refresh().getValueAsDouble();
 
     // Put motor status on the Smart Dashboard
     SmartDashboard.putNumber("Climber Motor Amps", climberMotor.getStatorCurrent().getValueAsDouble());
@@ -139,7 +141,8 @@ public class Climber extends SubsystemBase {
   public void extendClimber() {
     climberMotor.setControl(new PositionVoltage(ClimberPositions.Extend).withSlot(0));
     holdPosition = false;
-    moveServos(180);
+    rampServo1.setAngle(180);
+    rampServo2.setAngle(180);
   }
 
   /**
@@ -156,13 +159,14 @@ public class Climber extends SubsystemBase {
   public void homeClimber() {
     climberMotor.setControl(new PositionVoltage(ClimberPositions.Home).withSlot(0));
     holdPosition = false;
-    moveServos(0);
+    brakeServo.setAngle(30);
+    rampServo1.setAngle(0);
+    rampServo2.setAngle(0);
   }
 
   public void runClimber(double direction) {
     if (Math.abs(direction) < 0.0001) {
       if (holdPosition) {
-        double currentPosition = climberMotor.getPosition().refresh().getValueAsDouble();
         SmartDashboard.putNumber("Climber H Pos", currentPosition);
         SmartDashboard.putBoolean("Climber Hold", true);
         climberMotor.setControl(new PositionVoltage(currentPosition).withSlot(0));
@@ -193,20 +197,6 @@ public class Climber extends SubsystemBase {
     climberMotor.stopMotor();
   }
 
-  /**
-   * 
-   * Move the servos on the ramp trap door
-   * 
-   * @param position  The new servo position
-   * 
-   */
-  public void moveServos(double position) {
-    System.out.println("Pulling Pins");
-    brakeServo.setAngle(position);
-    rampServo1.setAngle(position);
-    rampServo2.setAngle(position);
-  }
-
   public void killMotor() {
     stopClimber();
   }
@@ -226,7 +216,7 @@ public class Climber extends SubsystemBase {
       /**
        * The initial state, we haven't started climbing
        */
-      Default,
+      Home,
       /**
        * The climber is extended and ready to climb
        */
@@ -237,30 +227,44 @@ public class Climber extends SubsystemBase {
       Retracted
     }
 
-    State state = State.Default;
+    State state = State.Home;
 
     @Override
     public void execute() {
       switch (state) {
-        case Default:
-          System.out.println("Extending Climber");
+        case Home:
+          SmartDashboard.putString("Climber State", "Extended");
           extendClimber();
           state = State.Extended;
           break;
         case Extended:
+          SmartDashboard.putString("Climber State", "Retracted");
           retractClimber();
           state = State.Retracted;
           break;
         case Retracted:
+          SmartDashboard.putString("Climber State", "Home");
           homeClimber();
-          state = State.Default;
+          state = State.Home;
           break;
       }
     }
 
     @Override
     public boolean isFinished() {
-      return true;
+      double target = 0;
+      switch (state) {
+        case Home: target = ClimberPositions.Home; break;
+        case Extended: target = ClimberPositions.Extend; break;
+        case Retracted: target = ClimberPositions.Retract; break;
+      }
+      return Math.abs(target - currentPosition) < 5;
+    }
+
+    @Override
+    public void end(boolean interrupted) {
+      if (!interrupted && state.equals(State.Extended)) 
+        brakeServo.setAngle(0);
     }
   }
 }
