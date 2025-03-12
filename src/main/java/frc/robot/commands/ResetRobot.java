@@ -35,6 +35,9 @@ public class ResetRobot extends Command {
     claw.returnHome();
     elevator.moveElevator(ElevatorMM.ElevatorPositions.Load);
     climber.homeClimber();
+    claw.zeroIntake();
+    climber.zeroEncoder();
+    elevator.zeroPosition();
     
   }
 
