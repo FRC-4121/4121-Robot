@@ -15,6 +15,7 @@ import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.PositionVoltage;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -32,17 +33,19 @@ import frc.robot.commands.TimeoutCommand;
 public class ElevatorMM extends SubsystemBase {
 
   // Declare constants
-  private final double DRIVE_DEADBAND = 0.001; // Deadband for the drive motor. VAlues smaller than this will be rounded
+  private static final double DRIVE_DEADBAND = 0.001; // Deadband for the drive motor. VAlues smaller than this will be rounded
                                                // to zero
-  private final double CURRENT_LIMIT = 65; // Current limit to prevent motor damage
+  private static final double CURRENT_LIMIT = 1000; // Current limit to prevent motor damage
 
   // Declare motor CAN IDs
-  private final int elevatorLeadID = 17;
-  private final int elevatorFollowID = 18;
+  private static final int elevatorLeadID = 17;
+  private static final int elevatorFollowID = 18;
+  private static final int limitSwitchID = 1;
 
   // Declare motor variables
-  private TalonFX elevatorLeadMotor;
-  private TalonFX elevatorFollowMotor;
+  private final TalonFX elevatorLeadMotor;
+  private final TalonFX elevatorFollowMotor;
+  private final DigitalInput limitSwitch;
 
   // Declare Phoenix PID controller gains
   private static final Slot0Configs autoGains = new Slot0Configs() {
@@ -51,14 +54,14 @@ public class ElevatorMM extends SubsystemBase {
       kS = 0.25;
       kV = 0.1;
       kP = 1.0;
-      kI = 0.0;
+      kI = 0.1;
       kD = 0.0;
     }
   };
 
   // Declare elevator positions
   public static final class ElevatorPositions {
-    public static final double Load = 1;
+    public static final double Load = 0;
     public static final double Coral1 = 1;
     public static final double Coral2 = 19;
     public static final double Coral3 = 58;
@@ -83,6 +86,7 @@ public class ElevatorMM extends SubsystemBase {
     // Create motors
     elevatorLeadMotor = new TalonFX(elevatorLeadID, GeneralConstants.CANBUS_NAME);
     elevatorFollowMotor = new TalonFX(elevatorFollowID, GeneralConstants.CANBUS_NAME);
+    limitSwitch = new DigitalInput(limitSwitchID);
 
     // Configure motors
     InitializeMotors();
@@ -172,9 +176,13 @@ public class ElevatorMM extends SubsystemBase {
    */
   @Override
   public void periodic() {
-
+    if (limitSwitch.get()) {
+      zeroPosition();
+    }
     // Set current position
     currentPosition = getPosition();
+
+    SmartDashboard.putBoolean("Elevator Limit Switch", limitSwitch.get());
 
     // Hold position of the elevator if requested
     // if (holdPosition && currentPosition != ElevatorPositions.LOAD) {
@@ -197,6 +205,7 @@ public class ElevatorMM extends SubsystemBase {
     if (elevatorLeadMotor.getStatorCurrent().getValueAsDouble() > CURRENT_LIMIT ||
         elevatorFollowMotor.getStatorCurrent().getValueAsDouble() > CURRENT_LIMIT) {
       stopElevator();
+      // zeroPosition();
     }
 
   }
