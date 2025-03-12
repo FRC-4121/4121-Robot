@@ -96,6 +96,8 @@ public class Robot extends TimedRobot {
     // Update Robot Status
     m_robotContainer.updateRobotStatus();
 
+    m_robotContainer.updateNTQueries();
+
     // Check for gyro zero command and zero the gyro
     if (SmartDashboard.getNumber("Zero Gyro", 0) == 1) {
       m_robotContainer.zeroGyro();

@@ -75,7 +75,7 @@ public abstract class AutoAlignBase extends AutoCommand {
     /**
      * Tolerance for our distance from the target position, in meters.
      */
-    public double distTolerance = 0.01;
+    public double distTolerance = 0.05;
     /**
      * Tolerance for our rotational difference from the target position, in radians.
      */

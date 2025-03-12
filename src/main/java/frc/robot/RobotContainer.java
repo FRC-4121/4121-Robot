@@ -38,6 +38,7 @@ public class RobotContainer {
 
   // Declare Extra Systems
   private final NetworkTableQuerier table;
+  private final NetworkTableQuerier.BestTag bestTags;
   private final AcousticSensor coralSensor;
 
   // ===COMMANDS===//
@@ -72,6 +73,8 @@ public class RobotContainer {
   private final Trigger coralScoreButton;
   private final Trigger coralIntakeButton;
   private final Trigger algaeIntakeButton;
+  private final Trigger alignLeftButton;
+  private final Trigger alignRightButton;
 
   // Declare Launchpad (OI) Buttons/Switches
   private final Trigger killAutoButton;
@@ -107,6 +110,7 @@ public class RobotContainer {
 
     // Initialize extra systems
     table = new NetworkTableQuerier();
+    bestTags = table.getBestTags("pi/tags/april");
     coralSensor = new AcousticSensor();
 
     // Initialize Driving Commands
@@ -136,7 +140,8 @@ public class RobotContainer {
     changeModeButton = new JoystickButton(xbox, xboxXButton);
     clawHomeButton = new JoystickButton(xbox, xboxAButton);
     climbButton = new JoystickButton(xbox, xboxBButton);
-    // climbButton = new Trigger(() -> xbox.getRightTriggerAxis() > triggerThreshold);
+    // climbButton = new Trigger(() -> xbox.getRightTriggerAxis() >
+    // triggerThreshold);
     elevatorCoral1Button = new JoystickButton(secondaryXbox, xboxAButton);
     elevatorCoral2Button = new JoystickButton(secondaryXbox, xboxBButton);
     elevatorCoral3Button = new JoystickButton(secondaryXbox, xboxXButton);
@@ -145,6 +150,10 @@ public class RobotContainer {
     coralIntakeButton = new JoystickButton(secondaryXbox, xboxLeftBumper);
     algaeIntakeButton = new Trigger(() -> secondaryXbox.getLeftTriggerAxis() > triggerThreshold);
     elevatorHomeButton = new Trigger(() -> secondaryXbox.getRightTriggerAxis() > triggerThreshold);
+
+    // POVs only return the polar angle; thankfully we don't care too much about it
+    alignLeftButton = new JoystickButton(xbox, xboxLeftBumper);
+    alignRightButton = new JoystickButton(xbox, xboxRightBumper);
 
     // Initialize Launchpad (OI) Buttons/Switches
     killAutoButton = new JoystickButton(launchpad, LaunchPadButton1);
@@ -174,6 +183,8 @@ public class RobotContainer {
       }
       climber.runClimber(0);
     }, climber));
+
+    bestTags.filter = new long[] {7, 8, 9};
   }
 
   /**
@@ -194,8 +205,7 @@ public class RobotContainer {
         Commands.either(
             CombinedCommands.moveClaw(claw, elevator, ElevatorMM.ElevatorPositions.Coral1, CClaw.ClawPositions.L1Score),
             CombinedCommands.moveClaw(claw, elevator, ElevatorMM.ElevatorPositions.Algae1, CClaw.ClawPositions.Algae1),
-            () -> claw.hasCoral())
-        );
+            () -> claw.hasCoral()));
     elevatorCoral2Button.onTrue(elevator.positionElevator(ElevatorMM.ElevatorPositions.Coral2));
     elevatorCoral3Button.onTrue(elevator.positionElevator(ElevatorMM.ElevatorPositions.Coral3));
     elevatorCoral4Button.onTrue(
@@ -222,6 +232,20 @@ public class RobotContainer {
     }));
     safetyOverrideButton.onTrue(Commands.runOnce(() -> claw.setSafety(false)));
     safetyOverrideButton.onFalse(Commands.runOnce(() -> claw.setSafety(true)));
+    alignLeftButton.whileTrue(new AutoAlignBest(swerve, new AutoAlignBase.Alignment() {
+      {
+        distance = 0.5;
+        offset = -0.5;
+        rotation = 0;
+      }
+    }, bestTags));
+    alignRightButton.whileTrue(new AutoAlignBest(swerve, new AutoAlignBase.Alignment() {
+      {
+        distance = 0.5;
+        offset = 0.5;
+        rotation = 0;
+      }
+    }, bestTags));
   }
 
   /**
@@ -320,7 +344,16 @@ public class RobotContainer {
     // Update drive values
     SmartDashboard.putBoolean("Slow Mode", Mutables.isSlowMode);
     SmartDashboard.putBoolean("Impact Detected", Mutables.impactDetected);
+  }
 
+  /**
+   * 
+   * Refresh our network queries
+   * Called from robotPeriodic
+   * 
+   */
+  public void updateNTQueries() {
+    bestTags.refresh();
   }
 
   /**

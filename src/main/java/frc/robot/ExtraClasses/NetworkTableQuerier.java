@@ -290,6 +290,18 @@ public class NetworkTableQuerier {
     queryNetworkTables();
   }
 
+  public NetworkTable getTable(String name) {
+    return networkTableInstance.getTable(name);
+  }
+
+  public TagCollection getTags(String name) {
+    return new TagCollection(getTable(name));
+  }
+
+  public BestTag getBestTags(String name) {
+    return new BestTag(getTable(name));
+  }
+
   /**
    * Get values from network tables
    */
