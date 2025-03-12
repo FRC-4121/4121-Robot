@@ -213,7 +213,8 @@ public class RobotContainer {
             elevator.positionElevator(ElevatorMM.ElevatorPositions.Coral4),
             CombinedCommands.moveClaw(claw, elevator, ElevatorMM.ElevatorPositions.Algae2, CClaw.ClawPositions.Algae2),
             () -> claw.hasCoral()));
-    coralIntakeButton.onTrue(CombinedCommands.combinedLoad(claw, elevator));
+    coralIntakeButton.onTrue(CombinedCommands.combinedLoad(claw, elevator)
+        .withDeadline(Commands.waitSeconds(0.5).andThen(Commands.idle().until(coralIntakeButton))));
     coralScoreButton.onTrue(
         Commands.either(
             claw.scoreCoral(),
