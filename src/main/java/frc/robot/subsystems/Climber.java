@@ -61,9 +61,9 @@ public class Climber extends SubsystemBase {
 
   // Declare climber motor position constants
   public static final class ClimberPositions {
-    public static final int Extend = -125;
-    public static final int Retract = 155;
-    public static final int Home = 0;
+    public static final int Extend = -285;
+    public static final int Retract = 0;
+    public static final int Home = Retract;
   }
 
   /**
@@ -149,6 +149,7 @@ public class Climber extends SubsystemBase {
    * Retract the climber to climb the robot
    */
   public void retractClimber() {
+    brakeServo.setAngle(30);
     climberMotor.setControl(new PositionVoltage(ClimberPositions.Retract).withSlot(0));
     holdPosition = false;
   }
@@ -165,7 +166,7 @@ public class Climber extends SubsystemBase {
   }
 
   public void runClimber(double direction) {
-    if (Math.abs(direction) < 0.0001) {
+    if (Math.abs(direction) < 0.01) {
       if (holdPosition) {
         SmartDashboard.putNumber("Climber H Pos", currentPosition);
         SmartDashboard.putBoolean("Climber Hold", true);
@@ -173,6 +174,7 @@ public class Climber extends SubsystemBase {
         holdPosition = false;
       }
     } else {
+      brakeServo.setAngle(30);
       SmartDashboard.putBoolean("Climber Hold", false);
       holdPosition = true;
       climberMotor.setControl(new DutyCycleOut(direction));
@@ -230,7 +232,7 @@ public class Climber extends SubsystemBase {
     State state = State.Home;
 
     @Override
-    public void execute() {
+    public void initialize() {
       switch (state) {
         case Home:
           SmartDashboard.putString("Climber State", "Extended");
@@ -263,7 +265,7 @@ public class Climber extends SubsystemBase {
 
     @Override
     public void end(boolean interrupted) {
-      if (!interrupted && state.equals(State.Extended)) 
+      if (!interrupted && state.equals(State.Retracted))
         brakeServo.setAngle(0);
     }
   }
