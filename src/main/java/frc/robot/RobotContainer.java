@@ -184,7 +184,7 @@ public class RobotContainer {
       climber.runClimber(0);
     }, climber));
 
-    bestTags.filter = new long[] {7, 8, 9};
+    bestTags.filter = new long[] { 7, 8, 9 };
   }
 
   /**
@@ -236,17 +236,17 @@ public class RobotContainer {
     alignLeftButton.whileTrue(new AutoAlignBest(swerve, new AutoAlignBase.Alignment() {
       {
         distance = 0.5;
-        offset = -0.5;
+        offset = -0.1651;
         rotation = 0;
       }
-    }, bestTags));
+    }, bestTags, new long[] { 7, 8, 9 }));
     alignRightButton.whileTrue(new AutoAlignBest(swerve, new AutoAlignBase.Alignment() {
       {
         distance = 0.5;
-        offset = 0.5;
+        offset = 0.1651;
         rotation = 0;
       }
-    }, bestTags));
+    }, bestTags, new long[] { 7, 8, 9 }));
   }
 
   /**
@@ -340,6 +340,7 @@ public class RobotContainer {
 
     // Update Gyro Position
     SmartDashboard.putNumber("Gyro Angle", swerve.getGyroAngle());
+    SmartDashboard.putNumber("Gyro Angle Field", swerve.getGyroAngleField());
     SmartDashboard.putNumber("Gyro Yaw", swerve.getGyroYaw());
 
     // Update drive values

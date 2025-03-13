@@ -6,118 +6,108 @@ package frc.robot.commands;
 
 import frc.robot.Constants.DriveConstants;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.subsystems.SwerveDrive;
+import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.SwerveDriveWPI;
 import edu.wpi.first.math.controller.*;
 
-public class AutoDrive extends AutoCommand {
+public class AutoDrive extends Command {
 
   /** Creates a new AutoDrive. */
-  private final SwerveDrive drivetrain;
-  private double targetDriveDistance; // inches
-  private double targetAngle;
-  private double targetRotation;
-  private double targetSpeed;
-  private double currentGyroAngle = 0;
-  private double gyroOffset;
-  private double frontAngle;
+  protected final SwerveDriveWPI drive;
 
-  private double distanceTraveled;
+  protected static final class Gains {
+    public static final double drive_kP = 0.2;
+    public static final double drive_kI = 0.0;
+    public static final double drive_kD = 0.0;
 
-  private boolean firstRun = true;
-
-  private PIDController pidFrontAngle;
-
-  // Distance is in inches, target rotation is a value from -1 to 1 or and angle?
-  public AutoDrive(SwerveDrive drive, double speed, double dis, double ang, double heading, double rotation,
-      double time) {
-    super(time);
-
-    targetSpeed = speed;
-    targetDriveDistance = dis;
-    targetAngle = ang; // Divide by 360 to get a value from 0 to 1 for compatibility with SwerveDrive
-                       // as a RightX
-    frontAngle = heading;
-    targetRotation = rotation;
-    drivetrain = drive;
-
-    addRequirements(drivetrain);
-
+    public static final double rot_kP = 1.0;
+    public static final double rot_kI = 0.0;
+    public static final double rot_kD = 0.0;
   }
 
-  // Called when the command is initially scheduled.
+  protected PIDController driveControl;
+  protected PIDController rotControl;
+
+  // we use field-oriented drive; if we aren't, rotate our inputs to be used for it
+  protected boolean fieldOriented;
+  // "forward" amount for robot-oriented, "away" amount for field-oriented
+  protected double driveForward;
+  // "right" amount for both orientations
+  protected double driveRight;
+  // rotation amount in rotations
+  protected double rotate;
+
+  private double dist;
+  private double dx;
+  private double dy;
+  private double dr;
+  
+  public AutoDrive(SwerveDriveWPI drive) {
+    this.drive = drive;
+    driveControl = new PIDController(Gains.drive_kP, Gains.drive_kI, Gains.drive_kD);
+    rotControl = new PIDController(Gains.rot_kP, Gains.rot_kI, Gains.rot_kD);
+  }
+
+  public AutoDrive setFieldOriented(boolean fieldOriented) {
+    this.fieldOriented = fieldOriented;
+    return this;
+  }
+  public AutoDrive setDriveForward(double driveForward) {
+    this.driveForward = driveForward;
+    return this;
+  }
+  public AutoDrive setDriveRight(double driveRight) {
+    this.driveRight = driveRight;
+    return this;
+  }
+  public AutoDrive setRotate(double rotate) {
+    this.rotate = rotate;
+    return this;
+  }
+
   @Override
   public void initialize() {
-    super.initialize();
-    distanceTraveled = 0.0;
-    // Reset the encoder distances
-    drivetrain.resetDistance();
-
-    // ntables.zeroPiGyro();
-
-    gyroOffset = 0.0;
-
-    // The constants for these need to be figured out
-    pidFrontAngle = new PIDController(DriveConstants.kP_DriveAngle, DriveConstants.kI_DriveAngle,
-        DriveConstants.kD_DriveAngle);
+    drive.resetDistance();
+    if (fieldOriented) {
+      dr = rotate;
+      dx = driveRight;
+      dy = driveForward;
+    } else {
+      double gyro = -Math.toRadians(drive.getGyroAngleField() + 90);
+      double cos = Math.cos(gyro);
+      double sin = Math.sqrt(1 - cos * cos);
+      // dr = rotate - gyro;
+      dr = rotate;
+      dx = driveRight * cos + driveForward * sin;
+      dy = driveForward * cos - driveRight * sin;
+      dist = Math.sqrt(dx * dx + dy * dy);
+    }
+    SmartDashboard.putNumber("Auto dX", dx);
+    SmartDashboard.putNumber("Auto dY", dy);
+    SmartDashboard.putNumber("Auto dR", dr);
   }
 
-  // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-
-    if (firstRun) {
-
-      drivetrain.resetDistance();
-
-      gyroOffset = 0;
-      SmartDashboard.putNumber("Gyro Offset", gyroOffset);
-
-      firstRun = false;
-    }
-
-    // Calculate heading correction based on gyro reading and target heading
-    // currentGyroAngle = drivetrain.getGyroAngle();
-    // currentGyroAngle = drivetrain.getGyroAngle();
-    currentGyroAngle = drivetrain.getGyroYaw();
-
-    targetRotation = -pidFrontAngle.calculate(Math.toRadians(currentGyroAngle), Math.toRadians(frontAngle));
-
-    SmartDashboard.putNumber("DriveSpeed", targetSpeed);
-    // Enforce minimum speed
-    // if (Math.abs(driveSpeed) < kAutoDriveSpeedMin) {
-    // angleCorrection = 0;
-    // if (driveSpeed < 0) {
-    // driveSpeed = -kAutoDriveSpeedMin;
-    // } else {
-    // driveSpeed = kAutoDriveSpeedMin;
-    // }
-    // }
-
-    double leftStickY = -targetSpeed * Math.cos(Math.toRadians(targetAngle));
-    double leftStickX = targetSpeed * Math.sin(Math.toRadians(targetAngle));
-    SmartDashboard.putNumber("Left Stick X", leftStickX);
-    SmartDashboard.putNumber("Left Stick Y", leftStickY);
-
-    // Run the drive
-    drivetrain.driveFieldRelative(leftStickX, leftStickY, targetRotation);
-
-    // calculate driven distance
-    distanceTraveled = drivetrain.calculateDriveDistance();
-    SmartDashboard.putNumber("Distance Traveled", distanceTraveled);
-
+    double rotErr = Math.toRadians(drive.getGyroAngleField()) - dr;
+    if (rotErr > Math.PI) rotErr -= Math.PI * 2;
+    else if (rotErr < -Math.PI) rotErr += Math.PI * 2;
+    double rightX = rotControl.calculate(rotErr);
+    double distErr = dist - Math.abs(drive.calculateDriveDistance());
+    SmartDashboard.putNumber("Auto Drive Dist Error", distErr);
+    double scale = driveControl.calculate(distErr);
+    double leftX = dy * scale;
+    double leftY = dx * scale;
+    drive.driveFieldRelative(leftX, leftY, 0);
   }
 
-  // Called once the command ends or is interrupted.
-  @Override
-  public void end(boolean interrupted) {
-    drivetrain.stopDrive();
-    distanceTraveled = 0.0;
-
-  }
-
-  // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return super.isFinished() || distanceTraveled >= targetDriveDistance;
+    return drive.calculateDriveDistance() >= dist;
+  }
+
+  @Override
+  public void end(boolean interrupted) {
+    drive.stopDrive();
   }
 }

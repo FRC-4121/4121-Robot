@@ -7,10 +7,19 @@ import frc.robot.ExtraClasses.NetworkTableQuerier;
 
 public class AutoAlignBest extends AutoAlignBase {
   private NetworkTableQuerier.BestTag best;
+  private long[] filter;
 
-  public AutoAlignBest(SwerveDriveWPI swerve, Alignment align, NetworkTableQuerier.BestTag best) {
+  public AutoAlignBest(SwerveDriveWPI swerve, Alignment align, NetworkTableQuerier.BestTag best, long[] filter) {
     super(swerve, align);
     this.best = best;
+    this.filter = filter;
+  }
+
+  @Override
+  public void initialize() {
+    best.filter = filter;
+    best.refresh();
+    super.initialize();
   }
 
   @Override

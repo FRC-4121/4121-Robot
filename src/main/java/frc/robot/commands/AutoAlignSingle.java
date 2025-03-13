@@ -20,12 +20,11 @@ public class AutoAlignSingle extends AutoAlignBase {
   protected Optional<TagPosition> getTagPosition() {
     return tags.tagIndex(tagId).map(idx -> new TagPosition(tags.distances[idx], tags.distances[idx], tags.offsets[idx]));
   }
+
   @Override
-  protected void preExectute() {
+  public void initialize() {
     tags.lock.readLock().lock();
-  }
-  @Override
-  protected void postExecute() {
+    super.initialize();
     tags.lock.readLock().unlock();
   }
 }
