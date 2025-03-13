@@ -20,6 +20,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.controller.*;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.DriverStation;
 import com.studica.frc.AHRS;
 import com.studica.frc.AHRS.NavXComType;
@@ -80,9 +81,8 @@ public class SwerveDriveWPI extends SubsystemBase {
   private double backRightAngle;
 
   // Declare NavX gyro Objects
-  private AHRS gyro;
-  private MedianFilter gyro_filter;
-  private MedianFilter yaw_filter;
+  private final AHRS gyro;
+  private final ADXRS450_Gyro fallbackGyro;
 
   // Declare misc variables
   private double joystickDeadband;
@@ -131,14 +131,11 @@ public class SwerveDriveWPI extends SubsystemBase {
 
     // Initialize NavX gyro
     gyro = new AHRS(NavXComType.kMXP_SPI);
+    fallbackGyro = new ADXRS450_Gyro();
 
     // gyro.calibrate();
     gyro.reset();
     gyro.resetDisplacement();
-
-    // Initialize gyro filter
-    gyro_filter = new MedianFilter(GeneralConstants.FILTER_WINDOW_SIZE);
-    yaw_filter = new MedianFilter(GeneralConstants.FILTER_WINDOW_SIZE);
 
     // Initialize misc variables
     joystickDeadband = 0.05;
@@ -502,14 +499,21 @@ public class SwerveDriveWPI extends SubsystemBase {
    * 
    */
   public double getGyroAngle() {
-
-    double correctedGyro = gyro_filter.calculate(gyro.getAngle() % 360.0);
-    if (correctedGyro < 0) {
-      correctedGyro += 360;
+    if (gyro.isConnected()) {
+      double angle = gyro.getAngle() % 360;
+      SmartDashboard.putString("Gyro Used", "NavX");
+      SmartDashboard.putNumber("Gyro Raw", angle);
+      return angle;
+    } else if (fallbackGyro.isConnected()) {
+      double angle = fallbackGyro.getAngle() % 360;
+      SmartDashboard.putString("Gyro Used", "ADXRS450");
+      SmartDashboard.putNumber("Gyro Raw", angle);
+      return angle;
+    } else {
+      SmartDashboard.putString("Gyro Used", "None");
+      SmartDashboard.putNumber("Gyro Raw", 0);
+      return 0;
     }
-
-    return correctedGyro;
-
   }
 
     /**
@@ -520,15 +524,7 @@ public class SwerveDriveWPI extends SubsystemBase {
    * 
    */
   public double getGyroAngleField() {
-
-    // double correctedGyro = gyro_filter.calculate((gyro.getAngle() + GyroCorrection) % 360.0);
-    // SmartDashboard.putNumber("Field-corrected gyro", (gyro.getAngle() + GyroCorrection) % 360.0);
-    // if (correctedGyro < 0) {
-    //   correctedGyro += 360;
-    // }
-
-    // return correctedGyro;
-    return (gyro.getAngle() + GyroCorrection) % 360.0;
+    return (getGyroAngle() + GyroCorrection) % 360.0;
   }
 
   /**
@@ -539,19 +535,19 @@ public class SwerveDriveWPI extends SubsystemBase {
    * 
    */
   public double getGyroYaw() {
-
-    // Get filtered yaw angle (in degrees)
-    // Negate value to be consistent with WPI coordinate system
-    double gyroYaw = -gyro_filter.calculate(Math.toRadians(gyro.getYaw()));
-
-    // Make sure we don't see -180
-    if (gyroYaw == -180.0) {
-      gyroYaw = 180.0;
+    if (gyro.isConnected()) {
+      // Get filtered yaw angle (in degrees)
+      // Negate value to be consistent with WPI coordinate system
+      double gyroYaw = -gyro.getYaw();
+      // Make sure we don't see -180
+      if (gyroYaw == -180.0) {
+        gyroYaw = 180.0;
+      }
+      // Return yaw angle
+      return gyroYaw;
     }
 
-    // Return yaw angle
-    return gyroYaw;
-
+    return 0;
   }
 
   /**
@@ -574,11 +570,7 @@ public class SwerveDriveWPI extends SubsystemBase {
    * 
    */
   public double getGyroYawRate() {
-
-    // double yawRate = -yaw_filter.calculate(Math.toRadians(gyro.getRate()));
-    // return -Math.toRadians(gyro.getRate());
-    return -gyro.getRate();
-
+    return gyro.isConnected() ? -gyro.getRate() : fallbackGyro.isConnected() ? fallbackGyro.getRate() : 0;
   }
 
   /**
@@ -589,6 +581,7 @@ public class SwerveDriveWPI extends SubsystemBase {
   public void zeroGyro() {
 
     gyro.reset();
+    fallbackGyro.reset();
 
   }
 
