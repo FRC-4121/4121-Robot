@@ -112,6 +112,7 @@ public class CClaw extends SubsystemBase {
 
     // Configure CANrange
     CANrangeConfiguration sensorConfigs = new CANrangeConfiguration();
+    sensorConfigs.ProximityParams.ProximityThreshold = 0.1;
     coralSensor.getConfigurator().apply(sensorConfigs);
 
     // Initialize variables
