@@ -17,6 +17,7 @@ public abstract class AutoAlignBase extends AutoDrive {
 
   protected Alignment align;
   protected boolean foundTag;
+  protected boolean inRange;
 
   /**
    * Relative position of the targeted april tag.
@@ -68,18 +69,40 @@ public abstract class AutoAlignBase extends AutoDrive {
   public void initialize() {
     var pos = getTagPosition();
     foundTag = pos.isPresent();
+    inRange = true;
     pos.ifPresent(tag -> {
       setFieldOriented(false);
-      setDriveForward(Math.sqrt(tag.distance() * tag.distance() - tag.offset() * tag.offset()) * INCHES_TO_METERS - align.distance);
-      setDriveRight(-tag.offset() * INCHES_TO_METERS + align.offset);
-      setRotate(-tag.rotation() - align.rotation);
+      setDx(distanceToTarget());
+      setDy(tag.offset() * INCHES_TO_METERS - align.offset);
+      setDr(-tag.rotation() + align.rotation);
       super.initialize();
     });
   }
 
   @Override
   public boolean isFinished() {
-    return !foundTag || super.isFinished();
+    return !foundTag || !inRange || super.isFinished();
+  }
+
+  @Override
+  protected double distanceToTarget() {
+    double l1 = drive.getLeftFrontLaser();
+    double l2 = drive.getRightFrontLaser();
+    if (l1 < 0) {
+      if (l2 < 0) {
+        inRange = false;
+        return 0;
+      } else {
+        inRange = true;
+        return Math.max(l2 - align.distance, 0);
+      }
+    } else if (l2 < 0) {
+      inRange = true;
+      return Math.max(l1 - align.distance, 0);
+    } else {
+      inRange = true;
+      return Math.max(Math.min(l1, l2) - align.distance, 0);
+    }
   }
 
   /**

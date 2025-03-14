@@ -220,6 +220,9 @@ public class SwerveDriveWPI extends SubsystemBase {
     // Update field position
     field.setRobotPose(getPose());
 
+    double l1 = getLeftFrontLaser();
+    double l2 = getRightFrontLaser();
+    SmartDashboard.putBoolean("Auto Align in Range", l1 >= 0 & l2 >= 0);
   }
 
   /**
@@ -823,9 +826,28 @@ public class SwerveDriveWPI extends SubsystemBase {
    * 
    */
   public Optional<Rotation2d> getTargetRotationOverride() {
-
     return Optional.empty();
-
   }
 
+  /**
+   * 
+   * Get the measured distance for the left front swerve module's laserCAN.
+   * 
+   * @return the distance in meters
+   * 
+   */
+  public double getLeftFrontLaser() {
+    return leftFront.getLaserDistance();
+  }
+
+  /**
+   * 
+   * Get the measured distance for the right front swerve module's laserCAN.
+   * 
+   * @return the distance in meters
+   * 
+   */
+  public double getRightFrontLaser() {
+    return rightFront.getLaserDistance();
+  }
 }

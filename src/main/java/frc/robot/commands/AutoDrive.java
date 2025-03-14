@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.SwerveDriveWPI;
 import edu.wpi.first.math.controller.*;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 
 public class AutoDrive extends Command {
 
@@ -16,11 +17,11 @@ public class AutoDrive extends Command {
   protected final SwerveDriveWPI drive;
 
   protected static final class Gains {
-    public static final double drive_kP = 0.2;
+    public static final double drive_kP = 1.0;
     public static final double drive_kI = 0.0;
     public static final double drive_kD = 0.0;
 
-    public static final double rot_kP = 1.0;
+    public static final double rot_kP = 0.1;
     public static final double rot_kI = 0.0;
     public static final double rot_kD = 0.0;
   }
@@ -28,19 +29,17 @@ public class AutoDrive extends Command {
   protected PIDController driveControl;
   protected PIDController rotControl;
 
-  // we use field-oriented drive; if we aren't, rotate our inputs to be used for it
   protected boolean fieldOriented;
-  // "forward" amount for robot-oriented, "away" amount for field-oriented
-  protected double driveForward;
-  // "right" amount for both orientations
-  protected double driveRight;
-  // rotation amount in rotations
-  protected double rotate;
+
+  protected double linearSpeed = 2.0;
+  protected double angularSpeed = 0.5;
 
   private double dist;
-  private double dx;
-  private double dy;
-  private double dr;
+  private double targetGyro;
+
+  protected double dx;
+  protected double dy;
+  protected double dr;
   
   public AutoDrive(SwerveDriveWPI drive) {
     this.drive = drive;
@@ -52,36 +51,24 @@ public class AutoDrive extends Command {
     this.fieldOriented = fieldOriented;
     return this;
   }
-  public AutoDrive setDriveForward(double driveForward) {
-    this.driveForward = driveForward;
+  public AutoDrive setDx(double dx) {
+    this.dx = dx;
     return this;
   }
-  public AutoDrive setDriveRight(double driveRight) {
-    this.driveRight = driveRight;
+  public AutoDrive setDy(double dy) {
+    this.dy = dy;
     return this;
   }
-  public AutoDrive setRotate(double rotate) {
-    this.rotate = rotate;
+  public AutoDrive setDr(double dr) {
+    this.dr = dr;
     return this;
   }
 
   @Override
   public void initialize() {
     drive.resetDistance();
-    if (fieldOriented) {
-      dr = rotate;
-      dx = driveRight;
-      dy = driveForward;
-    } else {
-      double gyro = -Math.toRadians(drive.getGyroAngleField() + 90);
-      double cos = Math.cos(gyro);
-      double sin = Math.sqrt(1 - cos * cos);
-      // dr = rotate - gyro;
-      dr = rotate;
-      dx = driveRight * cos + driveForward * sin;
-      dy = driveForward * cos - driveRight * sin;
-      dist = Math.sqrt(dx * dx + dy * dy);
-    }
+    dist = Math.sqrt(dx * dx + dy * dy);
+    targetGyro = Math.toRadians(drive.getGyroAngleField()) + dr;
     SmartDashboard.putNumber("Auto dX", dx);
     SmartDashboard.putNumber("Auto dY", dy);
     SmartDashboard.putNumber("Auto dR", dr);
@@ -89,16 +76,19 @@ public class AutoDrive extends Command {
 
   @Override
   public void execute() {
-    double rotErr = Math.toRadians(drive.getGyroAngleField()) - dr;
+    double rotErr = Math.toRadians(drive.getGyroAngleField()) - targetGyro;
     if (rotErr > Math.PI) rotErr -= Math.PI * 2;
     else if (rotErr < -Math.PI) rotErr += Math.PI * 2;
-    double rightX = rotControl.calculate(rotErr);
-    double distErr = dist - Math.abs(drive.calculateDriveDistance());
+    double rightX = rotControl.calculate(-rotErr) * angularSpeed;
+    double distErr = distanceToTarget();
     SmartDashboard.putNumber("Auto Drive Dist Error", distErr);
-    double scale = driveControl.calculate(distErr);
-    double leftX = dy * scale;
-    double leftY = dx * scale;
-    drive.driveFieldRelative(leftX, leftY, 0);
+    double scale = driveControl.calculate(-distErr);
+    SmartDashboard.putNumber("Auto Drive PID Scale", scale);
+    double leftX = dx / dist * scale * linearSpeed;
+    double leftY = dy / dist * scale * linearSpeed;
+    var speeds = new ChassisSpeeds(leftX, leftY, rightX);
+    if (fieldOriented) drive.driveFieldRelative(speeds);
+    else drive.driveRobot(speeds);
   }
 
   @Override
@@ -109,5 +99,9 @@ public class AutoDrive extends Command {
   @Override
   public void end(boolean interrupted) {
     drive.stopDrive();
+  }
+
+  protected double distanceToTarget() {
+    return dist - Math.abs(drive.calculateDriveDistance());
   }
 }

@@ -235,14 +235,14 @@ public class RobotContainer {
     safetyOverrideButton.onFalse(Commands.runOnce(() -> claw.setSafety(true)));
     alignLeftButton.whileTrue(new AutoAlignBest(swerve, new AutoAlignBase.Alignment() {
       {
-        distance = 0.5;
+        distance = 0.14;
         offset = -0.1651;
         rotation = 0;
       }
     }, bestTags, new long[] { 7, 8, 9 }));
     alignRightButton.whileTrue(new AutoAlignBest(swerve, new AutoAlignBase.Alignment() {
       {
-        distance = 0.5;
+        distance = 0.14;
         offset = 0.1651;
         rotation = 0;
       }
