@@ -141,6 +141,7 @@ public class Climber extends SubsystemBase {
   public void extendClimber() {
     climberMotor.setControl(new PositionVoltage(ClimberPositions.Extend).withSlot(0));
     holdPosition = false;
+    brakeServo.setAngle(0);
     rampServo1.setAngle(180);
     rampServo2.setAngle(180);
   }
@@ -149,9 +150,11 @@ public class Climber extends SubsystemBase {
    * Retract the climber to climb the robot
    */
   public void retractClimber() {
-    brakeServo.setAngle(0);
     climberMotor.setControl(new PositionVoltage(ClimberPositions.Retract).withSlot(0));
     holdPosition = false;
+    brakeServo.setAngle(0);
+    rampServo1.setAngle(0);
+    rampServo2.setAngle(0);
   }
 
   /**

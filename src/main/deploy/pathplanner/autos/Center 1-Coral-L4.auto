@@ -11,33 +11,27 @@
           }
         },
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "Center leg 2 (right)"
+            "name": "Stop Drive"
           }
         },
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "Center leg 3 (right)"
+            "name": "Elevator L4"
           }
         },
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "Center leg 4 (right)"
+            "name": "Shoot Coral"
           }
         },
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "Center leg 5 (right)"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Center leg 6 (right)"
+            "name": "Home Elevator"
           }
         }
       ]

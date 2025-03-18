@@ -91,6 +91,8 @@ public class RobotContainer {
   // Declare PathPlanner variables
   private final SendableChooser<Command> autoChooser;
 
+  private final long[] tagFilter = new long[] { 6, 7, 8, 9, 10, 11 };
+
   /**
    * 
    * Class Constructor
@@ -131,11 +133,17 @@ public class RobotContainer {
 
     // Register named commands for PathPlanner
     // registerPathPlannerCommands();
-    NamedCommands.registerCommand("Elevator L4", elevator.positionElevator(ElevatorMM.ElevatorPositions.Coral4));
+    NamedCommands.registerCommand("Elevator L4", CombinedCommands.moveClaw(claw, elevator, ElevatorMM.ElevatorPositions.Coral4, CClaw.ClawPositions.L4Score));
+    NamedCommands.registerCommand("Elevator L3", CombinedCommands.moveClaw(claw, elevator, ElevatorMM.ElevatorPositions.Coral3, CClaw.ClawPositions.Home));
+    NamedCommands.registerCommand("Elevator L2", CombinedCommands.moveClaw(claw, elevator, ElevatorMM.ElevatorPositions.Coral2, CClaw.ClawPositions.Home));
+    NamedCommands.registerCommand("Elevator L1", CombinedCommands.moveClaw(claw, elevator, ElevatorMM.ElevatorPositions.Coral1, CClaw.ClawPositions.L1Score));
+    NamedCommands.registerCommand("Claw L4", claw.autoRotate(CClaw.ClawPositions.L4Score));
+    NamedCommands.registerCommand("Claw L1", claw.autoRotate(CClaw.ClawPositions.L1Score));
     NamedCommands.registerCommand("Shoot Coral", claw.scoreCoral());
     NamedCommands.registerCommand("Home Elevator", CombinedCommands.moveClaw(claw, elevator, ElevatorMM.ElevatorPositions.Load, CClaw.ClawPositions.Home));
     NamedCommands.registerCommand("Intake Coral", CombinedCommands.combinedLoad(claw, elevator)
     .withDeadline(Commands.waitSeconds(0.5)));
+    NamedCommands.registerCommand("Stop Drive", swerve.stopDriving());
 
     // Create an auto command chooser
     autoChooser = AutoBuilder.buildAutoChooser();
@@ -190,7 +198,7 @@ public class RobotContainer {
       climber.runClimber(0);
     }, climber));
 
-    bestTags.filter = new long[] { 7, 8, 9 };
+    bestTags.filter = tagFilter;
   }
 
   /**
@@ -239,20 +247,20 @@ public class RobotContainer {
     }));
     safetyOverrideButton.onTrue(Commands.runOnce(() -> claw.setSafety(false)));
     safetyOverrideButton.onFalse(Commands.runOnce(() -> claw.setSafety(true)));
-    alignLeftButton.whileTrue(new AutoAlignBest(swerve, new AutoAlignBase.Alignment() {
+    alignLeftButton.whileTrue(CombinedCommands.autoAlignBest(swerve, new AutoAlignBase.Alignment() {
       {
         distance = 0.14;
         offset = -0.1651 - 0.12;
         rotation = 0;
       }
-    }, bestTags, new long[] { 7, 8, 9 }));
-    alignRightButton.whileTrue(new AutoAlignBest(swerve, new AutoAlignBase.Alignment() {
+    }, bestTags, tagFilter));
+    alignRightButton.whileTrue(CombinedCommands.autoAlignBest(swerve, new AutoAlignBase.Alignment() {
       {
         distance = 0.14;
         offset = 0.1651 - 0.12;
         rotation = 0;
       }
-    }, bestTags, new long[] { 7, 8, 9 }));
+    }, bestTags, tagFilter));
   }
 
   /**

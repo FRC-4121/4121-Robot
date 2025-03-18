@@ -18,6 +18,7 @@ public abstract class AutoAlignBase extends AutoDrive {
   protected Alignment align;
   protected boolean foundTag;
   protected boolean inRange;
+  protected ToMove toMove;
 
   /**
    * Relative position of the targeted april tag.
@@ -42,15 +43,35 @@ public abstract class AutoAlignBase extends AutoDrive {
      * Rotation of the tag, in radians.
      */
     public double rotation;
+  }
 
-    /**
-     * Tolerance for our distance from the target position, in meters.
-     */
-    public double distTolerance = 0.05;
-    /**
-     * Tolerance for our rotational difference from the target position, in radians.
-     */
-    public double rotTolerance = 0.02;
+  /**
+   * 
+   * How we want this command to move the robot
+   * 
+   */
+  public static class ToMove {
+    public boolean rotate;
+    public boolean drive;
+
+    public static final ToMove All = new ToMove() {
+      {
+        rotate = true;
+        drive = true;
+      }
+    };
+    public static final ToMove RotateOnly = new ToMove() {
+      {
+        rotate = true;
+        drive = false;
+      }
+    };
+    public static final ToMove DriveOnly = new ToMove() {
+      {
+        rotate = false;
+        drive = true;
+      }
+    };
   }
 
   /**
@@ -59,9 +80,10 @@ public abstract class AutoAlignBase extends AutoDrive {
    * @param swerve the swerve drive
    * @param align  the alignment we want relative to the tag
    */
-  public AutoAlignBase(SwerveDriveWPI swerve, Alignment align) {
+  public AutoAlignBase(SwerveDriveWPI swerve, Alignment align, ToMove toMove) {
     super(swerve);
     this.align = align;
+    this.toMove = toMove;
   }
 
   // Called when the command is initially scheduled.
@@ -72,20 +94,30 @@ public abstract class AutoAlignBase extends AutoDrive {
     inRange = true;
     pos.ifPresent(tag -> {
       setFieldOriented(false);
-      setDx(distanceToTarget());
-      setDy(tag.offset() * INCHES_TO_METERS - align.offset);
-      setDr(tag.rotation() - align.rotation);
+      if (toMove.drive) {
+        setDx(distanceToTarget());
+        setDy(tag.offset() * INCHES_TO_METERS - align.offset);
+      } else {
+        setDx(0);
+        setDy(0);
+      }
+      if (toMove.rotate) {
+        setDr(tag.rotation() - align.rotation);
+      } else {
+        setDr(0);
+      }
       super.initialize();
     });
   }
 
   @Override
   public boolean isFinished() {
-    return !foundTag || !inRange || super.isFinished();
+    return !foundTag || !inRange || ((!toMove.drive || isDriveFinished()) && (!toMove.rotate || isRotFinished()));
   }
 
   @Override
   protected double distanceToTarget() {
+    if (!toMove.drive) return 0;
     double l1 = drive.getLeftFrontLaser();
     double l2 = drive.getRightFrontLaser();
     if (l1 < 0) {

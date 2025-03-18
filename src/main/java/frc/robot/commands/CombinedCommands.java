@@ -3,8 +3,11 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.Constants.Mutables;
+import frc.robot.ExtraClasses.NetworkTableQuerier;
+import frc.robot.commands.AutoAlignBase.ToMove;
 import frc.robot.subsystems.CClaw;
 import frc.robot.subsystems.ElevatorMM;
+import frc.robot.subsystems.SwerveDriveWPI;
 
 /**
  * This class is creating for the various combined commands which that don't
@@ -38,5 +41,11 @@ public class CombinedCommands {
   public static Command shootCoral(CClaw claw, ElevatorMM elevator) {
     return claw.scoreCoral().andThen(claw.new RotateClawAndWait(CClaw.ClawPositions.Home))
         .andThen(elevator.positionElevator(ElevatorMM.ElevatorPositions.Load));
+  }
+
+  public static Command autoAlignBest(SwerveDriveWPI swerve, AutoAlignBase.Alignment align,
+      NetworkTableQuerier.BestTag best, long[] filter) {
+    return new AutoAlignBest(swerve, align, ToMove.RotateOnly, best, filter)
+        .andThen(new AutoAlignBest(swerve, align, ToMove.DriveOnly, best, filter));
   }
 }

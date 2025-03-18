@@ -29,6 +29,9 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.util.PathPlannerLogging;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
+
 
 /**
  * Define a SwerveDrive object
@@ -273,8 +276,13 @@ public class SwerveDriveWPI extends SubsystemBase {
     // Get rotational speed
     double omegaRadiansPerSecond = 0.0;
     if (Math.abs(rightX) < kJoystickTolerance) {
-      double pidOutput = wpiPIDController.calculate(Math.toRadians(getGyroYawRate()), 0.0);
-      omegaRadiansPerSecond = RotationalSpeed * pidOutput;
+      double yawRate = getGyroYawRate();
+      double pidOutput = wpiPIDController.calculate(yawRate, 0.0);
+      if (!Mutables.isSlowMode) {
+        omegaRadiansPerSecond = RotationalSpeed * pidOutput;
+      } else {
+        omegaRadiansPerSecond = SlowRadiansPerSecond * pidOutput;
+      }
       omegaRadiansPerSecond = 0.0;
     } else {
       if (Math.abs(leftX) < joystickDeadband && Math.abs(leftY) < joystickDeadband) {
@@ -337,17 +345,17 @@ public class SwerveDriveWPI extends SubsystemBase {
     // Convert joystick positions to linear speeds in meters/second
     vxMetersPerSecond = -(leftY * LinearSpeed);
     vyMetersPerSecond = -(leftX * LinearSpeed);
-
+    
     // Get rotational speed
     double omegaRadiansPerSecond = 0.0;
     if (Math.abs(rightX) < kJoystickTolerance) {
 
       double yawRate = getGyroYawRate();
       double pidOutput = wpiPIDController.calculate(yawRate, 0.0);
-      if (vxMetersPerSecond >= 0.5 * LinearSpeed) {
+      if (!Mutables.isSlowMode) {
         omegaRadiansPerSecond = RotationalSpeed * pidOutput;
       } else {
-        omegaRadiansPerSecond = 0.5 * RotationalSpeed * pidOutput;
+        omegaRadiansPerSecond = SlowRadiansPerSecond * pidOutput;
       }
       omegaRadiansPerSecond = 0.0;
 
@@ -888,5 +896,14 @@ public class SwerveDriveWPI extends SubsystemBase {
    */
   public double getRightBackLaser() {
     return rightBack.getLaserDistance();
+  }
+
+  /**
+   * Stop driving the robot
+   * 
+   * @return  Command to stop driving
+   */
+  public Command stopDriving() {
+    return runOnce(() -> stopDrive());
   }
 }

@@ -45,8 +45,8 @@ public final class Constants {
     public static final double kGearRatio = 7.15;
 
     // Swerve drive PID constants
-    public static final double kAnglePIDkp = 0.0145;
-    public static final double kAnglePIDkd = 0.0001;
+    public static final double kAnglePIDkp = 0.01;
+    public static final double kAnglePIDkd = 0.0;
     public static final double kAnglePIDki = 0.0;
     public static final double drivePIDkPs[] = { 0.4, 0.4, 0.4, 0.4 };
     public static final double drivePIDkIs[] = { 0.25, 0.25, 0.25, 0.25 };
@@ -79,7 +79,7 @@ public final class Constants {
     public static final double swerveDriveSpeedLimiter = 0.7;
     public static double LinearSpeed = MaxLinearSpeed;
     public static double RotationalSpeedStopped = MaxRadiansPerSecond;
-    public static double RotationalSpeed = MaxRadiansPerSecond;
+    public static double RotationalSpeed = Math.PI;
     public static double RotationalSpeedFast = 2 * Math.PI;
 
     // PathPlanner constants

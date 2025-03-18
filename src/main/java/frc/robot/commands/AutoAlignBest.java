@@ -9,8 +9,8 @@ public class AutoAlignBest extends AutoAlignBase {
   private NetworkTableQuerier.BestTag best;
   private long[] filter;
 
-  public AutoAlignBest(SwerveDriveWPI swerve, Alignment align, NetworkTableQuerier.BestTag best, long[] filter) {
-    super(swerve, align);
+  public AutoAlignBest(SwerveDriveWPI swerve, Alignment align, ToMove toMove, NetworkTableQuerier.BestTag best, long[] filter) {
+    super(swerve, align, toMove);
     this.best = best;
     this.filter = filter;
   }

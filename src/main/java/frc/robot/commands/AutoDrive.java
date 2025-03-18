@@ -21,8 +21,8 @@ public class AutoDrive extends Command {
     public static final double drive_kI = 0.0;
     public static final double drive_kD = 0.0;
 
-    public static final double rot_kP = 0.6;
-    public static final double rot_kI = 0.1;
+    public static final double rot_kP = 2.0;
+    public static final double rot_kI = 0.5;
     public static final double rot_kD = 0.0;
   }
 
@@ -83,21 +83,38 @@ public class AutoDrive extends Command {
     if (rotErr > Math.PI) rotErr -= Math.PI * 2;
     else if (rotErr < -Math.PI) rotErr += Math.PI * 2;
     SmartDashboard.putNumber("Auto Rot Error", rotErr);
-    double rightX = rotControl.calculate(-rotErr) * angularSpeed;
+    double rotate = rotControl.calculate(-rotErr) * angularSpeed;
     double distErr = distanceToTarget();
     SmartDashboard.putNumber("Auto Drive Dist Error", distErr);
     double scale = driveControl.calculate(-distErr);
     SmartDashboard.putNumber("Auto Drive PID Scale", scale);
-    double leftX = dx / dist * scale * linearSpeed;
-    double leftY = dy / dist * scale * linearSpeed;
-    var speeds = new ChassisSpeeds(leftX, leftY, rightX);
+    double forward = dx / dist * scale * linearSpeed;
+    double right = dy / dist * scale * linearSpeed;
+    if (!Double.isFinite(forward)) forward = 0;
+    if (!Double.isFinite(right)) right = 0;
+    SmartDashboard.putNumber("Auto Drive Final Foward", forward);
+    SmartDashboard.putNumber("Auto Drive Final Right", right);
+    SmartDashboard.putNumber("Auto Drive Final Rot", rotate);
+    var speeds = new ChassisSpeeds(forward, right, rotate);
     if (fieldOriented) drive.driveFieldRelative(speeds);
     else drive.driveRobot(speeds);
   }
 
+  protected boolean isDriveFinished() {
+    return drive.calculateDriveDistance() >= dist;
+  }
+
+  protected boolean isRotFinished() {
+    double gyroRadians = Math.toRadians(drive.getGyroAngleField());
+    double rotErr = (gyroRadians - targetGyro) % (2 * Math.PI);
+    if (rotErr > Math.PI) rotErr -= Math.PI * 2;
+    else if (rotErr < -Math.PI) rotErr += Math.PI * 2;
+    return rotErr < 0.05;
+  }
+
   @Override
   public boolean isFinished() {
-    return drive.calculateDriveDistance() >= dist;
+    return isDriveFinished() && isRotFinished();
   }
 
   @Override

@@ -36,7 +36,7 @@ public class ElevatorMM extends SubsystemBase {
   // Declare constants
   private static final double DRIVE_DEADBAND = 0.001; // Deadband for the drive motor. VAlues smaller than this will be rounded
                                                // to zero
-  private static final double CURRENT_LIMIT = 20; // Current limit to prevent motor damage
+  private static final double CURRENT_LIMIT = 100; // Current limit to prevent motor damage
 
   // Declare motor CAN IDs
   private static final int elevatorLeadID = 17;
@@ -123,7 +123,7 @@ public class ElevatorMM extends SubsystemBase {
 
     // Set lead motor current limits
     var leadLimitConfig = leadConfigs.CurrentLimits;
-    leadLimitConfig.StatorCurrentLimitEnable = true;
+    leadLimitConfig.StatorCurrentLimitEnable = false;
     leadLimitConfig.StatorCurrentLimit = 100;
 
     // Set drive motor PID constants
@@ -156,7 +156,7 @@ public class ElevatorMM extends SubsystemBase {
 
     // Set follower motor current limits
     var followLimitConfig = followConfigs.CurrentLimits;
-    followLimitConfig.StatorCurrentLimitEnable = true;
+    followLimitConfig.StatorCurrentLimitEnable = false;
     followLimitConfig.StatorCurrentLimit = 100;
 
     // Apply follow motor configuration
@@ -205,11 +205,11 @@ public class ElevatorMM extends SubsystemBase {
     SmartDashboard.putNumber("Elevator Follow Vel", elevatorFollowMotor.getVelocity().getValueAsDouble());
 
     // Check motor currents and stop elevator
-    if (Math.abs(elevatorLeadMotor.getStatorCurrent().getValueAsDouble()) > CURRENT_LIMIT ||
-        Math.abs(elevatorFollowMotor.getStatorCurrent().getValueAsDouble()) > CURRENT_LIMIT) {
-      stopElevator();
-      // zeroPosition();
-    }
+    // if (Math.abs(elevatorLeadMotor.getStatorCurrent().getValueAsDouble()) > CURRENT_LIMIT ||
+    //     Math.abs(elevatorFollowMotor.getStatorCurrent().getValueAsDouble()) > CURRENT_LIMIT) {
+    //   stopElevator();
+    //   // zeroPosition();
+    // }
 
   }
 

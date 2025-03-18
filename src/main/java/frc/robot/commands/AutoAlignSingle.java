@@ -10,8 +10,8 @@ public class AutoAlignSingle extends AutoAlignBase {
   private NetworkTableQuerier.TagCollection tags;
   private int tagId;
 
-  public AutoAlignSingle(SwerveDriveWPI swerve, Alignment align, NetworkTableQuerier.TagCollection tags, int tagId) {
-    super(swerve, align);
+  public AutoAlignSingle(SwerveDriveWPI swerve, Alignment align, ToMove toMove, NetworkTableQuerier.TagCollection tags, int tagId) {
+    super(swerve, align, toMove);
     this.tags = tags;
     this.tagId = tagId;
   }

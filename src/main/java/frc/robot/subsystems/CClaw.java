@@ -65,9 +65,9 @@ public class CClaw extends SubsystemBase {
   private static final Time outputTime = Time.ofBaseUnits(0.25, Second);
   private static final Time revOutputTime = Time.ofBaseUnits(0.5, Second);
 
-  public static final double feedSpeed = -0.25;
-  public static final double scoreSpeed = -0.3;
-  public static final double revScoreSpeed = 0.3;
+  public static final double feedSpeed = -0.32;
+  public static final double scoreSpeed = -0.4;
+  public static final double revScoreSpeed = 0.45;
   public static final double algaeFeedSpeed = 0.2;
   public static final double algaeDepositSpeed = -0.1;
 
@@ -79,7 +79,7 @@ public class CClaw extends SubsystemBase {
     public static final double L1Score = -12;
     public static final double Algae1 = -16;
     public static final double Algae2 = -17;
-    public static final double L4Score = -3.5;
+    public static final double L4Score = -4;
   }
 
   // The current position, in motor rotations
