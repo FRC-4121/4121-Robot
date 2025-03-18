@@ -60,12 +60,12 @@ public class CClaw extends SubsystemBase {
     }
   };
 
-  private static final Time extraInputTime = Time.ofBaseUnits(0.08, Second);
+  private static final Time extraInputTime = Time.ofBaseUnits(0.0, Second);
   private static final Time algaeIntakeTime = Time.ofBaseUnits(1.5, Second);
   private static final Time outputTime = Time.ofBaseUnits(0.25, Second);
   private static final Time revOutputTime = Time.ofBaseUnits(0.5, Second);
 
-  public static final double feedSpeed = -0.2;
+  public static final double feedSpeed = -0.25;
   public static final double scoreSpeed = -0.3;
   public static final double revScoreSpeed = 0.3;
   public static final double algaeFeedSpeed = 0.2;
@@ -79,6 +79,7 @@ public class CClaw extends SubsystemBase {
     public static final double L1Score = -12;
     public static final double Algae1 = -16;
     public static final double Algae2 = -17;
+    public static final double L4Score = -3.5;
   }
 
   // The current position, in motor rotations
@@ -195,7 +196,7 @@ public class CClaw extends SubsystemBase {
 
     // Set current position and claw clear flag
     currentPosition = getClawPosition();
-    if (currentPosition < ClawPositions.Home + 0.05) {
+    if (currentPosition < ClawPositions.Home + 0.1) {
       Mutables.isClawClear = true;
     } else {
       Mutables.isClawClear = false;
@@ -460,7 +461,7 @@ public class CClaw extends SubsystemBase {
       if (super.isFinished())
         return true;
       double err = Math.abs(currentPosition - position);
-      return err < 0.5;
+      return err < 0.1;
     }
   }
 }

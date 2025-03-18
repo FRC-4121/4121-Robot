@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import java.util.Optional;
+import java.math.*;
 
 import frc.robot.Constants.GeneralConstants;
 import frc.robot.Constants.Mutables;
@@ -81,8 +82,8 @@ public class SwerveDriveWPI extends SubsystemBase {
   private double backRightAngle;
 
   // Declare NavX gyro Objects
-  private final AHRS gyro;
-  private final ADXRS450_Gyro fallbackGyro;
+  private AHRS gyro;
+  private ADXRS450_Gyro fallbackGyro;
 
   // Declare misc variables
   private double joystickDeadband;
@@ -107,6 +108,8 @@ public class SwerveDriveWPI extends SubsystemBase {
   // Declare 2d Field
   private Field2d field;
 
+  private static final boolean disableNavx = false;
+
   /**
    * 
    * Creates a new SwerveDrive
@@ -130,12 +133,20 @@ public class SwerveDriveWPI extends SubsystemBase {
         rightBackTranslation);
 
     // Initialize NavX gyro
-    gyro = new AHRS(NavXComType.kMXP_SPI);
+    gyro = null;
+    try {
+      gyro = new AHRS(NavXComType.kMXP_SPI);
+    } catch (Exception ex) {
+      DriverStation.reportError("Unable to connect to NavX: " + ex.toString(), false);
+      System.out.println("Unable to connect to NavX: " + ex.toString());
+    }
     fallbackGyro = new ADXRS450_Gyro();
 
     // gyro.calibrate();
-    gyro.reset();
-    gyro.resetDisplacement();
+    if (gyro.isConnected()) {
+      gyro.reset();
+      gyro.resetDisplacement();  
+    }
 
     // Initialize misc variables
     joystickDeadband = 0.05;
@@ -222,7 +233,12 @@ public class SwerveDriveWPI extends SubsystemBase {
 
     double l1 = getLeftFrontLaser();
     double l2 = getRightFrontLaser();
+    double l3 = getLeftBackLaser();
+    double l4 = getRightBackLaser();
     SmartDashboard.putBoolean("Auto Align in Range", l1 >= 0 & l2 >= 0);
+
+    SmartDashboard.putBoolean("Against Front", (l1 >= 0 && l1 <= 0.14 || l2 >= 0 && l2 <= 0.14) && Math.abs(l1 - l2) < 0.2);
+    SmartDashboard.putBoolean("Against Rear", (l3 >= 0 && l3 <= 0.14 || l4 >= 0 && l4 <= 0.14) && Math.abs(l3 - l4) < 0.2);
   }
 
   /**
@@ -501,8 +517,9 @@ public class SwerveDriveWPI extends SubsystemBase {
    * @return Gyro angle in degrees (0 to 360)
    * 
    */
+  @SuppressWarnings("unused")
   public double getGyroAngle() {
-    if (gyro.isConnected()) {
+    if (!disableNavx && gyro.isConnected()) {
       double angle = gyro.getAngle() % 360;
       SmartDashboard.putString("Gyro Used", "NavX");
       SmartDashboard.putNumber("Gyro Raw", angle);
@@ -849,5 +866,27 @@ public class SwerveDriveWPI extends SubsystemBase {
    */
   public double getRightFrontLaser() {
     return rightFront.getLaserDistance();
+  }
+
+  /**
+   * 
+   * Get the measured distance for the left front swerve module's laserCAN.
+   * 
+   * @return the distance in meters
+   * 
+   */
+  public double getLeftBackLaser() {
+    return leftBack.getLaserDistance();
+  }
+
+  /**
+   * 
+   * Get the measured distance for the right front swerve module's laserCAN.
+   * 
+   * @return the distance in meters
+   * 
+   */
+  public double getRightBackLaser() {
+    return rightBack.getLaserDistance();
   }
 }

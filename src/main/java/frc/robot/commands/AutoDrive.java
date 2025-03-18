@@ -21,8 +21,8 @@ public class AutoDrive extends Command {
     public static final double drive_kI = 0.0;
     public static final double drive_kD = 0.0;
 
-    public static final double rot_kP = 0.1;
-    public static final double rot_kI = 0.0;
+    public static final double rot_kP = 0.6;
+    public static final double rot_kI = 0.1;
     public static final double rot_kD = 0.0;
   }
 
@@ -68,17 +68,21 @@ public class AutoDrive extends Command {
   public void initialize() {
     drive.resetDistance();
     dist = Math.sqrt(dx * dx + dy * dy);
-    targetGyro = Math.toRadians(drive.getGyroAngleField()) + dr;
+    double gyroRadians = Math.toRadians(drive.getGyroAngleField());
+    targetGyro = (gyroRadians + dr) % (2 * Math.PI);
     SmartDashboard.putNumber("Auto dX", dx);
     SmartDashboard.putNumber("Auto dY", dy);
     SmartDashboard.putNumber("Auto dR", dr);
+    SmartDashboard.putNumber("Auto Target Gyro", targetGyro);
   }
 
   @Override
   public void execute() {
-    double rotErr = Math.toRadians(drive.getGyroAngleField()) - targetGyro;
+    double gyroRadians = Math.toRadians(drive.getGyroAngleField());
+    double rotErr = (gyroRadians - targetGyro) % (2 * Math.PI);
     if (rotErr > Math.PI) rotErr -= Math.PI * 2;
     else if (rotErr < -Math.PI) rotErr += Math.PI * 2;
+    SmartDashboard.putNumber("Auto Rot Error", rotErr);
     double rightX = rotControl.calculate(-rotErr) * angularSpeed;
     double distErr = distanceToTarget();
     SmartDashboard.putNumber("Auto Drive Dist Error", distErr);

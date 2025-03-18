@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import frc.robot.Constants.GeneralConstants;
+import frc.robot.Constants.Mutables;
 import frc.robot.commands.TimeoutCommand;
 
 /**
@@ -35,7 +36,7 @@ public class ElevatorMM extends SubsystemBase {
   // Declare constants
   private static final double DRIVE_DEADBAND = 0.001; // Deadband for the drive motor. VAlues smaller than this will be rounded
                                                // to zero
-  private static final double CURRENT_LIMIT = 1000; // Current limit to prevent motor damage
+  private static final double CURRENT_LIMIT = 20; // Current limit to prevent motor damage
 
   // Declare motor CAN IDs
   private static final int elevatorLeadID = 17;
@@ -63,10 +64,10 @@ public class ElevatorMM extends SubsystemBase {
   public static final class ElevatorPositions {
     public static final double Load = 0;
     public static final double Coral1 = 1;
-    public static final double Coral2 = 19;
-    public static final double Coral3 = 58;
-    public static final double Coral4 = 122;
-    public static final double Algae1 = 33;
+    public static final double Coral2 = 16;
+    public static final double Coral3 = 55;
+    public static final double Coral4 = 119;
+    public static final double Algae1 = 31;
     public static final double Algae2 = 80;
     public static final double Processor = 10;
     public static final double Barge = 10;
@@ -123,15 +124,15 @@ public class ElevatorMM extends SubsystemBase {
     // Set lead motor current limits
     var leadLimitConfig = leadConfigs.CurrentLimits;
     leadLimitConfig.StatorCurrentLimitEnable = true;
-    leadLimitConfig.StatorCurrentLimit = 110;
+    leadLimitConfig.StatorCurrentLimit = 100;
 
     // Set drive motor PID constants
     leadConfigs.Slot0 = autoGains;
 
     // Set MotionMagic settings
     var motionMagicConfigs = leadConfigs.MotionMagic;
-    motionMagicConfigs.MotionMagicCruiseVelocity = 80;
-    motionMagicConfigs.MotionMagicAcceleration = 100;
+    motionMagicConfigs.MotionMagicCruiseVelocity = 70;
+    motionMagicConfigs.MotionMagicAcceleration = 85;
     motionMagicConfigs.MotionMagicJerk = 1600;
 
     // Apply lead motor configuration and initialize position to 0
@@ -156,7 +157,7 @@ public class ElevatorMM extends SubsystemBase {
     // Set follower motor current limits
     var followLimitConfig = followConfigs.CurrentLimits;
     followLimitConfig.StatorCurrentLimitEnable = true;
-    followLimitConfig.StatorCurrentLimit = 110;
+    followLimitConfig.StatorCurrentLimit = 100;
 
     // Apply follow motor configuration
     StatusCode followStatus = elevatorFollowMotor.getConfigurator().apply(followConfigs, 0.050);
@@ -176,9 +177,11 @@ public class ElevatorMM extends SubsystemBase {
    */
   @Override
   public void periodic() {
+
     if (limitSwitch.get()) {
       zeroPosition();
     }
+
     // Set current position
     currentPosition = getPosition();
 
@@ -202,8 +205,8 @@ public class ElevatorMM extends SubsystemBase {
     SmartDashboard.putNumber("Elevator Follow Vel", elevatorFollowMotor.getVelocity().getValueAsDouble());
 
     // Check motor currents and stop elevator
-    if (elevatorLeadMotor.getStatorCurrent().getValueAsDouble() > CURRENT_LIMIT ||
-        elevatorFollowMotor.getStatorCurrent().getValueAsDouble() > CURRENT_LIMIT) {
+    if (Math.abs(elevatorLeadMotor.getStatorCurrent().getValueAsDouble()) > CURRENT_LIMIT ||
+        Math.abs(elevatorFollowMotor.getStatorCurrent().getValueAsDouble()) > CURRENT_LIMIT) {
       stopElevator();
       // zeroPosition();
     }
@@ -229,10 +232,10 @@ public class ElevatorMM extends SubsystemBase {
   public void moveElevator(double direction) {
     if (Math.abs(direction) < 0.0001) {
       if (holdPosition) {
-        SmartDashboard.putNumber("Elevator H Pos", currentPosition);
-        SmartDashboard.putBoolean("Elevator Hold", true);
-        elevatorLeadMotor.setControl(new PositionVoltage(currentPosition).withSlot(0));
-        holdPosition = false;
+          SmartDashboard.putNumber("Elevator H Pos", currentPosition);
+          SmartDashboard.putBoolean("Elevator Hold", true);
+          elevatorLeadMotor.setControl(new PositionVoltage(currentPosition).withSlot(0));
+          holdPosition = false;
       }
     } else {
       SmartDashboard.putBoolean("Elevator Hold", false);

@@ -60,7 +60,7 @@ public class DriveWithJoysticks extends Command {
     ySpeed = ySpeedLimiter.calculate(MathUtil.applyDeadband(xbox.getLeftY(), 0.01))
         * ControlConstants.kJoystickSpeedCorr;
     rotSpeed = -rotSpeedLimiter.calculate(MathUtil.applyDeadband(xbox.getRightX(), 0.01))
-        * ControlConstants.kJoystickSpeedCorr;
+        * ControlConstants.kJoystickRotCorr;
 
     SmartDashboard.putNumber("X Speed", xSpeed);
     SmartDashboard.putNumber("Y Speed", ySpeed);

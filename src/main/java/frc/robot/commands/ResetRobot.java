@@ -6,6 +6,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.*;
+import frc.robot.subsystems.CClaw.ClawPositions;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class ResetRobot extends Command {
@@ -32,13 +33,9 @@ public class ResetRobot extends Command {
   public void execute() {
 
     swerve.homeDriveWheels();
-    claw.returnHome();
+    claw.setRotation(ClawPositions.Home);
     elevator.moveElevator(ElevatorMM.ElevatorPositions.Load);
     climber.homeClimber();
-    claw.zeroIntake();
-    climber.zeroEncoder();
-    elevator.zeroPosition();
-    
   }
 
   // Called once the command ends or is interrupted.

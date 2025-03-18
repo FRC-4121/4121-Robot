@@ -40,7 +40,7 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
 
-    new CameraBuilder(0, "Front").fps(15).attachAutoCapture();
+    // new CameraBuilder(0, "Front").fps(15).attachAutoCapture();
     // new CameraBuilder(1, "Camera 1").fps(15).attachAutoCapture();
 
     // Instantiate our RobotContainer. This will perform all our button bindings,
@@ -154,6 +154,7 @@ public class Robot extends TimedRobot {
 
     // Get the autonomous command
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+    SmartDashboard.putString("Auto", m_autonomousCommand.getName());
 
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {
@@ -161,13 +162,13 @@ public class Robot extends TimedRobot {
     }
 
     // Set robot to robot oriented driving
-    Mutables.isFieldOriented = true;
+    // Mutables.isFieldOriented = true;
 
     // Make sure the robot is in fast mode
-    DriveConstants.LinearSpeed = DriveConstants.MaxLinearSpeed;
-    DriveConstants.RotationalSpeed = DriveConstants.MaxRadiansPerSecond;
-    DriveConstants.maxYawRate = DriveConstants.FastMaxYawRate;
-    Mutables.isSlowMode = false;
+    // DriveConstants.LinearSpeed = DriveConstants.MaxLinearSpeed;
+    // DriveConstants.RotationalSpeed = DriveConstants.MaxRadiansPerSecond;
+    // DriveConstants.maxYawRate = DriveConstants.FastMaxYawRate;
+    // Mutables.isSlowMode = false;
   }
 
   /** This function is called periodically during autonomous. */

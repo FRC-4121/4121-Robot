@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj2.command.button.*;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 
 public class RobotContainer {
 
@@ -129,7 +130,12 @@ public class RobotContainer {
     killAuto = new KillAutoCommand();
 
     // Register named commands for PathPlanner
-    registerPathPlannerCommands();
+    // registerPathPlannerCommands();
+    NamedCommands.registerCommand("Elevator L4", elevator.positionElevator(ElevatorMM.ElevatorPositions.Coral4));
+    NamedCommands.registerCommand("Shoot Coral", claw.scoreCoral());
+    NamedCommands.registerCommand("Home Elevator", CombinedCommands.moveClaw(claw, elevator, ElevatorMM.ElevatorPositions.Load, CClaw.ClawPositions.Home));
+    NamedCommands.registerCommand("Intake Coral", CombinedCommands.combinedLoad(claw, elevator)
+    .withDeadline(Commands.waitSeconds(0.5)));
 
     // Create an auto command chooser
     autoChooser = AutoBuilder.buildAutoChooser();
@@ -200,24 +206,24 @@ public class RobotContainer {
     changeSpeedButton.onTrue(changeSpeedCommand);
     changeModeButton.onTrue(changeModeCommand);
     clawHomeButton.onTrue(claw.returnHome());
-    elevatorHomeButton.onTrue(elevator.positionElevator(ElevatorMM.ElevatorPositions.Load));
+    elevatorHomeButton.onTrue(CombinedCommands.moveClaw(claw, elevator, ElevatorMM.ElevatorPositions.Load, CClaw.ClawPositions.Home));
     elevatorCoral1Button.onTrue(
         Commands.either(
             CombinedCommands.moveClaw(claw, elevator, ElevatorMM.ElevatorPositions.Coral1, CClaw.ClawPositions.L1Score),
             CombinedCommands.moveClaw(claw, elevator, ElevatorMM.ElevatorPositions.Algae1, CClaw.ClawPositions.Algae1),
             () -> claw.hasCoral()));
-    elevatorCoral2Button.onTrue(elevator.positionElevator(ElevatorMM.ElevatorPositions.Coral2));
-    elevatorCoral3Button.onTrue(elevator.positionElevator(ElevatorMM.ElevatorPositions.Coral3));
+    elevatorCoral2Button.onTrue(CombinedCommands.moveClaw(claw, elevator, ElevatorMM.ElevatorPositions.Coral2, CClaw.ClawPositions.Home));
+    elevatorCoral3Button.onTrue(CombinedCommands.moveClaw(claw, elevator, ElevatorMM.ElevatorPositions.Coral3, CClaw.ClawPositions.Home));
     elevatorCoral4Button.onTrue(
         Commands.either(
-            elevator.positionElevator(ElevatorMM.ElevatorPositions.Coral4),
+          CombinedCommands.moveClaw(claw, elevator, ElevatorMM.ElevatorPositions.Coral4, CClaw.ClawPositions.L4Score),
             CombinedCommands.moveClaw(claw, elevator, ElevatorMM.ElevatorPositions.Algae2, CClaw.ClawPositions.Algae2),
             () -> claw.hasCoral()));
     coralIntakeButton.onTrue(CombinedCommands.combinedLoad(claw, elevator)
-        .withDeadline(Commands.waitSeconds(0.5).andThen(Commands.idle().until(coralIntakeButton))));
+        .withDeadline(Commands.waitSeconds(1).andThen(Commands.idle().until(coralIntakeButton))));
     coralScoreButton.onTrue(
         Commands.either(
-            claw.scoreCoral(),
+            CombinedCommands.shootCoral(claw, elevator),
             claw.algaeDeposit(),
             () -> claw.hasCoral()));
     algaeIntakeButton.onTrue(claw.algaeIntake());
@@ -236,14 +242,14 @@ public class RobotContainer {
     alignLeftButton.whileTrue(new AutoAlignBest(swerve, new AutoAlignBase.Alignment() {
       {
         distance = 0.14;
-        offset = -0.1651;
+        offset = -0.1651 - 0.12;
         rotation = 0;
       }
     }, bestTags, new long[] { 7, 8, 9 }));
     alignRightButton.whileTrue(new AutoAlignBest(swerve, new AutoAlignBase.Alignment() {
       {
         distance = 0.14;
-        offset = 0.1651;
+        offset = 0.1651 - 0.12;
         rotation = 0;
       }
     }, bestTags, new long[] { 7, 8, 9 }));
@@ -263,9 +269,10 @@ public class RobotContainer {
   /**
    * Register robot commands for PathPlanner use
    */
-  private void registerPathPlannerCommands() {
-
-  }
+  // private void registerPathPlannerCommands() {
+  //   NamedCommands.registerCommand("Elevator L4", elevator.positionElevator(ElevatorMM.ElevatorPositions.Coral4));
+  //   NamedCommands.registerCommand("Shoot Coral", claw.scoreCoral());
+  // }
 
   /**
    * 
@@ -375,6 +382,7 @@ public class RobotContainer {
    */
   public void setClawSafety() {
     claw.setSafety(!safetyOverrideButton.getAsBoolean());
+    claw.setRotation(CClaw.ClawPositions.Home);
   }
 
 }

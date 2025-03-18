@@ -15,7 +15,7 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "Center leg 1 (right)"
+                        "pathName": "Right leg 1"
                       }
                     }
                   ]
@@ -50,15 +50,28 @@
           }
         },
         {
-          "type": "named",
+          "type": "parallel",
           "data": {
-            "name": "Home Elevator"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Far Right leg 2"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Home Elevator"
+                }
+              }
+            ]
           }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": "Center (right)",
+  "folder": "Right",
   "choreoAuto": false
 }

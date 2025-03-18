@@ -74,7 +74,7 @@ public abstract class AutoAlignBase extends AutoDrive {
       setFieldOriented(false);
       setDx(distanceToTarget());
       setDy(tag.offset() * INCHES_TO_METERS - align.offset);
-      setDr(-tag.rotation() + align.rotation);
+      setDr(tag.rotation() - align.rotation);
       super.initialize();
     });
   }

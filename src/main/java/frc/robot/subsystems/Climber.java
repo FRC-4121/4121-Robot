@@ -62,8 +62,8 @@ public class Climber extends SubsystemBase {
   // Declare climber motor position constants
   public static final class ClimberPositions {
     public static final int Extend = -285;
-    public static final int Retract = 0;
-    public static final int Home = Retract;
+    public static final int Retract = -45;
+    public static final int Home = 0;
   }
 
   /**
@@ -149,7 +149,7 @@ public class Climber extends SubsystemBase {
    * Retract the climber to climb the robot
    */
   public void retractClimber() {
-    brakeServo.setAngle(30);
+    brakeServo.setAngle(0);
     climberMotor.setControl(new PositionVoltage(ClimberPositions.Retract).withSlot(0));
     holdPosition = false;
   }
@@ -160,7 +160,7 @@ public class Climber extends SubsystemBase {
   public void homeClimber() {
     climberMotor.setControl(new PositionVoltage(ClimberPositions.Home).withSlot(0));
     holdPosition = false;
-    brakeServo.setAngle(30);
+    brakeServo.setAngle(0);
     rampServo1.setAngle(0);
     rampServo2.setAngle(0);
   }
@@ -174,7 +174,7 @@ public class Climber extends SubsystemBase {
         holdPosition = false;
       }
     } else {
-      brakeServo.setAngle(30);
+      brakeServo.setAngle(0);
       SmartDashboard.putBoolean("Climber Hold", false);
       holdPosition = true;
       climberMotor.setControl(new DutyCycleOut(direction));
@@ -266,7 +266,7 @@ public class Climber extends SubsystemBase {
     @Override
     public void end(boolean interrupted) {
       if (!interrupted && state.equals(State.Retracted))
-        brakeServo.setAngle(0);
+        brakeServo.setAngle(30);
     }
   }
 }
