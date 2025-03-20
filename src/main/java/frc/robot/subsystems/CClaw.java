@@ -67,7 +67,7 @@ public class CClaw extends SubsystemBase {
 
   public static final double feedSpeed = -0.32;
   public static final double scoreSpeed = -0.4;
-  public static final double revScoreSpeed = 0.45;
+  public static final double revScoreSpeed = 0.3;
   public static final double algaeFeedSpeed = 0.2;
   public static final double algaeDepositSpeed = -0.1;
 
@@ -196,7 +196,7 @@ public class CClaw extends SubsystemBase {
 
     // Set current position and claw clear flag
     currentPosition = getClawPosition();
-    if (currentPosition < ClawPositions.Home + 0.1) {
+    if (currentPosition > ClawPositions.Home - 0.3) {
       Mutables.isClawClear = true;
     } else {
       Mutables.isClawClear = false;

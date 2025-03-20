@@ -29,6 +29,18 @@
           }
         },
         {
+          "type": "path",
+          "data": {
+            "pathName": "Center leg 1 Reversed"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Stop Drive"
+          }
+        },
+        {
           "type": "named",
           "data": {
             "name": "Home Elevator"

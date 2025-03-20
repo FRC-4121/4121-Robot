@@ -65,7 +65,7 @@ public class ElevatorMM extends SubsystemBase {
     public static final double Load = 0;
     public static final double Coral1 = 1;
     public static final double Coral2 = 16;
-    public static final double Coral3 = 55;
+    public static final double Coral3 = 57;
     public static final double Coral4 = 119;
     public static final double Algae1 = 31;
     public static final double Algae2 = 80;
