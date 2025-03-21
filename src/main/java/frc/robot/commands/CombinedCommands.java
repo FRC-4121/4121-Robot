@@ -31,7 +31,7 @@ public class CombinedCommands {
   }
 
   public static Command moveClaw(CClaw claw, ElevatorMM elevator, double elevatorPos, double clawPos) {
-    return claw.new RotateClawAndWait(CClaw.ClawPositions.Home - 0.15)
+    return claw.new RotateClawAndWait(CClaw.ClawPositions.Home)
         .andThen(elevator.new PositionElevatorAndWait(elevatorPos))
         .andThen(
             claw.new RotateClawAndWait(clawPos))

@@ -186,12 +186,12 @@ public class SwerveDriveWPI extends SubsystemBase {
             // This will flip the path being followed to the red side of the field.
             // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
 
-            /*
-             * var alliance = DriverStation.getAlliance();
-             * if (alliance.isPresent()) {
-             * return alliance.get() == DriverStation.Alliance.Red;
-             * }
-             */ return false;
+            
+            var alliance = DriverStation.getAlliance();
+            if (alliance.isPresent()) {
+              return alliance.get() == DriverStation.Alliance.Red;
+            }
+            return false;
 
           },
           this);
