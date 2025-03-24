@@ -5,15 +5,15 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.SwerveDrive;
+import frc.robot.subsystems.SwerveDriveWPI;
 
 public class ParkCommand extends Command {
 
-  SwerveDrive swerveDrive;
+  SwerveDriveWPI SwerveDriveWPI;
 
-  public ParkCommand(SwerveDrive swerveDrive) {
-    this.swerveDrive = swerveDrive;
-    addRequirements(swerveDrive);
+  public ParkCommand(SwerveDriveWPI SwerveDriveWPI) {
+    this.SwerveDriveWPI = SwerveDriveWPI;
+    addRequirements(SwerveDriveWPI);
   }
 
   // Called when the command is initially scheduled.
@@ -25,7 +25,7 @@ public class ParkCommand extends Command {
   @Override
   public void execute() {
     // parks the bot
-    swerveDrive.parkBot();
+    SwerveDriveWPI.parkBot();
   }
 
   // Called once the command ends or is interrupted.
