@@ -13,7 +13,43 @@
         {
           "type": "named",
           "data": {
-            "name": "Stop Drive"
+            "name": "Elevator L4"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Shoot Coral"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Home Elevator"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Center leg 1 Reversed"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Center leg 2 (right)"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Intake Coral"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Center leg 3 (right)"
           }
         },
         {
@@ -29,21 +65,21 @@
           }
         },
         {
-          "type": "path",
-          "data": {
-            "pathName": "Center leg 1 Reversed"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Stop Drive"
-          }
-        },
-        {
           "type": "named",
           "data": {
             "name": "Home Elevator"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Center leg 4 (right)"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Intake Coral"
           }
         }
       ]
