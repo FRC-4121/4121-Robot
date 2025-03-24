@@ -67,9 +67,9 @@ public class CClaw extends SubsystemBase {
 
   public static final double feedSpeed = -0.32;
   public static final double scoreSpeed = -0.4;
-  public static final double revScoreSpeed = 0.3;
+  public static final double revScoreSpeed = 0.32;
   public static final double algaeFeedSpeed = 0.2;
-  public static final double algaeDepositSpeed = -0.1;
+  public static final double algaeDepositSpeed = -1;
 
   // Create a claw position class
   public static final class ClawPositions {
@@ -191,19 +191,30 @@ public class CClaw extends SubsystemBase {
 
   }
 
+  public boolean isClear() {
+    return currentPosition < ClawPositions.Home + 0.05 && currentPosition > ClawPositions.Home - 0.2; 
+  }
+  public boolean needsReset() {
+    return currentPosition > ClawPositions.Home + 0.05;
+  }
+
   @Override
   public void periodic() {
 
     // Set current position and claw clear flag
     currentPosition = getClawPosition();
-    if (currentPosition > ClawPositions.Home - 0.3) {
+    if (isClear()) {
       Mutables.isClawClear = true;
     } else {
       Mutables.isClawClear = false;
-      if (!noSafety && safetyCheck) {
+      if (!noSafety && safetyCheck && needsReset()) {
         setRotation(ClawPositions.Home);
-        safetyCheck = false;
+        safetyCheck = true;
       }
+      // if (!noSafety && safetyCheck) {
+      //   setRotation(ClawPositions.Home);
+      //   safetyCheck = false;
+      // }
     }
 
     // Update dashboard values
@@ -272,6 +283,9 @@ public class CClaw extends SubsystemBase {
    */
   public void setSafety(boolean safety) {
     this.noSafety = !safety;
+    if (safety && !isClear()) {
+      setRotation(ClawPositions.Home);
+    }
   }
 
   /**
@@ -301,6 +315,7 @@ public class CClaw extends SubsystemBase {
    * 
    */
   public void rotate(double direction) {
+    SmartDashboard.putBoolean("Locked Input", false);
     if (Math.abs(direction) < 0.01) {
       if (holdPosition) {
         SmartDashboard.putNumber("Claw H Pos", currentPosition);
@@ -315,6 +330,7 @@ public class CClaw extends SubsystemBase {
       if (!noSafety
           && ((currentPosition < minRotation && direction < 0) || (currentPosition > maxRotation && direction > 0))) {
         rotationMotor.setControl(new DutyCycleOut(0));
+        SmartDashboard.putBoolean("Locked Input", true);
         return;
       }
       safetyCheck = true;
@@ -427,12 +443,12 @@ public class CClaw extends SubsystemBase {
   public class WithoutSafety extends Command {
     @Override
     public void initialize() {
-      noSafety = true;
+      setSafety(false);
     }
 
     @Override
     public void end(boolean interrupted) {
-      noSafety = false;
+      setSafety(true);
     }
   }
 

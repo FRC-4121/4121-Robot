@@ -144,6 +144,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("Intake Coral", CombinedCommands.combinedLoad(claw, elevator)
     .withDeadline(Commands.waitSeconds(0.5)));
     NamedCommands.registerCommand("Stop Drive", swerve.stopDriving());
+    NamedCommands.registerCommand("Intake Coral", CombinedCommands.combinedLoad(claw, elevator));
 
     // Create an auto command chooser
     autoChooser = AutoBuilder.buildAutoChooser();
@@ -224,14 +225,17 @@ public class RobotContainer {
     elevatorCoral3Button.onTrue(CombinedCommands.moveClaw(claw, elevator, ElevatorMM.ElevatorPositions.Coral3, CClaw.ClawPositions.Home));
     elevatorCoral4Button.onTrue(
         Commands.either(
-          CombinedCommands.moveClaw(claw, elevator, ElevatorMM.ElevatorPositions.Coral4, CClaw.ClawPositions.L4Score),
+          // Commands.runOnce(() -> claw.setSafety(false)).andThen(
+            CombinedCommands.moveClaw(claw, elevator, ElevatorMM.ElevatorPositions.Coral4, CClaw.ClawPositions.L4Score)
+            // )
+            ,
             CombinedCommands.moveClaw(claw, elevator, ElevatorMM.ElevatorPositions.Algae2, CClaw.ClawPositions.Algae2),
             () -> claw.hasCoral()));
     coralIntakeButton.onTrue(CombinedCommands.combinedLoad(claw, elevator)
         .withDeadline(Commands.waitSeconds(1).andThen(Commands.idle().until(coralIntakeButton))));
     coralScoreButton.onTrue(
         Commands.either(
-            CombinedCommands.shootCoral(claw, elevator),
+            CombinedCommands.shootCoral(claw, elevator).finallyDo(() -> claw.setSafety(true)),
             claw.algaeDeposit(),
             () -> claw.hasCoral()));
     algaeIntakeButton.onTrue(claw.algaeIntake());

@@ -62,7 +62,7 @@ public class Climber extends SubsystemBase {
   // Declare climber motor position constants
   public static final class ClimberPositions {
     public static final int Extend = -285;
-    public static final int Retract = -45;
+    public static final int Retract = -47;
     public static final int Home = 0;
   }
 

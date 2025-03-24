@@ -21,13 +21,10 @@ public class CombinedCommands {
   public static Command combinedLoad(CClaw claw, ElevatorMM elevator) {
     return claw.new RotateClawAndWait(CClaw.ClawPositions.Home)
         .andThen(Commands.idle(claw, elevator).until(() -> Mutables.isClawClear))
-        .andThen(elevator.new PositionElevatorAndWait(ElevatorMM.ElevatorPositions.Load)) // start by moving to the
-                                                                                          // level
+        .andThen(elevator.new PositionElevatorAndWait(ElevatorMM.ElevatorPositions.Load))
         .andThen(
-            claw.autoRotate(CClaw.ClawPositions.Load).andThen(claw.intakeCoral()) // move the the load position and
-                                                                                  // intake coral
-                .deadlineFor(claw.new WithoutSafety().alongWith(Commands.idle(elevator)))); // while that's going, we
-                                                                                            // want to disable safety
+            claw.autoRotate(CClaw.ClawPositions.Load).andThen(claw.intakeCoral())
+                .deadlineFor(claw.new WithoutSafety().alongWith(Commands.idle(elevator))));
   }
 
   public static Command moveClaw(CClaw claw, ElevatorMM elevator, double elevatorPos, double clawPos) {
