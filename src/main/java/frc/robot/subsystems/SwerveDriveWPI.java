@@ -174,7 +174,7 @@ public class SwerveDriveWPI extends SubsystemBase {
       AutoBuilder.configure(
           this::getPose,
           this::resetPose,
-          this::getSpeeds,
+          this::getRobotRelativeSpeeds,
           this::driveRobotRelativePP,
           new PPHolonomicDriveController(
               translationConstants,
@@ -187,10 +187,10 @@ public class SwerveDriveWPI extends SubsystemBase {
             // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
 
             
-            var alliance = DriverStation.getAlliance();
-            if (alliance.isPresent()) {
-              return alliance.get() == DriverStation.Alliance.Red;
-            }
+            // var alliance = DriverStation.getAlliance();
+            // if (alliance.isPresent()) {
+            //   return alliance.get() == DriverStation.Alliance.Red;
+            // }
             return false;
 
           },
@@ -345,7 +345,9 @@ public class SwerveDriveWPI extends SubsystemBase {
     // Convert joystick positions to linear speeds in meters/second
     vxMetersPerSecond = -(leftY * LinearSpeed);
     vyMetersPerSecond = -(leftX * LinearSpeed);
-    
+    SmartDashboard.putNumber("vX Speed", vxMetersPerSecond);
+    SmartDashboard.putNumber("vY Speed", vyMetersPerSecond);
+
     // Get rotational speed
     double omegaRadiansPerSecond = 0.0;
     if (Math.abs(rightX) < kJoystickTolerance) {
@@ -427,9 +429,9 @@ public class SwerveDriveWPI extends SubsystemBase {
     if (!Mutables.isParked) {
 
       leftFront.drive(frontLeftState.speedMetersPerSecond, fromWPIAngle(frontLeftAngle));
-     // rightFront.drive(frontRightState.speedMetersPerSecond, fromWPIAngle(frontRightAngle));
-     // leftBack.drive(backLeftState.speedMetersPerSecond, fromWPIAngle(backLeftAngle));
-     // rightBack.drive(backRightState.speedMetersPerSecond, fromWPIAngle(backRightAngle));
+      rightFront.drive(frontRightState.speedMetersPerSecond, fromWPIAngle(frontRightAngle));
+      leftBack.drive(backLeftState.speedMetersPerSecond, fromWPIAngle(backLeftAngle));
+      rightBack.drive(backRightState.speedMetersPerSecond, fromWPIAngle(backRightAngle));
 
     }
 

@@ -11,9 +11,21 @@
           }
         },
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "Far Left leg 2"
+            "name": "Stop Drive"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Elevator L4"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Shoot Coral"
           }
         }
       ]

@@ -311,6 +311,7 @@ public class SwerveWheel2 extends SubsystemBase {
 
     // Optimize angle motor rotation direction and distance
     double error = (encoderAngle - normAngle + 0.5) % 1 - 0.5;
+    SmartDashboard.putNumber("Ang Error", error);
     if (error < -0.5)
       error += 1.0;
     else if (error > 0.5)
@@ -343,9 +344,9 @@ public class SwerveWheel2 extends SubsystemBase {
     double motorVelocityRPM = motorVelocity * 60;
 
     // Set outputs for angle and drive motors
-    // swerveAngleOut.Output = angleSpeed;
-    // swerveAngleMotor.setControl(swerveAngleOut);
-    swerveAngleMotor.setControl(positionRequest.withPosition(targetAngle));
+    swerveAngleOut.Output = angleSpeed;
+    swerveAngleMotor.setControl(swerveAngleOut);
+    // swerveAngleMotor.setControl(positionRequest.withPosition(targetAngle));
     swerveDriveMotor.setControl(velocityRequest.withVelocity(motorVelocity));
 
     // Send critical values to SmartDashboard for troubleshooting / tuning

@@ -42,7 +42,7 @@ public final class Constants {
     public static final double autoLeftGyroCorrection = 53;
     public static final double rightGyroCorrection = 307;// Gyro correction in degrees (was 307)
     public static final double autoRightGyroCorrection = -53;
-    public static final double kGearRatio = 7.15;
+    public static final double kGearRatio = 6.98;  //7.15
 
     // Swerve drive PID constants
     public static final double kAnglePIDkp = 0.01;
@@ -84,7 +84,7 @@ public final class Constants {
 
     // PathPlanner constants
     public static final PIDConstants translationConstants = new PIDConstants(4.5, 0.0, 0.0);
-    public static final PIDConstants rotationConstants = new PIDConstants(1.5, 0.0, 0.0);
+    public static final PIDConstants rotationConstants = new PIDConstants(1.2, 0.1, 0.0);
 
     // General drive constants
     public static final double GyroCorrection = 180;

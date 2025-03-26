@@ -78,7 +78,7 @@ public class DriveWithJoysticks extends Command {
     if (Mutables.isFieldOriented) {
       swerve.driveFieldRelative(xSpeed, ySpeed, rotSpeed);
     } else {
-      swerve.driveRobotRelative(-xSpeed, -ySpeed, rotSpeed);
+      swerve.driveRobotRelative(xSpeed, ySpeed, rotSpeed);
     }
   }
 

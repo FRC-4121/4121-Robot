@@ -53,8 +53,8 @@ public class CClaw extends SubsystemBase {
     {
       kG = 0.2;
       kS = 0.1;
-      kV = 0.1;
-      kP = 0.8;
+      kV = 0.11;
+      kP = 0.9;
       kI = 0.8;
       kD = 0.0;
     }
@@ -79,7 +79,7 @@ public class CClaw extends SubsystemBase {
     public static final double L1Score = -12;
     public static final double Algae1 = -16;
     public static final double Algae2 = -17;
-    public static final double L4Score = -4;
+    public static final double L4Score = -4.8;
   }
 
   // The current position, in motor rotations
@@ -191,9 +191,15 @@ public class CClaw extends SubsystemBase {
 
   }
 
+  /**
+   * Check if the claw is clear of elevator
+   * 
+   * @return  Flag indicating is clear
+   */
   public boolean isClear() {
     return currentPosition < ClawPositions.Home + 0.05 && currentPosition > ClawPositions.Home - 0.2; 
   }
+
   public boolean needsReset() {
     return currentPosition > ClawPositions.Home + 0.05;
   }
