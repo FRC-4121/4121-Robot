@@ -5,23 +5,15 @@
     "data": {
       "commands": [
         {
-          "type": "parallel",
+          "type": "path",
           "data": {
-            "commands": [
-              {
-                "type": "sequential",
-                "data": {
-                  "commands": [
-                    {
-                      "type": "path",
-                      "data": {
-                        "pathName": "Right leg 1"
-                      }
-                    }
-                  ]
-                }
-              }
-            ]
+            "pathName": "Right leg 1"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Stop Drive"
           }
         }
       ]

@@ -53,10 +53,10 @@ public class CClaw extends SubsystemBase {
     {
       kG = 0.2;
       kS = 0.1;
-      kV = 0.11;
-      kP = 0.9;
-      kI = 0.8;
-      kD = 0.0;
+      kV = 0.05;
+      kP = 0.8;
+      kI = 0.05;
+      kD = 0.05;
     }
   };
 
@@ -144,10 +144,10 @@ public class CClaw extends SubsystemBase {
     rotateLimitConfig.StatorCurrentLimitEnable = true;
     rotateLimitConfig.StatorCurrentLimit = CURRENT_LIMIT;
 
-    var motionMagicConfigs = rotateConfigs.MotionMagic;
-    motionMagicConfigs.MotionMagicCruiseVelocity = 80;
-    motionMagicConfigs.MotionMagicAcceleration = 120;
-    motionMagicConfigs.MotionMagicJerk = 1600;
+    // var motionMagicConfigs = rotateConfigs.MotionMagic;
+    // motionMagicConfigs.MotionMagicCruiseVelocity = 60;
+    // motionMagicConfigs.MotionMagicAcceleration = 90;
+    // motionMagicConfigs.MotionMagicJerk = 1600;
 
     // Set rotate motor PID constants
     rotateConfigs.Slot0 = autoGains;
@@ -197,7 +197,7 @@ public class CClaw extends SubsystemBase {
    * @return  Flag indicating is clear
    */
   public boolean isClear() {
-    return currentPosition < ClawPositions.Home + 0.05 && currentPosition > ClawPositions.Home - 0.2; 
+    return currentPosition < ClawPositions.Home + 0.05 && currentPosition > ClawPositions.Home - 0.25; 
   }
 
   public boolean needsReset() {
@@ -322,7 +322,7 @@ public class CClaw extends SubsystemBase {
    */
   public void rotate(double direction) {
     SmartDashboard.putBoolean("Locked Input", false);
-    if (Math.abs(direction) < 0.01) {
+    if (Math.abs(direction) < 0.1) {
       if (holdPosition) {
         SmartDashboard.putNumber("Claw H Pos", currentPosition);
         SmartDashboard.putBoolean("Claw Hold", true);
@@ -466,11 +466,19 @@ public class CClaw extends SubsystemBase {
    */
   public class RotateClawAndWait extends TimeoutCommand {
     private double position;
+    private double minPos;
+    private double maxPos;
 
-    public RotateClawAndWait(double position) {
+    public RotateClawAndWait(double position, double minPos, double maxPos) {
       super(1.0);
       this.position = position;
+      this.minPos = minPos;
+      this.maxPos = maxPos;
       addRequirements(getThis());
+    }
+
+    public RotateClawAndWait(double position) {
+      this(position, position - 0.1, position + 0.1);
     }
 
     @Override
@@ -482,8 +490,7 @@ public class CClaw extends SubsystemBase {
     public boolean isFinished() {
       if (super.isFinished())
         return true;
-      double err = Math.abs(currentPosition - position);
-      return err < 0.1;
+      return currentPosition > minPos && currentPosition < maxPos;
     }
   }
 }
