@@ -5,27 +5,96 @@
     "data": {
       "commands": [
         {
-          "type": "path",
+          "type": "race",
           "data": {
-            "pathName": "Right leg 1"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Right leg 1"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Auto Stop Front"
+                }
+              }
+            ]
           }
         },
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "Far Right leg 2"
+            "name": "Stop Drive"
           }
         },
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "Far Right leg 3"
+            "name": "Elevator L4"
           }
         },
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "Far Right leg 4"
+            "name": "Shoot Coral"
+          }
+        },
+        {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Far Right leg 2"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Auto Stop Back"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Intake Coral"
+          }
+        },
+        {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Far Right leg 3"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Auto Stop Front"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Elevator L4"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Shoot Coral"
           }
         }
       ]

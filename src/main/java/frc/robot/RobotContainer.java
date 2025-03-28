@@ -139,12 +139,18 @@ public class RobotContainer {
     NamedCommands.registerCommand("Elevator L1", CombinedCommands.moveClaw(claw, elevator, ElevatorMM.ElevatorPositions.Coral1, CClaw.ClawPositions.L1Score));
     NamedCommands.registerCommand("Claw L4", claw.autoRotate(CClaw.ClawPositions.L4Score));
     NamedCommands.registerCommand("Claw L1", claw.autoRotate(CClaw.ClawPositions.L1Score));
-    NamedCommands.registerCommand("Shoot Coral", claw.scoreCoral());
+    NamedCommands.registerCommand("Shoot Coral", CombinedCommands.shootCoral(claw, elevator).finallyDo(() -> claw.setSafety(true)));
     NamedCommands.registerCommand("Home Elevator", CombinedCommands.moveClaw(claw, elevator, ElevatorMM.ElevatorPositions.Load, CClaw.ClawPositions.Home));
     NamedCommands.registerCommand("Intake Coral", CombinedCommands.combinedLoad(claw, elevator)
     .withDeadline(Commands.waitSeconds(0.5)));
     NamedCommands.registerCommand("Stop Drive", swerve.stopDriving());
     NamedCommands.registerCommand("Intake Coral", CombinedCommands.combinedLoad(claw, elevator));
+    NamedCommands.registerCommand("Auto Stop Front", Commands.idle().until(swerve::againstFront).finallyDo(interrupted -> {
+      if (!interrupted) swerve.stopDrive();
+    }));
+    NamedCommands.registerCommand("Auto Stop Back", Commands.idle().until(swerve::againstBack).finallyDo(interrupted -> {
+      if (!interrupted) swerve.stopDrive();
+    }));
 
     // Create an auto command chooser
     autoChooser = AutoBuilder.buildAutoChooser();

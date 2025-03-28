@@ -244,6 +244,17 @@ public class SwerveDriveWPI extends SubsystemBase {
     SmartDashboard.putBoolean("Against Rear", (l3 >= 0 && l3 <= 0.14 || l4 >= 0 && l4 <= 0.14) && Math.abs(l3 - l4) < 0.2);
   }
 
+  public boolean againstFront() {
+    double l1 = getLeftFrontLaser();
+    double l2 = getRightFrontLaser();
+    return (l1 >= 0 && l1 <= 0.16 || l2 >= 0 && l2 <= 0.16) && Math.abs(l1 - l2) < 0.2;
+  }
+  public boolean againstBack() {
+    double l1 = getLeftBackLaser();
+    double l2 = getRightBackLaser();
+    return (l1 >= 0 && l1 <= 0.18 || l2 >= 0 && l2 <= 0.18) && Math.abs(l1 - l2) < 0.2;
+  }
+
   /**
    * 
    * Drive the robot relative to robot coordinate system

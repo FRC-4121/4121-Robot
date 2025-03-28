@@ -53,9 +53,9 @@ public class CClaw extends SubsystemBase {
     {
       kG = 0.2;
       kS = 0.1;
-      kV = 0.05;
-      kP = 0.8;
-      kI = 0.05;
+      kV = 0.1;
+      kP = 0.7;
+      kI = 0.7;
       kD = 0.05;
     }
   };
@@ -74,7 +74,7 @@ public class CClaw extends SubsystemBase {
   // Create a claw position class
   public static final class ClawPositions {
     public static final double Load = 0;
-    public static final double Home = -2.5;
+    public static final double Home = -2.85;
     public static final double RotCutoff = -10;
     public static final double L1Score = -12;
     public static final double Algae1 = -16;
@@ -322,7 +322,7 @@ public class CClaw extends SubsystemBase {
    */
   public void rotate(double direction) {
     SmartDashboard.putBoolean("Locked Input", false);
-    if (Math.abs(direction) < 0.1) {
+    if (Math.abs(direction) < 0.05) {
       if (holdPosition) {
         SmartDashboard.putNumber("Claw H Pos", currentPosition);
         SmartDashboard.putBoolean("Claw Hold", true);

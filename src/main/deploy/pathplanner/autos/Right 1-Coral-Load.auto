@@ -5,42 +5,34 @@
     "data": {
       "commands": [
         {
-          "type": "parallel",
+          "type": "race",
           "data": {
             "commands": [
               {
-                "type": "sequential",
+                "type": "path",
                 "data": {
-                  "commands": [
-                    {
-                      "type": "path",
-                      "data": {
-                        "pathName": "Right leg 1"
-                      }
-                    }
-                  ]
+                  "pathName": "Right leg 1"
                 }
               },
               {
-                "type": "sequential",
+                "type": "named",
                 "data": {
-                  "commands": [
-                    {
-                      "type": "wait",
-                      "data": {
-                        "waitTime": 0.3
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "Elevator L4"
-                      }
-                    }
-                  ]
+                  "name": "Auto Stop Front"
                 }
               }
             ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Stop Drive"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Elevator L4"
           }
         },
         {
@@ -50,7 +42,7 @@
           }
         },
         {
-          "type": "parallel",
+          "type": "race",
           "data": {
             "commands": [
               {
@@ -62,10 +54,16 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "Home Elevator"
+                  "name": "Auto Stop Back"
                 }
               }
             ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Intake Coral"
           }
         }
       ]

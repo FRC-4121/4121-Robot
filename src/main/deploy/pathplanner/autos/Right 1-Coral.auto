@@ -15,6 +15,18 @@
           "data": {
             "name": "Stop Drive"
           }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Elevator L4"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Shoot Coral"
+          }
         }
       ]
     }
