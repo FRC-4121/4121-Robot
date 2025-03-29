@@ -36,8 +36,8 @@ public class Climber extends SubsystemBase {
 
   //Declare PWM ID for servos
   private final int brakeServoID = 0;
-  private final int rampServo1ID = 1;
-  private final int rampServo2ID = 2;
+  private final int rampServo1ID = 8;
+  private final int rampServo2ID = 9;
 
   // Declare Kracken motor variables
   private TalonFX climberMotor;

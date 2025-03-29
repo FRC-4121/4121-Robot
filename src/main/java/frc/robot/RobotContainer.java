@@ -246,6 +246,7 @@ public class RobotContainer {
             () -> claw.hasCoral()));
     algaeIntakeButton.onTrue(claw.algaeIntake());
     climbButton.onTrue(climber.new Climb());
+    // climbButton.onTrue(Commands.runOnce(() -> climber.moveServo(180)));
     resetRobotButton.onTrue(resetRobot);
     resetEncodersButton.whileTrue(Commands.runOnce(() -> {
       claw.killMotor();
