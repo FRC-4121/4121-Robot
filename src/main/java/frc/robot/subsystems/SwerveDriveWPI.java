@@ -15,6 +15,8 @@ import static frc.robot.Constants.DriveConstants.*;
 import static frc.robot.Constants.ControlConstants.*;
 import edu.wpi.first.math.filter.MedianFilter;
 import edu.wpi.first.math.kinematics.*;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -112,6 +114,11 @@ public class SwerveDriveWPI extends SubsystemBase {
   private Field2d field;
 
   private static final boolean disableNavx = false;
+
+  private static final StructPublisher<Pose2d> robotPosePub =
+      NetworkTableInstance.getDefault()
+          .getStructTopic("/SmartDashboard/robotPose", Pose2d.struct)
+          .publish();
 
   /**
    * 
@@ -230,6 +237,7 @@ public class SwerveDriveWPI extends SubsystemBase {
     SmartDashboard.putNumber("Pose Y", odometry.getPoseMeters().getY());
 
     SmartDashboard.putString("Pose", getPose().toString());
+    robotPosePub.set(getPose());
 
     // Update field position
     field.setRobotPose(getPose());
