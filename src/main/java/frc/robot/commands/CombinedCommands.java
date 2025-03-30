@@ -19,8 +19,8 @@ public class CombinedCommands {
   }
 
   public static Command combinedLoad(CClaw claw, ElevatorMM elevator) {
-    return claw.new RotateClawAndWait(CClaw.ClawPositions.Home)
-        .andThen(Commands.idle(claw, elevator).until(() -> Mutables.isClawClear))
+    return claw.returnHome()
+        // .andThen(Commands.idle(claw, elevator).until(() -> Mutables.isClawClear))
         .andThen(elevator.new PositionElevatorAndWait(ElevatorMM.ElevatorPositions.Load))
         .andThen(
             claw.autoRotate(CClaw.ClawPositions.Load).andThen(claw.intakeCoral())
@@ -28,15 +28,14 @@ public class CombinedCommands {
   }
 
   public static Command moveClaw(CClaw claw, ElevatorMM elevator, double elevatorPos, double clawPos) {
-    return claw.new RotateClawAndWait(CClaw.ClawPositions.Home)
+    return claw.returnHome()
         .andThen(elevator.new PositionElevatorAndWait(elevatorPos))
         .andThen(
-            claw.new RotateClawAndWait(clawPos))
-        .withDeadline(Commands.waitSeconds(2.0));
+            claw.new RotateClawAndWait(clawPos));
   }
 
   public static Command shootCoral(CClaw claw, ElevatorMM elevator) {
-    return claw.scoreCoral().andThen(claw.new RotateClawAndWait(CClaw.ClawPositions.Home))
+    return claw.scoreCoral().andThen(claw.returnHome())
         .andThen(elevator.positionElevator(ElevatorMM.ElevatorPositions.Load));
   }
 

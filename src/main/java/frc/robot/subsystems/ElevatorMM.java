@@ -55,7 +55,7 @@ public class ElevatorMM extends SubsystemBase {
       kS = 0.25;
       kV = 0.1;
       kP = 1.0;
-      kI = 0.1;
+      kI = 0.2;
       kD = 0.0;
     }
   };
@@ -68,7 +68,7 @@ public class ElevatorMM extends SubsystemBase {
     public static final double Coral3 = 57;
     public static final double Coral4 = 126;
     public static final double Algae1 = 31;
-    public static final double Algae2 = 80;
+    public static final double Algae2 = 70.7;
     public static final double Processor = 10;
     public static final double Barge = 10;
   }
@@ -154,6 +154,10 @@ public class ElevatorMM extends SubsystemBase {
     followOutputConfigs.NeutralMode = NeutralModeValue.Brake;
     followOutputConfigs.withDutyCycleNeutralDeadband(DRIVE_DEADBAND);
 
+    // Set lead motor feedback sensor
+    var followSensorConfig = followConfigs.Feedback;
+    followSensorConfig.withFeedbackSensorSource(FeedbackSensorSourceValue.RotorSensor);
+
     // Set follower motor current limits
     var followLimitConfig = followConfigs.CurrentLimits;
     followLimitConfig.StatorCurrentLimitEnable = false;
@@ -184,11 +188,12 @@ public class ElevatorMM extends SubsystemBase {
 
     // Set current position
     currentPosition = getPosition();
+    SmartDashboard.putNumber("Elevator Current", currentPosition);
 
     SmartDashboard.putBoolean("Elevator Limit Switch", limitSwitch.get());
 
     // Hold position of the elevator if requested
-    // if (holdPosition && currentPosition != ElevatorPositions.LOAD) {
+    // if (holdPosition && currentPosition != ElevatorPositions.Load) {
     // moveElevatorToPosition(currentPosition);
     // }
 
@@ -230,7 +235,7 @@ public class ElevatorMM extends SubsystemBase {
    * 
    */
   public void moveElevator(double direction) {
-    if (Math.abs(direction) < 0.0001) {
+    if (Math.abs(direction) < 0.05) {
       if (holdPosition) {
           SmartDashboard.putNumber("Elevator H Pos", currentPosition);
           SmartDashboard.putBoolean("Elevator Hold", true);
@@ -274,6 +279,7 @@ public class ElevatorMM extends SubsystemBase {
    */
   public void zeroPosition() {
     elevatorLeadMotor.getConfigurator().setPosition(0);
+    elevatorFollowMotor.getConfigurator().setPosition(0);
   }
 
   /**
@@ -321,21 +327,26 @@ public class ElevatorMM extends SubsystemBase {
     private double position;
 
     public PositionElevatorAndWait(double position) {
-      super(1.0);
+      super(1.3);
       this.position = position;
       addRequirements(getThis());
     }
 
     @Override
     public void initialize() {
+      SmartDashboard.putBoolean("Elevator Moving", true);
       moveElevatorToPosition(position);
     }
 
     @Override
     public boolean isFinished() {
-      if (super.isFinished()) return true;
+      if (super.isFinished()) {
+        SmartDashboard.putBoolean("Elevator Moving", false);
+        return true;
+      }
       double err = Math.abs(currentPosition - position);
-      return err < 1.5;
+      if (err < 2.5) SmartDashboard.putBoolean("Elevator Moving", false);
+      return err < 2.5;
     }
   }
 }

@@ -6,6 +6,8 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.epilogue.Logged;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -190,6 +192,7 @@ public class Robot extends TimedRobot {
     Mutables.isFieldOriented = true;
 
     m_robotContainer.setClawSafety();
+    m_robotContainer.swerve.resetPose(new Pose2d(7.079, 0.573, new Rotation2d(Math.PI)));
   }
 
   /** This function is called periodically during operator control. */

@@ -35,7 +35,7 @@ import static edu.wpi.first.units.Units.Second;
 public class CClaw extends SubsystemBase {
 
   // Declare motor constants
-  private final double DRIVE_DEADBAND = 0.001;
+  private final double DRIVE_DEADBAND = 0.01;
   private final double CURRENT_LIMIT = 65;
 
   // Declare CAN IDs
@@ -51,12 +51,12 @@ public class CClaw extends SubsystemBase {
   // Declare Phoenix PID controller gains
   private static final Slot0Configs autoGains = new Slot0Configs() {
     {
-      kG = 0.2;
+      kG = 0.1;
       kS = 0.1;
-      kV = 0.1;
-      kP = 0.7;
-      kI = 0.7;
-      kD = 0.05;
+      kV = 0.0;
+      kP = 1.1;
+      kI = 0.9;
+      kD = 0.35;
     }
   };
 
@@ -65,7 +65,7 @@ public class CClaw extends SubsystemBase {
   private static final Time outputTime = Time.ofBaseUnits(0.25, Second);
   private static final Time revOutputTime = Time.ofBaseUnits(0.5, Second);
 
-  public static final double feedSpeed = -0.32;
+  public static final double feedSpeed = -0.31;
   public static final double scoreSpeed = -0.4;
   public static final double revScoreSpeed = 0.32;
   public static final double algaeFeedSpeed = 0.2;
@@ -74,11 +74,13 @@ public class CClaw extends SubsystemBase {
   // Create a claw position class
   public static final class ClawPositions {
     public static final double Load = 0;
-    public static final double Home = -2.85;
+    public static final double Home = -2.95;
+    public static final double HomeUpper = -2.8;
+    public static final double HomeLower = -3.1;
     public static final double RotCutoff = -10;
     public static final double L1Score = -12;
     public static final double Algae1 = -16;
-    public static final double Algae2 = -17;
+    public static final double Algae2 = -15.9;
     public static final double L4Score = -4.8;
   }
 
@@ -94,7 +96,7 @@ public class CClaw extends SubsystemBase {
 
   private static final double rotateSpeed = 0.5;
   private static final double minRotation = ClawPositions.Algae2 - 1;
-  private static final double maxRotation = ClawPositions.Home;
+  private static final double maxRotation = ClawPositions.HomeUpper;
 
   /**
    * Create a claw (end effector) subsystem
@@ -197,11 +199,11 @@ public class CClaw extends SubsystemBase {
    * @return  Flag indicating is clear
    */
   public boolean isClear() {
-    return currentPosition < ClawPositions.Home + 0.05 && currentPosition > ClawPositions.Home - 0.25; 
+    return currentPosition < ClawPositions.HomeUpper && currentPosition > ClawPositions.HomeLower; 
   }
 
   public boolean needsReset() {
-    return currentPosition > ClawPositions.Home + 0.05;
+    return currentPosition > ClawPositions.HomeUpper;
   }
 
   @Override
@@ -209,18 +211,17 @@ public class CClaw extends SubsystemBase {
 
     // Set current position and claw clear flag
     currentPosition = getClawPosition();
+    SmartDashboard.putBoolean("Needs Reset", needsReset());
+    SmartDashboard.putBoolean("Checking Safety", safetyCheck);
     if (isClear()) {
       Mutables.isClawClear = true;
     } else {
       Mutables.isClawClear = false;
       if (!noSafety && safetyCheck && needsReset()) {
+        SmartDashboard.putBoolean("Claw Commanded", false);
         setRotation(ClawPositions.Home);
-        safetyCheck = true;
+        safetyCheck = false;
       }
-      // if (!noSafety && safetyCheck) {
-      //   setRotation(ClawPositions.Home);
-      //   safetyCheck = false;
-      // }
     }
 
     // Update dashboard values
@@ -289,7 +290,7 @@ public class CClaw extends SubsystemBase {
    */
   public void setSafety(boolean safety) {
     this.noSafety = !safety;
-    if (safety && !isClear()) {
+    if (safety && needsReset()) {
       setRotation(ClawPositions.Home);
     }
   }
@@ -430,7 +431,7 @@ public class CClaw extends SubsystemBase {
   }
 
   public Command returnHome() {
-    return Commands.runOnce(() -> setRotation(ClawPositions.Home));
+    return new RotateClawAndWait(ClawPositions.Home, ClawPositions.HomeLower, ClawPositions.HomeUpper);
   }
 
   private SubsystemBase getThis() {
@@ -470,7 +471,7 @@ public class CClaw extends SubsystemBase {
     private double maxPos;
 
     public RotateClawAndWait(double position, double minPos, double maxPos) {
-      super(1.0);
+      super(0.5);
       this.position = position;
       this.minPos = minPos;
       this.maxPos = maxPos;
@@ -483,14 +484,25 @@ public class CClaw extends SubsystemBase {
 
     @Override
     public void initialize() {
+      SmartDashboard.putBoolean("Claw Moving", true);
+      SmartDashboard.putBoolean("Claw Commanded", true);
+      setSafety(false);
       setRotation(position);
     }
 
     @Override
     public boolean isFinished() {
-      if (super.isFinished())
+      if (super.isFinished()) {
+        SmartDashboard.putBoolean("Claw Moving", false);
         return true;
+      }
+      if (currentPosition > minPos && currentPosition < maxPos) SmartDashboard.putBoolean("Claw Moving", false);
       return currentPosition > minPos && currentPosition < maxPos;
+    }
+
+    @Override
+    public void end(boolean interrupted) {
+      setSafety(true);
     }
   }
 }

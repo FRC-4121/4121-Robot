@@ -73,7 +73,7 @@ public final class Constants {
     // Motor Limits
     public static final double MaxLinearSpeed = 3.7; // 3.7 Max Speed in Meters per second
     public static final double MaxRadiansPerSecond = 2*Math.PI;
-    public static final double SlowMaxLinearSpeed = 1.0;// 0.75 Max Speed during slow mode in meters per second
+    public static final double SlowMaxLinearSpeed = 0.75; // Max Speed during slow mode in meters per second
     public static final double SlowRadiansPerSecond = (Math.PI / 4);// Max rotational speed during slow mode
     public static final double SlowStoppedRotationMultiplier = 0.3;
     public static final double swerveDriveSpeedLimiter = 0.7;

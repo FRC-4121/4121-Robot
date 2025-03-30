@@ -6,7 +6,11 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import java.math.*;
 
 import frc.robot.Constants.GeneralConstants;
@@ -26,12 +30,14 @@ import edu.wpi.first.wpilibj.DriverStation;
 import com.studica.frc.AHRS;
 import com.studica.frc.AHRS.NavXComType;
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.commands.PathfindingCommand;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+import com.pathplanner.lib.path.PathConstraints;
+import com.pathplanner.lib.pathfinding.Pathfinder;
 import com.pathplanner.lib.util.PathPlannerLogging;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-
 
 /**
  * Define a SwerveDrive object
@@ -148,7 +154,7 @@ public class SwerveDriveWPI extends SubsystemBase {
     // gyro.calibrate();
     if (gyro.isConnected()) {
       gyro.reset();
-      gyro.resetDisplacement();  
+      gyro.resetDisplacement();
     }
 
     // Initialize misc variables
@@ -186,10 +192,9 @@ public class SwerveDriveWPI extends SubsystemBase {
             // This will flip the path being followed to the red side of the field.
             // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
 
-            
             // var alliance = DriverStation.getAlliance();
             // if (alliance.isPresent()) {
-            //   return alliance.get() == DriverStation.Alliance.Red;
+            // return alliance.get() == DriverStation.Alliance.Red;
             // }
             return false;
 
@@ -228,6 +233,7 @@ public class SwerveDriveWPI extends SubsystemBase {
 
     SmartDashboard.putNumber("Pose X", odometry.getPoseMeters().getX());
     SmartDashboard.putNumber("Pose Y", odometry.getPoseMeters().getY());
+    SmartDashboard.putNumber("Pose Yaw", odometry.getPoseMeters().getRotation().getRadians());
 
     SmartDashboard.putString("Pose", getPose().toString());
 
@@ -240,19 +246,22 @@ public class SwerveDriveWPI extends SubsystemBase {
     double l4 = getRightBackLaser();
     SmartDashboard.putBoolean("Auto Align in Range", l1 >= 0 & l2 >= 0);
 
-    SmartDashboard.putBoolean("Against Front", (l1 >= 0 && l1 <= 0.14 || l2 >= 0 && l2 <= 0.14) && Math.abs(l1 - l2) < 0.2);
-    SmartDashboard.putBoolean("Against Rear", (l3 >= 0 && l3 <= 0.14 || l4 >= 0 && l4 <= 0.14) && Math.abs(l3 - l4) < 0.2);
+    SmartDashboard.putBoolean("Against Front",
+        (l1 >= 0 && l1 <= 0.14 || l2 >= 0 && l2 <= 0.14) && Math.abs(l1 - l2) < 0.2);
+    SmartDashboard.putBoolean("Against Rear",
+        (l3 >= 0 && l3 <= 0.14 || l4 >= 0 && l4 <= 0.14) && Math.abs(l3 - l4) < 0.2);
   }
 
   public boolean againstFront() {
     double l1 = getLeftFrontLaser();
     double l2 = getRightFrontLaser();
-    return (l1 >= 0 && l1 <= 0.16 || l2 >= 0 && l2 <= 0.16) && Math.abs(l1 - l2) < 0.2;
+    return (l1 >= 0 && l1 <= 0.15 || l2 >= 0 && l2 <= 0.15);
   }
+
   public boolean againstBack() {
     double l1 = getLeftBackLaser();
     double l2 = getRightBackLaser();
-    return (l1 >= 0 && l1 <= 0.18 || l2 >= 0 && l2 <= 0.18) && Math.abs(l1 - l2) < 0.2;
+    return (l1 >= 0 && l1 <= 0.18 || l2 >= 0 && l2 <= 0.18) && Math.abs(l1 - l2) < 0.5;
   }
 
   /**
@@ -557,7 +566,7 @@ public class SwerveDriveWPI extends SubsystemBase {
     }
   }
 
-    /**
+  /**
    * 
    * Get a smoothed gyro angle
    * 
@@ -914,9 +923,49 @@ public class SwerveDriveWPI extends SubsystemBase {
   /**
    * Stop driving the robot
    * 
-   * @return  Command to stop driving
+   * @return Command to stop driving
    */
   public Command stopDriving() {
     return runOnce(() -> stopDrive());
+  }
+
+  public static boolean flipPaths() {
+    // var alliance = DriverStation.getAlliance();
+    // if (alliance.isPresent()) {
+    // return alliance.get() == DriverStation.Alliance.Red;
+    // }
+
+    return false;
+  }
+
+  public Command pathfindTo(Pose2d pose) {
+    try {
+      RobotConfig ppConfig = RobotConfig.fromGUISettings();
+      return new PathfindingCommand(
+        pose,
+        new PathConstraints(1.0, 1.0, 3.5 * Math.PI, 4.0 * Math.PI),
+        this::getPose,
+        this::getRobotRelativeSpeeds,
+        (speeds, feeds) -> driveRobotRelativePP(speeds),
+        new PPHolonomicDriveController(
+            translationConstants,
+            rotationConstants),
+        ppConfig,
+        this);
+    } catch (Exception e) {
+      DriverStation.reportError("Failed to load PathPlanner config and configure AutoBuilder", e.getStackTrace());
+      return Commands.none();
+    }
+  }
+
+  public Command pathfindToNearest(Pose2d... poses) {
+    var map = new HashMap<>(Arrays.stream(poses).collect(Collectors.toMap(Optional::of, this::pathfindTo)));
+    map.put(Optional.empty(), Commands.print("No available path!"));
+    return Commands.select(map, () -> {
+      var pose = getPose().getTranslation();
+      var best = Arrays.stream(poses).min(Comparator.comparingDouble(p -> p.getTranslation().getDistance(pose)));
+      System.out.println(best);
+      return best;
+    });
   }
 }

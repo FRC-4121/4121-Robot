@@ -8,6 +8,8 @@ import frc.robot.Constants.Mutables;
 import frc.robot.ExtraClasses.AcousticSensor;
 import frc.robot.ExtraClasses.NetworkTableQuerier;
 import frc.robot.commands.*;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -17,6 +19,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.commands.PathfindingCommand;
 
 public class RobotContainer {
 
@@ -30,7 +33,7 @@ public class RobotContainer {
   // ===Subsystems===//
 
   // Declare Subsystems
-  private final SwerveDriveWPI swerve;
+  public final SwerveDriveWPI swerve;
   private final ElevatorMM elevator;
   private final CClaw claw;
   private final Climber climber;
@@ -258,20 +261,25 @@ public class RobotContainer {
     }));
     safetyOverrideButton.onTrue(Commands.runOnce(() -> claw.setSafety(false)));
     safetyOverrideButton.onFalse(Commands.runOnce(() -> claw.setSafety(true)));
-    alignLeftButton.whileTrue(CombinedCommands.autoAlignBest(swerve, new AutoAlignBase.Alignment() {
-      {
-        distance = 0.14;
-        offset = -0.1651 - 0.12;
-        rotation = 0;
-      }
-    }, bestTags, tagFilter));
-    alignRightButton.whileTrue(CombinedCommands.autoAlignBest(swerve, new AutoAlignBase.Alignment() {
-      {
-        distance = 0.14;
-        offset = 0.1651 - 0.12;
-        rotation = 0;
-      }
-    }, bestTags, tagFilter));
+    // alignLeftButton.whileTrue(CombinedCommands.autoAlignBest(swerve, new AutoAlignBase.Alignment() {
+    //   {
+    //     distance = 0.14;
+    //     offset = -0.1651 - 0.12;
+    //     rotation = 0;
+    //   }
+    // }, bestTags, tagFilter));
+    // alignRightButton.whileTrue(CombinedCommands.autoAlignBest(swerve, new AutoAlignBase.Alignment() {
+    //   {
+    //     distance = 0.14;
+    //     offset = 0.1651 - 0.12;
+    //     rotation = 0;
+    //   }
+    // }, bestTags, tagFilter));
+    alignLeftButton.whileTrue(swerve.pathfindTo(new Pose2d(3.740, 3.059, new Rotation2d(Math.PI - 2.094))));
+    alignRightButton.whileTrue(swerve.pathfindToNearest(
+      new Pose2d(3.740, 3.059, new Rotation2d(Math.PI - 2.094)),
+      new Pose2d(4.026, 2.894, new Rotation2d(Math.PI - 2.094))
+    ));
   }
 
   /**

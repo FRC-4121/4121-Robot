@@ -50,7 +50,8 @@ public class MoveElevator extends Command {
   @Override
   public void execute() {
 
-    elevatorSpeed = speedLimiter.calculate(MathUtil.applyDeadband(-xbox.getRightY(), 0.01)) * MechanismConstants.ElevatorSpeed;
+    elevatorSpeed = 0.0;
+    elevatorSpeed = speedLimiter.calculate(MathUtil.applyDeadband(-xbox.getRightY(), 0.05)) * MechanismConstants.ElevatorSpeed;
     
     SmartDashboard.putNumber("Elevator Speed", elevatorSpeed);
 
@@ -60,6 +61,7 @@ public class MoveElevator extends Command {
     //   elevator.setPositionHold(false);
     // }
 
+    SmartDashboard.putNumber("Elevator Speed", elevatorSpeed);
     elevator.moveElevator(elevatorSpeed);
 
   }
