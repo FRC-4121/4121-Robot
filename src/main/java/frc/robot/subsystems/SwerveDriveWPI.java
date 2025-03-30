@@ -255,13 +255,13 @@ public class SwerveDriveWPI extends SubsystemBase {
   public boolean againstFront() {
     double l1 = getLeftFrontLaser();
     double l2 = getRightFrontLaser();
-    return (l1 >= 0 && l1 <= 0.15 || l2 >= 0 && l2 <= 0.15);
+    return (l1 >= 0 && l1 <= 0.14 || l2 >= 0 && l2 <= 0.14);
   }
 
   public boolean againstBack() {
     double l1 = getLeftBackLaser();
     double l2 = getRightBackLaser();
-    return (l1 >= 0 && l1 <= 0.18 || l2 >= 0 && l2 <= 0.18) && Math.abs(l1 - l2) < 0.5;
+    return (l1 >= 0 && l1 <= 0.14 || l2 >= 0 && l2 <= 0.14) && Math.abs(l1 - l2) < 0.5;
   }
 
   /**
@@ -429,6 +429,9 @@ public class SwerveDriveWPI extends SubsystemBase {
    * 
    */
   public void driveRobot(ChassisSpeeds robotSpeeds) {
+
+    if (againstFront() && robotSpeeds.vxMetersPerSecond > 0) robotSpeeds.vxMetersPerSecond = 0;
+    if (againstBack() && robotSpeeds.vxMetersPerSecond < 0) robotSpeeds.vxMetersPerSecond = 0;
 
     // Convert chassis speeds to module states
     SwerveModuleState[] moduleStates = kinematics.toSwerveModuleStates(robotSpeeds);
