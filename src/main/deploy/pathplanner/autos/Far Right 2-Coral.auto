@@ -95,13 +95,32 @@
         {
           "type": "named",
           "data": {
-            "name": "Elevator L4"
+            "name": "Elevator L3"
           }
         },
         {
           "type": "named",
           "data": {
             "name": "Shoot Coral"
+          }
+        },
+        {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Far Right leg 4"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Auto Stop Back"
+                }
+              }
+            ]
           }
         }
       ]

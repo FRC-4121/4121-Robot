@@ -96,7 +96,7 @@ public abstract class AutoAlignBase extends AutoDrive {
       setFieldOriented(false);
       if (toMove.drive) {
         setDx(distanceToTarget());
-        setDy(tag.offset() * INCHES_TO_METERS - align.offset);
+        setDy(tag.offset() - align.offset);
       } else {
         setDx(0);
         setDy(0);

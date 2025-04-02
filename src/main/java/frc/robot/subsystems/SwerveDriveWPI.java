@@ -13,8 +13,11 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.math.*;
 
+import frc.robot.Constants;
 import frc.robot.Constants.GeneralConstants;
 import frc.robot.Constants.Mutables;
+import frc.robot.ExtraClasses.NetworkTableQuerier;
+
 import static frc.robot.Constants.DriveConstants.*;
 import static frc.robot.Constants.ControlConstants.*;
 import edu.wpi.first.math.filter.MedianFilter;
@@ -22,6 +25,8 @@ import edu.wpi.first.math.kinematics.*;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.controller.*;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -43,6 +48,10 @@ import edu.wpi.first.wpilibj2.command.Commands;
  * Define a SwerveDrive object
  */
 public class SwerveDriveWPI extends SubsystemBase {
+
+  private final NetworkTableQuerier.BestTag tags;
+  private final AprilTagFieldLayout fieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeWelded);
+  private final long lastTimestamp = 0;
 
   // Declare CAN IDs for swerve wheels
   private final int leftFrontDriveId = 1;
@@ -124,7 +133,8 @@ public class SwerveDriveWPI extends SubsystemBase {
    * Creates a new SwerveDrive
    * 
    */
-  public SwerveDriveWPI() {
+  public SwerveDriveWPI(NetworkTableQuerier.BestTag tags) {
+    this.tags = tags;
 
     // Initialize new swerve modules
     leftFront = new SwerveWheel2("LF", leftFrontDriveId, leftFrontAngleId, leftFrontCoderId, leftFrontLaserId);
@@ -210,6 +220,20 @@ public class SwerveDriveWPI extends SubsystemBase {
     // Show field data on SmartDashboard
     SmartDashboard.putData("Field", field);
 
+  }
+
+  public Optional<Pose2d> getPoseFromCamera() {
+    tags.refresh();
+    var opt = tags.best.flatMap(x -> fieldLayout.getTagPose((int)x.id()).map(p -> {
+      Rotation2d gyroAngle = getGyroRotation2d();
+      double angle = gyroAngle.getRadians() - x.azimuth();
+      double cos = Math.cos(angle);
+      double sin = Math.sin(angle);
+      double len = x.distance();
+      return new Pose2d(p.getX() - cos * len, p.getY() - sin * len, gyroAngle);
+    }));
+    opt.ifPresent(pose -> resetPose(pose));
+    return opt;
   }
 
   /**
@@ -570,6 +594,20 @@ public class SwerveDriveWPI extends SubsystemBase {
   }
 
   /**
+   * Get the field-relative gyro angle, regardless of which side we're on.
+   * 
+   * @return Gyro angle in degrees
+   */
+  public double getGyroAngleFlipped() {
+    double angle = getGyroAngle();
+    if (!flipPaths()) {
+      angle += 180;
+      angle %= 360;
+    }
+    return angle;
+  }
+
+  /**
    * 
    * Get a smoothed gyro angle
    * 
@@ -611,7 +649,7 @@ public class SwerveDriveWPI extends SubsystemBase {
    */
   public Rotation2d getGyroRotation2d() {
 
-    return new Rotation2d(Math.toRadians(toWPIAngle(getGyroAngle())));
+    return new Rotation2d(Math.toRadians(toWPIAngle(getGyroAngleFlipped())));
 
   }
 
@@ -852,7 +890,7 @@ public class SwerveDriveWPI extends SubsystemBase {
 
   /**
    * 
-   * Convert a gvyro angle (0-360) into a WPI angle (+/-180)
+   * Convert a gyro angle (0-360) into a WPI angle (+/-180)
    * 
    * @param angle The gyro angle to convert
    * @return A WPI based angle
@@ -932,19 +970,23 @@ public class SwerveDriveWPI extends SubsystemBase {
     return runOnce(() -> stopDrive());
   }
 
+  public Command updatePoseFromCamera() {
+    return Commands.runOnce(() -> getPoseFromCamera());
+  }
+
   public static boolean flipPaths() {
     // var alliance = DriverStation.getAlliance();
     // if (alliance.isPresent()) {
     // return alliance.get() == DriverStation.Alliance.Red;
     // }
 
-    return false;
+    return !Mutables.blueAlliance;
   }
 
-  public Command pathfindTo(Pose2d pose) {
+  public Command pathfindTo(Pose2d pose, String name) {
     try {
       RobotConfig ppConfig = RobotConfig.fromGUISettings();
-      return new PathfindingCommand(
+      return Commands.runOnce(() -> SmartDashboard.putString("Target Pose", name)).andThen(updatePoseFromCamera()).andThen(new PathfindingCommand(
         pose,
         new PathConstraints(1.0, 1.0, 3.5 * Math.PI, 4.0 * Math.PI),
         this::getPose,
@@ -954,21 +996,16 @@ public class SwerveDriveWPI extends SubsystemBase {
             translationConstants,
             rotationConstants),
         ppConfig,
-        this);
+        this));
     } catch (Exception e) {
       DriverStation.reportError("Failed to load PathPlanner config and configure AutoBuilder", e.getStackTrace());
       return Commands.none();
     }
   }
 
-  public Command pathfindToNearest(Pose2d... poses) {
-    var map = new HashMap<>(Arrays.stream(poses).collect(Collectors.toMap(Optional::of, this::pathfindTo)));
+  public Command pathfindToNearest(HashMap<Integer, Pose2d> poses, String prefix) {
+    var map = poses.entrySet().stream().collect(Collectors.toMap(e -> Optional.of(e.getKey()), e -> pathfindTo(e.getValue(), prefix + e.getKey())));
     map.put(Optional.empty(), Commands.print("No available path!"));
-    return Commands.select(map, () -> {
-      var pose = getPose().getTranslation();
-      var best = Arrays.stream(poses).min(Comparator.comparingDouble(p -> p.getTranslation().getDistance(pose)));
-      System.out.println(best);
-      return best;
-    });
+    return Commands.select(map, () -> tags.best.map(e -> (int)e.id()));
   }
 }

@@ -3,6 +3,8 @@ package frc.robot;
 
 import static frc.robot.Constants.ControlConstants.*;
 
+import java.util.HashMap;
+
 import frc.robot.subsystems.*;
 import frc.robot.Constants.Mutables;
 import frc.robot.ExtraClasses.AcousticSensor;
@@ -103,21 +105,21 @@ public class RobotContainer {
    */
   public RobotContainer() {
 
+    // Initialize extra systems
+    table = new NetworkTableQuerier();
+    bestTags = table.getBestTags("pi/tags/april");
+    coralSensor = new AcousticSensor();
+
     // Initialize driver controllers
     xbox = new XboxController(1);
     secondaryXbox = new XboxController(0);
     launchpad = new Joystick(2);
 
     // Initialize Subsystems
-    swerve = new SwerveDriveWPI();
+    swerve = new SwerveDriveWPI(bestTags);
     elevator = new ElevatorMM();
     claw = new CClaw();
     climber = new Climber();
-
-    // Initialize extra systems
-    table = new NetworkTableQuerier();
-    bestTags = table.getBestTags("pi/tags/april");
-    coralSensor = new AcousticSensor();
 
     // Initialize Driving Commands
     // private final DriveWithJoysticks driveCommand = new
@@ -136,24 +138,34 @@ public class RobotContainer {
 
     // Register named commands for PathPlanner
     // registerPathPlannerCommands();
-    NamedCommands.registerCommand("Elevator L4", CombinedCommands.moveClaw(claw, elevator, ElevatorMM.ElevatorPositions.Coral4, CClaw.ClawPositions.L4Score));
-    NamedCommands.registerCommand("Elevator L3", CombinedCommands.moveClaw(claw, elevator, ElevatorMM.ElevatorPositions.Coral3, CClaw.ClawPositions.Home));
-    NamedCommands.registerCommand("Elevator L2", CombinedCommands.moveClaw(claw, elevator, ElevatorMM.ElevatorPositions.Coral2, CClaw.ClawPositions.Home));
-    NamedCommands.registerCommand("Elevator L1", CombinedCommands.moveClaw(claw, elevator, ElevatorMM.ElevatorPositions.Coral1, CClaw.ClawPositions.L1Score));
+    NamedCommands.registerCommand("Elevator L4",
+        CombinedCommands.moveClaw(claw, elevator, ElevatorMM.ElevatorPositions.Coral4, CClaw.ClawPositions.L4Score));
+    NamedCommands.registerCommand("Elevator L3",
+        CombinedCommands.moveClaw(claw, elevator, ElevatorMM.ElevatorPositions.Coral3, CClaw.ClawPositions.Home));
+    NamedCommands.registerCommand("Elevator L2",
+        CombinedCommands.moveClaw(claw, elevator, ElevatorMM.ElevatorPositions.Coral2, CClaw.ClawPositions.Home));
+    NamedCommands.registerCommand("Elevator L1",
+        CombinedCommands.moveClaw(claw, elevator, ElevatorMM.ElevatorPositions.Coral1, CClaw.ClawPositions.L1Score));
     NamedCommands.registerCommand("Claw L4", claw.autoRotate(CClaw.ClawPositions.L4Score));
     NamedCommands.registerCommand("Claw L1", claw.autoRotate(CClaw.ClawPositions.L1Score));
-    NamedCommands.registerCommand("Shoot Coral", CombinedCommands.shootCoral(claw, elevator).finallyDo(() -> claw.setSafety(true)));
-    NamedCommands.registerCommand("Home Elevator", CombinedCommands.moveClaw(claw, elevator, ElevatorMM.ElevatorPositions.Load, CClaw.ClawPositions.Home));
+    NamedCommands.registerCommand("Shoot Coral",
+        CombinedCommands.shootCoral(claw, elevator).finallyDo(() -> claw.setSafety(true)));
+    NamedCommands.registerCommand("Home Elevator",
+        CombinedCommands.moveClaw(claw, elevator, ElevatorMM.ElevatorPositions.Load, CClaw.ClawPositions.Home));
     NamedCommands.registerCommand("Intake Coral", CombinedCommands.combinedLoad(claw, elevator)
-    .withDeadline(Commands.waitSeconds(0.5)));
+        .withDeadline(Commands.waitSeconds(0.5)));
     NamedCommands.registerCommand("Stop Drive", swerve.stopDriving());
     NamedCommands.registerCommand("Intake Coral", CombinedCommands.combinedLoad(claw, elevator));
-    NamedCommands.registerCommand("Auto Stop Front", Commands.idle().until(swerve::againstFront).finallyDo(interrupted -> {
-      if (!interrupted) swerve.stopDrive();
-    }));
-    NamedCommands.registerCommand("Auto Stop Back", Commands.idle().until(swerve::againstBack).finallyDo(interrupted -> {
-      if (!interrupted) swerve.stopDrive();
-    }));
+    NamedCommands.registerCommand("Auto Stop Front",
+        Commands.idle().until(swerve::againstFront).finallyDo(interrupted -> {
+          if (!interrupted)
+            swerve.stopDrive();
+        }));
+    NamedCommands.registerCommand("Auto Stop Back",
+        Commands.idle().until(swerve::againstBack).finallyDo(interrupted -> {
+          if (!interrupted)
+            swerve.stopDrive();
+        }));
 
     // Create an auto command chooser
     autoChooser = AutoBuilder.buildAutoChooser();
@@ -182,8 +194,8 @@ public class RobotContainer {
     // Initialize Launchpad (OI) Buttons/Switches
     killAutoButton = new JoystickButton(launchpad, LaunchPadButton1);
     parkButton = new JoystickButton(launchpad, LaunchPadButton3);
-    blueTeamButton = new JoystickButton(launchpad, LaunchPadSwitch5top);
-    redTeamButton = new JoystickButton(launchpad, LaunchPadSwitch5bottom);
+    blueTeamButton = new JoystickButton(launchpad, LaunchPadSwitch6top);
+    redTeamButton = new JoystickButton(launchpad, LaunchPadSwitch6bottom);
     resetRobotButton = new JoystickButton(launchpad, LaunchPadSwitch1top);
     resetEncodersButton = new JoystickButton(launchpad, LaunchPadSwitch2top);
     safetyOverrideButton = new JoystickButton(launchpad, LaunchPadSwitch4);
@@ -223,28 +235,38 @@ public class RobotContainer {
     // Teleop Commands
     changeSpeedButton.onTrue(changeSpeedCommand);
     changeModeButton.onTrue(changeModeCommand);
-    clawHomeButton.onTrue(claw.returnHome());
-    elevatorHomeButton.onTrue(CombinedCommands.moveClaw(claw, elevator, ElevatorMM.ElevatorPositions.Load, CClaw.ClawPositions.Home));
+    clawHomeButton.onTrue(claw.returnHome()
+        .until(() -> Math.abs(secondaryXbox.getLeftY()) > 0.1));
+    elevatorHomeButton
+        .onTrue(CombinedCommands.moveClaw(claw, elevator, ElevatorMM.ElevatorPositions.Load, CClaw.ClawPositions.Home)
+            .until(() -> Math.max(Math.abs(secondaryXbox.getLeftY()), Math.abs(secondaryXbox.getRightY())) > 0.1));
     elevatorCoral1Button.onTrue(
         Commands.either(
-            CombinedCommands.moveClaw(claw, elevator, ElevatorMM.ElevatorPositions.Coral1, CClaw.ClawPositions.L1Score),
-            CombinedCommands.moveClaw(claw, elevator, ElevatorMM.ElevatorPositions.Algae1, CClaw.ClawPositions.Algae1),
+            CombinedCommands.moveClaw(claw, elevator, ElevatorMM.ElevatorPositions.Coral1, CClaw.ClawPositions.L1Score)
+                .until(() -> Math.max(Math.abs(secondaryXbox.getLeftY()), Math.abs(secondaryXbox.getRightY())) > 0.1),
+            CombinedCommands.moveClaw(claw, elevator, ElevatorMM.ElevatorPositions.Algae1, CClaw.ClawPositions.Algae1)
+                .until(() -> Math.max(Math.abs(secondaryXbox.getLeftY()), Math.abs(secondaryXbox.getRightY())) > 0.1),
             () -> claw.hasCoral()));
-    elevatorCoral2Button.onTrue(CombinedCommands.moveClaw(claw, elevator, ElevatorMM.ElevatorPositions.Coral2, CClaw.ClawPositions.Home));
-    elevatorCoral3Button.onTrue(CombinedCommands.moveClaw(claw, elevator, ElevatorMM.ElevatorPositions.Coral3, CClaw.ClawPositions.Home));
+    elevatorCoral2Button.onTrue(
+        CombinedCommands.moveClaw(claw, elevator, ElevatorMM.ElevatorPositions.Coral2, CClaw.ClawPositions.Home)
+            .until(() -> Math.max(Math.abs(secondaryXbox.getLeftY()), Math.abs(secondaryXbox.getRightY())) > 0.1));
+    elevatorCoral3Button.onTrue(
+        CombinedCommands.moveClaw(claw, elevator, ElevatorMM.ElevatorPositions.Coral3, CClaw.ClawPositions.Home)
+            .until(() -> Math.max(Math.abs(secondaryXbox.getLeftY()), Math.abs(secondaryXbox.getRightY())) > 0.1));
     elevatorCoral4Button.onTrue(
         Commands.either(
-          // Commands.runOnce(() -> claw.setSafety(false)).andThen(
             CombinedCommands.moveClaw(claw, elevator, ElevatorMM.ElevatorPositions.Coral4, CClaw.ClawPositions.L4Score)
-            // )
-            ,
-            CombinedCommands.moveClaw(claw, elevator, ElevatorMM.ElevatorPositions.Algae2, CClaw.ClawPositions.Algae2),
+                .until(() -> Math.max(Math.abs(secondaryXbox.getLeftY()), Math.abs(secondaryXbox.getRightY())) > 0.1),
+            CombinedCommands.moveClaw(claw, elevator, ElevatorMM.ElevatorPositions.Algae2, CClaw.ClawPositions.Algae2)
+                .until(() -> Math.max(Math.abs(secondaryXbox.getLeftY()), Math.abs(secondaryXbox.getRightY())) > 0.1),
             () -> claw.hasCoral()));
     coralIntakeButton.onTrue(CombinedCommands.combinedLoad(claw, elevator)
         .withDeadline(Commands.waitSeconds(1).andThen(Commands.idle().until(coralIntakeButton))));
     coralScoreButton.onTrue(
         Commands.either(
-            CombinedCommands.shootCoral(claw, elevator).finallyDo(() -> claw.setSafety(true)),
+            CombinedCommands.shootCoral(claw, elevator).finallyDo(() -> claw.setSafety(true))
+                .andThen(CombinedCommands.combinedLoad(claw, elevator).until(coralIntakeButton))
+                .until(() -> Math.max(Math.abs(secondaryXbox.getLeftY()), Math.abs(secondaryXbox.getRightY())) > 0.1),
             claw.algaeDeposit(),
             () -> claw.hasCoral()));
     algaeIntakeButton.onTrue(claw.algaeIntake());
@@ -261,25 +283,54 @@ public class RobotContainer {
     }));
     safetyOverrideButton.onTrue(Commands.runOnce(() -> claw.setSafety(false)));
     safetyOverrideButton.onFalse(Commands.runOnce(() -> claw.setSafety(true)));
-    // alignLeftButton.whileTrue(CombinedCommands.autoAlignBest(swerve, new AutoAlignBase.Alignment() {
-    //   {
-    //     distance = 0.14;
-    //     offset = -0.1651 - 0.12;
-    //     rotation = 0;
-    //   }
+    // alignLeftButton.whileTrue(CombinedCommands.autoAlignBest(swerve, new
+    // AutoAlignBase.Alignment() {
+    // {
+    // distance = 0.14;
+    // offset = -0.1651 - 0.12;
+    // rotation = 0;
+    // }
     // }, bestTags, tagFilter));
-    // alignRightButton.whileTrue(CombinedCommands.autoAlignBest(swerve, new AutoAlignBase.Alignment() {
-    //   {
-    //     distance = 0.14;
-    //     offset = 0.1651 - 0.12;
-    //     rotation = 0;
-    //   }
+    // alignRightButton.whileTrue(CombinedCommands.autoAlignBest(swerve, new
+    // AutoAlignBase.Alignment() {
+    // {
+    // distance = 0.14;
+    // offset = 0.1651 - 0.12;
+    // rotation = 0;
+    // }
     // }, bestTags, tagFilter));
-    alignLeftButton.whileTrue(swerve.pathfindTo(new Pose2d(3.740, 3.059, new Rotation2d(Math.PI - 2.094))));
-    alignRightButton.whileTrue(swerve.pathfindToNearest(
-      new Pose2d(3.740, 3.059, new Rotation2d(Math.PI - 2.094)),
-      new Pose2d(4.026, 2.894, new Rotation2d(Math.PI - 2.094))
-    ));
+    alignLeftButton.whileTrue(swerve.pathfindToNearest(new HashMap<>(12) {
+      {
+        put(6,  new Pose2d(13.498, 2.935, new Rotation2d(2.094)));
+        put(7,  new Pose2d(14.224, 3.861, new Rotation2d(3.142)));
+        put(8,  new Pose2d(13.784, 4.952, new Rotation2d(4.189)));
+        put(9,  new Pose2d(12.620, 5.117, new Rotation2d(5.236)));
+        put(10, new Pose2d(11.894, 4.191, new Rotation2d(0.000)));
+        put(11, new Pose2d(12.667, 3.100, new Rotation2d(1.047)));
+        put(17, new Pose2d( 4.098, 3.100, new Rotation2d(1.047)));
+        put(18, new Pose2d( 3.324, 4.191, new Rotation2d(0.000)));
+        put(19, new Pose2d( 4.050, 5.117, new Rotation2d(5.236)));
+        put(20, new Pose2d( 5.214, 4.952, new Rotation2d(4.189)));
+        put(21, new Pose2d( 5.654, 3.861, new Rotation2d(3.142)));
+        put(22, new Pose2d( 4.928, 2.935, new Rotation2d(1.094)));
+      }
+    }, "Left "));
+    alignRightButton.whileTrue(swerve.pathfindToNearest(new HashMap<>(12) {
+      {
+        put(6,  new Pose2d(13.784, 3.100, new Rotation2d(2.094)));
+        put(7,  new Pose2d(14.224, 4.191, new Rotation2d(3.142)));
+        put(8,  new Pose2d(13.498, 5.117, new Rotation2d(4.189)));
+        put(9,  new Pose2d(12.334, 4.952, new Rotation2d(5.236)));
+        put(10, new Pose2d(11.894, 3.861, new Rotation2d(0.000)));
+        put(11, new Pose2d(12.620, 2.935, new Rotation2d(1.047)));
+        put(17, new Pose2d( 4.050, 2.935, new Rotation2d(1.047)));
+        put(18, new Pose2d( 3.324, 3.861, new Rotation2d(0.000)));
+        put(19, new Pose2d( 3.764, 4.952, new Rotation2d(5.236)));
+        put(20, new Pose2d( 4.928, 5.117, new Rotation2d(4.189)));
+        put(21, new Pose2d( 5.654, 4.191, new Rotation2d(3.142)));
+        put(22, new Pose2d( 5.214, 3.100, new Rotation2d(1.094)));
+      }
+    }, "Right "));
   }
 
   /**
@@ -297,8 +348,9 @@ public class RobotContainer {
    * Register robot commands for PathPlanner use
    */
   // private void registerPathPlannerCommands() {
-  //   NamedCommands.registerCommand("Elevator L4", elevator.positionElevator(ElevatorMM.ElevatorPositions.Coral4));
-  //   NamedCommands.registerCommand("Shoot Coral", claw.scoreCoral());
+  // NamedCommands.registerCommand("Elevator L4",
+  // elevator.positionElevator(ElevatorMM.ElevatorPositions.Coral4));
+  // NamedCommands.registerCommand("Shoot Coral", claw.scoreCoral());
   // }
 
   /**

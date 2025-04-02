@@ -54,9 +54,9 @@ public class CClaw extends SubsystemBase {
       kG = 0.1;
       kS = 0.1;
       kV = 0.0;
-      kP = 1.1;
+      kP = 1.7;
       kI = 0.9;
-      kD = 0.35;
+      kD = 0.4;
     }
   };
 
@@ -65,7 +65,7 @@ public class CClaw extends SubsystemBase {
   private static final Time outputTime = Time.ofBaseUnits(0.25, Second);
   private static final Time revOutputTime = Time.ofBaseUnits(0.5, Second);
 
-  public static final double feedSpeed = -0.31;
+  public static final double feedSpeed = -0.32;
   public static final double scoreSpeed = -0.4;
   public static final double revScoreSpeed = 0.32;
   public static final double algaeFeedSpeed = 0.2;
@@ -74,9 +74,9 @@ public class CClaw extends SubsystemBase {
   // Create a claw position class
   public static final class ClawPositions {
     public static final double Load = 0;
-    public static final double Home = -2.95;
+    public static final double Home = -2.9;
     public static final double HomeUpper = -2.8;
-    public static final double HomeLower = -3.1;
+    public static final double HomeLower = -3.0;
     public static final double RotCutoff = -10;
     public static final double L1Score = -12;
     public static final double Algae1 = -16;
