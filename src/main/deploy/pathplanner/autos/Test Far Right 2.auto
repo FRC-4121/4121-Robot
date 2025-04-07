@@ -11,7 +11,70 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Right leg 1"
+                  "pathName": "Far Right leg 1"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Auto Stop Front"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Elevator L4"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Shoot Coral"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "race",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "Far Right leg 2-2"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Auto Stop Back"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Intake Coral"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Far Right leg 3"
                 }
               },
               {
@@ -48,7 +111,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Far Right leg 2"
+                  "pathName": "Far Right leg 4"
                 }
               },
               {
@@ -59,48 +122,11 @@
               }
             ]
           }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Intake Coral"
-          }
-        },
-        {
-          "type": "race",
-          "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "Far Right leg 3"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Auto Stop Front"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Elevator L4"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Shoot Coral"
-          }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": "Right",
+  "folder": "Far Right",
   "choreoAuto": false
 }

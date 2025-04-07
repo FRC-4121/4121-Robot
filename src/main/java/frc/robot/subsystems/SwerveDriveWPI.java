@@ -100,7 +100,7 @@ public class SwerveDriveWPI extends SubsystemBase {
   private double backRightAngle;
 
   // Declare NavX gyro Objects
-  private AHRS gyro;
+  private ADXRS450_Gyro gyro;
   private ADXRS450_Gyro fallbackGyro;
 
   // Declare misc variables
@@ -152,19 +152,19 @@ public class SwerveDriveWPI extends SubsystemBase {
         rightBackTranslation);
 
     // Initialize NavX gyro
-    gyro = null;
-    try {
-      gyro = new AHRS(NavXComType.kMXP_SPI);
-    } catch (Exception ex) {
-      DriverStation.reportError("Unable to connect to NavX: " + ex.toString(), false);
-      System.out.println("Unable to connect to NavX: " + ex.toString());
-    }
-    fallbackGyro = new ADXRS450_Gyro();
+    gyro = new ADXRS450_Gyro();
+    // try {
+    //   gyro = new AHRS(NavXComType.kMXP_SPI);
+    // } catch (Exception ex) {
+    //   DriverStation.reportError("Unable to connect to NavX: " + ex.toString(), false);
+    //   System.out.println("Unable to connect to NavX: " + ex.toString());
+    // }
+    // fallbackGyro = new ADXRS450_Gyro();
 
     // gyro.calibrate();
     if (gyro.isConnected()) {
       gyro.reset();
-      gyro.resetDisplacement();
+      // gyro.resetDisplacement();
     }
 
     // Initialize misc variables
@@ -196,19 +196,7 @@ public class SwerveDriveWPI extends SubsystemBase {
               translationConstants,
               rotationConstants),
           ppConfig,
-          () -> {
-            // Boolean supplier that controls when the path will be mirrored for the red
-            // alliance
-            // This will flip the path being followed to the red side of the field.
-            // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
-
-            // var alliance = DriverStation.getAlliance();
-            // if (alliance.isPresent()) {
-            // return alliance.get() == DriverStation.Alliance.Red;
-            // }
-            return false;
-
-          },
+          SwerveDriveWPI::flipPaths,
           this);
     } catch (Exception e) {
       DriverStation.reportError("Failed to load PathPlanner config and configure AutoBuilder", e.getStackTrace());
@@ -226,11 +214,13 @@ public class SwerveDriveWPI extends SubsystemBase {
     tags.refresh();
     var opt = tags.best.flatMap(x -> fieldLayout.getTagPose((int)x.id()).map(p -> {
       Rotation2d gyroAngle = getGyroRotation2d();
-      double angle = gyroAngle.getRadians() - x.azimuth();
-      double cos = Math.cos(angle);
-      double sin = Math.sin(angle);
+      // double angle = gyroAngle.getRadians() - x.azimuth();
       double len = x.distance();
-      return new Pose2d(p.getX() - cos * len, p.getY() - sin * len, gyroAngle);
+      double calculated = p.getRotation().getZ() - x.rotation() - x.azimuth();
+      SmartDashboard.putNumber("Calculated Angle", calculated);
+      double cos = Math.cos(calculated);
+      double sin = Math.sin(calculated);
+      return new Pose2d(p.getX() + cos * len, p.getY() + sin * len, gyroAngle);
     }));
     opt.ifPresent(pose -> resetPose(pose));
     return opt;
@@ -454,8 +444,10 @@ public class SwerveDriveWPI extends SubsystemBase {
    */
   public void driveRobot(ChassisSpeeds robotSpeeds) {
 
-    if (againstFront() && robotSpeeds.vxMetersPerSecond > 0) robotSpeeds.vxMetersPerSecond = 0;
-    if (againstBack() && robotSpeeds.vxMetersPerSecond < 0) robotSpeeds.vxMetersPerSecond = 0;
+    if (shouldAutoStop()) {
+      if (againstFront() && robotSpeeds.vxMetersPerSecond > 0) robotSpeeds.vxMetersPerSecond = 0;
+      if (againstBack() && robotSpeeds.vxMetersPerSecond < 0) robotSpeeds.vxMetersPerSecond = 0;
+    }
 
     // Convert chassis speeds to module states
     SwerveModuleState[] moduleStates = kinematics.toSwerveModuleStates(robotSpeeds);
@@ -483,18 +475,18 @@ public class SwerveDriveWPI extends SubsystemBase {
     }
 
     // Check for collision
-    double currLinearAccelX = gyro.getWorldLinearAccelX();
-    double currentJerkX = currLinearAccelX - lastLinearAccelX;
-    lastLinearAccelX = currLinearAccelX;
-    double currLinearAccelY = gyro.getWorldLinearAccelY();
-    double currentJerkY = currLinearAccelY - lastLinearAccelY;
-    lastLinearAccelY = currLinearAccelY;
+    // double currLinearAccelX = gyro.getWorldLinearAccelX();
+    // double currentJerkX = currLinearAccelX - lastLinearAccelX;
+    // lastLinearAccelX = currLinearAccelX;
+    // double currLinearAccelY = gyro.getWorldLinearAccelY();
+    // double currentJerkY = currLinearAccelY - lastLinearAccelY;
+    // lastLinearAccelY = currLinearAccelY;
 
-    if ((Math.abs(currentJerkX) > kCollisionThresholdDeltaG) || (Math.abs(currentJerkY) > kCollisionThresholdDeltaG)) {
+    // if ((Math.abs(currentJerkX) > kCollisionThresholdDeltaG) || (Math.abs(currentJerkY) > kCollisionThresholdDeltaG)) {
 
-      Mutables.impactDetected = true;
+    //   Mutables.impactDetected = true;
 
-    }
+    // }
 
     // Send critical values to SmartDashboard for troubleshooting / tuning
     SmartDashboard.putNumber("LF WPI Ang", fromWPIAngle(frontLeftAngle));
@@ -538,18 +530,18 @@ public class SwerveDriveWPI extends SubsystemBase {
     }
 
     // Check for collision
-    double currLinearAccelX = gyro.getWorldLinearAccelX();
-    double currentJerkX = currLinearAccelX - lastLinearAccelX;
-    lastLinearAccelX = currLinearAccelX;
-    double currLinearAccelY = gyro.getWorldLinearAccelY();
-    double currentJerkY = currLinearAccelY - lastLinearAccelY;
-    lastLinearAccelY = currLinearAccelY;
+    // double currLinearAccelX = gyro.getWorldLinearAccelX();
+    // double currentJerkX = currLinearAccelX - lastLinearAccelX;
+    // lastLinearAccelX = currLinearAccelX;
+    // double currLinearAccelY = gyro.getWorldLinearAccelY();
+    // double currentJerkY = currLinearAccelY - lastLinearAccelY;
+    // lastLinearAccelY = currLinearAccelY;
 
-    if ((Math.abs(currentJerkX) > kCollisionThresholdDeltaG) || (Math.abs(currentJerkY) > kCollisionThresholdDeltaG)) {
+    // if ((Math.abs(currentJerkX) > kCollisionThresholdDeltaG) || (Math.abs(currentJerkY) > kCollisionThresholdDeltaG)) {
 
-      Mutables.impactDetected = true;
+    //   Mutables.impactDetected = true;
 
-    }
+    // }
 
   }
 
@@ -629,7 +621,7 @@ public class SwerveDriveWPI extends SubsystemBase {
     if (gyro.isConnected()) {
       // Get filtered yaw angle (in degrees)
       // Negate value to be consistent with WPI coordinate system
-      double gyroYaw = -gyro.getYaw();
+      double gyroYaw = -gyro.getAngle();
       // Make sure we don't see -180
       if (gyroYaw == -180.0) {
         gyroYaw = 180.0;
@@ -975,10 +967,10 @@ public class SwerveDriveWPI extends SubsystemBase {
   }
 
   public static boolean flipPaths() {
-    // var alliance = DriverStation.getAlliance();
-    // if (alliance.isPresent()) {
-    // return alliance.get() == DriverStation.Alliance.Red;
-    // }
+    var alliance = DriverStation.getAlliance();
+    if (alliance.isPresent()) {
+      return alliance.get() == DriverStation.Alliance.Red;
+    }
 
     return !Mutables.blueAlliance;
   }
@@ -1007,5 +999,9 @@ public class SwerveDriveWPI extends SubsystemBase {
     var map = poses.entrySet().stream().collect(Collectors.toMap(e -> Optional.of(e.getKey()), e -> pathfindTo(e.getValue(), prefix + e.getKey())));
     map.put(Optional.empty(), Commands.print("No available path!"));
     return Commands.select(map, () -> tags.best.map(e -> (int)e.id()));
+  }
+
+  protected boolean shouldAutoStop() {
+    return true;
   }
 }

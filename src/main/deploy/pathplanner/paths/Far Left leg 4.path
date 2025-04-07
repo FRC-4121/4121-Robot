@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.6708749999999997,
-        "y": 5.097499999999999
+        "x": 3.8025,
+        "y": 5.092625
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.8971430764947,
-        "y": 5.901896438113142
+        "x": 3.2906250000000004,
+        "y": 5.819
       },
       "isLocked": false,
       "linkedName": "FLL3"
@@ -20,8 +20,8 @@
         "y": 7.07675
       },
       "prevControl": {
-        "x": 2.1819316268035633,
-        "y": 6.2242963924941
+        "x": 1.9110000000000005,
+        "y": 6.27725
       },
       "nextControl": null,
       "isLocked": false,
@@ -42,7 +42,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -54.688786560366744
+    "rotation": -54.32359177813804
   },
   "reversed": false,
   "folder": "Left Common",

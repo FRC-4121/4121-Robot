@@ -48,7 +48,7 @@
   "folder": "Left Common",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -54.688786560366744
+    "rotation": -54.32359177813804
   },
   "useDefaultConstraints": true
 }

@@ -90,6 +90,9 @@ public class RobotContainer {
   private final Trigger parkButton;
   private final Trigger resetRobotButton;
   private final Trigger safetyOverrideButton;
+  private final Trigger noSafetyButton;
+  private final Trigger manualIntakeButton;
+  private final Trigger manualOuttakeButton; 
 
   // ===PathPlanner=== //
 
@@ -115,8 +118,15 @@ public class RobotContainer {
     secondaryXbox = new XboxController(0);
     launchpad = new Joystick(2);
 
+    noSafetyButton = new JoystickButton(launchpad, LaunchPadSwitch8);
+
     // Initialize Subsystems
-    swerve = new SwerveDriveWPI(bestTags);
+    swerve = new SwerveDriveWPI(bestTags) {
+      @Override
+      protected boolean shouldAutoStop() {
+        return !noSafetyButton.getAsBoolean();
+      }
+    };
     elevator = new ElevatorMM();
     claw = new CClaw();
     climber = new Climber();
@@ -166,6 +176,11 @@ public class RobotContainer {
           if (!interrupted)
             swerve.stopDrive();
         }));
+    NamedCommands.registerCommand("Elevator Home", CombinedCommands.moveClaw(claw, elevator, ElevatorMM.ElevatorPositions.Load, CClaw.ClawPositions.Algae1));
+    NamedCommands.registerCommand("Elevator Algae", CombinedCommands.moveClaw(claw, elevator, ElevatorMM.ElevatorPositions.Algae1, CClaw.ClawPositions.Algae1));
+    NamedCommands.registerCommand("Score Algae", claw.algaeDeposit());
+    NamedCommands.registerCommand("Intake Algae", claw.algaeIntake());
+    NamedCommands.registerCommand("Stop Intake", claw.stopIntake());
 
     // Create an auto command chooser
     autoChooser = AutoBuilder.buildAutoChooser();
@@ -199,6 +214,8 @@ public class RobotContainer {
     resetRobotButton = new JoystickButton(launchpad, LaunchPadSwitch1top);
     resetEncodersButton = new JoystickButton(launchpad, LaunchPadSwitch2top);
     safetyOverrideButton = new JoystickButton(launchpad, LaunchPadSwitch4);
+    manualIntakeButton = new JoystickButton(launchpad, LaunchPadButton4);
+    manualOuttakeButton = new JoystickButton(launchpad, LaunchPadButton3);
 
     // Configure the button bindings
     configureButtonBindings();
@@ -233,9 +250,18 @@ public class RobotContainer {
     killAutoButton.onFalse(killAuto);
 
     // Teleop Commands
+    manualIntakeButton.whileTrue(
+      Commands.runOnce(() -> claw.setIntakeSpeed(CClaw.feedSpeed/4))
+      .andThen(Commands.idle())
+      .finallyDo(() ->
+      claw.setIntakeSpeed(0)));
+    manualOuttakeButton.whileTrue(
+        Commands.runOnce(() -> claw.setIntakeSpeed(-CClaw.feedSpeed/4))
+            .andThen(Commands.idle())
+            .finallyDo(() -> claw.setIntakeSpeed(0)));
     changeSpeedButton.onTrue(changeSpeedCommand);
     changeModeButton.onTrue(changeModeCommand);
-    clawHomeButton.onTrue(claw.returnHome()
+    clawHomeButton.onTrue(claw.new RotateClawAndWait(CClaw.ClawPositions.Home, CClaw.ClawPositions.HomeLower, CClaw.ClawPositions.HomeUpper)
         .until(() -> Math.abs(secondaryXbox.getLeftY()) > 0.1));
     elevatorHomeButton
         .onTrue(CombinedCommands.moveClaw(claw, elevator, ElevatorMM.ElevatorPositions.Load, CClaw.ClawPositions.Home)

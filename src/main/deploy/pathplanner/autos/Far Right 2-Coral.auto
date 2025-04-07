@@ -5,19 +5,45 @@
     "data": {
       "commands": [
         {
-          "type": "race",
+          "type": "parallel",
           "data": {
             "commands": [
               {
-                "type": "path",
+                "type": "race",
                 "data": {
-                  "pathName": "Far Right leg 1"
+                  "commands": [
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "Far Right leg 1"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Auto Stop Front"
+                      }
+                    }
+                  ]
                 }
               },
               {
-                "type": "named",
+                "type": "sequential",
                 "data": {
-                  "name": "Auto Stop Front"
+                  "commands": [
+                    {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 1.0
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Elevator L4"
+                      }
+                    }
+                  ]
                 }
               }
             ]
@@ -68,19 +94,45 @@
           }
         },
         {
-          "type": "race",
+          "type": "parallel",
           "data": {
             "commands": [
               {
-                "type": "path",
+                "type": "race",
                 "data": {
-                  "pathName": "Far Right leg 3"
+                  "commands": [
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "Far Right leg 3"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Auto Stop Front"
+                      }
+                    }
+                  ]
                 }
               },
               {
-                "type": "named",
+                "type": "sequential",
                 "data": {
-                  "name": "Auto Stop Front"
+                  "commands": [
+                    {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 0.3
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Elevator L4"
+                      }
+                    }
+                  ]
                 }
               }
             ]
@@ -90,12 +142,6 @@
           "type": "named",
           "data": {
             "name": "Stop Drive"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Elevator L3"
           }
         },
         {

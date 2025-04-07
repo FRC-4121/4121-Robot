@@ -5,9 +5,22 @@
     "data": {
       "commands": [
         {
-          "type": "path",
+          "type": "race",
           "data": {
-            "pathName": "Center leg 1"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Center leg 1"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Auto Stop Front"
+                }
+              }
+            ]
           }
         },
         {

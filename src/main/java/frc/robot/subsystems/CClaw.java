@@ -54,8 +54,8 @@ public class CClaw extends SubsystemBase {
       kG = 0.1;
       kS = 0.1;
       kV = 0.0;
-      kP = 1.7;
-      kI = 0.9;
+      kP = 1.5; //1.7
+      kI = 0.9; //0.9
       kD = 0.4;
     }
   };
@@ -63,6 +63,7 @@ public class CClaw extends SubsystemBase {
   private static final Time extraInputTime = Time.ofBaseUnits(0.0, Second);
   private static final Time algaeIntakeTime = Time.ofBaseUnits(1.5, Second);
   private static final Time outputTime = Time.ofBaseUnits(0.25, Second);
+  private static final Time algaeOutputTime = Time.ofBaseUnits(1.5, Second);
   private static final Time revOutputTime = Time.ofBaseUnits(0.5, Second);
 
   public static final double feedSpeed = -0.32;
@@ -79,9 +80,9 @@ public class CClaw extends SubsystemBase {
     public static final double HomeLower = -3.0;
     public static final double RotCutoff = -10;
     public static final double L1Score = -12;
-    public static final double Algae1 = -16;
+    public static final double Algae1 = -15;
     public static final double Algae2 = -15.9;
-    public static final double L4Score = -4.8;
+    public static final double L4Score = -5.0;
   }
 
   // The current position, in motor rotations
@@ -427,11 +428,12 @@ public class CClaw extends SubsystemBase {
   public Command algaeDeposit() {
     return Commands.runOnce(() -> setIntakeSpeed(algaeDepositSpeed), this).andThen(Commands.idle(this))
         .finallyDo(_interrupt -> setIntakeSpeed(0))
-        .withTimeout(outputTime);
+        .withTimeout(algaeOutputTime);
   }
 
   public Command returnHome() {
     return new RotateClawAndWait(ClawPositions.Home, ClawPositions.HomeLower, ClawPositions.HomeUpper);
+    // return Commands.either(Commands.none(), new RotateClawAndWait(ClawPositions.Home, ClawPositions.HomeLower, ClawPositions.HomeUpper), this::isClear);
   }
 
   private SubsystemBase getThis() {
