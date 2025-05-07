@@ -192,7 +192,7 @@ public class Robot extends TimedRobot {
     Mutables.isFieldOriented = true;
 
     m_robotContainer.setClawSafety();
-    m_robotContainer.swerve.resetPose(new Pose2d(7.079, 0.573, new Rotation2d(Math.PI)));
+    // m_robotContainer.swerve.resetPose(new Pose2d(7.079, 0.573, new Rotation2d(Math.PI)));
   }
 
   /** This function is called periodically during operator control. */

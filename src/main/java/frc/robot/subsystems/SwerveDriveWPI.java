@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.WrapperCommand;
 
 import java.util.Arrays;
 import java.util.Comparator;
@@ -100,7 +101,7 @@ public class SwerveDriveWPI extends SubsystemBase {
   private double backRightAngle;
 
   // Declare NavX gyro Objects
-  private ADXRS450_Gyro gyro;
+  private AHRS gyro;
   private ADXRS450_Gyro fallbackGyro;
 
   // Declare misc variables
@@ -152,14 +153,14 @@ public class SwerveDriveWPI extends SubsystemBase {
         rightBackTranslation);
 
     // Initialize NavX gyro
-    gyro = new ADXRS450_Gyro();
-    // try {
-    //   gyro = new AHRS(NavXComType.kMXP_SPI);
-    // } catch (Exception ex) {
-    //   DriverStation.reportError("Unable to connect to NavX: " + ex.toString(), false);
-    //   System.out.println("Unable to connect to NavX: " + ex.toString());
-    // }
-    // fallbackGyro = new ADXRS450_Gyro();
+    // gyro = new ADXRS450_Gyro();
+    try {
+      gyro = new AHRS(NavXComType.kMXP_SPI);
+    } catch (Exception ex) {
+      DriverStation.reportError("Unable to connect to NavX: " + ex.toString(), false);
+      System.out.println("Unable to connect to NavX: " + ex.toString());
+    }
+    fallbackGyro = new ADXRS450_Gyro();
 
     // gyro.calibrate();
     if (gyro.isConnected()) {
@@ -214,15 +215,15 @@ public class SwerveDriveWPI extends SubsystemBase {
     tags.refresh();
     var opt = tags.best.flatMap(x -> fieldLayout.getTagPose((int)x.id()).map(p -> {
       Rotation2d gyroAngle = getGyroRotation2d();
-      // double angle = gyroAngle.getRadians() - x.azimuth();
+      double angle = gyroAngle.getRadians() - x.azimuth();
       double len = x.distance();
-      double calculated = p.getRotation().getZ() - x.rotation() - x.azimuth();
-      SmartDashboard.putNumber("Calculated Angle", calculated);
-      double cos = Math.cos(calculated);
-      double sin = Math.sin(calculated);
+      double calculated = -(p.getRotation().getZ() - x.rotation() - x.azimuth());
+      SmartDashboard.putNumber("Calculated Angle", calculated * 180 / Math.PI);
+      double cos = -Math.cos(angle);
+      double sin = -Math.sin(angle);
       return new Pose2d(p.getX() + cos * len, p.getY() + sin * len, gyroAngle);
     }));
-    opt.ifPresent(pose -> resetPose(pose));
+    opt.ifPresent(this::resetPose);
     return opt;
   }
 
@@ -592,6 +593,7 @@ public class SwerveDriveWPI extends SubsystemBase {
    */
   public double getGyroAngleFlipped() {
     double angle = getGyroAngle();
+    SmartDashboard.putBoolean("Flipping Angle", !flipPaths());
     if (!flipPaths()) {
       angle += 180;
       angle %= 360;
@@ -618,7 +620,7 @@ public class SwerveDriveWPI extends SubsystemBase {
    * 
    */
   public double getGyroYaw() {
-    if (gyro.isConnected()) {
+    if (!disableNavx && gyro.isConnected()) {
       // Get filtered yaw angle (in degrees)
       // Negate value to be consistent with WPI coordinate system
       double gyroYaw = -gyro.getAngle();
@@ -653,7 +655,7 @@ public class SwerveDriveWPI extends SubsystemBase {
    * 
    */
   public double getGyroYawRate() {
-    return gyro.isConnected() ? -gyro.getRate() : fallbackGyro.isConnected() ? fallbackGyro.getRate() : 0;
+    return (!disableNavx && gyro.isConnected()) ? -gyro.getRate() : fallbackGyro.isConnected() ? fallbackGyro.getRate() : 0;
   }
 
   /**
@@ -846,7 +848,8 @@ public class SwerveDriveWPI extends SubsystemBase {
    */
   public Pose2d getPose() {
 
-    return odometry.getPoseMeters();
+    var pose = odometry.getPoseMeters();
+    return new Pose2d(pose.getTranslation(), getGyroRotation2d());
 
   }
 
@@ -1003,5 +1006,32 @@ public class SwerveDriveWPI extends SubsystemBase {
 
   protected boolean shouldAutoStop() {
     return true;
+  }
+
+  public class CorrectPosition extends Command {
+    protected Command command;
+    @Override
+    public void initialize() {
+      var target = getPose();
+      boolean hasBetter = getPoseFromCamera().isPresent();
+      if (hasBetter) {
+        command = pathfindTo(target, "Correct");
+        command.initialize();
+      } else {
+        command = null;
+      }
+    }
+    @Override
+    public void execute() {
+      if (command != null) command.execute();
+    }
+    @Override
+    public boolean isFinished() {
+      return command == null || command.isFinished();
+    }
+    @Override
+    public void end(boolean interrupted) {
+      if (command != null) command.end(interrupted);
+    }
   }
 }

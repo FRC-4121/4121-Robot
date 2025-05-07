@@ -274,10 +274,10 @@ public class RobotContainer {
                 .until(() -> Math.max(Math.abs(secondaryXbox.getLeftY()), Math.abs(secondaryXbox.getRightY())) > 0.1),
             () -> claw.hasCoral()));
     elevatorCoral2Button.onTrue(
-        CombinedCommands.moveClaw(claw, elevator, ElevatorMM.ElevatorPositions.Coral2, CClaw.ClawPositions.Home)
+        CombinedCommands.moveClaw(claw, elevator, ElevatorMM.ElevatorPositions.Coral2, CClaw.ClawPositions.L23Score)
             .until(() -> Math.max(Math.abs(secondaryXbox.getLeftY()), Math.abs(secondaryXbox.getRightY())) > 0.1));
     elevatorCoral3Button.onTrue(
-        CombinedCommands.moveClaw(claw, elevator, ElevatorMM.ElevatorPositions.Coral3, CClaw.ClawPositions.Home)
+        CombinedCommands.moveClaw(claw, elevator, ElevatorMM.ElevatorPositions.Coral3, CClaw.ClawPositions.L23Score)
             .until(() -> Math.max(Math.abs(secondaryXbox.getLeftY()), Math.abs(secondaryXbox.getRightY())) > 0.1));
     elevatorCoral4Button.onTrue(
         Commands.either(

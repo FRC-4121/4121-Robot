@@ -75,13 +75,14 @@ public class CClaw extends SubsystemBase {
   // Create a claw position class
   public static final class ClawPositions {
     public static final double Load = 0;
-    public static final double Home = -2.9;
-    public static final double HomeUpper = -2.8;
-    public static final double HomeLower = -3.0;
-    public static final double RotCutoff = -10;
-    public static final double L1Score = -12;
-    public static final double Algae1 = -15;
-    public static final double Algae2 = -15.9;
+    public static final double Home = -2.2;
+    public static final double HomeUpper = -1.8;
+    public static final double HomeLower = -3.5;
+    public static final double RotCutoff = -8;
+    public static final double L1Score = -19;
+    public static final double L23Score = -2.2;
+    public static final double Algae1 = -13.8;
+    public static final double Algae2 = -14;
     public static final double L4Score = -5.0;
   }
 
@@ -432,8 +433,8 @@ public class CClaw extends SubsystemBase {
   }
 
   public Command returnHome() {
-    return new RotateClawAndWait(ClawPositions.Home, ClawPositions.HomeLower, ClawPositions.HomeUpper);
-    // return Commands.either(Commands.none(), new RotateClawAndWait(ClawPositions.Home, ClawPositions.HomeLower, ClawPositions.HomeUpper), this::isClear);
+    // return new RotateClawAndWait(ClawPositions.Home, ClawPositions.HomeLower, ClawPositions.HomeUpper);
+    return Commands.either(Commands.none(), new RotateClawAndWait(ClawPositions.Home, ClawPositions.HomeLower, ClawPositions.HomeUpper), this::isClear);
   }
 
   private SubsystemBase getThis() {
