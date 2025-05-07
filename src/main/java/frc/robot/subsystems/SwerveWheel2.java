@@ -131,9 +131,9 @@ public class SwerveWheel2 extends SubsystemBase {
     angle_kD = 0.0;
 
     // Put PID constants on SmartDashboard for testing
-    SmartDashboard.putNumber(moduleName + " kP", kP_AngleController);
-    SmartDashboard.putNumber(moduleName + " kI", kI_AngleController);
-    SmartDashboard.putNumber(moduleName + " kD", kD_AngleController);
+    // SmartDashboard.putNumber(moduleName + " kP", kP_AngleController);
+    // SmartDashboard.putNumber(moduleName + " kI", kI_AngleController);
+    // SmartDashboard.putNumber(moduleName + " kD", kD_AngleController);
 
     // Create motors
     swerveDriveMotor = new TalonFX(driveMotorID, CANBUS_NAME);
@@ -266,27 +266,27 @@ public class SwerveWheel2 extends SubsystemBase {
   public void periodic() {
 
     // Update status of drive motor
-    SmartDashboard.putNumber(moduleName + " Drive Motor Volts", swerveDriveMotor.getMotorVoltage().getValueAsDouble());
-    SmartDashboard.putNumber(moduleName + " Drive Motor Amps", swerveDriveMotor.getStatorCurrent().getValueAsDouble());
-    SmartDashboard.putNumber(moduleName + " Drive Motor Position", swerveDriveMotor.getPosition().getValueAsDouble());
-    SmartDashboard.putNumber(moduleName + " Drive Motor Velocity", swerveDriveMotor.getVelocity().getValueAsDouble());
+    // SmartDashboard.putNumber(moduleName + " Drive Motor Volts", swerveDriveMotor.getMotorVoltage().getValueAsDouble());
+    // SmartDashboard.putNumber(moduleName + " Drive Motor Amps", swerveDriveMotor.getStatorCurrent().getValueAsDouble());
+    // SmartDashboard.putNumber(moduleName + " Drive Motor Position", swerveDriveMotor.getPosition().getValueAsDouble());
+    // SmartDashboard.putNumber(moduleName + " Drive Motor Velocity", swerveDriveMotor.getVelocity().getValueAsDouble());
 
     // Update status of angle motor
-    SmartDashboard.putNumber(moduleName + " Angle Motor Volts", swerveAngleMotor.getMotorVoltage().getValueAsDouble());
-    SmartDashboard.putNumber(moduleName + " Angle Motor Amps", swerveAngleMotor.getStatorCurrent().getValueAsDouble());
-    SmartDashboard.putNumber(moduleName + " Angle Motor Position", swerveAngleMotor.getPosition().getValueAsDouble());
-    SmartDashboard.putNumber(moduleName + " Angle Motor Velocity", swerveAngleMotor.getVelocity().getValueAsDouble());
+    // SmartDashboard.putNumber(moduleName + " Angle Motor Volts", swerveAngleMotor.getMotorVoltage().getValueAsDouble());
+    // SmartDashboard.putNumber(moduleName + " Angle Motor Amps", swerveAngleMotor.getStatorCurrent().getValueAsDouble());
+    // SmartDashboard.putNumber(moduleName + " Angle Motor Position", swerveAngleMotor.getPosition().getValueAsDouble());
+    // SmartDashboard.putNumber(moduleName + " Angle Motor Velocity", swerveAngleMotor.getVelocity().getValueAsDouble());
 
     // Update status of CANCoder
-    SmartDashboard.putNumber(moduleName + " CANCoder Position", canCoder.getAbsolutePosition().getValueAsDouble());
-    SmartDashboard.putNumber(moduleName + " CANCoder Velocity", canCoder.getVelocity().getValueAsDouble());
+    // SmartDashboard.putNumber(moduleName + " CANCoder Position", canCoder.getAbsolutePosition().getValueAsDouble());
+    // SmartDashboard.putNumber(moduleName + " CANCoder Velocity", canCoder.getVelocity().getValueAsDouble());
 
     // Update wheel status
-    SmartDashboard.putNumber(moduleName + " Wheel Speed", getWheelSpeed());
-    SmartDashboard.putNumber(moduleName + " Wheel Dist", getDistance());
+    // SmartDashboard.putNumber(moduleName + " Wheel Speed", getWheelSpeed());
+    // SmartDashboard.putNumber(moduleName + " Wheel Dist", getDistance());
 
     // Update the laser distance
-    SmartDashboard.putNumber(moduleName + " Laser Distance", getLaserDistance());
+    // SmartDashboard.putNumber(moduleName + " Laser Distance", getLaserDistance());
 
   }
 
@@ -311,7 +311,7 @@ public class SwerveWheel2 extends SubsystemBase {
 
     // Optimize angle motor rotation direction and distance
     double error = (encoderAngle - normAngle + 0.5) % 1 - 0.5;
-    SmartDashboard.putNumber("Ang Error", error);
+    // SmartDashboard.putNumber("Ang Error", error);
     if (error < -0.5)
       error += 1.0;
     else if (error > 0.5)
@@ -324,7 +324,7 @@ public class SwerveWheel2 extends SubsystemBase {
       speed = -speed;
     }
     double targetAngle = encoderAngle + error;
-    SmartDashboard.putNumber(moduleName + " targ angle", targetAngle);
+    // SmartDashboard.putNumber(moduleName + " targ angle", targetAngle);
 
     // Calculate angle motor output demand
     double output = wpiPIDController.calculate(error, 0);
@@ -350,15 +350,15 @@ public class SwerveWheel2 extends SubsystemBase {
     swerveDriveMotor.setControl(velocityRequest.withVelocity(motorVelocity));
 
     // Send critical values to SmartDashboard for troubleshooting / tuning
-    SmartDashboard.putNumber(moduleName + " req speed", speed);
-    SmartDashboard.putNumber(moduleName + " req angle", angle);
-    SmartDashboard.putNumber(moduleName + " norm angle", normAngle);
-    SmartDashboard.putNumber(moduleName + " angle error", error);
-    SmartDashboard.putNumber(moduleName + " PID output", output);
-    SmartDashboard.putNumber(moduleName + " angle speed", angleSpeed);
-    SmartDashboard.putNumber(moduleName + " V target", motorVelocity);
-    SmartDashboard.putNumber(moduleName + " target RPM", motorVelocityRPM);
-    SmartDashboard.putNumber(moduleName + " V actual", getDriveEncoderVelocity());
+    // SmartDashboard.putNumber(moduleName + " req speed", speed);
+    // SmartDashboard.putNumber(moduleName + " req angle", angle);
+    // SmartDashboard.putNumber(moduleName + " norm angle", normAngle);
+    // SmartDashboard.putNumber(moduleName + " angle error", error);
+    // SmartDashboard.putNumber(moduleName + " PID output", output);
+    // SmartDashboard.putNumber(moduleName + " angle speed", angleSpeed);
+    // SmartDashboard.putNumber(moduleName + " V target", motorVelocity);
+    // SmartDashboard.putNumber(moduleName + " target RPM", motorVelocityRPM);
+    // SmartDashboard.putNumber(moduleName + " V actual", getDriveEncoderVelocity());
 
   }
 

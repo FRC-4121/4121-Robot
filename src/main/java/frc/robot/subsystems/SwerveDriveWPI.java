@@ -128,6 +128,7 @@ public class SwerveDriveWPI extends SubsystemBase {
   private Field2d field;
 
   private static final boolean disableNavx = false;
+  private static final boolean disableFallback = true;
 
   /**
    * 
@@ -160,10 +161,10 @@ public class SwerveDriveWPI extends SubsystemBase {
       DriverStation.reportError("Unable to connect to NavX: " + ex.toString(), false);
       System.out.println("Unable to connect to NavX: " + ex.toString());
     }
-    fallbackGyro = new ADXRS450_Gyro();
+    // fallbackGyro = new ADXRS450_Gyro();
 
     // gyro.calibrate();
-    if (gyro.isConnected()) {
+    if (!disableNavx && gyro.isConnected()) {
       gyro.reset();
       // gyro.resetDisplacement();
     }
@@ -246,9 +247,9 @@ public class SwerveDriveWPI extends SubsystemBase {
     // Update robot odometry
     odometry.update(getGyroRotation2d(), getModulePositions());
 
-    SmartDashboard.putNumber("Pose X", odometry.getPoseMeters().getX());
-    SmartDashboard.putNumber("Pose Y", odometry.getPoseMeters().getY());
-    SmartDashboard.putNumber("Pose Yaw", odometry.getPoseMeters().getRotation().getRadians());
+    // SmartDashboard.putNumber("Pose X", odometry.getPoseMeters().getX());
+    // SmartDashboard.putNumber("Pose Y", odometry.getPoseMeters().getY());
+    // SmartDashboard.putNumber("Pose Yaw", odometry.getPoseMeters().getRotation().getRadians());
 
     SmartDashboard.putString("Pose", getPose().toString());
 
@@ -380,8 +381,8 @@ public class SwerveDriveWPI extends SubsystemBase {
     // Convert joystick positions to linear speeds in meters/second
     vxMetersPerSecond = -(leftY * LinearSpeed);
     vyMetersPerSecond = -(leftX * LinearSpeed);
-    SmartDashboard.putNumber("vX Speed", vxMetersPerSecond);
-    SmartDashboard.putNumber("vY Speed", vyMetersPerSecond);
+    // SmartDashboard.putNumber("vX Speed", vxMetersPerSecond);
+    // SmartDashboard.putNumber("vY Speed", vyMetersPerSecond);
 
     // Get rotational speed
     double omegaRadiansPerSecond = 0.0;
@@ -404,11 +405,11 @@ public class SwerveDriveWPI extends SubsystemBase {
         omegaRadiansPerSecond = RotationalSpeed * rightX;
       }
 
-      SmartDashboard.putBoolean("Omega Corr", false);
+      // SmartDashboard.putBoolean("Omega Corr", false);
 
     }
 
-    SmartDashboard.putNumber("Drive Omega", omegaRadiansPerSecond);
+    // SmartDashboard.putNumber("Drive Omega", omegaRadiansPerSecond);
 
     // Convert inputs to chassis speeds
     ChassisSpeeds fieldSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(vxMetersPerSecond, vyMetersPerSecond,
@@ -490,10 +491,10 @@ public class SwerveDriveWPI extends SubsystemBase {
     // }
 
     // Send critical values to SmartDashboard for troubleshooting / tuning
-    SmartDashboard.putNumber("LF WPI Ang", fromWPIAngle(frontLeftAngle));
-    SmartDashboard.putNumber("RF WPI Ang", fromWPIAngle(frontRightAngle));
-    SmartDashboard.putNumber("LB WPI Ang", fromWPIAngle(backLeftAngle));
-    SmartDashboard.putNumber("RB WPI Ang", fromWPIAngle(backRightAngle));
+    // SmartDashboard.putNumber("LF WPI Ang", fromWPIAngle(frontLeftAngle));
+    // SmartDashboard.putNumber("RF WPI Ang", fromWPIAngle(frontRightAngle));
+    // SmartDashboard.putNumber("LB WPI Ang", fromWPIAngle(backLeftAngle));
+    // SmartDashboard.putNumber("RB WPI Ang", fromWPIAngle(backRightAngle));
 
   }
 
@@ -574,7 +575,7 @@ public class SwerveDriveWPI extends SubsystemBase {
       SmartDashboard.putString("Gyro Used", "NavX");
       SmartDashboard.putNumber("Gyro Raw", angle);
       return angle;
-    } else if (fallbackGyro.isConnected()) {
+    } else if (!disableFallback && fallbackGyro.isConnected()) {
       double angle = fallbackGyro.getAngle() % 360;
       SmartDashboard.putString("Gyro Used", "ADXRS450");
       SmartDashboard.putNumber("Gyro Raw", angle);
@@ -655,7 +656,7 @@ public class SwerveDriveWPI extends SubsystemBase {
    * 
    */
   public double getGyroYawRate() {
-    return (!disableNavx && gyro.isConnected()) ? -gyro.getRate() : fallbackGyro.isConnected() ? fallbackGyro.getRate() : 0;
+    return (!disableNavx && gyro.isConnected()) ? -gyro.getRate() : (!disableFallback && fallbackGyro.isConnected()) ? fallbackGyro.getRate() : 0;
   }
 
   /**
@@ -665,8 +666,8 @@ public class SwerveDriveWPI extends SubsystemBase {
    */
   public void zeroGyro() {
 
-    gyro.reset();
-    fallbackGyro.reset();
+    if (!disableNavx) gyro.reset();
+    if (!disableFallback) fallbackGyro.reset();
 
   }
 
@@ -784,7 +785,7 @@ public class SwerveDriveWPI extends SubsystemBase {
     double distance = (leftFront.getDistance() + rightFront.getDistance() + leftBack.getDistance()
         + rightBack.getDistance()) / 4.0;
 
-    SmartDashboard.putNumber("Distance", distance);
+    // SmartDashboard.putNumber("Distance", distance);
 
     return distance;
 
@@ -862,7 +863,7 @@ public class SwerveDriveWPI extends SubsystemBase {
 
     odometry.resetPosition(getGyroRotation2d(), getModulePositions(), pose);
 
-    SmartDashboard.putString("Starting Pose", getPose().toString());
+    // SmartDashboard.putString("Starting Pose", getPose().toString());
 
   }
 

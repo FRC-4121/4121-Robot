@@ -259,7 +259,7 @@ public class SwerveWheel extends SubsystemBase {
    */
   public void drive(double speed, double angle) {
 
-    SmartDashboard.putNumber(config.name + " angle", angle);
+    // SmartDashboard.putNumber(config.name + " angle", angle);
 
     // Normalize target to have a max value of 1
     double target = angle / 360.0;
@@ -267,7 +267,7 @@ public class SwerveWheel extends SubsystemBase {
       target = 0.0;
     }
     double wheelVelocity = 23712 * (speed * swerveDriveSpeedLimiter) - 894.29;
-    SmartDashboard.putNumber(config.name + " V target", wheelVelocity);
+    // SmartDashboard.putNumber(config.name + " V target", wheelVelocity);
 
     if (canCoder != null) { // old code that uses an external CANcoder
       // Normalize encoder to have a max value of 1 and correct for discontinuity at
@@ -276,8 +276,8 @@ public class SwerveWheel extends SubsystemBase {
       // if (encoderAngle == 1.0) {
       // encoderAngle = 0.0;
       // }
-      SmartDashboard.putNumber(config.name + " encoder target", target);
-      SmartDashboard.putNumber(config.name + " encoder angle", encoderAngle);
+      // SmartDashboard.putNumber(config.name + " encoder target", target);
+      // SmartDashboard.putNumber(config.name + " encoder angle", encoderAngle);
 
       double dist1 = Math.abs(target - encoderAngle);
       double dist2 = 1.0 - dist1;
@@ -293,13 +293,13 @@ public class SwerveWheel extends SubsystemBase {
         speed = -speed;
       }
 
-      SmartDashboard.putNumber(config.name + " PID target", target);
+      // SmartDashboard.putNumber(config.name + " PID target", target);
 
       // double output = anglePIDController.run(encoderAngle, target);
       double output = wpiPIDController.calculate(encoderAngle, target);
-      SmartDashboard.putNumber(config.name + " PID output", output);
-      SmartDashboard.putNumber(config.name + " Target", target);
-      SmartDashboard.putNumber(config.name + " Corrected Encoder", encoderAngle);
+      // SmartDashboard.putNumber(config.name + " PID output", output);
+      // SmartDashboard.putNumber(config.name + " Target", target);
+      // SmartDashboard.putNumber(config.name + " Corrected Encoder", encoderAngle);
 
       double angleSpeed = output * config.angleLimiter;
 
@@ -311,11 +311,11 @@ public class SwerveWheel extends SubsystemBase {
       }
 
       // Before angle speed
-      SmartDashboard.putNumber(config.name + " before angle", angleSpeed);
+      // SmartDashboard.putNumber(config.name + " before angle", angleSpeed);
 
       // putting angleSpeed and error into smart dashboard
-      SmartDashboard.putNumber(config.name + " after angle", angleSpeed);
-      SmartDashboard.putNumber(config.name + " error", encoderAngle - target);
+      // SmartDashboard.putNumber(config.name + " after angle", angleSpeed);
+      // SmartDashboard.putNumber(config.name + " error", encoderAngle - target);
 
       // Calculate wheel velocity
       swerveAngleMotor.set(angleSpeed);
@@ -327,8 +327,8 @@ public class SwerveWheel extends SubsystemBase {
     }
 
     // Set motor speeds
-    SmartDashboard.putNumber(config.name + " V actual",
-        swerveDriveMotor.getVelocity().refresh().getValue().in(RadiansPerSecond));
+    // SmartDashboard.putNumber(config.name + " V actual",
+    //     swerveDriveMotor.getVelocity().refresh().getValue().in(RadiansPerSecond));
   }
 
   /**
@@ -362,7 +362,7 @@ public class SwerveWheel extends SubsystemBase {
   public double getDistance() {
     double dist = (wheelDiameter * Math.PI * swerveDriveMotor.getPosition().refresh().getValue().in(Radians))
         / (kTalonFXPPR * driveGearRatio);
-    SmartDashboard.putNumber(config.name + " distance", dist);
+    // SmartDashboard.putNumber(config.name + " distance", dist);
     return dist;
   }
 

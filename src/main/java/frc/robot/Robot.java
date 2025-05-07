@@ -52,7 +52,7 @@ public class Robot extends TimedRobot {
 
     // Start data logging of network table data
     // DataLogManager.start("/home/lvuser/logs");
-    DataLogManager.start();
+    // DataLogManager.start();
 
     // Put zero mechanism options on the dashboard
     SmartDashboard.putNumber("Zero Gyro", 0);
@@ -79,6 +79,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
+    System.gc();
 
     // Runs the Scheduler. This is responsible for polling buttons, adding
     // newly-scheduled
